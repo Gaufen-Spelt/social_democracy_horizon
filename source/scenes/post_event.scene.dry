@@ -1257,7 +1257,7 @@ if (Q.z_party_leader == "Joseph Joos") {
 
 
 
-If (Q.ruhr_labor_strike == 1) {
+if (Q.ruhr_labor_strike == 1) {
 
 Q.socialism += 1 * Q.general_strike_progress;
 Q.nationalism += 1 * Q.capital_strike_progress;
@@ -1350,10 +1350,8 @@ if (Q.general_strike_progress > 0) {
 }
 
 if (Q.left_split) {
-    Q.rfb_strength += (Q.workers_spd * Q.left_dissent) * 0.01)
+    Q.rfb_strength += (Q.workers_spd * Q.left_dissent) * 0.01;
 }
-
-
 
 }
 
