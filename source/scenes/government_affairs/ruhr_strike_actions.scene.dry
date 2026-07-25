@@ -96,6 +96,101 @@ The industrial Ruhr region is aflame with labor unrest and practically communist
 
 <div id="ruhr-charts"></div>
 
-
-- @suppress_rfb: Attack the RFB units.
+- @suppress_rfb: Attack the far left paramilitaties.
+- @suppress_sa_sh: Attack the far right paramilitaries.
 - @easy_discard
+
+
+@suppress_rfb
+subtitle: We should coordinate our attacks with Reichswehr.
+choose-if: rb_militancy > 0.05 and rb_strength > 1800 and kpd_relation <= 50
+view-if: ideology != "left" and not kpd_truce
+unavailable-subtitle: [? if rb_militancy <= 0.05 or rb_strength <= 1800: Our units are not strong enough to contest armed enemies! ?]
+on-arrival: {!
+  // fraction of RB still loyal enough to actually fight the left
+  var rb_loyal_pct = 1 - (Q.ruhr_rb_to_left_pct || 0);
+  var rb_committed = Q.rb_strength * rb_loyal_pct * Q.rb_militancy;
+
+  // resistance from each left paramilitary
+  var rfb_resistance = Q.rfb_strength * Q.rfb_militancy;
+  var faud_resistance = (Q.ruhr_faud_strength || 0) * (Q.ruhr_faud_militancy || 0);
+  var kapd_resistance = (Q.ruhr_kapd_strength || 0) * (Q.ruhr_kapd_militancy || 0);
+
+  // ratio of RB's committed force vs each front's resistance
+  var rfb_ratio = rb_committed / (rb_committed + rfb_resistance);
+  var faud_ratio = rb_committed / (rb_committed + faud_resistance);
+  var kapd_ratio = rb_committed / (rb_committed + kapd_resistance);
+
+  // RB losses rise as resistance holds firmer across all three fronts
+  Q.rb_loss = Math.round(60 * (1 - ((rfb_ratio + faud_ratio + kapd_ratio) / 3)));
+  Q.rb_strength -= Q.rb_loss;
+
+  // damage to each group scales with its own ratio
+  Q.rfb_loss = Math.round(30 * rfb_ratio);
+  Q.rfb_strength -= Q.rfb_loss;
+
+  Q.faud_loss = Math.round(20 * faud_ratio);
+  Q.ruhr_faud_strength -= Q.faud_loss;
+
+  Q.kapd_loss = Math.round(20 * kapd_ratio);
+  Q.ruhr_kapd_strength -= Q.kapd_loss;
+
+  Q.left_dissent += 5;
+  Q.left_strength += 5;
+!}
+
+We have assaulted Red Front, FAUD, and KAPD positions with loyal Reichsbanner units on three fronts.
+
+Casualties:
+
+- Reichsbanner: [+ rb_loss +]
+
+- Red Front (RFB): [+ rfb_loss +]
+
+- FAUD: [+ faud_loss +]
+
+- KAPD: [+ kapd_loss +]
+
+@suppress_sa_sh
+subtitle: We should coordinate our attacks with Reichswehr against both paramilitaries.
+choose-if: rb_militancy > 0.10 and rb_strength > 2500 and dnvp_relation <= 40
+view-if: not social_fascism_adopted
+unavailable-subtitle: [? if rb_militancy <= 0.10 or rb_strength <= 2500: Our units are not strong enough to contest armed enemies! ?]
+on-arrival: {!
+  // RB's committed fighting force
+  var rb_committed = Q.rb_strength * Q.rb_militancy;
+
+  // how much resistance each enemy puts up
+  var sa_resistance = Q.sa_strength * Q.sa_militancy;
+  var sh_resistance = Q.sh_strength * Q.sh_militancy;
+
+  // ratio of RB's committed force vs each enemy's resistance
+  var sa_ratio = rb_committed / (rb_committed + sa_resistance);
+  var sh_ratio = rb_committed / (rb_committed + sh_resistance);
+
+  // RB losses rise as enemy resistance holds firmer (avg of both fronts)
+  Q.rb_loss = Math.round(50 * (1 - ((sa_ratio + sh_ratio) / 2)));
+  Q.rb_strength -= Q.rb_loss;
+
+  // damage to each enemy scales with how favorable that front's ratio is
+  Q.sa_loss = Math.round(30 * sa_ratio);
+  Q.sa_strength -= Q.sa_loss;
+
+  Q.sh_loss = Math.round(30 * sh_ratio);
+  Q.sh_strength -= Q.sh_loss;
+
+  Q.left_dissent += 5;
+  Q.left_strength += 5;
+!}
+
+We have assaulted Sturmabteilung and Stahlhelm positions with loyal Reichsbanner units on two fronts.
+
+Casualties:
+
+- Reichsbanner: [+ rb_loss +]
+
+- Sturmabteilung (SA): [+ sa_loss +]
+
+- Stahlhelm (SH): [+ sh_loss +]
+
+
