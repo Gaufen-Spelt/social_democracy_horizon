@@ -5,63 +5,6 @@ tags: govt_affairs, cabinet, party_aff
 on-arrival: {!
 Q.labor_affairs_timer = 2;
 
-// --- workers vs employers ---
-Q.ruhr_workers = Q.workers / 7;
-Q.ruhr_worker_rfb = Q.ruhr_workers * 0.80;
-Q.ruhr_worker_rb  = Q.ruhr_workers * 0.15;
-Q.ruhr_worker_unaligned = Q.ruhr_workers * 0.05;
-Q.ruhr_worker_force = Q.ruhr_workers * 0.70;
-
-Q.ruhr_rfb_effective = Q.rfb_strength * Q.rfb_militancy * 0.20;
-
-Q.ruhr_employer_base = Q.old_middle / 18;
-Q.ruhr_employer_force = Q.ruhr_employer_base * 0.30;
-Q.ruhr_sa_backing = Q.sa_strength * Q.sa_militancy;
-Q.ruhr_sh_backing = Q.sh_strength * Q.sh_militancy;
-Q.ruhr_employer_total = Q.ruhr_employer_force + Q.ruhr_sa_backing + Q.ruhr_sh_backing;
-
-// --- reichswehr deployment ---
-Q.reichswehr_strength_ruhr = 5;
-Q.ruhr_reichswehr_effective = Q.reichswehr_strength_ruhr * 1000 * (Q.reichswehr_militancy / 100);
-Q.ruhr_rw_loyal = Q.ruhr_reichswehr_effective * (Q.reichswehr_loyalty || 0.5);
-Q.ruhr_rw_order = Q.ruhr_reichswehr_effective - Q.ruhr_rw_loyal;
-
-// --- FAUD / KAPD ---
-Q.ruhr_faud_effective = (Q.ruhr_faud_strength || 0) * (Q.ruhr_faud_militancy || 0);
-Q.ruhr_kapd_effective = (Q.ruhr_kapd_strength || 0) * (Q.ruhr_kapd_militancy || 0);
-
-// --- ideology bonus, shared by RB-split and independent-worker calcs ---
-Q.ruhr_left_ideology_bonus = (Q.ideology == "left") ? 1.5 : 1.0;
-
-// --- Reichsbanner split toward left camp, scaled by left_strength (1-99) + ideology bonus ---
-Q.ruhr_rb_effective = Q.rb_strength * Q.rb_militancy;
-Q.ruhr_rb_to_left_pct = Math.min(1, ((Q.left_strength || 1) / 99) * Q.ruhr_left_ideology_bonus * 0.5);
-Q.ruhr_rb_to_left = Q.ruhr_rb_effective * Q.ruhr_rb_to_left_pct;
-Q.ruhr_rb_remaining = Q.ruhr_rb_effective - Q.ruhr_rb_to_left;
-
-// --- independent worker share: 1-5% of left_strength (1-99), capped 20%, ideology bonus ---
-Q.ruhr_worker_independent_pct = Math.min(0.20, ((Q.left_strength || 1) / 99) * 0.05 * Q.ruhr_left_ideology_bonus);
-Q.ruhr_worker_independent = Q.ruhr_workers * Q.ruhr_worker_independent_pct;
-
-// --- left camp: KAPD + FAUD + RFB + RB(split-in) + independent workers ---
-Q.ruhr_camp_left = Q.ruhr_kapd_effective
-                  + Q.ruhr_faud_effective
-                  + Q.ruhr_rfb_effective
-                  + Q.ruhr_rb_to_left
-                  + Q.ruhr_worker_independent;
-
-// --- republic camp: national Reichswehr(loyalty-weighted) + remaining RB + negligible Jungdo ---
-Q.ruhr_jungdo_effective = (Q.jungdo_strength || 0) * 0.01;
-Q.ruhr_camp_republic = (Q.reichswehr_strength * (Q.reichswehr_loyalty || 0.5) * Q.reichswehr_militancy)
-                      + Q.ruhr_rb_remaining
-                      + Q.ruhr_jungdo_effective;
-
-// --- right camp: disloyal Reichswehr(Ruhr-deployed) + SA + SH + employers ---
-Q.ruhr_employer_share = Q.ruhr_employer_base * 0.30;
-Q.ruhr_camp_right = Q.ruhr_rw_order
-                   + Q.ruhr_sa_backing
-                   + Q.ruhr_sh_backing
-                   + Q.ruhr_employer_share;
 !}
 on-display: {!
 function renderRuhrStruggle(){
@@ -153,4 +96,6 @@ The industrial Ruhr region is aflame with labor unrest and practically communist
 
 <div id="ruhr-charts"></div>
 
+
+- @suppress_rfb: Attack the RFB units.
 - @easy_discard
