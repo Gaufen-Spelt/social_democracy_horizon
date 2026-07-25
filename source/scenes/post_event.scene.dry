@@ -1262,8 +1262,6 @@ if (Q.ruhr_labor_strike == 1) {
 Q.socialism += 1 * Q.general_strike_progress;
 Q.nationalism += 1 * Q.capital_strike_progress;
 
-
-
 // --- workers vs employers ---
 Q.ruhr_workers = Q.workers / 6.5;
 Q.ruhr_worker_rfb = Q.ruhr_workers * 0.80;
@@ -1324,10 +1322,8 @@ Q.ruhr_camp_right = Q.ruhr_rw_order
 
 
 if (Q.rfb_banned == 1) {
-    Q.ruhr_faud_militancy += 0.01;
-    Q.ruhr_kapd_militancy += 0.005;
-    Q.ruhr_kapd_strength += 30;
-    Q.ruhr_faud_strength += 20;
+    Q.ruhr_faud_militancy += 0.001;
+    Q.ruhr_kapd_militancy += 0.0005;
     Q.sa_strength += 5;
     if (Q.left_dissent < 50) Q.left_dissent += 2;
 }
@@ -1344,10 +1340,26 @@ if (Q.general_strike_progress > 0) {
     } else {
         Q.ruhr_faud_militancy += 0.01 * (Q.general_strike_progress * 0.5);
         Q.ruhr_kapd_militancy += 0.005 * (Q.general_strike_progress * 0.5);
-        Q.ruhr_kapd_strength += 10 * Q.general_strike_progress;
-        Q.ruhr_faud_strength += 5 * Q.general_strike_progress;
     }
 }
+
+// --- RFB defection to KAPD/FAUD: redistribution, not free growth ---
+// Base defection rate rises when RFB is banned (members flee to unbanned radical orgs),
+// and further when general strike is active (radicalization pressure).
+Q.ruhr_rfb_defection_rate = 0.02
+    + (Q.rfb_banned == 1 ? 0.03 : 0)
+    + (Q.general_strike_progress > 0 ? 0.01 * Q.general_strike_progress : 0);
+
+Q.ruhr_rfb_defection = Math.min(Q.rfb_strength * Q.ruhr_rfb_defection_rate, Q.rfb_strength);
+Q.rfb_strength -= Q.ruhr_rfb_defection;
+
+// Split defectors between KAPD and KAPD, weighted toward whichever already has
+// higher relative militancy (more militant appeal draws more defectors)
+Q.ruhr_defection_kapd_share = (Q.ruhr_kapd_militancy || 0) /
+    (((Q.ruhr_kapd_militancy || 0) + (Q.ruhr_faud_militancy || 0)) || 1);
+
+Q.ruhr_kapd_strength += Q.ruhr_rfb_defection * Q.ruhr_defection_kapd_share;
+Q.ruhr_faud_strength += Q.ruhr_rfb_defection * (1 - Q.ruhr_defection_kapd_share);
 
 if (Q.left_split) {
     Q.rfb_strength += (Q.workers_spd * Q.left_dissent) * 0.01;
