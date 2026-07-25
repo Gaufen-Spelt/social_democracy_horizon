@@ -143,13 +143,13 @@ We have assaulted Red Front, FAUD, and KAPD positions with loyal Reichsbanner un
 
 Casualties:
 
-- Reichsbanner: [+ rb_loss +]
+~ Reichsbanner: [+ rb_loss +]
 
-- Red Front (RFB): [+ rfb_loss +]
+~ Red Front (RFB): [+ rfb_loss +]
 
-- FAUD: [+ faud_loss +]
+~ FAUD: [+ faud_loss +]
 
-- KAPD: [+ kapd_loss +]
+~ KAPD: [+ kapd_loss +]
 
 @suppress_sa_sh
 subtitle: We should coordinate our attacks with Reichswehr against both paramilitaries.
@@ -187,10 +187,10 @@ We have assaulted Sturmabteilung and Stahlhelm positions with loyal Reichsbanner
 
 Casualties:
 
-- Reichsbanner: [+ rb_loss +]
+~ Reichsbanner: [+ rb_loss +]
 
-- Sturmabteilung (SA): [+ sa_loss +]
+~ Sturmabteilung (SA): [+ sa_loss +]
 
-- Stahlhelm (SH): [+ sh_loss +]
+~ Stahlhelm (SH): [+ sh_loss +]
 
 
