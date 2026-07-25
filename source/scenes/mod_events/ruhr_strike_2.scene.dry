@@ -39,6 +39,10 @@ on-arrival: {!
   Q.ruhr_kapd_militancy += 0.02;
   Q.ruhr_faud_militancy += 0.04;
   Q.ruhr_faud_strength += 50;
+  Q.sh_strength * 1.1;
+  Q.sh_militancy * 1.5;
+  Q.sa_militancy * 0.7;
+  Q.sa_strength * 0.9;
   window.enableFocusMode()
   window.MusicPlayer.loadFromUrl('music/ruhrstrike2.mp3', 'Streiklied', { autoplay: true, force: true});
 !}
@@ -80,4 +84,4 @@ The French Government, for their part, have issued an ultimatum to our governmen
 
 What should we do?
 
-- @root: We must formulate the solution.
+- @root: Country is burning again... What should we do, what should we do...
