@@ -1335,26 +1335,22 @@ if (Q.sh_banned == 1) {
 
 if (Q.general_strike_progress > 0) {
     if (!Q.rfb_banned) {
-        Q.rfb_strength += 6 * Q.general_strike_progress;
-        Q.rfb_militancy += 0.005 * (Q.general_strike_progress * 0.5)
+        Q.rfb_strength += 3 * Q.general_strike_progress;
+        Q.rfb_militancy += 0.0009 * (Q.general_strike_progress * 0.5)
     } else {
-        Q.ruhr_faud_militancy += 0.01 * (Q.general_strike_progress * 0.5);
-        Q.ruhr_kapd_militancy += 0.005 * (Q.general_strike_progress * 0.5);
+        Q.ruhr_faud_militancy += 0.00085 * (Q.general_strike_progress * 0.5);
+        Q.ruhr_kapd_militancy += 0.0005 * (Q.general_strike_progress * 0.5);
     }
 }
 
 // --- RFB defection to KAPD/FAUD: redistribution, not free growth ---
-// Base defection rate rises when RFB is banned (members flee to unbanned radical orgs),
-// and further when general strike is active (radicalization pressure).
 Q.ruhr_rfb_defection_rate = 0.02
-    + (Q.rfb_banned == 1 ? 0.03 : 0)
-    + (Q.general_strike_progress > 0 ? 0.01 * Q.general_strike_progress : 0);
+    + (Q.rfb_banned == 1 ? 0.015 : 0)
+    + (Q.general_strike_progress > 0 ? 0.005 * Q.general_strike_progress : 0);
 
 Q.ruhr_rfb_defection = Math.min(Q.rfb_strength * Q.ruhr_rfb_defection_rate, Q.rfb_strength);
 Q.rfb_strength -= Q.ruhr_rfb_defection;
 
-// Split defectors between KAPD and KAPD, weighted toward whichever already has
-// higher relative militancy (more militant appeal draws more defectors)
 Q.ruhr_defection_kapd_share = (Q.ruhr_kapd_militancy || 0) /
     (((Q.ruhr_kapd_militancy || 0) + (Q.ruhr_faud_militancy || 0)) || 1);
 
