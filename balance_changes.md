@@ -65,7 +65,7 @@ Buff:
 
 ---
 
-29. 07. 2026
+29.07.26
 
 Seydewitz rework:
 
