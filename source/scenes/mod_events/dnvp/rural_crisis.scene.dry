@@ -69,11 +69,11 @@ go-to: cnbl_formed if cnbl_crisis = 1; cnbl_failed if cnbl_crisis = 0
 face-image: img/cnblp.png
 on-arrival: {!
 Q.parties.push('cnbl');
-Q.rural_cnbl += 2;
-Q.rural_dnvp -= 3;
+Q.rural_cnbl += 8;
+Q.rural_dnvp -= 7;
 Q.rural_dvp -= 3;
-Q.dnvp_r -= 5;
-Q.cnbl_r += 5;
+Q.dnvp_r -= 3;
+Q.cnbl_r += 3;
 Q.landvolk_fury -= 1;
 !}
 
