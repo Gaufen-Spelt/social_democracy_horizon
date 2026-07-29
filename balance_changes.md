@@ -62,3 +62,17 @@ Buff:
 - On peoples' party, decrease timer for "Organizing women" by two: 8 -> 6.
 
 - Additional += 2 towards rural and += 3 towards other demographics (old_middle, new_middle, workers and unemployed) if peoples_party is active.
+
+---
+
+Seydewitz rework:
+
+Nerf:
+
+- Increased advisor time action for "socialist_youth": 5 -> 6
+
+Buffs:
+
+- "socialist_youth" action is now free and does not require resource.
+
+- "against_toleration" advisor time action: 3 -> 2
