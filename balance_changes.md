@@ -78,3 +78,9 @@ Buffs:
 - "socialist_youth" action is now free and does not require resource.
 
 - "against_toleration" advisor time action: 3 -> 2
+
+Aufhauser buff:
+
+- Decreased advisor time action for "Organizing white-collar workers": 8 -> 6
+
+- Buffed "Organizing white-collar workers": New_middle_spd gains: 6 -> 8; new_middle_spd multiplied: 1.05x -> 1.15; labor_strength multiplied: 1.05x -> 1.20x
