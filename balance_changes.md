@@ -65,6 +65,8 @@ Buff:
 
 ---
 
+29. 07. 2026
+
 Seydewitz rework:
 
 Nerf:
