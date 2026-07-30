@@ -635,6 +635,104 @@ if (Q.camarilla_pushes_presidential_cabinet) {
     }
 }
 
+(function check_global_coalition_feasibility() {
+    function get_relation(p1, p2) {
+        if (p1 === p2) return 100;
+        var pr = Q.party_relations;
+        if (!pr) return 0;
+        var v1 = (pr[p1] && pr[p1][p2] != null) ? pr[p1][p2] : -1;
+        var v2 = (pr[p2] && pr[p2][p1] != null) ? pr[p2][p1] : -1;
+        if (isNaN(v1) || v1 < 0) v1 = -1;
+        if (isNaN(v2) || v2 < 0) v2 = -1;
+        if (v1 >= 0 && v2 >= 0) return (v1 + v2) / 2;
+        if (v1 >= 0) return v1;
+        if (v2 >= 0) return v2;
+        return 0;
+    }
+    function is_blocked(p1, p2) {
+        var cb = Q.coalition_blocks || {};
+        if (cb[p1 + '_' + p2] || cb[p2 + '_' + p1]) return true;
+        if (cb[p1 + '_ALL'] || cb[p2 + '_ALL']) return true;
+        return false;
+    }
+    function can_partner(p1, p2) {
+        if (is_blocked(p1, p2)) return false;
+        var pr = Q.party_relations;
+        if (!pr) return false;
+        var v1 = (pr[p1] && pr[p1][p2] !== undefined) ? pr[p1][p2] : -1;
+        var v2 = (pr[p2] && pr[p2][p1] !== undefined) ? pr[p2][p1] : -1;
+        if (isNaN(v1) || v1 < 0) v1 = 0;
+        if (isNaN(v2) || v2 < 0) v2 = 0;
+        return v1 >= 30 && v2 >= 30;
+    }
+
+    var seat_total = 0;
+    for (var i = 0; i < Q.parties.length; i++) {
+        seat_total += Q[Q.parties[i] + '_seats'] || 0;
+    }
+    if (seat_total === 0) { Q.no_coalition_possible = 0; return; }
+
+    var active = [];
+    for (var i = 0; i < Q.parties.length; i++) {
+        var p = Q.parties[i];
+        var seats = Q[p + '_seats'] || 0;
+        if (seats <= 0) continue;
+        if (Q[p + '_banned']) continue;
+        active.push({ party: p.toUpperCase(), votes: (seats / seat_total) * 100 });
+    }
+
+    // Not enough active parties to matter
+    if (active.length === 0) { Q.no_coalition_possible = 1; return; }
+    if (active.length === 1) {
+        Q.no_coalition_possible = active[0].votes < 50 ? 1 : 0;
+        return;
+    }
+
+    var threshold = 50;
+    var n = active.length;
+    var feasible = false;
+
+    // Try every possible subset (n is small — party count, not seats)
+    // via bitmask, since n rarely exceeds ~30 active parties.
+    // Cap for safety: if n is too large, fall back to a greedy/DP method.
+    if (n <= 24) {
+        for (var mask = 1; mask < (1 << n) && !feasible; mask++) {
+            var subset = [];
+            var votes = 0;
+            for (var b = 0; b < n; b++) {
+                if (mask & (1 << b)) {
+                    subset.push(active[b].party);
+                    votes += active[b].votes;
+                }
+            }
+            if (votes < threshold) continue; // toleration handled below via superset masks anyway
+            // Check mutual compatibility (all pairs must be partner-able)
+            var ok = true;
+            for (var a = 0; a < subset.length && ok; a++) {
+                for (var c = a + 1; c < subset.length; c++) {
+                    if (!can_partner(subset[a], subset[c])) { ok = false; break; }
+                }
+            }
+            if (ok) feasible = true;
+        }
+    } else {
+        var sorted = active.slice().sort(function(a, b) { return b.votes - a.votes; });
+        var acc = [];
+        var accVotes = 0;
+        for (var s = 0; s < sorted.length; s++) {
+            var cand = sorted[s];
+            var ok = true;
+            for (var a = 0; a < acc.length; a++) {
+                if (!can_partner(acc[a], cand.party)) { ok = false; break; }
+            }
+            if (ok) { acc.push(cand.party); accVotes += cand.votes; }
+            if (accVotes >= threshold) { feasible = true; break; }
+        }
+    }
+
+    Q.no_coalition_possible = feasible ? 0 : 1;
+})();
+
 // Pre-calculate display strings
 Q.election_results_list = "";
 for (var i = 0; i < Q.party_votes.length; i++) {
@@ -647,7 +745,7 @@ Q.formation_attempts = [];
 
 Q.first_party_0 = Q.party_votes[0].party
 !}
-go-to: presidential_crisis if president_skips_coalition; begin_negotiations
+go-to: presidential_crisis if no_coalition_possible; presidential_crisis if president_skips_coalition; begin_negotiations
 
 = Coalition Formation - [+ year +]
 
