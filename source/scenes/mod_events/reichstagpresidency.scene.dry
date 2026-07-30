@@ -1,6 +1,5 @@
 Title: Reichstag Parliamentary Formation
 new-page: true
-tags: event
 view-if: tag_1 = 1
 on-arrival: {!
 
