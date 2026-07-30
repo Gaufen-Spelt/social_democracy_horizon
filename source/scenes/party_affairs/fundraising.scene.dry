@@ -72,6 +72,7 @@ What is our fundraising strategy?
 - @collect_standard: Collect current dues ([+ total_projected +] resources). [? if collect_timer > 0 : (Available in [+ collect_timer +] turns) ?]
 - @adjust_dues: Adjust dues rates by demographic.
 - @austerity: Party austerity measures (reduce operating costs). [? if austerity_timer > 0 : (Available in [+ austerity_timer +] turns) ?]
+- @unausterity: Scale down on austerity.
 - @root: Defer decision.
 - @easy_discard
 
@@ -246,8 +247,17 @@ Rural dues reduced. This makes the party more accessible to the countryside.
 subtitle: Reduce party operating expenses (You are warned, increases timer of each party card by one each.)
 choose-if: austerity_timer <= 0
 unavailable-subtitle: [? if austerity_timer > 0 : Cannot implement austerity again yet. Available in [+ austerity_timer +] turns. ?]
-on-arrival: resources += 5; reformist_dissent += 8; center_dissent += 8; austerity_timer = 24 + austerity_fortimers; austerity_fortimers += 1
+on-arrival: resources += 5; reformist_dissent += 8; center_dissent += 8; austerity_timer = 24 + austerity_fortimers; austerity_fortimers += 2
 
 We have saved 5 resources, however face criticism in the face of weakened apparatus of party.
 
 - @root: Continue.
+
+@unausterity
+subtitle: Increase party operating expenses. (- 10 resources)
+view-if: austerity_fortimers > 0
+choose-if: resources >= 10
+unavailable-subtitle: Not enough of resources.
+on-arrival: austerity_fortimers -= 1; resources -= 10; reformist_dissent -= 4; center_dissent -= 8
+
+We have increased party operation scales, which has toned down recent austerity measure.
