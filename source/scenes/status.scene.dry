@@ -335,8 +335,7 @@ for (var i = 0; i < Q.parties.length; i++) {
     }
 }
 
-// Build one breakdown section (used for both classes and classesI)
-function buildSection(groupList) {
+function buildClassSection(groupList) {
     var out = "";
     for (var g = 0; g < groupList.length; g++) {
         var group = groupList[g];
@@ -349,14 +348,39 @@ function buildSection(groupList) {
             }
         }
         Q[group + '_breakdown'] = breakdown;
-        
+
         out += group + " (" + Q[group] + "):<br>" + breakdown + "<br><br>";
     }
     return out;
 }
 
-Q.classes_breakdown_display = buildSection(Q.classes);
-Q.classesI_breakdown_display = buildSection(Q.classesI);
+function buildClassIdentitySection(classList, identityList) {
+    var out = "";
+    for (var g = 0; g < classList.length; g++) {
+        var c = classList[g];
+        out += c + " (" + Q[c] + "):<br>";
+        for (var h = 0; h < identityList.length; h++) {
+            var idn = identityList[h];
+            var idn_share = (Q.class_identity_share[c] && Q.class_identity_share[c][idn] !== undefined)
+                ? Q.class_identity_share[c][idn] : 0;
+            var breakdown = "";
+            for (var i = 0; i < Q.parties.length; i++) {
+                var p = Q.parties[i];
+                var val = Q[c + '_' + idn + '_' + p + '_display'];
+                if (val !== undefined && val > 1) {
+                    breakdown += fmtLine(Q.party_labels[p], val);
+                }
+            }
+            Q[c + '_' + idn + '_breakdown'] = breakdown;
+            out += "&nbsp;&nbsp;" + idn + " (" + idn_share.toFixed(1) + "% of " + c + "):<br>" + breakdown;
+        }
+        out += "<br>";
+    }
+    return out;
+}
+
+Q.classes_breakdown_display = buildClassSection(Q.classes);
+Q.class_identity_breakdown_display = buildClassIdentitySection(Q.classes, Q.identities);
 
 !}
 
@@ -372,9 +396,9 @@ Q.classesI_breakdown_display = buildSection(Q.classesI);
 
 [+ classes_breakdown_display +]
 
-= Proportions of the social groups
+= Class × identity breakdown
 
-[+ classesI_breakdown_display +]
+[+ class_identity_breakdown_display +]
 
 @foreign
 on-arrival: {!
