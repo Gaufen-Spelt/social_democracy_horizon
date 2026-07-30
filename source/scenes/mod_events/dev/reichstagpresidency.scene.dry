@@ -1,6 +1,7 @@
 Title: Reichstag Parliamentary Formation
 new-page: true
-view-if: tag_1 = 1
+tags: event
+view-if: tag_1 = 1 and developer_mode
 on-arrival: {!
 
 var total_seats = Q.total_seats_filled || 600;
