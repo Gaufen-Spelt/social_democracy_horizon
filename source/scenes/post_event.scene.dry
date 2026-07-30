@@ -1488,9 +1488,10 @@ Q.relation_dynamics_speed = 0.25;
 // PASSIVE BUDGET
 // ============================================================
 
-Q.upper_tax_rates = Q.upper_tax_rates || 0;
-Q.lower_tax_rates = Q.lower_tax_rates || 0;
-Q.tariffs         = Q.tariffs || 0;
+Q.upper_tax_rates  = Q.upper_tax_rates || 0;
+Q.middle_tax_rates = Q.middle_tax_rates || 0;
+Q.lower_tax_rates  = Q.lower_tax_rates || 0;
+Q.tariffs          = Q.tariffs || 0;
 
 const TAX_YIELD_SCALE = 0.06;
 const UPKEEP_SCALE    = 0.045;
@@ -1558,6 +1559,14 @@ if (Q.capital_strike_progress > 0) {
     upper_yield *= Math.max(0.3, 1 - Q.capital_strike_progress * 0.08);
 }
 
+let middle_yield = Q.middle_tax_rates * TAX_YIELD_SCALE * 0.75;
+if (Q.capital_strike_progress > 0) {
+    middle_yield *= Math.max(0.3, 1 - Q.capital_strike_progress * 0.04);
+}
+if (Q.general_strike_progress > 0) {
+    middle_yield *= Math.max(0.3, 1 - Q.general_strike_progress * 0.04);
+}
+
 // Lower-bracket revenue: broad base, reliable
 let lower_yield = Q.lower_tax_rates * TAX_YIELD_SCALE * 0.5;
 
@@ -1574,7 +1583,7 @@ if (Q.tariffs > 3) {
     tariff_yield *= Math.max(0.5, 1 - (Q.tariffs - 3) * 0.1);
 }
 
-Q.fiscal_revenue = (upper_yield + lower_yield + tariff_yield) * macro_revenue_mult;
+Q.fiscal_revenue = (upper_yield + middle_yield + lower_yield + tariff_yield) * macro_revenue_mult;
 
 
 // --- UPKEEP SIDE ---
@@ -1643,6 +1652,7 @@ Q.budget_audit.direct_inflation_effect   = Math.round(inflation_effect_direct * 
 Q.budget_audit.direct_macro_delta        = Math.round(direct_macro_delta * 100) / 100;
 
 Q.budget_audit.income_upper_tax   = Math.round(upper_yield  * macro_revenue_mult * 100) / 100;
+Q.budget_audit.income_middle_tax  = Math.round(middle_yield * macro_revenue_mult * 100) / 100;
 Q.budget_audit.income_lower_tax   = Math.round(lower_yield  * macro_revenue_mult * 100) / 100;
 Q.budget_audit.income_tariffs     = Math.round(tariff_yield * macro_revenue_mult * 100) / 100;
 Q.budget_audit.income_total       = Math.round(Q.fiscal_revenue * 100) / 100;
@@ -1674,6 +1684,7 @@ Q.budget_audit.net_change      = Math.round((Q.fiscal_revenue - Q.fiscal_upkeep 
 Q.budget_audit.macro_rev_mult  = Math.round(macro_revenue_mult * 1000) / 1000;
 Q.budget_audit.macro_upk_mult  = Math.round(macro_upkeep_mult  * 1000) / 1000;
 Q.budget_audit.upper_tax_rate  = Q.upper_tax_rates || 0;
+Q.budget_audit.middle_tax_rate = Q.middle_tax_rates || 0;
 Q.budget_audit.lower_tax_rate  = Q.lower_tax_rates || 0;
 Q.budget_audit.tariff_rate     = Q.tariffs || 0;
 Q.budget_audit.phase           = Q.phase;
@@ -1691,11 +1702,11 @@ if (Q.budget < 0) {
 }
 
 if (Q.budget < -25) {
-    Q.budget_audit.status = "crisis";       // deep in the red
+    Q.budget_audit.status = "crisis";       
 } else if (Q.budget < 0) {
-    Q.budget_audit.status = "deficit";      // in the red
+    Q.budget_audit.status = "deficit";      
 } else if (Q.budget_audit.net_change < 0) {
-    Q.budget_audit.status = "declining";    // positive balance but losing ground
+    Q.budget_audit.status = "declining";    
 } else {
     Q.budget_audit.status = "stable";
 }
@@ -1705,6 +1716,7 @@ Q.budget_audit_text =
     "Budget: " + Q.budget.toFixed(2) + " (" + Q.budget_audit.status + ")\n" +
     "Income: " + Q.budget_audit.income_total +
         " [upper tax " + Q.budget_audit.income_upper_tax +
+        ", middle tax " + Q.budget_audit.income_middle_tax +
         ", lower tax " + Q.budget_audit.income_lower_tax +
         ", tariffs " + Q.budget_audit.income_tariffs + "]\n" +
     "Expenses: " + Q.budget_audit.expense_total +
@@ -1730,7 +1742,8 @@ Q.budget_audit_text =
         ", unemployment " + Q.budget_audit.direct_unemployment_drag +
         ", inflation " + Q.budget_audit.direct_inflation_effect + "]\n" +
     "Net this tick: " + Q.budget_audit.net_change +
-        " (upper tax rate: " + Q.budget_audit.upper_tax_rate + ")\n" +
+        " (upper tax rate: " + Q.budget_audit.upper_tax_rate +
+        ", middle tax rate: " + Q.budget_audit.middle_tax_rate + ")\n" +
     "Deficit streak: " + Q.budget_audit.deficit_tick_streak + " ticks, " +
     "budget-negative streak: " + Q.budget_audit.budget_negative_streak + " ticks";
 
