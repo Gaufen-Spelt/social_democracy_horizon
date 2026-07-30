@@ -2562,7 +2562,15 @@ if (Q.presidential_powers == 0 && !Q.government_dismissed) {
         }
 
         Q.presidential_patience = (Q.presidential_patience === undefined) ? 50 : Q.presidential_patience;
-        Q.presidential_patience += (pp_target - Q.presidential_patience) * pp_decay_rate;
+
+        // --- compute drift, with a minimum step so it doesn't stall near the target ---
+        var pp_delta = (pp_target - Q.presidential_patience) * pp_decay_rate;
+        var pp_min_step = 1.0; // minimum monthly movement once heading toward target
+        if (Math.abs(pp_delta) < pp_min_step && Q.presidential_patience !== pp_target) {
+            pp_delta = pp_min_step * Math.sign(pp_target - Q.presidential_patience);
+        }
+        Q.presidential_patience += pp_delta;
+
         Q.presidential_patience = Math.max(0, Math.min(100, Q.presidential_patience));
         Q.presidential_patience = Math.round(Q.presidential_patience * 100) / 100;
 
@@ -3544,12 +3552,12 @@ const _qol_youth_orgs   = Q.youth_organizations || 0;
     // --- Cultural ---
     // Rural is the most church-dependent and tradition-bound class
     _t = 50;
-    _t += _qol_concordat        * 12;   // church-state agreement is central to rural life
+    _t += _qol_concordat        * 6;
     _t += _qol_curriculum_t     * 10;
     _t -= _qol_curriculum_d     * 8;
     _t -= _qol_secular          * 8;
     _t -= _qol_womens           * 4;
-    _t += (Q.catholics > 35 ? 4 : 0);  // high catholic share = concordat matters more
+    _t += (Q.catholics > 35 ? 4 : 0);
     _t += _qol_youth_orgs       * 2;
     _t = Math.max(0, Math.min(100, _t));
     Q.rural_grievance_cultural += ((_t - Q.rural_grievance_cultural) * Q.grievance_decay.cultural);
