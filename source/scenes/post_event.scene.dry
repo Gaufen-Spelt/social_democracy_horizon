@@ -3769,6 +3769,30 @@ function buildIdentityModifier(cs, ps, ss, ys) {
 
 Q.identity_modifier = buildIdentityModifier(cath_share, prot_share, sec_share, youth_share);
 
+// === CLASS×IDENTITY CROSS-TAB SUPPORT ===
+// Per-identity affinity table, isolated at full strength (share=1.0) for
+// each identity in turn. This becomes the identity_mods[party][idn] lookup
+// used by the class×identity cell drift loop below. Built from
+// buildIdentityModifier so it can never drift out of sync with the
+// existing per-party identity coefficients — one source of truth.
+Q.identity_mods = {};
+{
+    const _iso = {
+        catholics:   buildIdentityModifier(1, 0, 0, 0),
+        protestants: buildIdentityModifier(0, 1, 0, 0),
+        seculars:    buildIdentityModifier(0, 0, 1, 0),
+        youth:       buildIdentityModifier(0, 0, 0, 1),
+    };
+    for (var _party of Q.parties) {
+        Q.identity_mods[_party] = {
+            catholics:   (_iso.catholics[_party]   !== undefined) ? _iso.catholics[_party]   : 1.0,
+            protestants: (_iso.protestants[_party] !== undefined) ? _iso.protestants[_party] : 1.0,
+            seculars:    (_iso.seculars[_party]    !== undefined) ? _iso.seculars[_party]    : 1.0,
+            youth:       (_iso.youth[_party]       !== undefined) ? _iso.youth[_party]       : 1.0,
+        };
+    }
+}
+
 
 // === PARTY DRIFT OVERHAUL ===
 // Architecture: thermostat model
@@ -4972,6 +4996,119 @@ if (!Q.math_broken) {
 }
 
 
+// ============================================================
+// CLASS×IDENTITY CROSS-TAB
+// Identities form ON TOP OF classes: workers_catholics_spd, etc.
+// Each (class, identity) pair gets its own raw vote pool per party,
+// driven by the same computeTarget()/computeSpeed() thermostat as
+// the class-only loop above, but with each party's target additionally
+// crossed by Q.identity_mods[party][idn] (the identity's own affinity,
+// isolated from buildIdentityModifier — see where Q.identity_mods is
+// built, above the drift functions).
+// ============================================================
+
+Q.identities = Q.identities || ['catholics', 'protestants', 'seculars', 'youth'];
+
+// --- Cell population shares: Q[c] * Q[idn] / 100, renormalized so the
+//     4 identity shares within each class sum to 100% (per-class shares,
+//     not yet weighted by class size — that happens at rollup time).
+Q.class_identity_share = Q.class_identity_share || {};
+
+for (var c of Q.classes) {
+    var _raw = {};
+    var _raw_total = 0;
+    for (var idn of Q.identities) {
+        var v = (Q[c] || 0) * (Q[idn] || 0) / 100;
+        _raw[idn] = v;
+        _raw_total += v;
+    }
+    Q.class_identity_share[c] = {};
+    for (var idn of Q.identities) {
+        Q.class_identity_share[c][idn] = _raw_total > 0 ? (_raw[idn] / _raw_total) * 100 : (100 / Q.identities.length);
+    }
+}
+
+// --- Cell drift loop: same thermostat as the class-only loop, one level deeper.
+if (!Q.math_broken) {
+    for (var c of Q.classes) {
+        for (var idn of Q.identities) {
+            for (var party of Q.parties) {
+                var ckey = c + '_' + idn + '_' + party;
+                var cbase = Q[ckey] || 0;
+
+                // Banned party handling mirrors the class-only loop: zero out,
+                // no redistribution logic duplicated here (class-level loop
+                // already handles redistribution for the class as a whole).
+                var banned_flag = party + '_banned';
+                if (Q[banned_flag]) {
+                    Q[ckey] = 0;
+                    continue;
+                }
+
+                var class_target    = computeTarget(party, c);
+                var id_mult         = (Q.identity_mods[party] && Q.identity_mods[party][idn] !== undefined)
+                                        ? Q.identity_mods[party][idn] : 1.0;
+                var cell_target      = Math.max(0, class_target * id_mult);
+                var cell_speed       = computeSpeed(party, c);
+
+                var moving_up = cell_target > cbase;
+                var noise = moving_up
+                    ? (0.80 + _r() * 0.45)
+                    : (0.88 + _r() * 0.28);
+
+                Q[ckey] = Math.max(0, cbase + (cell_target - cbase) * cell_speed * noise);
+            }
+        }
+    }
+} else {
+    for (var c of Q.classes) {
+        for (var idn of Q.identities) {
+            for (var party of Q.parties) {
+                var ckey = c + '_' + idn + '_' + party;
+                var cbase = Q.impossible_add(Q[ckey] || 0, 0);
+                var class_target = computeTarget(party, c);
+                var id_mult = (Q.identity_mods[party] && Q.identity_mods[party][idn] !== undefined)
+                                ? Q.identity_mods[party][idn] : 1.0;
+                var cell_target = Q.impossible_multiply(class_target, id_mult);
+                Q[ckey] = Q.impossible_add(cbase, Q.impossible_subtract(cell_target, cbase));
+            }
+        }
+    }
+}
+
+// --- Cell normalization: within each (class, identity) pair, parties sum to 100%.
+if (!Q.math_broken) {
+    for (var c of Q.classes) {
+        for (var idn of Q.identities) {
+            var cell_votes = 0;
+            for (var party of Q.parties) {
+                var ckey = c + '_' + idn + '_' + party;
+                Q[ckey] = Math.max(0, Q[ckey] || 0);
+                cell_votes += Q[ckey];
+            }
+            for (var party of Q.parties) {
+                var ckey = c + '_' + idn + '_' + party;
+                Q[ckey + '_normalized'] = cell_votes > 0 ? Q[ckey] / cell_votes : 0;
+                Q[ckey + '_display']    = (Q[ckey + '_normalized'] * 100).toFixed(1);
+            }
+        }
+    }
+} else {
+    for (var c of Q.classes) {
+        for (var idn of Q.identities) {
+            var cell_votes = Q.impossible_add(0, 0);
+            for (var party of Q.parties) {
+                var ckey = c + '_' + idn + '_' + party;
+                cell_votes = Q.impossible_add(cell_votes, Q[ckey] || 0);
+            }
+            for (var party of Q.parties) {
+                var ckey = c + '_' + idn + '_' + party;
+                Q[ckey + '_normalized'] = Q.impossible_multiply(Q[ckey] || 0, 1 / cell_votes);
+                Q[ckey + '_display']    = Q.impossible_percentage(Q[ckey + '_normalized'] * 100).toFixed(1);
+            }
+        }
+    }
+}
 
 
 
@@ -6217,35 +6354,26 @@ if (!Q.math_broken) {
 
 
 // === PARTY SUPPORT CALCULATION (SKIP IN CHAOS MODE) ===
+// Identities form ON TOP OF classes: party_support is now the sum over
+// every (class, identity) cell of
+//   class_share[c] × (class_identity_share[c][idn] / 100) × cell_normalized
+// i.e. "what fraction of the population is in this class AND this identity,
+// times how that cell votes for this party." No separate class-only or
+// identity-only blend remains — cells are the sole mechanism.
 if (!Q.math_broken) {
-    // NORMAL: Party support calculated correctly
     var total_support = 0;
     for (var party of Q.parties) {
         let party_support = 0;
         for (var c of Q.classes) {
-            if (Q.old_demographics) {
-                party_support += Q[c] * Q[c + '_' + party];
-            } else {
-                party_support += Q[c] * Q[c + '_' + party + '_normalized'];
+            var c_share = Q[c] || 0;
+            for (var idn of Q.identities) {
+                var idn_share_within_c = (Q.class_identity_share[c] && Q.class_identity_share[c][idn] !== undefined)
+                    ? Q.class_identity_share[c][idn] / 100 : 0;
+                var ckey = c + '_' + idn + '_' + party;
+                var cell_pct = Q[ckey + '_normalized'] || 0;
+                party_support += c_share * idn_share_within_c * cell_pct;
             }
         }
-
-        // Identity overlay: blend in social-group share at reduced weight.
-        // Economic class remains the primary driver (additive, sums to 100%);
-        // identity acts as a secondary tilt, not a replacement.
-        let identity_support = 0;
-        let identity_weight_sum = 0;
-        for (var idn of Q.identities) {
-            identity_support     += Q[idn] * Q[idn + '_' + party + '_normalized'];
-            identity_weight_sum  += Q[idn];
-        }
-        let identity_pct = identity_weight_sum > 0 ? identity_support / identity_weight_sum : 0;
-
-        // IDENTITY_BLEND controls how much social groups matter vs class.
-        // 0 = pure economic class (old behavior), 1 = pure identity.
-        const IDENTITY_BLEND = 0.25;
-        party_support = party_support * (1 - IDENTITY_BLEND) + (identity_pct * 100) * IDENTITY_BLEND;
-
         Q[party + '_support'] = party_support;
         total_support += party_support;
     }
@@ -6255,15 +6383,15 @@ if (!Q.math_broken) {
     for (var party of Q.parties) {
         let party_support = Q.impossible_multiply(0, 1);
         for (var c of Q.classes) {
-            if (Q.old_demographics) {
-                party_support = Q.impossible_add(party_support, Q.impossible_multiply(Q[c], Q[c + '_' + party]));
-            } else {
-                party_support = Q.impossible_add(party_support, Q.impossible_multiply(Q[c], Q[c + '_' + party + '_normalized']));
+            var c_share = Q[c] || 0;
+            for (var idn of Q.identities) {
+                var idn_share_within_c = (Q.class_identity_share[c] && Q.class_identity_share[c][idn] !== undefined)
+                    ? Q.class_identity_share[c][idn] / 100 : 0;
+                var ckey = c + '_' + idn + '_' + party;
+                var cell_pct = Q[ckey + '_normalized'] || 0;
+                party_support = Q.impossible_add(party_support,
+                    Q.impossible_multiply(Q.impossible_multiply(c_share, idn_share_within_c), cell_pct));
             }
-        }
-        for (var idn of Q.identities) {
-            party_support = Q.impossible_add(party_support,
-                Q.impossible_multiply(Q[idn], Q[idn + '_' + party + '_normalized']));
         }
         Q[party + '_support'] = party_support;
         total_support = Q.impossible_add(total_support, party_support);
