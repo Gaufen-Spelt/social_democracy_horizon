@@ -51,6 +51,7 @@ Q.budget_audit_table_html = (function() {
 
     html += buildSection('Income', 'income_', 'income_total', 1, {
         income_upper_tax: 'upper_tax_rate',
+        income_middle_tax: 'middle_tax_rate'
         income_lower_tax: 'lower_tax_rate',
         income_tariffs:   'tariff_rate'
     });
@@ -84,3 +85,5 @@ window.disableFocusMode()
 {!<div id="budget-audit-table"></div>!}
 
 - @partyaff: Return back
+
+
