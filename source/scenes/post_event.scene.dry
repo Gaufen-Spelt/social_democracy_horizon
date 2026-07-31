@@ -3738,7 +3738,7 @@ var youth_share = Q.youth      / 100;
 // without duplicating any of the formulas by hand.
 function buildIdentityModifier(cs, ps, ss, ys) {
     return {
-        spd:   1 + (ss * 0.20) + (ys * 0.08) - (cs * 0.10),
+        spd:   1 + (ss * 0.20) + (ys * 0.08) - (cs * 0.10 * (Q.prussian_concordat >= 1 ? 1.04 : 1)),
         srpd:  1 + (ss * 0.15) + (ys * 0.06) - (cs * 0.08),
         kpd:   1 + (ss * 0.30) + (ys * 0.15) - (cs * 0.15),
         sapd:  1 + (ss * 0.20) + (ys * 0.10) - (cs * 0.10),
@@ -3747,8 +3747,8 @@ function buildIdentityModifier(cs, ps, ss, ys) {
         dvfp:  1 + (ps * 0.25) - (ys * 0.25) - (cs * 0.10),
         dvp:   1 + (ss * 0.15) + (ps * 0.10) - (ys * 0.12),
         ddp:   1 + (ss * 0.25) + (ps * 0.05) - (ys * 0.20),
-        z:     1 + (cs * 0.95) - (ss * 0.30) - (ys * 0.10),
-        bvp:   1 + (cs * 0.90) - (ss * 0.35) - (ys * 0.08),
+        z:     1 + (cs * 1.45 * (Q.prussian_concordat >= 1 ? 1.15 : 1)) - (ss * 0.20) - (ys * 0.10),
+        bvp:   1 + (cs * 1.25) - (ss * 0.25) - (ys * 0.08),
         cnbl:  1 + (ps * 0.15) - (ys * 0.10),
         wp:    1 + (ss * 0.10) - (ys * 0.18),
         csvd:  1 + (ps * 0.20) - (ys * 0.12) - (cs * 0.08),
@@ -3768,6 +3768,19 @@ function buildIdentityModifier(cs, ps, ss, ys) {
 }
 
 Q.identity_modifier = buildIdentityModifier(cath_share, prot_share, sec_share, youth_share);
+
+// === EVENT-DRIVEN IDENTITY MODIFIERS ===
+// NOTE: one-off event modifiers (e.g. Prussian Concordat -> z/spd) now live
+// inline as ternary terms directly on the affected lines in
+// buildIdentityModifier above, matching the Q.peoples_party inline pattern
+// used throughout computeTarget's class_mods. This stub is kept only so
+// the existing `* (eim.party || 1.0)` reads scattered through computeTarget
+// keep working (they resolve to a harmless 1.0 no-op) without having to
+// touch every call site.
+Q.event_identity_modifier = {};
+for (const party of Q.parties) {
+    Q.event_identity_modifier[party] = 1.0;
+}
 
 // === CLASS×IDENTITY CROSS-TAB SUPPORT ===
 // Per-identity affinity table, isolated at full strength (share=1.0) for
@@ -4027,6 +4040,7 @@ function computeTarget(party, c) {
     const soc  = Q.socialism_factor;
     const unr  = Q.unrest_factor;
     const im   = Q.identity_modifier;
+    const eim  = Q.event_identity_modifier;
 
     let base = 0;
 
@@ -4352,7 +4366,7 @@ function computeTarget(party, c) {
             if (Q.campaign_focus === 'unemployed' && ci > 0) campaign_boost += ci * 0.36;
             if (Q.campaign_focus === 'women'      && ci > 0) campaign_boost += ci * 0.25;
             if (Q.campaign_focus === 'middle'     && ci > 0) campaign_boost += ci * 0.25;
-            base = (r * 99 + s * 58) * im.spd * campaign_boost;
+            base = (r * 99 + s * 58) * im.spd * (eim.spd || 1.0) * campaign_boost;
 
             let m;
             if (c === 'workers') {
@@ -4523,7 +4537,7 @@ function computeTarget(party, c) {
             let cath_bonus  = Q.catholics / 8;
             let leader_mod  = Q.z_party_leader === 'Kaas' ? 0.94 : Q.z_party_leader === 'Joos' ? 1.06 : 1.0;
             let gov_mod     = Q.z_in_government ? 1.12 : 0.93;
-            base = (rep * 70 + cath_bonus * 4) * leader_mod * gov_mod * im.z;
+            base = (rep * 70 + cath_bonus * 4) * leader_mod * gov_mod * im.z * (eim.z || 1.0);
 
             let floor = cath_bonus * 3.2 * gov_mod;
             base = Math.max(base, floor);
