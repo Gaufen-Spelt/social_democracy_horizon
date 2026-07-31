@@ -5069,20 +5069,14 @@ if (!Q.math_broken) {
                 }
 
                 var class_target    = computeTarget(party, c);
-                var id_mult_raw      = (Q.identity_mods[party] && Q.identity_mods[party][idn] !== undefined)
-                                        ? Q.identity_mods[party][idn] : 1.0;
-                // Dampen: computeTarget(party, c) already carries this party's
-                // class-conditioned skew via class_mods. Applying identity's
-                // full-strength isolated multiplier on top of that compounds
-                // two skews in the same direction (e.g. DNVP's rural class_mod
-                // stacked with DNVP's protestant identity_mod pushed rural
-                // protestants to 53.7% while rural catholics sat at 37.5% for
-                // the same party). IDENTITY_DAMPEN pulls id_mult partway back
-                // toward 1.0 so identity still tilts the cell but no longer
-                // compounds class's skew at full strength.
-                const IDENTITY_DAMPEN = 0.5;
-                var id_mult          = 1 + (id_mult_raw - 1) * IDENTITY_DAMPEN;
-                var cell_target      = Math.max(0, class_target * id_mult);
+                // Identities no longer influence party vote targets: the cell
+                // target is derived purely from the class calculation above
+                // (computeTarget(party, c)), same as every other cell in
+                // class c. Q.identity_mods is intentionally not consulted
+                // here anymore — identity still shapes population composition
+                // via Q.class_identity_share (built above), it just no longer
+                // biases which party a class member votes for.
+                var cell_target      = Math.max(0, class_target);
                 var cell_speed       = computeSpeed(party, c);
 
                 var moving_up = cell_target > cbase;
@@ -5101,9 +5095,9 @@ if (!Q.math_broken) {
                 var ckey = c + '_' + idn + '_' + party;
                 var cbase = Q.impossible_add(Q[ckey] || 0, 0);
                 var class_target = computeTarget(party, c);
-                var id_mult = (Q.identity_mods[party] && Q.identity_mods[party][idn] !== undefined)
-                                ? Q.identity_mods[party][idn] : 1.0;
-                var cell_target = Q.impossible_multiply(class_target, id_mult);
+                // Same change as the normal-mode branch: identity no longer
+                // biases the target, cell derives purely from the class calc.
+                var cell_target = class_target;
                 Q[ckey] = Q.impossible_add(cbase, Q.impossible_subtract(cell_target, cbase));
             }
         }
