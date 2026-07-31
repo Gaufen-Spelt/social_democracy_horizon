@@ -5090,7 +5090,9 @@ if (!Q.math_broken) {
                 // here anymore — identity still shapes population composition
                 // via Q.class_identity_share (built above), it just no longer
                 // biases which party a class member votes for.
-                var cell_target      = Math.max(0, class_target);
+                var identity_affinity = (Q.identity_mods[party] && Q.identity_mods[party][idn] !== undefined)
+                ? Q.identity_mods[party][idn] : 1.0;
+                var cell_target = Math.max(0, class_target * identity_affinity);
                 var cell_speed       = computeSpeed(party, c);
 
                 var moving_up = cell_target > cbase;
