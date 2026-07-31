@@ -5009,16 +5009,39 @@ if (!Q.math_broken) {
 
 Q.identities = Q.identities || ['catholics', 'protestants', 'seculars', 'youth'];
 
-// --- Cell population shares: Q[c] * Q[idn] / 100, renormalized so the
-//     4 identity shares within each class sum to 100% (per-class shares,
-//     not yet weighted by class size — that happens at rollup time).
+// --- Class lean coefficients ---
+// The naive Q[c] * Q[idn] formula is scale-invariant in Q[c] (it cancels
+// out of the ratio), so every class ended up with an identical identity
+// composition — rural, workers, and new_middle all showing the exact same
+// 20.7 / 63.4 / 3.9 / 12.0 split. That's not a real cross-tab, just the
+// population-wide split copy-pasted per class.
+//
+// This table gives each class its own lean, multiplied against the
+// population-wide Q[idn] share before normalizing. A lean of 1.0 means
+// "matches the population average"; >1 skews the identity toward that
+// class, <1 skews it away. Q[idn]'s own drift (secularization, youth
+// radicalization, etc.) still moves every class's composition over time —
+// this only sets the *relative* skew between classes, consistent with
+// the setting (rural more religious/Protestant, workers/new_middle more
+// secular and younger, old_middle the most religiously conventional).
+Q.class_identity_lean = Q.class_identity_lean || {
+    workers:     { catholics: 0.90, protestants: 0.95, seculars: 1.45, youth: 1.20 },
+    old_middle:  { catholics: 1.05, protestants: 1.10, seculars: 0.55, youth: 0.75 },
+    new_middle:  { catholics: 0.95, protestants: 1.00, seculars: 1.30, youth: 1.05 },
+    rural:       { catholics: 1.10, protestants: 1.20, seculars: 0.25, youth: 0.85 },
+    unemployedc: { catholics: 0.95, protestants: 0.95, seculars: 1.15, youth: 1.55 },
+};
+
+// --- Cell population shares: Q[idn] weighted by that class's lean,
+//     renormalized so the 4 identity shares within each class sum to 100%.
 Q.class_identity_share = Q.class_identity_share || {};
 
 for (var c of Q.classes) {
+    var _lean = Q.class_identity_lean[c] || {};
     var _raw = {};
     var _raw_total = 0;
     for (var idn of Q.identities) {
-        var v = (Q[c] || 0) * (Q[idn] || 0) / 100;
+        var v = (Q[idn] || 0) * (_lean[idn] !== undefined ? _lean[idn] : 1.0);
         _raw[idn] = v;
         _raw_total += v;
     }
@@ -5046,8 +5069,19 @@ if (!Q.math_broken) {
                 }
 
                 var class_target    = computeTarget(party, c);
-                var id_mult         = (Q.identity_mods[party] && Q.identity_mods[party][idn] !== undefined)
+                var id_mult_raw      = (Q.identity_mods[party] && Q.identity_mods[party][idn] !== undefined)
                                         ? Q.identity_mods[party][idn] : 1.0;
+                // Dampen: computeTarget(party, c) already carries this party's
+                // class-conditioned skew via class_mods. Applying identity's
+                // full-strength isolated multiplier on top of that compounds
+                // two skews in the same direction (e.g. DNVP's rural class_mod
+                // stacked with DNVP's protestant identity_mod pushed rural
+                // protestants to 53.7% while rural catholics sat at 37.5% for
+                // the same party). IDENTITY_DAMPEN pulls id_mult partway back
+                // toward 1.0 so identity still tilts the cell but no longer
+                // compounds class's skew at full strength.
+                const IDENTITY_DAMPEN = 0.5;
+                var id_mult          = 1 + (id_mult_raw - 1) * IDENTITY_DAMPEN;
                 var cell_target      = Math.max(0, class_target * id_mult);
                 var cell_speed       = computeSpeed(party, c);
 
