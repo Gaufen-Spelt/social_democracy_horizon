@@ -464,13 +464,17 @@ Relationship with Hungary: [+ hungary_relation +]
 
 = Policies
 
-Judiciary Reformation Progress: [+ judicial_reform +] | [? if full_reform_initiated: Judiciary System is fully reformed! ?]
-
-Land Reform Progress: [+ land_reform +] | [? if state_buyer: State Buyer is active! ?]
+<h1>Welfare Policies </h1>
 
 Welfare Status: [+ welfare +] | Workers Aid status: [+ workers_aid +]
 
 Pro - Consumer Policies: [+ pro_consumer +] || Agricultural Financial Funding: [+ agricultural_finance +]
+
+<h1>Social - Economical Policies</h1>
+
+Judiciary Reformation Progress: [+ judicial_reform +] | [? if full_reform_initiated: Judiciary System is fully reformed! ?]
+
+Land Reform Progress: [+ land_reform +] | [? if state_buyer: State Buyer is active! ?]
 
 Women's Rights: [+ womens_rights +] || Women's Rights in Workplace: [+ womens_work +] || Women's rights in familyplace: [+ family_law +] [? if abortion_rights: || Abortion rights: [+ abortion_rights +] ?]
 
