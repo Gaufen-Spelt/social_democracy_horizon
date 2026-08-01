@@ -92,4 +92,4 @@ Against all the odds, we have forced and coerced our way through to elect Hilfer
 view-if: (spd_in_government = 0 and spd_toleration = 0) or (reichsbank_independent >= 4 and schacht_relation < 40)
 on-arrival: reichsbank_president = "Vögler"; dvp_relation -= 3; z_relation -= 3; left_strength += 5; workers_spd -= 2; capital_strike_progress -= 2 if capital_strike_progress > 0; reichsbank_independent = 1; business_power += 1
 
-[? if spd_in_government = 0 and spd_toleration = 0 : Unable to influence the choice, we watch as ?] [+ president +) appoints industrialist Albert Vögler. Perhaps, we were alienated them enough to consider this option.
+[? if spd_in_government = 0 and spd_toleration = 0 : Unable to influence the choice, we watch as ?] [+ president +] appoints industrialist Albert Vögler. Perhaps, we were alienated them enough to consider this option.
