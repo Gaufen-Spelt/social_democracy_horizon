@@ -486,7 +486,7 @@ Economic Democratization: [+ economic_democracy +] || Work Councils Progress: [+
 
 [? if major_curriculum: Current educational curriculum - [+ major_curriculum +], [+ minor_curriculum +] ?]
 
-Science funding: [+ science +] (Science funding too?: [+ science_funding +] ; KWG funding: [+ kwg_research +] | Medical research: [+ medical_research +] | Applied research: [+ applied_research +] | Public high school funding: [+ public_hs +] | School boards are formed: [? if school_boards >= 1: yes ?] [? if school_boards < 1: no ?] | Education is secularized: [? if secularized >= 1: yes ?] [? if secularized < 1: no ?] 
+Science funding: [+ science +] (Science funding too?: [+ science_funding +]) || KWG funding: [+ kwg_research +] || Medical research: [+ medical_research +] || Applied research: [+ applied_research +] || Public high school funding: [+ public_hs +] || School boards are formed: [? if school_boards >= 1: yes ?] [? if school_boards < 1: no ?] || Education is secularized: [? if secularized >= 1: yes ?] [? if secularized < 1: no ?] 
 
 = Economics
 
