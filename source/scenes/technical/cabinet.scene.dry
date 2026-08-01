@@ -5,7 +5,6 @@ card-image: img/muller_cabinet.jpg
 view-if: difficulty < 0 and spd_in_government and chancellor_party = "SPD"
 on-arrival: last_cabinet_action = 1; 
 new-page: true 
-is-deck: true
 
 = Cabinet
 
