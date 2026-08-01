@@ -3,9 +3,14 @@ subtitle: Transformation of the clerical party.
 tags: event
 new-page: true
 view-if: z_party_leader == "Adam Stegerwald" and month == 3 and year == 1929 and developer_mode
+on-arrival: stegerwald_reform = 1
 
 Ever since the ascendancy of the Adam Stegerwald, the creator of the "Essen Program 1920" (established by the Essen Congress which took in the same year), he has redirected the party towards the new course. The main components of it were unification of center and nationalist unions to counter-act representation of marxist unions and unify their policy in the issues regarding unions. Sub-context behind this program was transformation of the party towards "The New People's Party", aiming towards unifying all christian forces of the country into one singular entity in order to combat materialism, marxism and radicalism.
 
 But, now, with the influence of christian unions weakened on the Zentrum (which has also been impacted by the Catholic Action, proxy organization for Vatican and clericals), Stegerwald will likely have to find the way to push his ideas in order to restructurize the Zentrum. Obviously, both catholics centrists (under the Ludwig Kaas, despite him being mostly absent) and left unionists (Joseph Joos, Joseph Hess) were displeased by the current direction and are willing to depose him if it results in failure or shows no productive change.
 
 [? if (dnvp_party_leader == "Walther Lambach" or dnvp_party_leader == "Emil Hartwig") : With the recent victory of Christian Socials in the DNVP Congress, Adam Stegerwald has been much more emboldened by the current development and is likely to be much more aggressive on his ideals, which may cause tensions within the Zentrum. However, Adam Stegerwald justifies it, saying that DHV and DNVP will back him in the battle against catholics and leftists. ?]
+
+[? if spd_in_government and z_in_government: His leadership will permanently alterate our history relation and possibly even cause "Weimar Divorce" at some point. Despite this fact, our party still hopes that this development won't impact our current and future coalitions any further on. ?]
+
+- @post_event: Adam Stegerwald is curious of the personality.
