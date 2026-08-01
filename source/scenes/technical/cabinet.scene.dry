@@ -3,18 +3,9 @@ is-pinned-card: true
 tags: advisor
 card-image: img/muller_cabinet.jpg
 view-if: difficulty < 0 and spd_in_government and chancellor_party = "SPD"
-on-arrival: last_cabinet_action = 1; {!
-window.onNewPage = function() {
-  var game = window.dendryUI.game;
-  $('ul.choices li a').each(function() {
-    var idx = $(this).data('choice');
-    var choiceScene = game.scenes[$(this).attr('data-choice-id')]; 
-    // see note below — data-choice-id doesn't exist yet
-  });
-  window.onNewPage = null;
-};
-!}
+on-arrival: last_cabinet_action = 1; 
 new-page: true 
+is-deck: true
 
 = Cabinet
 
