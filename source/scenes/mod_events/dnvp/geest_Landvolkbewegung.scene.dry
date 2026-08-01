@@ -27,8 +27,8 @@ on-arrival: {!
   
   Q.landvolk_fury = conditions.filter(Boolean).length;
 console.log("fury before subtract:", Q.landvolk_fury, typeof Q.landvolk_fury);
-console.log("cultural_organizations:", Q.cultural_organizations, typeof Q.cultural_organizations);
-Q.landvolk_fury -= Q.cultural_organizations || 0;
+console.log("agricultural_assist:", Q.agricultural_assist, typeof Q.agricultural_assist);
+Q.landvolk_fury -= Q.agricultural_assist || 0;
 console.log("fury after subtract:", Q.landvolk_fury);
 !}
 
@@ -63,6 +63,7 @@ on-arrival: {!
   Q.rural_spd -= 3;
   Q.rural_kpd += 1;
   Q.rural_nsdap += 2;
+  Q.rural_other += 8;
 
   var geestImages = ["img/dnvp/geest_protest.png", "img/dnvp/geest_protest_2.png"];
   var geestIndex = 0;
