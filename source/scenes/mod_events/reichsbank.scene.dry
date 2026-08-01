@@ -1,4 +1,4 @@
-title: Schacht's Resignation
+Title: Schacht's Resignation
 subtitle: The Reichsbank President Departs
 new-page: true
 view-if: year = 1930 and month = 3 and schacht_resigned = 0 and (schacht_exposed = 1 or (unemployed >= 19 or inflation <= -6) or schacht_relation <= 0)
@@ -10,91 +10,43 @@ go-to: hilferding_outcome if chud = 1
 
 = Schacht's Resignation
 
-Hjalmar Schacht has submitted his resignation as President of the Reichsbank, effective immediately.
+Hjalmar Schacht has submitted his resignation as President of the Reichsbank. [? if schacht_exposed = 1 : This follows our exposure of his secret connections to the Nazi Party. ?]
 
-[? if schacht_exposed = 1 : The resignation comes in the wake of our exposure of his reactionary political connections and secret meetings with Nazi Party officials. "I cannot serve a government that conducts character assassination against technical experts for political purposes," his terse resignation letter states. ?]
+Who should succeed him?
 
-[? if schacht_exposed != 1 and schacht_relation <= 30 : Schacht cites "irreconcilable differences over economic policy direction" with the current government. His resignation letter is scathing about our approach to economic management. ?]
-
-[? if unemployed >= 12 : The timing is particularly damaging—unemployment has reached crisis levels and now the Reichsbank President abandons ship. The financial establishment is in disarray. ?]
-
-[? if inflation <= -3 : The resignation comes as deflation accelerates. Schacht, ironically, now criticizes the very orthodox policies he once championed: "Deflation has gone too far. This government lacks the courage to act." ?]
-
-The resignation sends shockwaves through financial markets. The man who stabilized Germany's currency after hyperinflation, who negotiated with international creditors, who symbolized Weimar's economic credibility—has quit in protest.
-
-The question now is succession. The Reichsbank President is appointed by the Reich President (Hindenburg) on government recommendation, but various factions will pressure for their preferred candidate.
-
-**Potential Successors:**
-
-**Hans Luther** - Former Chancellor, fiscal conservative, acceptable to all bourgeois parties. Safe, orthodox, uninspiring.
-
-**Karl Blessing** - Younger technocrat, more flexible on monetary policy, willing to consider credit expansion. Potentially sympathetic to intervention but respectable enough for financial establishment.
-
-**Rudolf Hilferding** - Our own economist, brilliant theorist, author of *Finance Capital*. Would give SPD unprecedented control over monetary policy. Bourgeois parties would be horrified.
-
-**Albert Vögler** - Industrialist, Schacht's ally, explicitly right-wing. Would signal government capitulation to business interests.
-
-The government must make a recommendation to President Hindenburg. Our voice in this decision depends on our position:
-
-[? if spd_in_government = 1 : As coalition partners, we have significant influence over the recommendation. ?]
-[? if spd_toleration = 1 : As toleration party, we can accept or veto options but cannot impose our choice. ?]
-[? if spd_in_government = 0 and spd_toleration = 0 : In opposition, we can only protest whatever the government decides. ?]
-
-How should we approach the succession question?
-
-- @support_luther: Support Hans Luther as safe, consensus candidate.
-- @support_blessing: Support Karl Blessing as moderate reformer.
-- @propose_hilferding: Propose Rudolf Hilferding for Reichsbank President.
-- @accept_voegler: Accept Vögler appointment (if right-wing government).
-- @oppose_succession: Publicly oppose any appointment and demand reform.
+- @support_luther: Hans Luther is chosen as compromise candidate.
+- @support_blessing: Support Karl Blessing.
+- @propose_hilferding: Propose Rudolf Hilferding for the leadership.
+- @accept_voegler: Albert Vögler takes the mantle.
 
 @support_luther
 choose-if: spd_in_government = 1 or spd_toleration = 1
 unavailable-subtitle: [? if spd_in_government = 0 and spd_toleration = 0 : We lack the influence to affect this appointment. ?]
-on-arrival: reichsbank_president = "Luther"; schacht_relation -= 5; z_relation += 5; dvp_relation += 5; ddp_relation += 3; bvp_relation += 3; financial_crisis_progress -= 1 if financial_crisis_progress > 0; reichsbank_independent = 2; reformist_strength += 2;
+on-arrival: reichsbank_president = "Luther"; schacht_relation -= 5; z_relation += 5; dvp_relation += 5; ddp_relation += 3; bvp_relation += 3; reichsbank_independent = 2; reformist_strength += 2;
 
-We support Hans Luther as Reichsbank President. Hindenburg readily agrees—Luther is a safe, respectable choice acceptable to all establishment parties.
-
-Luther takes office promising "continuity and stability." In practice, this means orthodox monetary policy, tight credit, and Reichsbank independence from political pressure. He's competent but unimaginative, a bureaucrat not a visionary.
-
-The financial markets calm. International creditors are reassured. The bourgeois parties approve our "responsible" choice.
-
-But we've also entrenched conservative monetary orthodoxy. Luther will resist any creative approaches to the economic crisis. The Reichsbank remains a bastion of financial conservatism, outside democratic control.
-
-[? if unemployed >= 15 : In a crisis requiring bold action, we've appointed a man committed to caution. ?]
+Hans Luther has been selected as the Reichsbank President. It seems he won't change the course much from orthodoxy and will likely seek the way to co-operate with Brüning.
 
 @support_blessing
-choose-if: (wtb_adopted = 1 or lautenbach_supported = 1 or economic_democracy >= 3) and (spd_in_government = 1 or (spd_toleration = 1 and z_relation >= 45))
-unavailable-subtitle: [? if wtb_adopted != 1 and lautenbach_supported != 1 and economic_democracy < 2 : We haven't built the case for monetary flexibility. Need WTB plan, Lautenbach support, or economic democracy reforms. ?] [? if spd_in_government != 1 and spd_toleration != 1 : We lack influence to push this candidate. ?] [? if spd_toleration = 1 and z_relation < 45 : Center Party doesn't trust us enough to accept this candidate. ?]
+view-if: (wtb_support >= 5 or wtb_adopted) and spd_in_government
 on-arrival: reichsbank_president = "Blessing"; schacht_relation -= 3; z_relation += 2 if z_relation >= 45; z_relation -= 3 if z_relation < 45; dvp_relation -= 2; ddp_relation += 2; left_strength += 3; reformist_strength += 5; neorevisionist_strength += 4; financial_crisis_progress -= 2 if financial_crisis_progress > 0; reichsbank_independent = 0; credit_expansion_possible = 1;
 
-We advocate for Karl Blessing, positioning him as "modern monetary thinking without ideological baggage." After negotiations, [? if z_relation >= 45 : the Center Party cautiously agrees and ?] Hindenburg accepts the recommendation.
-
-Blessing represents a new generation—trained in orthodox economics but open to Keynesian ideas, respectful of Reichsbank independence but willing to coordinate with fiscal policy. He's read Lautenbach's memorandum with interest.
-
-The appointment signals potential shift toward more flexible monetary policy. Credit expansion becomes thinkable. The Reichsbank might actually support government stimulus rather than obstruct it.
-
-The financial establishment is wary but not hostile. Blessing has enough credibility to avoid panic. The bourgeois parties accept him reluctantly—he's respectable, if worryingly "modern."
-
-Most importantly, we've placed someone at the Reichsbank who might actually help fight the Depression rather than worsen it.
-
-[? if lautenbach_supported = 1 : Blessing has quietly indicated he finds Lautenbach's analysis compelling. This could be the monetary policy shift Germany needs. ?]
+Karl Blessing has been selected as the Reichsbank President. He proposes mild measures to combat the deflation, however his influence is weak enough to change the direction of Reichsbank.
 
 @propose_hilferding
-choose-if: ((left_strength >= 40 or neorevisionist_strength >= 35) and spd_in_government = 1 and (finance_minister = "Hilferding" or wtb_adopted != 1)) or (chud = 1)
+view-if: spd_in_government and (left_strength + center_strength >= 45)
+choose-if: ( spd_in_government = 1 and (finance_minister = "Hilferding")) or (chud = 1)
 unavailable-subtitle: [? if left_strength < 40 and neorevisionist_strength < 35 : The party lacks conviction for such a radical move. Need stronger left or neorevisionist faction. ?] [? if spd_in_government != 1 : We must be in government to propose this. ?] [? if finance_minister != "Hilferding" and wtb_adopted != 1 : Need Hilferding as Finance Minister or WTB plan adopted to make this credible. ?]
-on-arrival: reichsbank_proposal = "hilferding";
+on-arrival: reichsbank_proposal = "hilferding"
 go-to: hilferding_outcome
 
 @hilferding_outcome
 on-arrival: {!
-    // Check if we have enough support
     var support_threshold = 0;
     if (Q.spd_r >= 28 && Q.left_strength >= 45 && Q.kpd_relation >= 35) {
-        Q.support_threshold = 1; // Possible with left unity
+        Q.support_threshold = 1;
     }
 
-    if (Q.chud === 1) Q.support_threshold = 1
+    if (Q.chud === 1) Q.support_threshold = 1;
     
     if (support_threshold === 0) {
         Q.hilferding_rejected = 1;
@@ -120,67 +72,24 @@ on-arrival: {!
         Q.left_strength += 8;
         Q.socialism += 10;
         Q.reichsbank_independent = -2;
-        Q.credit_expansion_possible = 1;
-        Q.socialist_monetary_policy = 1;
-        if (Q.chud === 1) budget += 3;
+        if (Q.chud === 1) Q.budget += 3;
     }
 !}
 go-to: hilferding_rejected_text if hilferding_rejected; hilferding_accepted_text if hilferding_accepted
 
 @hilferding_rejected_text
 
-We propose Rudolf Hilferding for Reichsbank President, arguing that the author of *Finance Capital* understands monetary policy better than any banker.
-
-The proposal lands like a bomb. The bourgeois parties are apoplectic. "A Marxist theorist controlling the Reichsbank?!" The DVP threatens coalition withdrawal. The Center Party calls it "economic suicide." Even the DDP is horrified.
-
-President Hindenburg curtly rejects the recommendation. "I will not appoint a socialist to control Germany's currency," he states coldly. He instead appoints Hans Luther on his own authority, bypassing the government's preference.
-
-We've demonstrated boldness and principle. Our left wing applauds the attempt. But we've also revealed our isolation—we cannot even influence a key appointment when in government.
-
-The message is clear: democratic government has limited reach. Certain institutions remain beyond popular control.
+In our attempt to push Hilferding forward, Reichsbank thought this was some sort of joke by SPD and has refused them their way, with Hans Luther put in charge.
 
 @hilferding_accepted_text
 achievement: socialist_reichsbank
 
-Against all odds, Hilferding is appointed! The unprecedented combination of SPD strength, left unity pressure, and crisis desperation has forced Hindenburg's hand.
+Against all the odds, we have forced and coerced our way through to elect Hilferding. Bourgeouisie are considering breaking up with us over this insensitive maneuver.
 
-Rudolf Hilferding becomes the first socialist Reichsbank President in history. The author of *Finance Capital* now controls Germany's monetary policy. This is a revolutionary shift in economic power.
-
-The bourgeois parties are in shock. Business interests are alarmed. International creditors are nervous. But the Depression has discredited orthodox economics so thoroughly that radical alternatives become thinkable.
-
-With socialist control of both fiscal and monetary policy, Germany can attempt genuine economic planning. Credit expansion, directed investment, coordination with fiscal stimulus—all become possible.
-
-This is either the beginning of a democratic socialist economy, or the moment we overreached and triggered capital flight. History will judge.
-
-[? if chud: And certainly, world is known for nothing happenista. If something happened, refer to the graph. Hilferding Chudhimir said so. ?]
+[? if chud : And certainly, world is known for nothing happenistas. If something happened, refer to the graph. Hilferding Chudhimir said so. ?]
 
 @accept_voegler
 view-if: (spd_in_government = 0 and spd_toleration = 0) or (reichsbank_independent >= 4 and schacht_relation < 40)
-on-arrival: reichsbank_president = "Vögler"; schacht_relation += 5; dnvp_relation += 8; dvp_relation += 5; z_relation -= 3; ddp_relation -= 5; kpd_relation -= 10; left_strength += 5; workers_spd -= 2; capital_strike_progress -= 2 if capital_strike_progress > 0; reichsbank_independent = 1; business_power += 1;
+on-arrival: reichsbank_president = "Vögler"; dvp_relation -= 3; z_relation -= 3; left_strength += 5; workers_spd -= 2; capital_strike_progress -= 2 if capital_strike_progress > 0; reichsbank_independent = 1; business_power += 1
 
-[? if spd_in_government = 0 and spd_toleration = 0 : Unable to influence the appointment, we watch as ?] Hindenburg appoints Albert Vögler, Schacht's industrialist ally, as the new Reichsbank President.
-
-This is a naked capitulation to business interests. Vögler openly represents heavy industry. The Reichsbank becomes an instrument of corporate power. Any hope of expansionary monetary policy evaporates.
-
-The appointment demonstrates the limits of democratic control over economic institutions. Even during a Depression, business interests capture key positions.
-
-[? if unemployed >= 15 : While millions suffer unemployment, an industrialist now controls monetary policy. The irony is bitter. ?]
-
-Our left wing is outraged. Workers see the system as rigged. The KPD's propaganda writes itself: "Capitalist dictatorship exposed!"
-
-@oppose_succession
-choose-if: left_strength >= 55 or neorevisionist_strength >= 40
-unavailable-subtitle: [? if left_strength < 35 and neorevisionist_strength < 30 : Party doesn't have conviction for confrontation. ?]
-on-arrival: reichsbank_president = "Luther"; z_relation -= 5; dvp_relation -= 8; ddp_relation -= 3; left_strength += 5; neorevisionist_strength += 3; workers_spd += 2; reichsbank_democratic_control_seen = 1;
-
-We publicly oppose the entire appointment process, demanding fundamental reform of the Reichsbank.
-
-"Why should an unelected banker, appointed for life, control monetary policy while elected governments are powerless?" we ask. "The Reichsbank must be brought under democratic control!"
-
-This principled stand energizes our base. Workers appreciate our challenge to financial power. The neorevisionists see this as institutional critique necessary for democratic socialism.
-
-But we cannot actually block the appointment. Hindenburg appoints Luther, ignoring our protests.
-
-We've made our point about democratic deficits in the economic constitution. But the Reichsbank remains beyond democratic reach.
-
-[? if constitutional_reform >= 1 : Perhaps constitutional reform could address this in the future... ?]
+[? if spd_in_government = 0 and spd_toleration = 0 : Unable to influence the choice, we watch as ?] [+ president +) appoints industrialist Albert Vögler. Perhaps, we were alienated them enough to consider this option.
