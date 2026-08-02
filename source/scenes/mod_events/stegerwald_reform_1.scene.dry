@@ -4,6 +4,7 @@ tags: event
 new-page: true
 view-if: z_party_leader == "Adam Stegerwald" and month >= 2 and weeks >= 1 and year == 1929
 on-arrival: stegerwald_reform = 1
+max-visits: 1
 
 Ever since the ascendancy of the Adam Stegerwald, the creator of the "Essen Program 1920" (established by the Essen Congress which took in the same year), he has redirected the party towards the new course. The main components of it were unification of center and nationalist unions to counter-act representation of marxist unions and unify their policy in the issues regarding unions. Sub-context behind this program was transformation of the party towards "The New People's Party", aiming towards unifying all christian forces of the country into one singular entity in order to combat materialism, marxism and radicalism.
 
