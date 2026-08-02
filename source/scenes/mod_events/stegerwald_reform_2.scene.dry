@@ -3,6 +3,7 @@ subtitle: Future of the Zentrum is slowly creeping...
 tags: event
 new-page: true
 view-if: month == 8 and year >= 1929 and stegerwald_reform == 1
+max-visits: 1
 on-arrival: {!
 
 // ===== Demographic mood on the reform (confession-split, 0-100 normalized) =====
@@ -112,6 +113,10 @@ go-to: steggy_win if stegerwald_reform_support_pct >= 50; steggy_lose if stegerw
 
 Gg steggy
 
+[+ stegerwald_reform_support_pct +]
+
 @steggy_lose
 
 Oof steggy
+
+[+ stegerwald_reform_support_pct +]
