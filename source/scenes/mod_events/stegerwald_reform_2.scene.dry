@@ -3,9 +3,146 @@ subtitle: Future of the Zentrum is slowly creeping...
 tags: event
 new-page: true
 view-if: month == 8 and year >= 1929 and stegerwald_reform == 1
-on-arrival: month = 8
+on-arrival: {!
+Q.old_z_r
+Q.z_votes_display
+
+// ===== Demographic mood on the reform (confession-split, 0-100 normalized) =====
+const demo_support = {
+    workers_protestants:      0.85,
+    new_middle_protestants:   0.80,
+    old_middle_protestants:   0.55,
+    rural_protestants:        0.50,
+    unemployedc_protestants:  0.75,
+
+    workers_catholics:        0.55,
+    new_middle_catholics:     0.45,
+    old_middle_catholics:     0.10,
+    rural_catholics:          0.10,
+    unemployedc_catholics:    0.30,
+};
+
+const demo_keys = [
+    'workers_protestants_z_display', 'new_middle_protestants_z_display',
+    'old_middle_protestants_z_display', 'rural_protestants_z_display',
+    'unemployedc_protestants_z_display',
+    'workers_catholics_z_display', 'new_middle_catholics_z_display',
+    'old_middle_catholics_z_display', 'rural_catholics_z_display',
+    'unemployedc_catholics_z_display'
+];
+
+let demo_total = 0;
+let demo_weighted_support = 0;
+
+demo_keys.forEach(key => {
+    const val = Q[key] || 0;
+    const shortKey = key.replace('_z_display', '');
+    const support = demo_support[shortKey] !== undefined ? demo_support[shortKey] : 0.5;
+    demo_total += val;
+    demo_weighted_support += val * support;
+});
+
+const demo_support_pct = demo_total > 0 ? (demo_weighted_support / demo_total) : 0.5;
+
+// ===== Faction shares (z_*_power trackers, untouched by demo code) =====
+const total_power = Q.z_clerical_power + Q.z_left_labor_power + Q.z_right_labor_power + Q.z_moderate_power;
+
+const share_clerical = Q.z_clerical_power / total_power;
+const share_left = Q.z_left_labor_power / total_power;
+const share_right = Q.z_right_labor_power / total_power;
+const share_moderate = Q.z_moderate_power / total_power;
+
+const support_clerical = 0.0;
+const support_left = 0.30;
+const support_right = 1.0;
+
+let support_moderate = 0.5;
+
+// Electoral performance — display vs display, same scale
+if (Q.z_votes_display >= Q.old_z_r) {
+    support_moderate += 0.15;
+} else if (Q.z_votes_display < Q.old_z_r * 0.9) {
+    support_moderate -= 0.20;
+}
+
+if (Q.z_relation >= 70) {
+    support_moderate += 0.15;
+} else if (Q.z_relation < 50) {
+    support_moderate -= 0.15;
+}
+
+if (Q.ideology == "left") {
+    support_moderate += 0.20;
+} else if (Q.ideology == "labor") {
+    support_moderate -= 0.10;
+} else if (Q.ideology == "reformist") {
+    support_moderate -= 0.15;
+}
+
+if (Q.secularized == 1) {
+    support_moderate -= 0.20;
+}
+
+// Demographic mood nudges moderates, dampened
+support_moderate += (demo_support_pct - 0.5) * 0.6;
+
+support_moderate = Math.max(0, Math.min(1, support_moderate));
+
+// ===== Final weighted result =====
+Q.stegerwald_reform_support_pct = (
+    share_clerical * support_clerical +
+    share_left * support_left +
+    share_right * support_right +
+    share_moderate * support_moderate
+) * 100;
+
+Q.stegerwald_reform_passes = Q.stegerwald_reform_support_pct >= 50 ? 1 : 0;
+!}
 
 = Conclusion of the reform
 
 Following the announcement of the reform, Stegerwald has exercised his leadership position to strike the multiple deals with non catholic unions and organizations, especially of protestant affiliation, which caused conflicts surprisingly not with Left Labor, but with Clericals and Dead Center, who argued for the mono identity of the party as of the party of catholics. Adam Stegerwald has responded to this, reminding them of Vatican's influence and their passiveness (which was caused due to their kingmaker's status and greed for power in government), which he seeks to combat and at some point cut short with socialists of the SPD forever.
 
+Will he win?
+
+- @resultant: Result
+
+@resultant
+go-to: steggy_win if stegerwald_reform_support_pct >= 50; steggy_lose if stegerwald_reform_support_pct < 50
+
+<div style="display:flex; flex-direction:column; align-items:center; margin:24px 0;">
+  <svg width="140" height="140" viewBox="0 0 140 140">
+    <!-- Outer square border -->
+    <rect x="2" y="2" width="136" height="136" fill="none" stroke="#3a2f28" stroke-width="3"/>
+    
+    <!-- Fill, clipped to square, grows from bottom -->
+    <defs>
+      <clipPath id="squareClip">
+        <rect x="2" y="2" width="136" height="136"/>
+      </clipPath>
+    </defs>
+    
+    <rect x="2"
+          [[y="{! 2 + 136 * (1 - Q.stegerwald_reform_support_pct / 100) !}"]]
+          width="136"
+          [[height="{! 136 * (Q.stegerwald_reform_support_pct / 100) !}"]]
+          fill="[[{! Q.stegerwald_reform_passes == 1 ? '#7a9b6e' : '#a3453b' !}]]"
+          clip-path="url(#squareClip)"/>
+    
+    <!-- Percentage label centered -->
+    <text x="70" y="75" text-anchor="middle" font-size="22" font-weight="bold" fill="#1a1a1a">
+      [[{! Math.round(Q.stegerwald_reform_support_pct) !}]]%
+    </text>
+  </svg>
+  <div style="margin-top:8px; font-style:italic; font-size:14px;">
+    [[{! Q.stegerwald_reform_passes == 1 ? "The reform carries the party." : "The reform collapses." !}]]
+  </div>
+</div>
+
+@steggy_win
+
+Gg steggy
+
+@steggy_lose
+
+Oof steggy
