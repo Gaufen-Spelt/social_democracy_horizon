@@ -3747,7 +3747,19 @@ function buildIdentityModifier(cs, ps, ss, ys) {
         dvfp:  1 + (ps * 0.25) - (ys * 0.25) - (cs * 0.10),
         dvp:   1 + (ss * 0.15) + (ps * 0.10) - (ys * 0.12),
         ddp:   1 + (ss * 0.25) + (ps * 0.05) - (ys * 0.20),
-        z:     1 + (cs * 1.45 * (Q.prussian_concordat >= 1 ? 1.15 : 1)) - (ss * 0.20) - (ys * 0.10),
+        z:     (Q.z_ideology === "Christian Conservatism")
+                   ? 1
+                       + (cs * 1.45 * (Q.prussian_concordat >= 1 ? 1.15 : 1) * (Q.z_transition_cvp === 1 ? (1/3) : 0.5))
+                       + (ps * 0.35 * (Q.z_transition_cvp === 1 ? 1.55 : 1))
+                       + (ss * (0.15 + (Q.z_transition_cvp === 2 ? 0.20 : 0)))
+                       + (ys * (0.10 + (Q.z_transition_cvp === 2 ? 0.15 : 0)))
+                       - (ys * 0.10)
+               : (Q.z_ideology === "Catholic Laborism")
+                   ? 1
+                       + (cs * 1.45 * (Q.prussian_concordat >= 1 ? 1.15 : 1) * 1.10)
+                       - (ss * 0.20)
+                       - (ys * 0.05)
+               : 1 + (cs * 1.45 * (Q.prussian_concordat >= 1 ? 1.15 : 1)) - (ss * 0.20) - (ys * 0.10),
         bvp:   1 + (cs * 1.25) - (ss * 0.25) - (ys * 0.08),
         cnbl:  1 + (ps * 0.15) - (ys * 0.10),
         wp:    1 + (ss * 0.10) - (ys * 0.18),
@@ -4364,14 +4376,51 @@ function computeTarget(party, c) {
             if (Q.social_fascism_adopted == 1) {r *= 1.47; s *= 0.60}
 
             let campaign_boost = 1.1;
-            if (Q.campaign_focus === 'workers'    && ci > 0) campaign_boost += ci * 0.41;
-            if (Q.campaign_focus === 'new_middle' && ci > 0) campaign_boost += ci * 0.36;
-            if (Q.campaign_focus === 'old_middle' && ci > 0) campaign_boost += ci * 0.30;
-            if (Q.campaign_focus === 'rural'      && ci > 0) campaign_boost += ci * 0.30;
-            if (Q.campaign_focus === 'unemployed' && ci > 0) campaign_boost += ci * 0.36;
-            if (Q.campaign_focus === 'women'      && ci > 0) campaign_boost += ci * 0.25;
-            if (Q.campaign_focus === 'middle'     && ci > 0) campaign_boost += ci * 0.25;
-            base = (r * 99 + s * 58) * im.spd * (eim.spd || 1.0) * campaign_boost;
+if (Q.campaign_focus === 'workers'    && ci > 0) campaign_boost += ci * 0.30
+    + (Q.wtb_adopted === 1 ? 0.05 : 0)
+    + (Q.nationalization_progress >= 1 ? 0.04 : 0)
+    + (Q.welfare <= 0 ? -0.04 : 0)
+    + (Q.workers_aid > 0 ? Q.workers_aid * 0.01 : 0)
+    + (Q.pro_consumer > 0 ? 0.02 : 0)
+    + (Q.trans_rights > 0 ? 0.01 : 0)
+    + (Q.iron_front_progress > 2 ? 0.015 : 0)
+    - (Q.peoples_party === 1 ? (Q.socialism / 200) : 0)
+    - (Q.lower_tax_rates > 0 ? Q.lower_tax_rates * 0.03 : 0);
+
+if (Q.campaign_focus === 'new_middle' && ci > 0) campaign_boost += ci * 0.30
+    + (Q.peoples_party === 1 ? 0.04 : 0)
+    - (Q.socialism <= 49 && Q.peoples_party === 0 ? 0.06 : 0)
+    - (Q.upper_tax_rates > 0 ? Q.upper_tax_rates * 0.03 : 0);
+
+if (Q.campaign_focus === 'old_middle' && ci > 0) campaign_boost += ci * 0.30
+    + (Q.peoples_party === 1 ? 0.04 : 0)
+    - (Q.nationalism >= 51 && Q.peoples_party === 0 ? 0.06 : 0)
+    - (Q.upper_tax_rates > 0 ? Q.upper_tax_rates * 0.03 : 0)
+    - (Q.nationalism / 480);
+
+if (Q.campaign_focus === 'rural'      && ci > 0) campaign_boost += ci * 0.30
+    + (Q.rural_policy >= 2 ? 0.04 : 0)
+    + (Q.state_buyer === 1 ? 0.03 : 0)
+    - (Q.peoples_party === 0 ? 0.05 : 0);
+
+if (Q.campaign_focus === 'unemployed' && ci > 0) campaign_boost += ci * 0.30
+    + (Q.wtb_adopted === 1 ? 0.06 : 0)
+    + (Q.welfare >= 2 ? 0.04 : 0)
+    + (Q.iron_front_progress > 4 ? 0.02 : 0)
+    - (Q.welfare < 0 ? 0.05 : 0);
+
+if (Q.campaign_focus === 'women'      && ci > 0) campaign_boost += ci * 0.30
+    + (Q.womens_rights >= 3 ? Q.womens_rights * 0.01 : 0)
+    + (Q.abortion_rights > 0 ? 0.02 : 0)
+    + (Q.womens_work > 0 ? Q.womens_work / 300 : 0)
+    + (Q.family_law > 0 ? Q.family_law / 400 : 0);
+
+if (Q.campaign_focus === 'middle'     && ci > 0) campaign_boost += ci * 0.30
+    - (Q.nationalism >= (Q.pro_republic / 2) && Q.peoples_party === 0 ? 0.05 : 0)
+    - ((Q.socialism * 1.5) <= Q.nationalism && Q.peoples_party === 0 ? 0.04 : 0)
+    - (Q.upper_tax_rates > 0 ? Q.upper_tax_rates * 0.027 : 0);
+
+base = (r * 99 + s * 58) * im.spd * (eim.spd || 1.0) * campaign_boost;
 
             let m;
             if (c === 'workers') {
@@ -4544,15 +4593,35 @@ function computeTarget(party, c) {
             let gov_mod     = Q.z_in_government ? 1.12 : 0.93;
             base = (rep * 70 + cath_bonus * 4) * leader_mod * gov_mod * im.z * (eim.z || 1.0);
 
-            let floor = cath_bonus * 3.2 * gov_mod;
+            let floor = cath_bonus * 7.5 * gov_mod;
             base = Math.max(base, floor);
 
+            const isChristCon = Q.z_ideology === "Christian Conservatism";
+            const isCathLabor = Q.z_ideology === "Catholic Laborism";
+
+            const ccClassMult = isChristCon
+                ? {
+                    rural:      0.65,
+                    old_middle: 0.65 * (Q.z_transition_cvp === 1 ? 1.20 : 1),
+                    workers:    1.35 * (Q.z_transition_cvp === 2 ? 1.15 : 1),
+                    new_middle: 1.25,
+                  }
+                : isCathLabor
+                ? {
+                    workers:     1.55,
+                    unemployedc: 1.60,
+                    old_middle:  0.75,
+                    new_middle:  0.90,
+                    rural:       0.85,
+                  }
+                : {};
+
             const class_mods = {
-                workers:     0.65 * (Q.z_party_leader == 'Adam Stegerwald' ? 1.08 : 1) * (Q.peoples_party === 1 ? 0.94 : 1),
-                old_middle:  1.10 * (Q.peoples_party === 1 ? 0.96 : 1),
-                new_middle:  0.90 * (Q.peoples_party === 1 ? 0.96 : 1),
-                rural:       0.90 * (Q.peoples_party === 1 ? 0.96 : 1),
-                unemployedc: 0.20 * (Q.peoples_party === 1 ? 0.94 : 1),
+                workers:     0.65 * (Q.z_party_leader == 'Adam Stegerwald' ? 1.08 : 1) * (Q.peoples_party === 1 ? 1.09 : 1) * (ccClassMult.workers || 1),
+                old_middle:  1.10 * (Q.peoples_party === 1 ? 0.91 : 1) * (ccClassMult.old_middle || 1),
+                new_middle:  0.90 * (Q.peoples_party === 1 ? 0.87 : 1) * (ccClassMult.new_middle || 1),
+                rural:       0.90 * (Q.peoples_party === 1 ? 0.87 : 1) * (ccClassMult.rural || 1),
+                unemployedc: 0.20 * (Q.peoples_party === 1 ? 1.10 : 1) * (ccClassMult.unemployedc || 1),
             };
             return _applyQOL(base * (class_mods[c] || 1.0), party, c);
         }
@@ -4588,7 +4657,7 @@ function computeTarget(party, c) {
 
             let crisis_factor = Q.unemployed >= 20 ? 0.6 : Q.unemployed >= 12 ? 0.8 : Q.unemployed >= 8 ? 0.85 : 1.0;
 
-            base = (rep * 0.5 + dnvp_split_bonus + anti_nazi_appeal + coalition_stability) * crisis_factor * im.csvd;
+            base = (rep * 0.9 + dnvp_split_bonus + anti_nazi_appeal + coalition_stability) * crisis_factor * im.csvd;
 
             const class_mods = {
                 workers:     0.50 * (Q.peoples_party === 1 ? 0.93 : 1),
