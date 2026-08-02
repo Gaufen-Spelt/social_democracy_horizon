@@ -96,7 +96,12 @@ Q.stegerwald_reform_support_pct = (
 ) * 100;
 
 Q.stegerwald_reform_passes = Q.stegerwald_reform_support_pct >= 50 ? 1 : 0;
+
+window.enableFocusMode()
+
 !}
+
+
 
 = Conclusion of the reform
 
@@ -110,12 +115,33 @@ Will he win?
 go-to: steggy_win if stegerwald_reform_support_pct >= 50; steggy_lose if stegerwald_reform_support_pct < 50
 
 @steggy_win
+on-arrival: z_ideology = "Christian Conservatism"; workers_z += 10; new_middle_z += 5; rural_z -= 8; old_middle -= 8; z_transition_cvp = 1
+go-to: steggy_full if stegerwald_reform_support_pct >= 65; steggy_lite if stegerwald_reform_support_pct < 65
 
 Gg steggy
 
 [+ stegerwald_reform_support_pct +]
 
+@steggy_full
+on-arrival: z_relation -= 30; z_transition_cvp = 1
+on-departure: {!
+window.disableFocusMode()
+!}
+
+Steggy is evil now
+
+@steggy_lite
+on-arrival: z_relation -= 10; z_transition_cvp = 2
+on-departure: {!
+window.disableFocusMode()
+!}
+
+Steggy aint evil that much
+
 @steggy_lose
+on-departure: {!
+window.disableFocusMode()
+!}
 
 Oof steggy
 
