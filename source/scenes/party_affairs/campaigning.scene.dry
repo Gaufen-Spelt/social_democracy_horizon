@@ -40,21 +40,6 @@ on-arrival: {!
     Q.resources -= 1;
     Q.campaign_focus = "workers";
     Q.workers_spd += 2 * (1 - Q.dissent);
-    
-    // Build intensity from conditions
-    let ci = 1.0;
-    if (Q.unemployed >= 25) ci -= 0.20;
-    else if (Q.unemployed >= 15) ci -= 0.10;
-    if (Q.wtb_adopted === 1) ci += 0.20;
-    if (Q.nationalization_progress >= 1) ci += 0.15;
-    if (Q.welfare <= 0) ci -= 0.15;
-    if (Q.workers_aid > 0) ci += Q.workers_aid * 0.02;
-    if (Q.peoples_party === 1) ci -= Q.socialism / 70;
-    if (Q.lower_tax_rates > 0) ci -= Q.lower_tax_rates * 0.12;
-    if (Q.pro_consumer > 0) ci += 0.08;
-    if (Q.trans_rights > 0) ci += 0.03;
-    if (Q.nazi_urgency > 2) ci += 0.05;
-    Q.campaign_intensity = Math.max(0.1, Math.min(1.5, ci));
 !}
 go-to: transit
 
@@ -78,12 +63,6 @@ on-arrival: {!
     Q.campaign_focus = "new_middle";
     Q.new_middle_spd += 2 * (1 - Q.dissent);
     Q.peoples_party_support += 1;
-
-    let ci = 1.0;
-    if (Q.socialism <= 49 && Q.peoples_party === 0) ci -= 0.25;
-    if (Q.peoples_party === 1) ci += 0.15;
-    if (Q.upper_tax_rates > 0) ci -= Q.upper_tax_rates * 0.10;
-    Q.campaign_intensity = Math.max(0.1, Math.min(1.5, ci));
 !}
 go-to: transit
 
@@ -103,13 +82,6 @@ on-arrival: {!
     Q.campaign_focus = "old_middle";
     Q.old_middle_spd += 2 * (1 - Q.dissent);
     Q.peoples_party_support += 1;
-
-    let ci = 1.0;
-    if (Q.nationalism >= 51 && Q.peoples_party === 0) ci -= 0.25;
-    if (Q.peoples_party === 1) ci += 0.15;
-    if (Q.upper_tax_rates > 0) ci -= Q.upper_tax_rates * 0.10;
-    ci -= Q.nationalism / 120;
-    Q.campaign_intensity = Math.max(0.1, Math.min(1.5, ci));
 !}
 go-to: transit
 
@@ -129,13 +101,6 @@ on-arrival: {!
     Q.campaign_focus = "middle";
     Q.old_middle_spd += 1 * (1 - Q.dissent);
     Q.new_middle_spd += 1 * (1 - Q.dissent);
-
-    let ci = 1.0;
-    if (Q.nationalism >= (Q.pro_republic / 2) && Q.peoples_party === 0) ci -= 0.20;
-    if ((Q.socialism * 1.5) <= Q.nationalism && Q.peoples_party === 0) ci -= 0.15;
-    if (Q.upper_tax_rates > 0) ci -= Q.upper_tax_rates * 0.09;
-    ci -= Q.nationalism / 120;
-    Q.campaign_intensity = Math.max(0.1, Math.min(1.5, ci));
 !}
 go-to: transit
 
@@ -151,12 +116,6 @@ on-arrival: {!
     Q.campaign_focus = "rural";
     Q.rural_spd += 2 * (1 - Q.dissent);
     Q.peoples_party_support += 1;
-
-    let ci = 1.0;
-    if (Q.peoples_party === 0) ci -= 0.20;
-    if (Q.rural_policy >= 2) ci += 0.15;
-    if (Q.state_buyer === 1) ci += 0.12;
-    Q.campaign_intensity = Math.max(0.1, Math.min(1.5, ci));
 !}
 go-to: transit
 
@@ -176,13 +135,6 @@ on-arrival: {!
     Q.resources -= 1;
     Q.campaign_focus = "unemployed";
     Q.unemployedc_spd += 2 * (1 - Q.dissent);
-
-    let ci = 1.0;
-    if (Q.welfare < 0) ci -= 0.20;
-    if (Q.wtb_adopted === 1) ci += 0.25;
-    if (Q.welfare >= 2) ci += 0.15;
-    if (Q.nazi_urgency > 4) ci += 0.08;
-    Q.campaign_intensity = Math.max(0.1, Math.min(1.5, ci));
 !}
 go-to: transit
 
@@ -201,14 +153,6 @@ on-arrival: {!
     Q.campaign_focus = "women";
     Q.new_middle_spd += 1 * (1 - Q.dissent);
     Q.workers_spd    += 1 * (1 - Q.dissent);
-
-    let ci = 1.0;
-    if (Q.womens_rights >= 3) ci += Q.womens_rights * 0.05;
-    if (Q.abortion_rights > 0) ci += 0.08;
-    if (Q.womens_work > 0) ci += Q.womens_work / 60;
-    if (Q.family_law > 0) ci += Q.family_law / 80;
-    // Catholics penalized by abortion rights — handled in tick via identity_modifier
-    Q.campaign_intensity = Math.max(0.1, Math.min(1.5, ci));
 !}
 go-to: transit
 
@@ -223,13 +167,6 @@ on-arrival: {!
     Q.resources -= 1;
     Q.campaign_focus = "catholics";
     Q.new_middle_spd += 1 * (1 - Q.dissent);
-
-    let ci = 1.0;
-    ci += Q.catholics / 80;  // scales with actual catholic population share
-    if (Q.reichskonkordat === 1) ci += 0.20;
-    if (Q.prussian_concordat === 1) ci += 0.10;
-    if (Q.abortion_rights > 0) ci -= 0.25;  // hard penalty
-    Q.campaign_intensity = Math.max(0.1, Math.min(1.5, ci));
 !}
 go-to: transit
 
