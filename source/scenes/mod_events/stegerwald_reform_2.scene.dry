@@ -4,8 +4,6 @@ tags: event
 new-page: true
 view-if: month == 8 and year >= 1929 and stegerwald_reform == 1
 on-arrival: {!
-Q.old_z_r
-Q.z_votes_display
 
 // ===== Demographic mood on the reform (confession-split, 0-100 normalized) =====
 const demo_support = {
@@ -110,6 +108,8 @@ Will he win?
 @resultant
 go-to: steggy_win if stegerwald_reform_support_pct >= 50; steggy_lose if stegerwald_reform_support_pct < 50
 
+{!
+
 <div style="display:flex; flex-direction:column; align-items:center; margin:24px 0;">
   <svg width="140" height="140" viewBox="0 0 140 140">
     <!-- Outer square border -->
@@ -138,6 +138,8 @@ go-to: steggy_win if stegerwald_reform_support_pct >= 50; steggy_lose if stegerw
     [[{! Q.stegerwald_reform_passes == 1 ? "The reform carries the party." : "The reform collapses." !}]]
   </div>
 </div>
+
+!}
 
 @steggy_win
 
