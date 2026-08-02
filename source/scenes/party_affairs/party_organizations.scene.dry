@@ -21,7 +21,7 @@ In addition to being a political party, the SPD is a social world onto itself, w
 - @easy_discard
 
 @agriculture
-view-if: landvolk_fury > 0 or year < 1928
+view-if: landvolk_fury > 0 or year < 1928 or (year >= 1928 and month <= 5)
 choose-if: resources > 0
 unavailable-subtitle: Not enough resources.
 subtitle: -1 resources
