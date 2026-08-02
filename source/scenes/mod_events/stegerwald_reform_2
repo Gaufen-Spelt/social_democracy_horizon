@@ -1,8 +1,0 @@
-title: Stegerwald's reform reaches it's logical conclusion.
-subtitle: Future of the Zentrum is slowly creeping...
-tags: event
-new-page: true
-view-if: month == 8 and year >= 1929 and stegerwald_reform == 1
-
-= Conclusion of the reform
-

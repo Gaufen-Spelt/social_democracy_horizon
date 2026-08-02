@@ -1,0 +1,11 @@
+title: Stegerwald's reform reaches it's logical conclusion.
+subtitle: Future of the Zentrum is slowly creeping...
+tags: event
+new-page: true
+view-if: month == 8 and year >= 1929 and stegerwald_reform == 1
+on-arrival: month = 8
+
+= Conclusion of the reform
+
+Following the announcement of the reform, Stegerwald has exercised his leadership position to strike the multiple deals with non catholic unions and organizations, especially of protestant affiliation, which caused conflicts surprisingly not with Left Labor, but with Clericals and Dead Center, who argued for the mono identity of the party as of the party of catholics. Adam Stegerwald has responded to this, reminding them of Vatican's influence and their passiveness (which was caused due to their kingmaker's status and greed for power in government), which he seeks to combat and at some point cut short with socialists of the SPD forever.
+
