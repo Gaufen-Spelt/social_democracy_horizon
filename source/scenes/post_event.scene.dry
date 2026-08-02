@@ -4111,82 +4111,93 @@ function computeTarget(party, c) {
         }
 
         case 'dnvp': {
-            if (Q.dnvp_banned) return 0;
+           if (Q.dnvp_banned) return 0;
 
-            const isNatCon      = Q.dnvp_ideology === "National Conservatism";
-            const isSocCorp     = Q.dnvp_ideology === "Social Corporatism";
+           const isNatCon      = Q.dnvp_ideology === "National Conservatism";
+           const isSocCorp     = Q.dnvp_ideology === "Social Corporatism";
 
-            let chaos_penalty = unr > 0.7 ? unr : 0;
-            base = ((nat * 85) + (isSocCorp ? rep * 30 : 20) - chaos_penalty) * im.dnvp;
+           const nsdapAbsent = Q.nsdap_banned || !Q.parties.includes('nsdap');
 
-            const isLambach    = Q.dnvp_party_leader === "Walther Lambach";
-            const lambachEarly = Q.year < 1929;
-            const dnvpgovernment = Q.dnvp_in_government == 1;
+           let chaos_m = 1.0;
+           if (unr > 0.7) {
+               const excess  = unr - 0.7; // 0 to 0.3 range
+               const severity = nsdapAbsent ? 2.5 * 0.4 : 2.5; // weaken chaos impact when NSDAP absent
+               chaos_m = Math.max(0.1, 1 - excess * severity);
+           }
 
-            // Government bonus: starts at +20% (1.20), decays by 33% (relative) per crisis trigger
-            let govBonus_m = 1.0;
-            if (dnvpgovernment) {
-                const crisisTriggers = [Q.cnbl_crisis, Q.vnr_momentum, Q.geest_wildfire]
-                    .filter(Boolean).length;
-                // Each trigger cuts the *bonus portion* (the 0.20 above baseline) by 33%
-                const bonusPortion = 0.20 * Math.pow(0.67, crisisTriggers);
-                govBonus_m = 1.0 + bonusPortion;
-            }
-            base *= govBonus_m;
+           base = ((nat * 85) + (isSocCorp ? rep * 30 : 20)) * im.dnvp * chaos_m;
 
-            let workers_m     = 0.69
-                * (Q.peoples_party                      === 1 ? 1.10 : 1)
-                * (Q.lambach_reinstated && lambachEarly        ? 1.20 : 1)
-                * (Q.lambach_momentum   && lambachEarly        ? 1.70 : 1)
-                * (isLambach                                   ? 1.35 : 1.00)
-                * (isSocCorp                                   ? 1.40 : 1.00)
-                * (isNatCon                                    ? 0.85 : 1.00);
-            let old_middle_m  = 1.55 * (1 + Math.min(Q.nationalism/100,1)*0.28)
-                * (Q.peoples_party                      === 1 ? 0.95 : 1)
-                * (isLambach                                   ? 0.87 : 1.00)
-                * (isNatCon                                    ? 1.25 : 1.00)
-                * (isSocCorp                                   ? 0.86 : 1.00);
-            let new_middle_m  = 0.99 * (1 + Math.min(Q.nationalism/100,1)*0.18)
-                * (Q.peoples_party                      === 1 ? 0.95 : 1)
-                * (Q.lambach_reinstated && lambachEarly        ? 1.35 : 1)
-                * (Q.lambach_momentum   && lambachEarly        ? 2.65 : 1)
-                * (isLambach                                   ? 1.50 : 1.00)
-                * (isSocCorp                                   ? 1.35 : 1.00)
-                * (isNatCon                                    ? 0.90 : 1.00);
-            let rural_m       = 1.72 * (1 + Math.min(Q.nationalism/100,1)*0.30)
-                * (Q.peoples_party                      === 1 ? 0.95 : 1)
-                * (Q.parties.includes('dbp')                  ? 0.9111 : 1)
-                * (Q.parties.includes('cnbl')                  ? 0.7953 : 1)
-                * (isLambach                                   ? 0.87 : 1.00)
-                * (isNatCon                                    ? 1.20 : 1.00)
-                * (isSocCorp                                   ? 0.80 : 1.00);
-            let unemployedc_m = 0.33
-                * (Q.peoples_party                      === 1 ? 1.05 : 1)
-                * (isSocCorp                                   ? 1.30 : 1.00)
-                * (isNatCon                                    ? 0.80 : 1.00);
+           const isLambach    = Q.dnvp_party_leader === "Walther Lambach";
+           const lambachEarly = Q.year < 1929;
+           const dnvpgovernment = Q.dnvp_in_government == 1;
 
-            const class_mods = { workers: workers_m, old_middle: old_middle_m, new_middle: new_middle_m, rural: rural_m, unemployedc: unemployedc_m };
-            if (Q.dem_challenge === 1) base *= 0.80;
-            return _applyQOL(base * (class_mods[c] || 1.0), party, c);
-        }
+           // Government bonus: starts at +20% (1.20), decays by 33% (relative) per crisis trigger
+           let govBonus_m = 1.0;
+           if (dnvpgovernment) {
+               const crisisTriggers = [Q.cnbl_crisis, Q.vnr_momentum, Q.geest_wildfire]
+                   .filter(Boolean).length;
+               // Each trigger cuts the *bonus portion* (the 0.20 above baseline) by 33%
+               const bonusPortion = 0.20 * Math.pow(0.67, crisisTriggers);
+               govBonus_m = 1.0 + bonusPortion;
+           }
+           base *= govBonus_m;
 
-        case 'dnf': { // Deutschnationale Front (Hugenberg's radicalized DNVP / Kampffront)
+           let workers_m     = 0.69
+               * (Q.peoples_party                      === 1 ? 1.10 : 1)
+               * (Q.lambach_reinstated && lambachEarly        ? 1.20 : 1)
+               * (Q.lambach_momentum   && lambachEarly        ? 1.70 : 1)
+               * (isLambach                                   ? 1.35 : 1.00)
+               * (isSocCorp                                   ? 1.40 : 1.00)
+               * (isNatCon                                    ? 0.85 : 1.00);
+           let old_middle_m  = 1.55 * (1 + Math.min(Q.nationalism/100,1)*0.28)
+               * (Q.peoples_party                      === 1 ? 0.95 : 1)
+               * (isLambach                                   ? 0.87 : 1.00)
+               * (isNatCon                                    ? 1.25 : 1.00)
+               * (isSocCorp                                   ? 0.86 : 1.00);
+           let new_middle_m  = 0.99 * (1 + Math.min(Q.nationalism/100,1)*0.18)
+               * (Q.peoples_party                      === 1 ? 0.95 : 1)
+               * (Q.lambach_reinstated && lambachEarly        ? 1.35 : 1)
+               * (Q.lambach_momentum   && lambachEarly        ? 2.65 : 1)
+               * (isLambach                                   ? 1.50 : 1.00)
+               * (isSocCorp                                   ? 1.35 : 1.00)
+               * (isNatCon                                    ? 0.90 : 1.00);
+           let rural_m       = 1.72 * (1 + Math.min(Q.nationalism/100,1)*0.30)
+               * (Q.peoples_party                      === 1 ? 0.95 : 1)
+               * (Q.parties.includes('dbp')                  ? 0.9111 : 1)
+               * (Q.parties.includes('cnbl')                  ? 0.7953 : 1)
+               * (isLambach                                   ? 0.87 : 1.00)
+               * (isNatCon                                    ? 1.20 : 1.00)
+               * (isSocCorp                                   ? 0.80 : 1.00);
+           let unemployedc_m = 0.33
+               * (Q.peoples_party                      === 1 ? 1.05 : 1)
+               * (isSocCorp                                   ? 1.30 : 1.00)
+               * (isNatCon                                    ? 0.80 : 1.00);
+
+           const class_mods = { workers: workers_m, old_middle: old_middle_m, new_middle: new_middle_m, rural: rural_m, unemployedc: unemployedc_m };
+           if (Q.dem_challenge === 1) base *= 0.80;
+           return _applyQOL(base * (class_mods[c] || 1.0), party, c);
+       }
+
+        case 'dnf': {
             if (Q.dnf_banned || Q.dnvp_banned) return 0;
-            
-            // Base calculation mirrors Hugenberg's aggressive anti-republican shifts
-            if (Q.dnf_line === 1) {
-                // The Media Empire & Liberty Law Line (Anti-Young Plan Campaign)
+
+            let dnf_line;
+            if (Q.year < 1929) {
+                dnf_line = 1;
+            } else if (Q.year < 1933) {
+                dnf_line = 2;
+            } else {
+                dnf_line = 3;
+            }
+
+            if (dnf_line === 1) {
                 let media_bonus = Q.hugenberg_media_control ? 20 : 0;
                 base = ((nat * 55) + ((1 - rep) * 30) + media_bonus) * (im.dnf || im.dnvp);
-            } else if (Q.dnf_line === 2) {
-                // The Harzburg Front Line (Radical Right Alliance with the NSDAP & Stahlhelm)
+            } else if (dnf_line === 2) {
                 let polarization = (1 - rep) * 55;
                 let crisis_bonus = Q.unemployment * 65;
-                // Hugenberg thrives in absolute chaos, but risks being overshadowed by Hitler
                 base = ((nat * 45) + polarization + crisis_bonus) * (im.dnf || im.dnvp);
             } else {
-                // Kampffront Schwarz-Weiß-Rot / Bourgeois Concentration Line (1933)
-                // Severe penalty if chaos/unrest overflows too far into KPD/NSDAP territory
                 let chaos_penalty = unr > 0.65 ? (unr * 25) : 0;
                 base = ((nat * 90) - chaos_penalty) * (im.dnf || im.dnvp);
             }
@@ -4194,30 +4205,24 @@ function computeTarget(party, c) {
             const isHarzburg   = Q.harzburg_front_seen === true;
             const mediaBlitz   = Q.hugenberg_media_blitz === true;
 
-            // Hugenberg completely alienated the urban working-class trade unionists (Lambach's wing)
             let workers_m     = 0.16
                 * (mediaBlitz                                  ? 1.20 : 1)
-                * (isHarzburg                                  ? 0.70 : 1); // Workers flee to left-wing parties or NSDAP
+                * (isHarzburg                                  ? 0.70 : 1);
 
-            // Traditional shopkeepers, artisans, and small business owners who loathe Weimar
             let old_middle_m  = 1.78 * (1 + Math.min(Q.nationalism/100,1)*0.40)
                 * (Q.peoples_party                      === 1 ? 0.90 : 1)
                 * (mediaBlitz                                  ? 1.15 : 1);
 
-            // White-collar employees, susceptible to media nationalism but wary of industrial autocracy and alienated
             let new_middle_m  = 0.50 * (1 + Math.min(Q.nationalism/100,1)*0.22)
                 * (mediaBlitz                                  ? 1.35 : 1)
                 * (isHarzburg                                  ? 1.10 : 1);
 
-            // Junker estates and conservative peasantry—Hugenberg's bread and butter.
-            // Heavily suppressed if agrarian rivals like the CNBL or the NSDAP cannibalize them.
             let rural_m       = 2.15 * (1 + Math.min(Q.nationalism/100,1)*0.45)
                 * (Q.peoples_party                      === 1 ? 0.90 : 1)
                 * (Q.parties.includes('dbp')                  ? 0.85 : 1)
-                * (Q.parties.includes('cnbl')                 ? 0.68 : 1) // CNBL deeply fractures this base
-                * (isHarzburg                                  ? 0.80 : 1); // Rural voters drift towards Hitler
+                * (Q.parties.includes('cnbl')                 ? 0.68 : 1)
+                * (isHarzburg                                  ? 0.80 : 1);
 
-            // The unemployed generally despised Hugenberg due to his plutocratic, big-business profile
             let unemployedc_m = 0.30
                 * (Q.unemployment > 0.28                      ? 1.15 : 1);
 
@@ -4597,7 +4602,7 @@ function computeTarget(party, c) {
 
         case 'csrp': {
             if (Q.csrp_banned) return 0;
-            let april = Q.april_challenge && Q.year >= 1933 ? 20 : 1;
+            let april = Q.april_challenge && Q.year >= 1933 ? 27 : 1;
             base = rep * 16 * im.csrp * april;
             const class_mods = { workers: 0.20, old_middle: 0.05, new_middle: 0.15, rural: 0.10, unemployedc: 0.30 };
             return _applyQOL(base * (class_mods[c] || 1.0), party, c);
@@ -4605,8 +4610,8 @@ function computeTarget(party, c) {
 
         case 'vrp': {
             if (Q.vrp_banned) return 0;
-            base = rep * 10 + Math.max(0, Q.inflation) * 0.05 * im.vrp;
-            const class_mods = { workers: 0.25, old_middle: 0.01, new_middle: 0.10, rural: 0.04, unemployedc: 0.40 };
+            base = (rep * 12.5 + Math.max(0, Q.inflation) * 0.08) * im.vrp;
+            const class_mods = { workers: 0.04, old_middle: 0.12, new_middle: 0.08, rural: 0.01, unemployedc: 0.67 };
             return _applyQOL(base * (class_mods[c] || 1.0), party, c);
         }
 
