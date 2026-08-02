@@ -3,10 +3,24 @@ subtitle: Transformation of the clerical party.
 tags: event
 new-page: true
 view-if: z_party_leader == "Adam Stegerwald" and month >= 2 and weeks >= 1 and year == 1929
-on-arrival: stegerwald_reform = 1
 max-visits: 1
+on-arrival: stegerwald_reform = 1; {!
+window.enableFocusMode()
+
+!}
+on-departure: {!
+window.disableFocusMode()
+!}
 
 = Zentrum's earthquake
+
+<div style="width:100%; position:relative; overflow:hidden; border-radius:4px;">
+  <img src="img/dnvp/steggy_0.png" alt="Zentrum earthquake"
+       style="width:100%; display:block; filter: grayscale(25%) contrast(1.15) brightness(0.95);">
+  <div style="position:absolute; inset:0;
+              background: linear-gradient(to bottom, rgba(0,0,0,0) 55%, rgba(0,0,0,0.5) 100%);
+              pointer-events:none;"></div>
+</div>
 
 Ever since the ascendancy of the Adam Stegerwald, the creator of the "Essen Program 1920" (established by the Essen Congress which took in the same year), he has redirected the party towards the new course. The main components of it were unification of center and nationalist unions to counter-act representation of marxist unions and unify their policy in the issues regarding unions. Sub-context behind this program was transformation of the party towards "The New People's Party", aiming towards unifying all christian forces of the country into one singular entity in order to combat materialism, marxism and radicalism.
 
@@ -16,4 +30,4 @@ But, now, with the influence of christian unions weakened on the Zentrum (which 
 
 [? if spd_in_government and z_in_government: His leadership will permanently alterate our history relation and possibly even cause "Weimar Divorce" at some point. Despite this fact, our party still hopes that this development won't impact our current and future coalitions any further on. ?]
 
-- @post_event: Adam Stegerwald's vision is one of the strongest ones.
+- @post_event: Adam Stegerwald, brave lion of the coward party.
