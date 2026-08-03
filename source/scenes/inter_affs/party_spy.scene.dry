@@ -19,7 +19,7 @@ Which party should we spy on?
 @dnvp
 view-if: dnvp_unlocked_spy >= 1
 subtitle: The internal situation of DNVP is much more complicated...
-on-display: {!
+on-arrival: {!
 
 Q.hugenberg_momentum = Q.hugenberg_momentum || 0;
 Q.delegate_power_a = Q.delegate_power_a || 0;
@@ -56,6 +56,37 @@ for (var s4 = 0; s4 < seatBuckets_dnvp.length; s4++) {
     Q[seatBuckets_dnvp[s4].key] = seatBuckets_dnvp[s4].seats;
 }
 
+// Stash flat display vars for [+ +] tags below
+Q.christsoc_name_disp = Q.leader_c_christsoc;
+Q.christsoc_title_disp = Q.leader_c_christsoc_title;
+Q.yocon_name_disp = Q.leader_c_yocon;
+Q.yocon_title_disp = Q.leader_c_yocon_title;
+Q.faction_a_name_disp = Q.leader_a;
+Q.faction_a_title_disp = Q.leader_a_title;
+Q.faction_b_name_disp = Q.leader_b;
+Q.faction_b_title_disp = Q.leader_b_title;
+
+// Determine dominant faction for flavor text below
+var topFactionRaw = null;
+var factionMeta = [
+    { id: "christsoc", label: "Christian Socials", votes: Q.christsoc_final_votes },
+    { id: "yocon", label: "Young Conservatives", votes: Q.yocon_final_votes },
+    { id: "faction_a", label: "Coalitionists", votes: Q.moderate_a_final_votes },
+    { id: "faction_b", label: "Traditionalists", votes: Q.moderate_b_final_votes },
+    { id: "hugenberg", label: "Hugenberg Bloc", votes: Q.hugenberg_final_votes }
+];
+for (var t = 0; t < factionMeta.length; t++) {
+    if (topFactionRaw === null || factionMeta[t].votes > topFactionRaw.votes) {
+        topFactionRaw = factionMeta[t];
+    }
+}
+Q.dnvp_top_faction_id = topFactionRaw ? topFactionRaw.id : "";
+Q.dnvp_top_faction_label = topFactionRaw ? topFactionRaw.label : "";
+
+!}
+go-to: party_spy
+on-display: {!
+
 var isDark = document.body.classList.contains('dark-mode');
 
 var factionData = [
@@ -78,26 +109,6 @@ var factionData = [
 ];
 
 var visibleFactions = factionData.filter(function(f) { return f.votes > 0; });
-
-// Stash flat display vars for [+ +] tags below
-Q.christsoc_name_disp = Q.leader_c_christsoc;
-Q.christsoc_title_disp = Q.leader_c_christsoc_title;
-Q.yocon_name_disp = Q.leader_c_yocon;
-Q.yocon_title_disp = Q.leader_c_yocon_title;
-Q.faction_a_name_disp = Q.leader_a;
-Q.faction_a_title_disp = Q.leader_a_title;
-Q.faction_b_name_disp = Q.leader_b;
-Q.faction_b_title_disp = Q.leader_b_title;
-
-// Determine dominant faction for flavor text below
-var topFaction = null;
-for (var t = 0; t < factionData.length; t++) {
-    if (topFaction === null || factionData[t].votes > topFaction.votes) {
-        topFaction = factionData[t];
-    }
-}
-Q.dnvp_top_faction_id = topFaction ? topFaction.id : "";
-Q.dnvp_top_faction_label = topFaction ? topFaction.label : "";
 
 if (window && d3 && document.getElementById("dnvp-parliament")) {
     var width = 600;
@@ -133,7 +144,6 @@ if (window && d3 && document.getElementById("dnvp-parliament")) {
     });
 }
 !}
-go-to: party_spy
 
 
 {!<svg id="dnvp-parliament" style="width:600px; height:300px;"></svg>!}
@@ -152,16 +162,27 @@ go-to: party_spy
 
 
 
-
 @dvp
 view-if: dvp_unlocked_spy >= 1
 subtitle: The internal situation of DVP is pretty much about republicans vs industrialists.
-on-display: {!
-
-var isDark = document.body.classList.contains('dark-mode');
+on-arrival: {!
 
 Q.dvp_left = Q.dvp_left || 0;
 Q.dvp_right = Q.dvp_right || 0;
+
+var total = Math.max(Q.dvp_left, 0) + Math.max(Q.dvp_right, 0);
+
+Q.dvp_left_disp = Math.round(Q.dvp_left);
+Q.dvp_right_disp = Math.round(Q.dvp_right);
+
+Q.dvp_left_pct = total > 0 ? (Math.max(Q.dvp_left, 0) / total * 100).toFixed(1) : "0.0";
+Q.dvp_right_pct = total > 0 ? (Math.max(Q.dvp_right, 0) / total * 100).toFixed(1) : "0.0";
+
+!}
+go-to: party_spy
+on-display: {!
+
+var isDark = document.body.classList.contains('dark-mode');
 
 var factionData = [
     { id: "left", name: "Republican Wing", subtitle: "Stresemann Line / Pro-Republic",
@@ -177,18 +198,9 @@ var displaySeats = 300;
 var visibleFactions = [];
 for (var j = 0; j < factionData.length; j++) {
     var f = factionData[j];
-    f.pct = total > 0 ? (f.raw / total * 100) : 0;
     f.seats = total > 0 ? Math.round(f.raw / total * displaySeats) : 0;
     if (f.raw > 0) { visibleFactions.push(f); }
 }
-
-Q.dvp_left_disp = Math.round(Q.dvp_left);
-Q.dvp_right_disp = Math.round(Q.dvp_right);
-
-var byId = {};
-visibleFactions.forEach(function(f) { byId[f.id] = f; });
-Q.dvp_left_pct = byId.left ? byId.left.pct.toFixed(1) : "0.0";
-Q.dvp_right_pct = byId.right ? byId.right.pct.toFixed(1) : "0.0";
 
 if (window && d3 && document.getElementById("dvp-parliament")) {
     var width = 600;
@@ -224,7 +236,6 @@ if (window && d3 && document.getElementById("dvp-parliament")) {
     });
 }
 !}
-go-to: party_spy
 
 {!<svg id="dvp-parliament" style="width:600px; height:300px;"></svg>!}
 
@@ -242,14 +253,33 @@ go-to: party_spy
 @z
 view-if: z_unlocked_spy >= 1
 subtitle: The internal situation of Zentrum is bit more than one dimensional, but it's easy.
-on-display: {!
-
-var isDark = document.body.classList.contains('dark-mode');
+on-arrival: {!
 
 Q.z_clerical_power = Q.z_clerical_power || 250;
 Q.z_left_labor_power = Q.z_left_labor_power || 250;
 Q.z_right_labor_power = Q.z_right_labor_power || 200;
 Q.z_moderate_power = Q.z_moderate_power || 300;
+
+var total = Math.max(Q.z_clerical_power, 0)
+          + Math.max(Q.z_left_labor_power, 0)
+          + Math.max(Q.z_right_labor_power, 0)
+          + Math.max(Q.z_moderate_power, 0);
+
+Q.z_clerical_disp = Math.round(Q.z_clerical_power);
+Q.z_leftlabor_disp = Math.round(Q.z_left_labor_power);
+Q.z_rightlabor_disp = Math.round(Q.z_right_labor_power);
+Q.z_moderate_disp = Math.round(Q.z_moderate_power);
+
+Q.z_clerical_pct = total > 0 ? (Math.max(Q.z_clerical_power, 0) / total * 100).toFixed(1) : "0.0";
+Q.z_leftlabor_pct = total > 0 ? (Math.max(Q.z_left_labor_power, 0) / total * 100).toFixed(1) : "0.0";
+Q.z_rightlabor_pct = total > 0 ? (Math.max(Q.z_right_labor_power, 0) / total * 100).toFixed(1) : "0.0";
+Q.z_moderate_pct = total > 0 ? (Math.max(Q.z_moderate_power, 0) / total * 100).toFixed(1) : "0.0";
+
+!}
+go-to: party_spy
+on-display: {!
+
+var isDark = document.body.classList.contains('dark-mode');
 
 var factionData = [
     { id: "clerical", name: "Clerical Wing", subtitle: "Vatican-Aligned Traditionalists",
@@ -269,22 +299,9 @@ var displaySeats = 300;
 var visibleFactions = [];
 for (var j = 0; j < factionData.length; j++) {
     var f = factionData[j];
-    f.pct = total > 0 ? (f.raw / total * 100) : 0;
     f.seats = total > 0 ? Math.round(f.raw / total * displaySeats) : 0;
     if (f.raw > 0) { visibleFactions.push(f); }
 }
-
-Q.z_clerical_disp = Math.round(Q.z_clerical_power);
-Q.z_leftlabor_disp = Math.round(Q.z_left_labor_power);
-Q.z_rightlabor_disp = Math.round(Q.z_right_labor_power);
-Q.z_moderate_disp = Math.round(Q.z_moderate_power);
-
-var byId = {};
-visibleFactions.forEach(function(f) { byId[f.id] = f; });
-Q.z_clerical_pct = byId.clerical ? byId.clerical.pct.toFixed(1) : "0.0";
-Q.z_leftlabor_pct = byId.leftlabor ? byId.leftlabor.pct.toFixed(1) : "0.0";
-Q.z_rightlabor_pct = byId.rightlabor ? byId.rightlabor.pct.toFixed(1) : "0.0";
-Q.z_moderate_pct = byId.moderate ? byId.moderate.pct.toFixed(1) : "0.0";
 
 if (window && d3 && document.getElementById("z-parliament")) {
     var width = 600;
@@ -320,7 +337,6 @@ if (window && d3 && document.getElementById("z-parliament")) {
     });
 }
 !}
-go-to: party_spy
 
 {!<svg id="z-parliament" style="width:600px; height:300px;"></svg>!}
 
