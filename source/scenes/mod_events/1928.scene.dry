@@ -12,19 +12,45 @@ Q.rural_qol -= 5;
 
 !}
 max-visits: 1
+go-to: normal if april_challenge = 0; april if april_challenge = 1
+
+@normal
+new-page: true
 
 = 1928
 
-= [? if april_challenge = 1: New World ?]
+  And the new year begins with the dreams and hopes of the german nation. As the german right has cannibalized itself to the point of no return, social democrats have ascended to the prominence and if we are to be lucky, we will likely enter the next government. 
 
-[? if april_challenge = 1: Could it happen due to some intervention from the future, who merely thinks Ebert was right for all his faults...? ?]
+  Our agenda for this year, if we are to enter the government, is: 
 
-[? if april_challenge = 1: The world's storybook begins with the collapse of National Socialist Freedom Movement. DAP has fallen into heavy infighting and soon under Drexler it collapsed without gaining any sort of momentum, nor help of critical member...?]
+  • Expansion of workers' rights, laws and workplace safety.
 
-[? if april_challenge = 1: With the turn towards moderate nationalism, DNVP has alienated it's volkisch and national conservative elements, defecting to the DVFP, giving it strength it has never dreamth of. ?]
+  • Protection and expansion of welare.
 
-[? if april_challenge = 1: What will future envision for us? ?]
+  • Foreign reparations reconciliation.
 
-[? if april_challenge = 1: Perhaps, will world be shaped far differently than other world was shaped by it's future future, which intervened to this situation with it's almighty confidence? ?]
+  • Democratization of the institutes and reformation of the justiciary system.
 
-[? if april_challenge = 0: As the new year passes by and the German nation celebrates another hard year, we stand up to the modern world as a nation and as a people, seeking hope as our economy begins to rise again following the traumatic experience of hyperinflation. <br> Our primary priority will be to start negotiations with Western nations and form a government that includes us. If we are successful, our government will inspire the new SPD-led cabinets. Otherwise, we will see more of an unstable right-wing government. <br> There has been so far of growing intensity news of potential rural revolt caused by the collapse of agriculture due to the current government's actions. ?] 
+  • Socialization of the economy.
+
+  • And etcetera.
+
+  ---
+
+  Though it's quite early to judge, it seems like something is brewing up on the rural countryside. It is very possible it was caused by the absence of estate agriculture protection and market being flooded by imported productions, causing sharp drop of costs all around.
+
+  Despite it being huge thorn on right's side, it does not look like something exploitable by us.
+
+@april
+
+= The New World
+
+ Could it happen due to some intervention from the future, who merely thinks Ebert was right for all his faults...?
+
+ The world's storybook begins with the collapse of National Socialist Freedom Movement. DAP has fallen into heavy infighting and soon under Drexler it collapsed without gaining any sort of momentum, nor help of critical member...
+
+ With the turn towards moderate nationalism, DNVP has alienated it's volkisch and national conservative elements, defecting to the DVFP, giving it strength it has never dreamth of. 
+
+ What will future envision for us?
+
+ Perhaps, will world be shaped far differently than other world was shaped by it's future future, which intervened to this situation with it's almighty confidence?
