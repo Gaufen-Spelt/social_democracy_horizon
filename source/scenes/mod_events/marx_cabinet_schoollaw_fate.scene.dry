@@ -7,16 +7,18 @@ view-if: year = 1928 and month = 2
 on-arrival: {!
 Q.marx_collapse_points = 0;
 
-if (Q.spd_votes_display >= 29) Q.marx_collapse_points += 1;
+if (Q.spd_votes_display >= 28.7) Q.marx_collapse_points += 1;
 if (Q.ideology === "reformist") Q.marx_collapse_points += 1;
 if (Q.ideology === "left") Q.marx_collapse_points -= 1;
 if (Q.prussian_concordat_progress >= 1) Q.marx_collapse_points += 1;
 if (Q.geest_wildfire >= 1) Q.marx_collapse_points += 1;
 if (Q.z_relation >= 60) Q.marx_collapse_points += 1;
+if (Q.z_relation >= 70) Q.marx_collapse_points += 1;
+if (Q.republican_rally > 0) Q.marx_collapse_points += 1;
 if (Q.dvp_relation > 45) Q.marx_collapse_points += 1;
-if (Q.dnvp_votes_display >= 18) Q.marx_collapse_points += 1;
-if (Q.dnvp_votes_display <= 16) Q.marx_collapse_points -= 1;
-if (Q.z_votes_display >= 16) Q.marx_collapse_points += 1;
+if (Q.dnvp_votes_display >= 19) Q.marx_collapse_points += 1;
+if (Q.dnvp_votes_display <= 17) Q.marx_collapse_points -= 1;
+if (Q.z_votes_display >= 15) Q.marx_collapse_points += 1;
 if (Q.dvp_votes_display < 8) Q.marx_collapse_points += 1; 
 
 let dvp = Q.dvp_votes_display;
@@ -30,7 +32,7 @@ if ((Q.spd_votes_display + Q.ddp_votes_display + g) > (Q.dnvp_votes_display + Q.
     Q.marx_collapse_points += 1;
 }
 !}
-Go-to: marx_fall if marx_collapse_points > 2; marx_survival if marx_collapse_points <= 2
+Go-to: marx_fall if marx_collapse_points > 3; marx_survival if marx_collapse_points < 3; marx_replaced if marx_collapse_points == 3
 
 @marx_fall
 on-arrival: {!
@@ -61,6 +63,18 @@ new-page: true
 
 = Marx's Cabinet survives confessional controversy! 
 
-Against all odds, the fourth Marx cabinet has weathered the confessional storm. Though the halls of the Reichstag echoed with bitter, ideologically charged denunciation over the school system, the constituent parties of the *Bürgerblock* have ultimately prioritized governmental survival over programmatic purity. The Reich School Law has been shelved indefinitely, but the cabinet remains intact.
+Against all odds, the fourth Marx cabinet has weathered the confessional storm. The Reich School Law has been shelved indefinitely.
 
 For now, the right-wing block maintains its grip on the machinery of the Reich. We must continue to build our strength from the opposition benches and wait for the natural expiration of the legislative term.
+
+@marx_replaced
+new-page: true
+on-arrival: chancellor = "Julius Curtius"; chancellor_party = "DVP"; workers_dvp += 5; dvp_left += 20; new_middle_dvp += 5; old_middle_z -= 7; old_middle_dnvp -= 7; rural_dnvp -= 5
+
+= Marx has been removed from his position!
+
+Against all odds, the fourth Marx cabinet has survived the confessional storm. However, president [+ president +] being dissapointed in capacities of chancellor [+ chancellor +], has dismissed him and replaced him with Julius Curtius of the DVP. This move gave DVP the primacy in the following negotiations regarding "School Law".
+
+Disappointed in the Wilhelm Marx and DVP, DNVP has voiced their readiness to oust the coalition if it comes to it.
+
+**Bürgerblock** was proven to be unstable and even president [+ president +] had to admit it, although he is not ready to dissolve the Reichstag for the time being. 
