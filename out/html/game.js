@@ -88,7 +88,7 @@
     // Add your custom code here.
   };
 
-  var TITLE = "Social Fascism: An Alternate Horizon" + '_' + "Gaufenspelt";
+  var TITLE = "Social Democracy: An Alternate Horizon" + '_' + "Gaufenspelt";
 
   // the url is a link to game.json
   // test url: https://aucchen.github.io/social_democracy_mods/v0.1.json
@@ -221,6 +221,25 @@
     window.dendryUI.saveSettings();
   };
 
+
+  window.getFocusModeEnabled = function() {
+    var v = window.dendryUI.focus_mode_enabled;
+    return v === undefined ? true : v;
+  };
+
+  window.enableFocusModeSetting = function() {
+      window.dendryUI.focus_mode_enabled = true;
+      window.dendryUI.saveSettings();
+  };
+
+  window.disableFocusModeSetting = function() {
+      window.dendryUI.focus_mode_enabled = false;
+      if (document.body.classList.contains('focus-mode')) {
+          window.disableFocusMode();
+      }
+      window.dendryUI.saveSettings();
+  };
+
   // Populates the checkboxes in the options view.
   window.populateOptions = function() {
     var disable_bg = window.dendryUI.disable_bg;
@@ -252,6 +271,11 @@
     } else {
         $('#light_mode')[0].checked = true;
     }
+    if (window.getFocusModeEnabled()) {
+        $('#focusmode_yes')[0].checked = true;
+    } else {
+        $('#focusmode_no')[0].checked = true;
+    }
   };
 
   // This function allows you to modify the text before it's displayed.
@@ -268,7 +292,7 @@ if (dsbp_name !== 'DSBP') {
     'Red Front':       ['#E3000F', '#8B0000'],
     'Black Reichswehr':['#111111', '#4B5320'],
     'Social Democracy':['#E3000F', '#D5AC27'],
-    'National Socialism':['#954B00', '#E3000F'],
+    'National Socialism':['#954B00', '#954B00'],
 };
 
 function renderWordColors(phrase, colors) {
@@ -1496,6 +1520,8 @@ window.csLoad = function() {
 
 
 window.enableFocusMode = function () {
+  if (!window.getFocusModeEnabled()) return;
+  
   var sidebar = document.getElementById('stats_sidebar');
   var bottomPanel = document.getElementById('bottom_panel');
   var content = document.getElementById('content');
