@@ -11,12 +11,20 @@ Braun [? if spd_prussia = 1 : is ?][? if spd_prussia = 0 : was ?] the Minister-P
 
 - @coalition
 - @prussian_bulwark
+- @republican_rally: The Republican Rally.
 - @hindenburg_negotiation
 - @snap_election
 - @root: Return to main
 
+@republican_rally
+subtitle: Braun can launch premature republican rallies.
+view-if: ((z_relation > 40 and ddp_relation > 35) or rpb_formed = 0 or rb_exit = 0)
+unavailable-subtitle: [? if advisor_action_timer > 0 : [+ advisor_action_timer +] months before next advisor action. ?]
+on-arrival: advisor_action_timer += 6;
+go-to; republican_rally.coord_rally
+
 @hindenburg_negotiation
-title: Communicate with Paul von Hindenburg
+title: Negotiate with Paul von Hindenburg
 subtitle: As his old friend and influential head of Prussia, he can attempt to reason with him.
 view-if: (spd_prussia = 1 or prussian_government = "SPD") and president = "Hindenburg" and advisor_action_timer <= 0
 unavailable-subtitle: [? if advisor_action_timer > 0 : [+ advisor_action_timer +] months before next advisor action. ?]
@@ -29,7 +37,7 @@ title: Negotiating with the Coalition
 subtitle: Braun can improve our relationships with our centrist and center-right coalition partners in Prussia as well as in the Reichstag.
 choose-if: advisor_action_timer <= 0 and (spd_prussia or in_weimar_coalition or in_grand_coalition or in_popular_front)
 unavailable-subtitle: [? if advisor_action_timer > 0 : [+ advisor_action_timer +] months before next advisor action. ?] [? if not spd_prussia : The SPD does not control the Prussian government. ?]
-on-arrival: advisor_action_timer = 12; z_relation += 6; ddp_relation += 6; dvp_relation += 2; dvp_relation += 3 if dvp_in_government; bvp_relation += 2; wp_relation += 2 if wp_in_government; cnbl_relation += 2 if cnbl_in_government
+on-arrival: advisor_action_timer = 10; z_relation += 6; ddp_relation += 6; dvp_relation += 2; dvp_relation += 3 if dvp_in_government; bvp_relation += 2; wp_relation += 2 if wp_in_government
 
 We have improved our relations with the [? if in_grand_coalition : Center (Zentrum) Party, [+ ddp_name +], and DVP, ?][? if not in_grand_coalition: Center (Zentrum) Party and [+ ddp_name +], ?] and reduced tensions with the coalition.
 
