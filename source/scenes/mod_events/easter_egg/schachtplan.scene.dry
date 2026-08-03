@@ -1,7 +1,7 @@
 Title: Schacht's Fiscal Ultimatum
 subtitle: March 1930
 new-page: true
-view-if: year = 1930 and month = 4 and schacht_resigned != 1 and schacht_relation >= 0
+view-if: year = 1930 and month = 4 and schacht_resigned != 1 and secret_mode
 tags: event
 max-visits: 1
 face-image: img/portraits/SchachtHjalmar.jpg
