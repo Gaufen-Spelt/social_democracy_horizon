@@ -4202,10 +4202,10 @@ function computeTarget(party, c) {
                 Q.dnf_line = 3;
             }
 
-            if (dnf_line === 1) {
+            if (Q.dnf_line === 1) {
                 let media_bonus = Q.hugenberg_media_control ? 20 : 0;
                 base = ((nat * 55) + ((1 - rep) * 30) + media_bonus) * (im.dnf || im.dnvp);
-            } else if (dnf_line === 2) {
+            } else if (Q.dnf_line === 2) {
                 let polarization = (1 - rep) * 55;
                 let crisis_bonus = Q.unemployment * 65;
                 base = ((nat * 45) + polarization + crisis_bonus) * (im.dnf || im.dnvp);
