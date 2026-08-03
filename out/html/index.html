@@ -55,6 +55,14 @@
           </tr>
           <tr><td><hr></td></tr>
           <tr>
+            <td>Focus mode:</td>
+            <td><label for="focusmode_yes">On</label></td>
+            <td><input type="radio" id="focusmode_yes" name="focusmode" value="1" onclick="window.enableFocusModeSetting();"></td>
+            <td><label for="focusmode_no">Off</label></td>
+            <td><input type="radio" id="focusmode_no" name="focusmode" value="0" onclick="window.disableFocusModeSetting();"></td>
+          </tr>
+          <tr><td><hr></td></tr>
+          <tr>
             <td>Music:</td>
             <td><label for="audio_yes">On</label></td>
             <td><input type="radio" id="audio_yes" name="audio" value="1" onclick="window.enableAudio();"></td>
