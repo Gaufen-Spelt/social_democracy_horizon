@@ -1,12 +1,12 @@
 Title: Schacht's Resignation
 subtitle: The Reichsbank President Departs
 new-page: true
-view-if: year = 1930 and month = 3 and schacht_resigned = 0 and (schacht_exposed = 1 or (unemployed >= 19 or inflation <= -6) or schacht_relation <= 0)
+view-if: year = 1930 and month = 3
 tags: event, economics
 max-visits: 1
-on-arrival: schacht_resigned = 1
+on-arrival: schacht_resigned = 1 if not secret_mode
 face-image: img/portraits/SchachtHjalmar.jpg
-go-to: hilferding_outcome if chud = 1
+go-to: hilferding_outcome if chud = 1; root if secret_mode
 
 = Schacht's Resignation
 
