@@ -50,21 +50,24 @@ const IDEO_KEYWORDS = [
 
     // 7 — right social democracy / soft-left liberal
     [/right-wing social democracy/i,      8],
+    [/catholic laborism/i,                10],
 
     // 10 — center / centrist liberal / cross-class Christian
-    [/social liberalism/i,                10],
-    [/christian socialism/i,              6],
+    [/social liberalism/i,                9],
+    [/christian socialism/i,              7],
     [/catholic tent/i,                    12],
     [/middle-class interest/i,            13],
+    [/corporatism/i,                      15],
 
-    // 13 — moderate conservative / regional Catholic conservative
+    // 13 — moderate conservative / regional Catholic conservative / Christian conservatives
+    [/christian conservatism/i,           14],
     [/bavarian conservatism/i,            13],
     [/protestant social conservatism/i,   13],
     [/moderate conservatism/i,            14],
     [/liberal agrarianism/i,              12],
 
     // 15 — national liberal / agrarian-liberal right-center
-    [/national liberalism/i,              15],
+    [/national liberalism/i,              14],
     [/hanoverian agrarianism/i,           15],
     [/hanseatic agrarian conservatism/i,  15],
 
@@ -1602,6 +1605,7 @@ let coop_upkeep          = (Q.cooperatives || 0)                  * UPKEEP_SCALE
 let commonwealth_upkeep  = (Q.commonwealth_cooperation || 0)      * UPKEEP_SCALE * 0.30;
 let econ_dem_upkeep      = (Q.economic_democracy || 0)            * UPKEEP_SCALE * 0.15;
 let safety_upkeep        = (Q.workers_safety || 0)                * UPKEEP_SCALE * 0.10;
+let police_upkeep        = (Q.prussian_police_strength || 0)             * UPKEEP_SCALE * 0.006;
 
 let edu_science_upkeep    = (Q.education_science || 0)            * UPKEEP_SCALE * 0.10;
 let school_boards_upkeep  = (Q.school_boards || 0)                * UPKEEP_SCALE * 0.05;
@@ -1616,7 +1620,7 @@ Q.fiscal_upkeep = (welfare_upkeep + land_upkeep + agri_fin_upkeep + pro_consumer
                 + commonwealth_upkeep + econ_dem_upkeep + safety_upkeep
                 + edu_science_upkeep + school_boards_upkeep + public_hs_upkeep
                 + medical_research_upkeep + applied_research_upkeep + science_upkeep
-                + kwg_research_upkeep) * macro_upkeep_mult;
+                + kwg_research_upkeep + police_upkeep) * macro_upkeep_mult;
 
 Q.budget += Q.fiscal_revenue - Q.fiscal_upkeep;
 Q.budget = Math.round(Q.budget * 100) / 100;
@@ -1667,6 +1671,8 @@ Q.budget_audit.expense_cooperatives  = Math.round(coop_upkeep          * macro_u
 Q.budget_audit.expense_commonwealth  = Math.round(commonwealth_upkeep * macro_upkeep_mult * 100) / 100;
 Q.budget_audit.expense_econ_dem      = Math.round(econ_dem_upkeep      * macro_upkeep_mult * 100) / 100;
 Q.budget_audit.expense_safety        = Math.round(safety_upkeep        * macro_upkeep_mult * 100) / 100;
+
+Q.budget_audit.expense_police        = Math.round(police_upkeep * macro_upkeep_mult * 100) / 100;
 
 Q.budget_audit.expense_education_science  = Math.round(edu_science_upkeep      * macro_upkeep_mult * 100) / 100;
 Q.budget_audit.expense_school_boards      = Math.round(school_boards_upkeep    * macro_upkeep_mult * 100) / 100;
