@@ -4193,13 +4193,13 @@ function computeTarget(party, c) {
         case 'dnf': {
             if (Q.dnf_banned || Q.dnvp_banned) return 0;
 
-            let dnf_line;
+    
             if (Q.year < 1929) {
-                dnf_line = 1;
+                Q.dnf_line = 1;
             } else if (Q.year < 1933) {
-                dnf_line = 2;
+                Q.dnf_line = 2;
             } else {
-                dnf_line = 3;
+                Q.dnf_line = 3;
             }
 
             if (dnf_line === 1) {
