@@ -20,13 +20,11 @@ How should we rally the republican forces?
 - @easy_discard
 
 @coord_rally
-on-arrival: old_middle_z += 2; workers_z += 2; workers_spd += 3; new_middle_ddp += 3; z_relation += 3; ddp_relation += 3; pro_republic += 4; coalition_dissent -= 1 if in_weimar_coalition = 1; dvp_relation += 3 if dvp_in_government and dvp_right_shift = 0; old_middle_dvp += 2 if dvp_in_government and dvp_right_shift = 0; coup_progress += 0.5; ddp_dissent -= 1; z_dissent -= 1; old_middle_dhp += 1
+on-arrival: old_middle_z += 2; workers_z += 2; workers_spd += 3; new_middle_ddp += 3; z_relation += 3; ddp_relation += 3; pro_republic += 4; dvp_relation += 3 if dvp_in_government and dvp_right_shift = 0; old_middle_dvp += 2 if dvp_in_government and dvp_right_shift = 0; coup_progress += 0.5; old_middle_dhp += 1; republican_rally += 1; dvp_left += 20 if dvp_in_government and dvp_right_shift = 0
 
-We organize a massive demonstration in Berlin, with banners reading "Unity Against Extremism!" The Social Democratic "Three Arrows," the Center's black-red-gold, and the DDP's constitutional liberalism march together through the streets. The *Reichsbanner Schwarz-Rot-Gold* provides security, keeping Nazi and Communist agitators at bay.
+We have organized the collective republican rally with Democrats of [+ ddp_name +] and Catholics of [+ z_name +], our fellow "Weimar Coalition" allies! Hopefully this will tone down extremism and radicalism , widespread ever since the November revolution. [? if dvp_in_government and dvp_right_shift = 0: Our rally was also joined by the uncommitted National Liberals of [+ dvp_party_leader +] , who seeked to join us and cultivate republican tendencies amongst his fellow members. ?] 
 
-[? if dvp_in_government and dvp_right_shift = 0: Even some DVP members join us—proof that moderate business liberals can still be won to the republican cause. Gustav Stresemann's legacy lives on in these men. ?]
-
-The bourgeois press is cautiously positive, though they warn against "socialist overreach." Our own base appreciates the show of democratic solidarity, even if some grumble about marching alongside "capitalist parties."
+[? if deterministic_mode: For your information, this action also gives benefits to weimar parties, not just you, so if you are vote-maxxing this, dont use this. ?]
 
 @iron_front_rally_0
 view-if: not iron_front_formed 
