@@ -18,6 +18,7 @@ Current police strength: [+ prussian_police_strength +]. <br>
 
 - @police_loyalty: Bolster the loyalty of the police.
 - @police_strength: Recruit additional police.
+- @demobilize_police: Discharge the police.
 - @bureaucracy: Purge the bureaucracy of reactionary elements.
 - @ban_sa: Ban the SA, the Nazi paramilitary group.
 - @unban_sa: Reverse the SA ban.
@@ -42,6 +43,14 @@ The police have historically been overrun with reactionaries, and we are trying 
 on-arrival: prussian_police_strength += 20 if prussian_police_loyalty < 0.75; prussian_police_strength += 40 if prussian_police_loyalty >= 0.75; prussian_police_loyalty += 0.04
 
 We have increased the size of the Prussian police. [? if prussian_police_loyalty >= 0.75: Loyalty of our Prussian Police allows us to recruit even more units compared to our previous crippled state! ?]
+
+@demobilize_police
+subtitle: +2 resources
+choose-if: prussian_police_strength >= 50
+unavailable-subtitle: Not enough left to disband.
+on-arrival: prussian_police_strength -= 50; prussian_police_loyalty -= 0.05; pro_republic -= 2; resources += 2
+
+We have demobilized some of the Prussian police units. This has impacted police's loyalty and pro-republican tendencies negatively.
 
 @bureaucracy
 on-arrival: prussian_police_loyalty += 0.05; nationalism -= 5; pacifism += 1; democratization += 1; pro_republic += 3*(1-dissent); new_middle_spd += 2*(1-dissent) if democratization >= 3; new_middle_spd += 2*(1-dissent) if democratization >= 4; coup_progress += 0.5; prussian_police_strength *= 0.91
