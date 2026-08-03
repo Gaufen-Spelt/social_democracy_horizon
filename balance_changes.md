@@ -84,3 +84,15 @@ Aufhauser buff:
 - Decreased advisor time action for "Organizing white-collar workers": 8 -> 6
 
 - Buffed "Organizing white-collar workers": New_middle_spd gains: 6 -> 8; new_middle_spd multiplied: 1.05x -> 1.15; labor_strength multiplied: 1.05x -> 1.20x
+
+---
+
+03.08.26
+
+Otto Braun buff and new ability:
+
+- New ability: Republican Rally.
+
+Buff:
+
+- "Negotiate with the coalition" advisor timer cooldown is decreased: 12 -> 10.
