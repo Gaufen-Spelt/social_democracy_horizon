@@ -69,12 +69,12 @@ For now, the right-wing block maintains its grip on the machinery of the Reich. 
 
 @marx_replaced
 new-page: true
-on-arrival: chancellor = "Julius Curtius"; chancellor_party = "DVP"; workers_dvp += 5; dvp_left += 20; new_middle_dvp += 5; old_middle_z -= 7; old_middle_dnvp -= 7; rural_dnvp -= 5
+on-arrival: old_chancellor = chancellor; chancellor = "Julius Curtius"; chancellor_party = "DVP"; workers_dvp += 5; dvp_left += 20; new_middle_dvp += 5; old_middle_z -= 7; old_middle_dnvp -= 7; rural_dnvp -= 5
 
 = Marx has been removed from his position!
 
-Against all odds, the fourth Marx cabinet has survived the confessional storm. However, president [+ president +] being dissapointed in capacities of chancellor [+ chancellor +], has dismissed him and replaced him with Julius Curtius of the DVP. This move gave DVP the primacy in the following negotiations regarding "School Law".
+Against all odds, the fourth Marx cabinet has survived the confessional storm. However, president [+ president +] being disappointed in capacities of the chancellor [+ old_chancellor +], has dismissed him and replaced him with Julius Curtius of the DVP. This move gave DVP the primacy in the following negotiations regarding "School Law".
 
-Disappointed in the Wilhelm Marx and DVP, DNVP has voiced their readiness to oust the coalition if it comes to it.
+Disappointed in the Wilhelm Marx of [+ z_name +] and DVP, DNVP has voiced their readiness to oust the coalition if the controversies are to be unsalvageable.
 
-**Bürgerblock** was proven to be unstable and even president [+ president +] had to admit it, although he is not ready to dissolve the Reichstag for the time being. 
+**Bürgerblock** was proven to be unstable and even president [+ president +] had to admit it, although he was not ready to dissolve the Reichstag for the time being.  Perhaps, our time has come?
