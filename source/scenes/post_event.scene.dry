@@ -4191,28 +4191,10 @@ function computeTarget(party, c) {
        }
 
         case 'dnf': {
-            if (Q.dnf_banned || Q.dnvp_banned) return 0;
-
+            if (Q.dnf_banned) return 0;
     
-            if (Q.year < 1929) {
-                Q.dnf_line = 1;
-            } else if (Q.year < 1933) {
-                Q.dnf_line = 2;
-            } else {
-                Q.dnf_line = 3;
-            }
-
-            if (Q.dnf_line === 1) {
-                let media_bonus = Q.hugenberg_media_control ? 20 : 0;
-                base = ((nat * 55) + ((1 - rep) * 30) + media_bonus) * (im.dnf || im.dnvp);
-            } else if (Q.dnf_line === 2) {
-                let polarization = (1 - rep) * 55;
-                let crisis_bonus = Q.unemployment * 65;
-                base = ((nat * 45) + polarization + crisis_bonus) * (im.dnf || im.dnvp);
-            } else {
-                let chaos_penalty = unr > 0.65 ? (unr * 25) : 0;
-                base = ((nat * 90) - chaos_penalty) * (im.dnf || im.dnvp);
-            }
+            let chaos_penalty = unr > 0.65 ? (unr * 25) : 0;
+            base = ((nat * 90) - chaos_penalty) * (im.dnf || im.dnvp);
 
             const isHarzburg   = Q.harzburg_front_seen === true;
             const mediaBlitz   = Q.hugenberg_media_blitz === true;
