@@ -69,7 +69,7 @@ For now, the right-wing block maintains its grip on the machinery of the Reich. 
 
 @marx_replaced
 new-page: true
-on-arrival: old_chancellor = chancellor; chancellor = "Julius Curtius"; chancellor_party = "DVP"; workers_dvp += 5; dvp_left += 20; new_middle_dvp += 5; old_middle_z -= 7; old_middle_dnvp -= 7; rural_dnvp -= 5
+on-arrival: old_chancellor = chancellor; chancellor = "Curtius"; chancellor_party = "DVP"; workers_dvp += 5; dvp_left += 20; new_middle_dvp += 5; old_middle_z -= 7; old_middle_dnvp -= 7; rural_dnvp -= 5
 
 = Marx has been removed from his position!
 
