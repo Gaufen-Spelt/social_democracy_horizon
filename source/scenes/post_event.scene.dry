@@ -6628,6 +6628,15 @@ if (Q.ma >= 1) {
         if (!Q.demographic_support_records[_dc]) Q.demographic_support_records[_dc] = [];
         Q.demographic_support_records[_dc].push(_demo_result);
     }
+
+        Q.leadership_records = Q.leadership_records || [];
+    Q.leadership_records.push({
+        date: new Date(Q.year, Q.month - 1),
+        chancellor: Q.chancellor,
+        chancellor_party: Q.chancellor_party,
+        president: Q.president,
+        president_party: Q.president_party
+    });
 }
 
 
