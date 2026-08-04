@@ -18,7 +18,7 @@ Herein contains relevant information about the government and politics of the Ge
 - @paramilitaries: Paramilitary groups
 - @factions: Internal factions
 - @figures: Figures and charts
-- @presidents: History of Presidents
+- @presidents: History of presidential runs and chancellors/presidents
 - @sandboxer: Sandbox? Okay.
 - @unsandboxer: Sandbox? No.
 - @backSpecialScene: Exit library.
@@ -47,8 +47,94 @@ for (var i = 0; i < Q.president_history.length; i++) {
         p.votes + "% vs " + p.runnerup + " " + 
         p.runnerup_votes + "%\n";
 }
+
+function buildLeadershipTimeline(svgId, records, partyColors, partyLabels, width, height) {
+    var svg = d3.select("#" + svgId);
+    svg.selectAll("*").remove();
+    if (!records || records.length === 0) return;
+
+    var margin = {top: 20, right: 20, bottom: 30, left: 90};
+    var innerWidth = width - margin.left - margin.right;
+    var rowHeight = 30;
+    var chancellorY = margin.top;
+    var presidentY = margin.top + rowHeight + 15;
+
+    var dates = records.map(function(d) { return d.date; });
+    var xScale = d3.scaleTime()
+        .domain([d3.min(dates), d3.max(dates)])
+        .range([0, innerWidth]);
+
+    var g = svg.append("g").attr("transform", "translate(" + margin.left + ",0)");
+
+    function drawRow(nameField, partyField, yPos, label) {
+        // group consecutive records with the same office-holder into one segment
+        var segments = [];
+        var current = null;
+        records.forEach(function(rec) {
+            var name = rec[nameField];
+            if (!current || current.name !== name) {
+                if (current) current.end = rec.date;
+                current = { name: name, party: rec[partyField], start: rec.date, end: rec.date };
+                segments.push(current);
+            } else {
+                current.end = rec.date;
+            }
+        });
+        if (segments.length) segments[segments.length - 1].end = dates[dates.length - 1];
+
+        g.append("text")
+            .attr("x", -margin.left + 5)
+            .attr("y", yPos + rowHeight / 2)
+            .attr("dy", "0.35em")
+            .style("font-size", "12px")
+            .style("font-weight", "bold")
+            .text(label);
+
+        var rows = g.selectAll(".seg-" + nameField)
+            .data(segments)
+            .enter();
+
+        rows.append("rect")
+            .attr("class", "seg-" + nameField)
+            .attr("x", function(d) { return xScale(d.start); })
+            .attr("y", yPos)
+            .attr("width", function(d) { return Math.max(xScale(d.end) - xScale(d.start), 2); })
+            .attr("height", rowHeight)
+            .attr("fill", function(d) { return partyColors[d.party] || "#cccccc"; })
+            .attr("stroke", "#fff")
+            .attr("stroke-width", 0.5)
+            .append("title")
+            .text(function(d) { return (d.name || "Vacant") + " (" + (partyLabels[d.party] || d.party || "—") + ")"; });
+
+        rows.filter(function(d) { return (xScale(d.end) - xScale(d.start)) > 45; })
+            .append("text")
+            .attr("x", function(d) { return (xScale(d.start) + xScale(d.end)) / 2; })
+            .attr("y", yPos + rowHeight / 2)
+            .attr("dy", "0.35em")
+            .attr("text-anchor", "middle")
+            .style("font-size", "10px")
+            .style("fill", "#fff")
+            .style("pointer-events", "none")
+            .text(function(d) { return d.name || "Vacant"; });
+    }
+
+    drawRow("chancellor", "chancellor_party", chancellorY, "Chancellor");
+    drawRow("president", "president_party", presidentY, "President");
+
+    var xAxis = d3.axisBottom(xScale).ticks(6).tickFormat(d3.timeFormat("%Y"));
+    g.append("g")
+        .attr("transform", "translate(0," + (presidentY + rowHeight + 10) + ")")
+        .call(xAxis)
+        .style("font-size", "10px");
+}
+
+buildLeadershipTimeline("leadership_history", Q.leadership_records, partyColors, partyLabels, width, 150);
 !}
 go-to: menu
+
+= Chancellor & President timeline
+
+{!<svg id="leadership_history" style="width: 500px; height: 150px;"> </svg>!}
 
 [+ president_history_text +]
 
