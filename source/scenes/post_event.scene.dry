@@ -6630,13 +6630,13 @@ if (Q.ma >= 1) {
     }
 
         Q.leadership_records = Q.leadership_records || [];
-    Q.leadership_records.push({
-        date: new Date(Q.year, Q.month - 1),
-        chancellor: Q.chancellor,
-        chancellor_party: Q.chancellor_party,
-        president: Q.president,
-        president_party: Q.president_party
-    });
+Q.leadership_records.push({
+    date: new Date(Q.year, Q.month - 1, Q.weeks === 0 ? 1 : 15),
+    chancellor: Q.chancellor,
+    chancellor_party: Q.chancellor_party,
+    president: Q.president,
+    president_party: Q.president_party
+});
 }
 
 
