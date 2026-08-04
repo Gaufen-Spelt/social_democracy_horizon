@@ -18,7 +18,6 @@ Herein contains relevant information about the government and politics of the Ge
 - @paramilitaries: Paramilitary groups
 - @factions: Internal factions
 - @figures: Figures and charts
-- @presidents: History of presidential runs and chancellors/presidents
 - @sandboxer: Sandbox? Okay.
 - @unsandboxer: Sandbox? No.
 - @backSpecialScene: Exit library.
@@ -36,23 +35,6 @@ view-if: sandbox = 1
 go-to: menu
 
 Sandbox turned off
-
-@presidents
-on-arrival: {! 
-Q.president_history_text = "";
-for (var i = 0; i < Q.president_history.length; i++) {
-    var p = Q.president_history[i];
-    Q.president_history_text += (i+1) + ". " + p.desc + 
-        " (" + p.year_start + ") — " + 
-        p.votes + "% vs " + p.runnerup + " " + 
-        p.runnerup_votes + "%\n";
-}
-!}
-go-to: menu
-
-= Chancellor & President timeline
-
-[+ president_history_text +]
 
 @government
 
@@ -629,11 +611,3 @@ document.getElementById('president-timeline').innerHTML = Q.president_timeline_h
 = Economic history
 
 {!<svg id="economic_history" style="width: 500px; height: 300px;"> </svg>!}
-
-= Chancellor timeline
-
-{!<div id="chancellor-timeline"></div>!}
-
-= President timeline
-
-{!<div id="president-timeline"></div>!}
