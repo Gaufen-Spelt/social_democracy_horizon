@@ -1,0 +1,19 @@
+title: Hugenberg's group leaves the coalition!
+subtitle: Storm of the nationalist fury has engulfed the **Burgerblock**
+new-page: true
+max-visits: 1
+tags: event
+view-if: chancellor == "Curtius" and (pro_republic >= 89 or dvp_relation >= 55 or (dvp_left >= dvp_right + 100) or coalition_votes <= 52.999 or ideology == "reformist") and dnvp_in_government and hugenberg_momentum >= 250 and year < 1929; other_r += dnvp_defection
+on-arrival: dnvp_loss_calculation = dnvp_r - hugenberg_momentum * 0.01; dnvp_r = dnvp_loss_calculation; dnvp_defection = hugenberg_momentum * 0.01; {!
+Q.coalition_votes = Q.coalition_votes - Q.dnvp_defection;
+Q.coalition_collapsed = Q.coalition_votes < 50 ? true : false;
+!}
+
+= Hugenberg's radicals walk out of the government!
+
+In the recent development of the **Bürgerblock**, DNVP's radical faction of Hugenbergites and Volkists have declared they would leave the government, despite all attempts of their partners, chancellor [+ chancellor +] and moderates within DNVP to convince them to stay in the coalition! Proportion of the radical deputies that have defected: [+ dnvp_defection +]. 
+
+[? if old_chancellor = "Marx": This happened in the light of Hindenburg ousting Marx, replacing him with Julius Curtius of the DVP. ?]
+
+Regardless, it seems like right wing coalition has collapsed under their own weight and arrogance. [? if coalition_collapsed: It seems, with the lack of majority or toleration from other parties, this coalition has collapsed.?]
+
