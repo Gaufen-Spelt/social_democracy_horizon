@@ -3026,18 +3026,40 @@ for (var party in allocation) {
 // ============================================
 
 var priorities = {
-    KPD: ['labor', 'interior', 'economic', 'finance', 'justice', 'foreign', 'agriculture', 'transport'],
+    // === Existing (unchanged) ===
+    KPD:  ['labor', 'interior', 'economic', 'finance', 'justice', 'foreign', 'agriculture', 'transport'],
     SAPD: ['labor', 'interior', 'justice', 'economic', 'finance', 'foreign', 'agriculture', 'transport'],
-    SPD: ['labor', 'interior', 'justice', 'finance', 'economic', 'foreign', 'agriculture', 'transport'],
+    SPD:  ['labor', 'interior', 'justice', 'finance', 'economic', 'foreign', 'agriculture', 'transport'],
     SRPD: ['labor', 'justice', 'interior', 'finance', 'economic', 'foreign', 'agriculture', 'transport'],
-    DDP: ['justice', 'economic', 'finance', 'interior', 'foreign', 'labor', 'agriculture', 'transport'],
-    Z: ['interior', 'foreign', 'finance', 'labor', 'agriculture', 'justice', 'economic', 'transport'],
-    BVP: ['agriculture', 'justice', 'interior', 'finance', 'economic', 'foreign', 'labor', 'transport'],
-    DVP: ['economic', 'finance', 'foreign', 'justice', 'interior', 'labor', 'agriculture', 'transport'],
-    WP: ['economic', 'finance', 'justice', 'agriculture', 'interior', 'foreign', 'labor', 'transport'],
+    DDP:  ['justice', 'economic', 'finance', 'interior', 'foreign', 'labor', 'agriculture', 'transport'],
+    Z:    ['interior', 'agriculture', 'labor', 'foreign', 'finance', 'justice', 'economic', 'transport'],
+    BVP:  ['agriculture', 'justice', 'interior', 'finance', 'economic', 'foreign', 'labor', 'transport'],
+    DVP:  ['economic', 'finance', 'foreign', 'justice', 'interior', 'labor', 'agriculture', 'transport'],
+    WP:   ['economic', 'finance', 'justice', 'agriculture', 'interior', 'foreign', 'labor', 'transport'],
     CNBL: ['agriculture', 'finance', 'economical', 'justice', 'interior', 'foreign', 'labor', 'transport'],
     DNVP: ['interior', 'finance', 'agriculture', 'foreign', 'economic', 'justice', 'labor', 'transport'],
     CSRP: ['interior', 'finance', 'agriculture', 'foreign', 'economic', 'justice', 'labor', 'transport'],
+    CSVD: ['labor', 'interior', 'justice', 'agriculture', 'economic', 'finance', 'foreign', 'transport'],
+    KVP:  ['interior', 'finance', 'foreign', 'economic', 'justice', 'agriculture', 'labor', 'transport'],
+    DVFP: ['interior', 'justice', 'foreign', 'finance', 'economic', 'agriculture', 'labor', 'transport'],
+    BB:   ['agriculture', 'interior', 'finance', 'justice', 'economic', 'foreign', 'labor', 'transport'],
+    DHP:  ['interior', 'agriculture', 'justice', 'finance', 'economic', 'foreign', 'labor', 'transport'],
+    VRP:  ['finance', 'justice', 'interior', 'economic', 'agriculture', 'foreign', 'labor', 'transport'],
+    ASPD: ['labor', 'interior', 'justice', 'finance', 'economic', 'foreign', 'agriculture', 'transport'],
+    HL:   ['economic', 'finance', 'foreign', 'justice', 'interior', 'labor', 'agriculture', 'transport'],
+    KPO:  ['labor', 'interior', 'economic', 'finance', 'justice', 'foreign', 'agriculture', 'transport'],
+    VNR:  ['interior', 'labor', 'justice', 'foreign', 'economic', 'finance', 'agriculture', 'transport'],
+    SL:   ['labor', 'economic', 'interior', 'justice', 'finance', 'foreign', 'agriculture', 'transport'],
+    RDP:  ['justice', 'interior', 'economic', 'finance', 'foreign', 'labor', 'agriculture', 'transport'],
+    SLS:  ['interior', 'justice', 'agriculture', 'labor', 'finance', 'economic', 'foreign', 'transport'],
+    CVP:  ['interior', 'labor', 'justice', 'agriculture', 'finance', 'economic', 'foreign', 'transport'],
+    DTSP: ['labor', 'interior', 'finance', 'justice', 'economic', 'foreign', 'agriculture', 'transport'],
+    DBP:  ['agriculture', 'finance', 'interior', 'justice', 'economic', 'foreign', 'labor', 'transport'],
+    DSBP: ['economic', 'finance', 'interior', 'justice', 'foreign', 'labor', 'agriculture', 'transport'],
+    DNF:  ['economic', 'finance', 'interior', 'foreign', 'justice', 'agriculture', 'labor', 'transport'],
+    FAUD: ['labor', 'economic', 'interior', 'justice', 'finance', 'foreign', 'agriculture', 'transport'],
+    KAPD: ['labor', 'economic', 'interior', 'finance', 'justice', 'foreign', 'agriculture', 'transport'],
+    RLB:  ['agriculture', 'finance', 'interior', 'economic', 'justice', 'foreign', 'labor', 'transport'],
 };
 
 // ============================================
@@ -3058,13 +3080,13 @@ var sorted_coalition = coalition.slice().sort(function(a, b) {
 for (var round = 0; round < ministries.length; round++) {
     for (var i = 0; i < sorted_coalition.length; i++) {
         var party = sorted_coalition[i];
-        
+
         if (allocation[party] > ministry_count[party]) {
             var party_priorities = priorities[party] || ministries;
-            
+
             for (var j = 0; j < party_priorities.length; j++) {
                 var ministry = party_priorities[j];
-                
+
                 if (assignments[ministry] === null) {
                     assignments[ministry] = party;
                     ministry_count[party]++;
@@ -3089,8 +3111,6 @@ Q.agriculture_minister_party = assignments.agriculture || 'I';
 Q.transport_minister_party = assignments.transport || 'I';
 Q.reichswehr_minister_party = 'I';
 
-// [Keep all your minister name assignment code here - it's unchanged]
-
 // Store allocation for display
 Q.ministry_allocation = allocation;
 Q.ministry_leverage = leverage;
@@ -3111,6 +3131,14 @@ else if (Q.foreign_minister_party === 'DVP') Q.foreign_minister = Q.stresemann_d
 else if (Q.foreign_minister_party === 'WP') Q.foreign_minister = 'Lambach';
 else if (Q.foreign_minister_party === 'CNBL') Q.foreign_minister = 'Hepp';
 else if (Q.foreign_minister_party === 'DNVP') Q.foreign_minister = 'Westarp';
+else if (Q.foreign_minister_party === 'CSVD') Q.foreign_minister = 'Hartwig';
+else if (Q.foreign_minister_party === 'KVP') Q.foreign_minister = 'Treviranus';
+else if (Q.foreign_minister_party === 'DVFP') Q.foreign_minister = 'Ludendorff';
+else if (Q.foreign_minister_party === 'BB') Q.foreign_minister = 'Gandorfer';
+else if (Q.foreign_minister_party === 'VRP') Q.foreign_minister = 'Wallner';
+else if (Q.foreign_minister_party === 'VNR') Q.foreign_minister = 'Abel';
+else if (Q.foreign_minister_party === 'DBP') Q.foreign_minister = 'Fehr';
+else if (Q.foreign_minister_party === 'DNF') Q.foreign_minister = 'Hugenberg';
 else Q.foreign_minister = 'Unbesetzt';
 
 // Interior Ministry
@@ -3125,6 +3153,15 @@ else if (Q.interior_minister_party === 'DVP') Q.interior_minister = 'Scholz';
 else if (Q.interior_minister_party === 'WP') Q.interior_minister = 'Petersen';
 else if (Q.interior_minister_party === 'CNBL') Q.interior_minister = 'Behrens';
 else if (Q.interior_minister_party === 'DNVP') Q.interior_minister = 'Hergt';
+else if (Q.interior_minister_party === 'CSVD') Q.interior_minister = 'Bausch';
+else if (Q.interior_minister_party === 'KVP') Q.interior_minister = 'Westarp';
+else if (Q.interior_minister_party === 'DVFP') Q.interior_minister = 'Ludendorff';
+else if (Q.interior_minister_party === 'BB') Q.interior_minister = 'Eisenberger';
+else if (Q.interior_minister_party === 'DHP') Q.interior_minister = 'von Adelebsen';
+else if (Q.interior_minister_party === 'VRP') Q.interior_minister = 'Wallner';
+else if (Q.interior_minister_party === 'VNR') Q.interior_minister = 'Baltrusch';
+else if (Q.interior_minister_party === 'DBP') Q.interior_minister = 'Eder';
+else if (Q.interior_minister_party === 'DNF') Q.interior_minister = 'Hugenberg';
 else Q.interior_minister = 'Unbesetzt';
 
 // Justice Ministry
@@ -3139,6 +3176,15 @@ else if (Q.justice_minister_party === 'DVP') Q.justice_minister = 'Heinze';
 else if (Q.justice_minister_party === 'WP') Q.justice_minister = 'Drewitz';
 else if (Q.justice_minister_party === 'CNBL') Q.justice_minister = 'von Rohr';
 else if (Q.justice_minister_party === 'DNVP') Q.justice_minister = 'Schiele';
+else if (Q.justice_minister_party === 'CSVD') Q.justice_minister = 'Echte';
+else if (Q.justice_minister_party === 'KVP') Q.justice_minister = 'Lejeune-Jung';
+else if (Q.justice_minister_party === 'DVFP') Q.justice_minister = 'Ludendorff';
+else if (Q.justice_minister_party === 'BB') Q.justice_minister = 'Eder';
+else if (Q.justice_minister_party === 'DHP') Q.justice_minister = 'von Alten';
+else if (Q.justice_minister_party === 'VRP') Q.justice_minister = 'Wallner';
+else if (Q.justice_minister_party === 'VNR') Q.justice_minister = 'Adolph';
+else if (Q.justice_minister_party === 'DBP') Q.justice_minister = 'Gandorfer';
+else if (Q.justice_minister_party === 'DNF') Q.justice_minister = 'Hugenberg';
 else Q.justice_minister = 'Unbesetzt';
 
 // Labor Ministry
@@ -3153,6 +3199,14 @@ else if (Q.labor_minister_party === 'DVP') Q.labor_minister = 'Brauns';
 else if (Q.labor_minister_party === 'WP') Q.labor_minister = 'Petersen';
 else if (Q.labor_minister_party === 'CNBL') Q.labor_minister = 'Lohse';
 else if (Q.labor_minister_party === 'DNVP') Q.labor_minister = 'Schiele';
+else if (Q.labor_minister_party === 'CSVD') Q.labor_minister = 'Strathmann';
+else if (Q.labor_minister_party === 'KVP') Q.labor_minister = 'Schlange-Schöningen';
+else if (Q.labor_minister_party === 'DVFP') Q.labor_minister = 'Ludendorff';
+else if (Q.labor_minister_party === 'BB') Q.labor_minister = 'Gandorfer';
+else if (Q.labor_minister_party === 'VRP') Q.labor_minister = 'Wallner';
+else if (Q.labor_minister_party === 'VNR') Q.labor_minister = 'Bornemann';
+else if (Q.labor_minister_party === 'DBP') Q.labor_minister = 'Fehr';
+else if (Q.labor_minister_party === 'DNF') Q.labor_minister = 'Hugenberg';
 else Q.labor_minister = 'Unbesetzt';
 
 // Economic Ministry
@@ -3167,6 +3221,14 @@ else if (Q.economic_minister_party === 'DVP') Q.economic_minister = 'Curtius';
 else if (Q.economic_minister_party === 'WP') Q.economic_minister = 'Lambach';
 else if (Q.economic_minister_party === 'CNBL') Q.economic_minister = 'Heim';
 else if (Q.economic_minister_party === 'DNVP') Q.economic_minister = 'Schiele';
+else if (Q.economic_minister_party === 'CSVD') Q.economic_minister = 'A. Schmidt';
+else if (Q.economic_minister_party === 'KVP') Q.economic_minister = 'Dähnhardt';
+else if (Q.economic_minister_party === 'DVFP') Q.economic_minister = 'Ludendorff';
+else if (Q.economic_minister_party === 'BB') Q.economic_minister = 'Eisenberger';
+else if (Q.economic_minister_party === 'VRP') Q.economic_minister = 'Wallner';
+else if (Q.economic_minister_party === 'VNR') Q.economic_minister = 'Abel';
+else if (Q.economic_minister_party === 'DBP') Q.economic_minister = 'Eder';
+else if (Q.economic_minister_party === 'DNF') Q.economic_minister = 'Hugenberg';
 else Q.economic_minister = 'Unbesetzt';
 
 // Finance Ministry
@@ -3181,6 +3243,14 @@ else if (Q.finance_minister_party === 'DVP') Q.finance_minister = 'Moldenhauer';
 else if (Q.finance_minister_party === 'WP') Q.finance_minister = 'Drewitz';
 else if (Q.finance_minister_party === 'CNBL') Q.finance_minister = 'Hepp';
 else if (Q.finance_minister_party === 'DNVP') Q.finance_minister = 'Schiele';
+else if (Q.finance_minister_party === 'CSVD') Q.finance_minister = 'R. Fischer';
+else if (Q.finance_minister_party === 'KVP') Q.finance_minister = 'Treviranus';
+else if (Q.finance_minister_party === 'DVFP') Q.finance_minister = 'Ludendorff';
+else if (Q.finance_minister_party === 'BB') Q.finance_minister = 'Fehr';
+else if (Q.finance_minister_party === 'VRP') Q.finance_minister = 'Wallner';
+else if (Q.finance_minister_party === 'VNR') Q.finance_minister = 'Baltrusch';
+else if (Q.finance_minister_party === 'DBP') Q.finance_minister = 'Gandorfer';
+else if (Q.finance_minister_party === 'DNF') Q.finance_minister = 'Hugenberg';
 else Q.finance_minister = 'Unbesetzt';
 
 // Agriculture Ministry
@@ -3195,10 +3265,19 @@ else if (Q.agriculture_minister_party === 'DVP') Q.agriculture_minister = 'Schie
 else if (Q.agriculture_minister_party === 'WP') Q.agriculture_minister = 'Bredt';
 else if (Q.agriculture_minister_party === 'CNBL') Q.agriculture_minister = 'Hamkens';
 else if (Q.agriculture_minister_party === 'DNVP') Q.agriculture_minister = 'Schiele';
+else if (Q.agriculture_minister_party === 'CSVD') Q.agriculture_minister = 'Eitner';
+else if (Q.agriculture_minister_party === 'KVP') Q.agriculture_minister = 'Schlange-Schöningen';
+else if (Q.agriculture_minister_party === 'DVFP') Q.agriculture_minister = 'Ludendorff';
+else if (Q.agriculture_minister_party === 'BB') Q.agriculture_minister = 'Eder';
+else if (Q.agriculture_minister_party === 'DHP') Q.agriculture_minister = 'von Adelebsen';
+else if (Q.agriculture_minister_party === 'VRP') Q.agriculture_minister = 'Wallner';
+else if (Q.agriculture_minister_party === 'VNR') Q.agriculture_minister = 'Adolph';
+else if (Q.agriculture_minister_party === 'DBP') Q.agriculture_minister = 'Fehr';
+else if (Q.agriculture_minister_party === 'DNF') Q.agriculture_minister = 'Hugenberg';
 else Q.agriculture_minister = 'Unbesetzt';
 
 // Transport Ministry
-if (Q.transport_minister_party === 'KPD') Q.agriculture_minister = 'Hoernle';
+if (Q.transport_minister_party === 'KPD') Q.transport_minister = 'Hoernle';
 else if (Q.transport_minister_party === 'SAPD') Q.transport_minister = 'Baade';
 else if (Q.transport_minister_party === 'SPD') Q.transport_minister = 'Baade';
 else if (Q.transport_minister_party === 'SRPD') Q.transport_minister = 'Baade';
@@ -3209,6 +3288,14 @@ else if (Q.transport_minister_party === 'DVP') Q.transport_minister = 'Schiele';
 else if (Q.transport_minister_party === 'WP') Q.transport_minister = 'Bredt';
 else if (Q.transport_minister_party === 'CNBL') Q.transport_minister = 'Hamkens';
 else if (Q.transport_minister_party === 'DNVP') Q.transport_minister = 'Schiele';
+else if (Q.transport_minister_party === 'CSVD') Q.transport_minister = 'Bausch';
+else if (Q.transport_minister_party === 'KVP') Q.transport_minister = 'Dähnhardt';
+else if (Q.transport_minister_party === 'DVFP') Q.transport_minister = 'Ludendorff';
+else if (Q.transport_minister_party === 'BB') Q.transport_minister = 'Eisenberger';
+else if (Q.transport_minister_party === 'VRP') Q.transport_minister = 'Wallner';
+else if (Q.transport_minister_party === 'VNR') Q.transport_minister = 'Bornemann';
+else if (Q.transport_minister_party === 'DBP') Q.transport_minister = 'Gandorfer';
+else if (Q.transport_minister_party === 'DNF') Q.transport_minister = 'Hugenberg';
 else Q.transport_minister = 'Unbesetzt';
 
 // Reichswehr always independent
@@ -3220,7 +3307,7 @@ Q.ministry_allocation = allocation;
 Q.ministry_leverage = leverage;
 
 // HINDENBURG'S STATUS UPDATE
-Q.presidential_patience += 10
+Q.presidential_patience = 40;
 
 
 
