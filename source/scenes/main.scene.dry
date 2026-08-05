@@ -8,6 +8,9 @@ if (Q.advisor_action_timer <= 0) {
 } else {
     Q.pinnedCardsDescription = 'Advisors - next action available in ' + Q.advisor_action_timer + ' months.';
 }
+
+window.disableFocusMode()
+
 !}
 on-display: {!
 document.getElementById('bill-queue-display').innerHTML = Q.bill_list_html || Q.bill_list_text;
