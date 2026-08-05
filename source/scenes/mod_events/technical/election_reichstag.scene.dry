@@ -34,106 +34,53 @@ Fine. President [+ president +] has taken the unprecedented step of canceling th
 @post_election_1928
 on-arrival: {!
 // === CLEAR GOVERNMENT STATUS ===
-// Dynamically reset the government status for all active parties
 for (var party of Q.parties) {
     Q[party + '_in_government'] = 0;
 }
 
-var new_party_sum = 0;
-
-// Calculate election results
 for (var party of Q.parties) {
     Q['old_' + party + '_r'] = Q[party + '_r'] ?? 0;
     Q['old_' + party + '_seat_pct'] = Q[party + '_seat_pct'] ?? 0;
     Q['old_' + party + '_seats'] = Q[party + '_seats'] ?? 0;
-    
+}
+
+// === FILTER _votes (bans / threshold) — READ, DON'T RECONSTRUCT ===
+// _votes is assumed already set/current from wherever support was last computed.
+for (var party of Q.parties) {
     if (Q[party + '_banned']) {
-        Q[party + '_support'] = 0;
+        Q[party + '_votes'] = 0;
     }
-    
+
     if (Q.constitutional_reform > 0) {
-        if (Q[party + '_votes'] < Q.electoral_threshold || 
+        if (Q[party + '_votes'] < Q.electoral_threshold ||
             (Q.electoral_threshold > 1 && party === 'other') ||
             Q[party + '_banned']) {
-            Q[party + '_support'] = 0;
+            Q[party + '_votes'] = 0;
         }
     }
-    
-    if (Q.math_broken) {
-        Q[party + '_support'] = Q.impossible_add(Q[party + '_support'], 0);
-    }
-    
-    new_party_sum += Q[party + '_support'];
 }
 
-if (Q.math_broken) {
-    new_party_sum = Q.impossible_multiply(new_party_sum, 1);
+// === DERIVE _r FROM _votes (renormalize only if disqualifications occurred) ===
+var votes_sum = 0;
+for (var party of Q.parties) {
+    votes_sum += Q[party + '_votes'];
 }
 
 for (var party of Q.parties) {
-    if (Q[party + '_banned'] && !Q.math_broken) {
-        Q[party + '_r'] = 0;
-        Q[party + '_votes'] = 0;
-    } else if (!Q.math_broken) {
-        if (new_party_sum > 0) {
-            Q[party + '_r'] = (Q[party + '_support'] / new_party_sum) * 100;
-        } else {
-            Q[party + '_r'] = 0;
-        }
-        Q[party + '_votes'] = Math.round(Q[party + '_r'] * 10) / 10;
-    } else {
-        if (new_party_sum > 0) {
-            var roll = Math.random();
-            if (roll < 0.3) {
-                Q[party + '_r'] = (Q[party + '_support'] / new_party_sum) * 100;
-            } else if (roll < 0.5) {
-                Q[party + '_r'] = Q.impossible_multiply(Q[party + '_support'], new_party_sum / 100);
-            } else if (roll < 0.7) {
-                Q[party + '_r'] = Q.impossible_percentage(Q[party + '_support']);
-            } else {
-                Q[party + '_r'] = Q.impossible_add(Q[party + '_support'], new_party_sum);
-            }
-        } else {
-            Q[party + '_r'] = Q.impossible_subtract(0, 0);
-        }
-        
-        Q[party + '_votes'] = Q.impossible_multiply(Q[party + '_r'], 1);
-        
-        if (isNaN(Q[party + '_r'])) Q[party + '_r'] = Math.random() * 50;
-        if (isNaN(Q[party + '_votes'])) Q[party + '_votes'] = Math.random() * 50;
-    }
+    Q[party + '_r'] = votes_sum > 0 ? (Q[party + '_votes'] / votes_sum) * 100 : 0;
 }
 
+// === DISPLAY STRINGS + CHANGE TRACKING ===
 for (var party of Q.parties) {
-    if (!Q.math_broken) {
-        Q[party + '_r_disp'] = (Math.round(Q[party + '_r'] * 10) / 10).toFixed(1);
-        
-        Q['change_' + party + '_r'] = Q[party + '_r'] - Q['old_' + party + '_r'];
-        Q['str_change_' + party] = (Q['change_' + party + '_r'] >= 0 ? '+' : '') +
-            (Math.ceil(Q['change_' + party + '_r'] * 10) / 10).toFixed(1);
-    } else {
-        if (Q.use_decimals) {
-            Q[party + '_r_disp'] = Q.impossible_add(Q[party + '_r'], 0).toFixed(1);
-        } else {
-            Q[party + '_r_disp'] = Math.round(Q.impossible_multiply(Q[party + '_r'], 1)).toString();
-        }
-        
-        Q['change_' + party + '_r'] = Q.impossible_subtract(Q[party + '_r'], Q['old_' + party + '_r']);
-        
-        if (isNaN(Q['change_' + party + '_r'])) Q['change_' + party + '_r'] = Math.random() * 20 - 10;
-        
-        var broken_sign = Math.random() < 0.3 ? '-' : '+';
-        if (Math.random() < 0.5) {
-            broken_sign = (Q['change_' + party + '_r'] >= 0 ? '+' : '');
-        }
-        
-        Q['str_change_' + party] = broken_sign +
-            Q.impossible_add(Q['change_' + party + '_r'], 0).toFixed(1);
-    }
+    Q[party + '_r_disp'] = (Math.round(Q[party + '_r'] * 10) / 10).toFixed(1);
+
+    Q['change_' + party + '_r'] = Q[party + '_r'] - Q['old_' + party + '_r'];
+    Q['str_change_' + party] = (Q['change_' + party + '_r'] >= 0 ? '+' : '') +
+        (Math.ceil(Q['change_' + party + '_r'] * 10) / 10).toFixed(1);
 }
 
+// === SEATS ===
 Q.total_seats = 600;
-
 Q.election_system_name = Q.fptp_variable === 1 ? 'First Past the Post' : 'Proportional Representation';
 
 if (Q.fptp_variable === 1) {
@@ -187,11 +134,7 @@ if (Q.fptp_variable === 1) {
     }
 } else {
     for (var party of Q.parties) {
-        if (!Q.math_broken) {
-            Q[party + '_seats'] = Math.round(Q[party + '_r'] * 6);
-        } else {
-            Q[party + '_seats'] = Math.round(Q.impossible_multiply(Q[party + '_r'], 6));
-        }
+        Q[party + '_seats'] = Math.round(Q[party + '_r'] * 6);
     }
 }
 
@@ -201,9 +144,8 @@ for (var party of Q.parties) {
 }
 
 for (var party of Q.parties) {
-    if (!Q.math_broken) {
-    Q[party + '_seat_pct'] = Q.total_seats_filled > 0 
-        ? Math.round((Q[party + '_seats'] / Q.total_seats_filled) * 1000) / 10 
+    Q[party + '_seat_pct'] = Q.total_seats_filled > 0
+        ? Math.round((Q[party + '_seats'] / Q.total_seats_filled) * 1000) / 10
         : 0;
     Q[party + '_seats_disp'] = Q[party + '_seats'].toString();
     Q[party + '_seat_pct_disp'] = Q[party + '_seat_pct'].toFixed(1);
@@ -213,18 +155,18 @@ for (var party of Q.parties) {
     Q['change_' + party + '_seats_num'] = Q[party + '_seats'] - Q['old_' + party + '_seats'];
     Q['str_change_' + party + '_seats_num'] = (Q['change_' + party + '_seats_num'] >= 0 ? '+' : '') +
         Q['change_' + party + '_seats_num'].toString();
-    }
 }
 
+// === ZERO OUT ELIMINATED PARTIES ===
 for (var party of Q.parties) {
-    if (Q[party + '_support'] === 0 || Q[party + '_r'] === 0) {
+    if (Q[party + '_votes'] === 0 || Q[party + '_r'] === 0) {
         Q[party + '_seats'] = 0;
         Q[party + '_seat_pct'] = 0;
         Q[party + '_r'] = 0;
-        Q[party + '_votes'] = 0;
     }
 }
 
+// === RESET GOVERNMENT/COALITION FLAGS ===
 Q.coalition_dissent = 0;
 Q.kpd_coalition_dissent = 0;
 Q.spd_in_government = 0;
