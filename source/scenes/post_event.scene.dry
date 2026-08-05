@@ -1071,7 +1071,7 @@ if (Q.ideology == "reformist") {
     Q.z_clerical_power += 3.5;
 }
 
-if (Q.enemies = "bourgeois parties") {
+if (Q.enemies == "bourgeois parties") {
     Q.z_right_labor_power += 3.0;
     Q.z_left_labor_power -= 3.0;
     Q.z_clerical_power += 1.0;
