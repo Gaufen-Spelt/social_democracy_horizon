@@ -18,7 +18,7 @@ Q.tolerating_parties_display = tolDisplay;
 
 = Status
 
-[+ weeks +], [+ month : month +] [+ year +]
+[+ weeks +], [+ weeks: monther +], [+ month : month +] [+ year +]
 
 [? if ruhr_labor_strike: <span style="color: #dc143c;">  Ruhr is under the labor strike! </span> ?]
 
