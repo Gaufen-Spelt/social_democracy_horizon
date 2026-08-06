@@ -26,6 +26,14 @@ new-page: true
 
 [? if year = 1928 and month = 4 and urban_plan_flavor_1 = 1: As the result of success of Urban Plan, northern *socialist* elements of NSDAP have secured some gains amongst the working class, rendering them capable of competing their southern collegues. ?]
 
+# RLB PARTY ELECTION
+
+[? if year == 1928 and month == 8 and rlb_flavor_1 == 1 and rlb_party_leader = "Karl Hepp": In the result of Reichslandbund (RLB) leadership election, unexpectedly, Karl Hepp of [? if cnbl_crisis: CNBLP ?] [? if not cnbl_crisis: RLB – DVP ?] – representative of the smaller and medium conservative farmers, has secured his victory against the moderate candidate of Junkers. There are some growing concerns of his ambigious policies. ?]
+
+[? if year == 1928 and month == 8 and rlb_flavor_1 == 1 and rlb_party_leader = "Martin Schiele": In the result of Reichslandbund (RLB) leadership election, as expected, Martin Schiele, [? if not dnvp_in_government or dnvp_in_government and not agricultural_minister_party == "DNVP": formerly ?] [? if dnvp_in_government and agricultural_minister_party == "DNVP": current ?] agricultural minister of the Fourth Marx cabinet, has gained tremendous support from Junkers and DNVP to secure his victory. ?]
+
+# Other news
+
 [? if year < 1929 and month < 10 and landvolkbewegung_flavor_1 = 1: As the result of government's help to agrarian sector, Landvolkbewegung has mostly died out as serious force, leaving behind smaller radical groups. ?]
 
 [? if year = 1928 and month >= 9 and month <= 11 and lambach_reinstated == 1: DNVP's Party's high court by small margin managed to get Lambach to be reinstated back to his position. ?]
