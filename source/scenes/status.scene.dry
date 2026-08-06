@@ -154,13 +154,23 @@ Internal dissent: [+ dissent_percent : dissent +] [? if deterministic_mode == 1:
 
 {!<span class="tooltip-text" title="The Left is interested in radical, transformative policies and cooperation with the KPD.">Klassenkampf Linke</span>!} strength: [+ left_strength : strength +] [? if deterministic_mode == 1: [+ left_strength +] ?], dissent: [+ left_dissent : dissent +] [? if deterministic_mode == 1: [+ left_dissent +] ?]
 
+[? if left_split: Leftists have defected from our party! ?]
+
 {!<span class="tooltip-text" title="The Center is a faction of Center Marxists, between reform and revolution.">Materialist / Center Marxists</span>!} strength: [+ center_strength : strength +] [? if deterministic_mode == 1: [+ center_strength +] ?], dissent: [+ center_dissent : dissent +] [? if deterministic_mode == 1: [+ center_dissent +] ?]
+
+[? if centrists_resign: "Center Marxists have defected from our party! ?]
 
 {!<span class="tooltip-text" title="Labor's goal is economic reform and benefits for organized workers."> Arbeitergewerkschaft </span>!} strength: [+ labor_strength : strength +] [? if deterministic_mode == 1: [+ labor_strength +] ?], dissent: [+ labor_dissent : dissent +] [? if deterministic_mode == 1: [+ labor_dissent +] ?]
 
+[? if unions_independent: Unions have defected from our party! ?]
+
 {!<span class="tooltip-text" title="Reformists are pragmatic participants in government, and seek to expand the welfare state and defend democracy."> Reformist / Evolutionary Socialists </span>!} strength: [+ reformist_strength : strength +] [? if deterministic_mode == 1: [+ reformist_strength +] ?], dissent: [+ reformist_dissent : dissent +] [? if deterministic_mode == 1: [+ reformist_dissent +] ?]
 
+[? if reformists_resign: Reformists have defected from our party! ?]
+
 [? if neorevisionism > 0 : Neorevisionist / Militant Democrats strength: [+ neorevisionist_strength : strength +] [? if deterministic_mode == 1: [+ neorevisionist_strength +] ?], dissent: [+ neorevisionist_dissent : dissent +] [? if deterministic_mode == 1: [+ neorevisionist_dissent +] ?] ?]
+
+[? if neorevisionism > 0 and neorev_split: Neorevisionists have defected from our party! ?]
 
 = Support for the Forces
 
