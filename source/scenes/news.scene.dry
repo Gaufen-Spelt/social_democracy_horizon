@@ -24,7 +24,7 @@ new-page: true
 
 # URBAN PLAN NSDAP
 
-[? if year = 1928 and month = 4 and urban_plan_flavor_1 = 1: As the result of success of Urban Plan, northern *socialist* elements of NSDAP have secured some gains amongst the working class, rendering them capable of competing their southern collegues. ?]
+[? if year = 1928 and month = 4 and urban_plan_flavor_1 = 1: With the Urban Plan coming to it's conclusion, northern *socialist* elements of NSDAP have secured some gains amongst the working class, rendering them capable of competing their southern collegues. ?]
 
 # RLB PARTY ELECTION
 
