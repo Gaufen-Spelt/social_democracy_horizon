@@ -6796,7 +6796,7 @@ Q.recalc_strengths();
 if (typeof window !== "undefined" && window.generateBar) {
 }
 !}
-go-to: events_choice if has_event = 1; main if has_event = 0 and difficulty = 0; main.main_easy if has_event = 0 and difficulty < 0; main.main_historical if has_event = 0 and difficulty >= 2; main.main_hard if has_event = 0 and difficulty = 1
+go-to: events_choice if has_event = 1; main if has_event = 0 and difficulty = 0; main.main_easy if has_event = 0 and difficulty < 0; main.main_historical if has_event = 0 and difficulty == 2; main.main_hard if has_event = 0 and difficulty = 1; main.main_nightmare if has_event == 0 and difficulty >= 3
 
 = [+ weeks: monther +] , [+ month : month +] [+ year +]
 
