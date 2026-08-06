@@ -2,6 +2,7 @@ title: Stegerwald's reform reaches it's logical conclusion.
 subtitle: Future of the Zentrum is slowly creeping...
 tags: event
 new-page: true
+face-image: img/dnvp/reform_steggy.png
 view-if: month == 8 and year >= 1929 and stegerwald_reform == 1
 max-visits: 1
 on-arrival: {!
@@ -118,9 +119,11 @@ go-to: steggy_win if stegerwald_reform_support_pct >= 50; steggy_lose if stegerw
 on-arrival: z_ideology = "Christian Conservatism"; workers_z += 10; new_middle_z += 5; rural_z -= 8; old_middle -= 8; z_transition_cvp = 1
 go-to: steggy_full if stegerwald_reform_support_pct >= 65; steggy_lite if stegerwald_reform_support_pct < 65
 
-Gg steggy
+Az the result of victory of Adam Stegerwald in his attempt to reform the party, he took over and pushed his package reforms, breaking the strength of clericals and opposition inside the party, eliminating "Catholic Action" group, breaking ties with catholic organizations and forming new ties with protestant local organizations. 
 
-[+ stegerwald_reform_support_pct +]
+This has results in the **Great Exodus** of catholics and old middle class elements, their positions being replaced by the youth, workers, white collars (despite their early conflict with Stegerwald) and protestants. Catholics find themselves abandoned and are filling up different parties, breaking coherence of catholic movement, perhaps, **forever**...
+
+Pro-reform votes: [+ stegerwald_reform_support_pct +]% / 100%
 
 @steggy_full
 on-arrival: z_relation -= 30; z_transition_cvp = 1
@@ -128,7 +131,9 @@ on-departure: {!
 window.disableFocusMode()
 !}
 
-Steggy is evil now
+But, the most profound change comes from the new position accepted in the Evangelical Social Congress: Zentrum officially transforms into the Christian People's Party, umbrella party of catholics and protestants (de-facto situation is that Stegerwald's reforms have empowered christian unions and working class, causing frictions with it's donors and religious organizations, less so with protestants). It's main program is unification of **whole Right of the Weimar**, separation of the Labor from marxism / socialism and advancement of the **Volksgemeinschaft**, concept of national unification of Germany.
+
+[? if z_in_government and spd_in_government: Whatever coalition we are in, it's very unlikely that CVP will consider remaining in it so long right has majority. ?]
 
 @steggy_lite
 on-arrival: z_relation -= 10; z_transition_cvp = 2
@@ -142,7 +147,10 @@ Steggy aint evil that much
 on-departure: {!
 window.disableFocusMode()
 !}
+on-arrival: z_party_leader = "Joseph Joos" if prussian_concordat == 1; z_party_leader = "Ludwig Kaas" if not prussian_concordat
 
-Oof steggy
+After the failure of Adam Stegerwald to adequately appease the Zentrum and show appeals of new direction, Stegerwald was ousted from his position, leaving his reform none of worth. 
 
-[+ stegerwald_reform_support_pct +]
+[? if prussian_concordat == 1: With clericals unable to impose their leadership, Joseph Joos has been instated as the new leader. ?] [? if not prussian_concordat: Clericals and moderates are able to push Ludwig Kaas despite his own protests. Nothing will change. ?]
+
+Pro-reform votes: [+ stegerwald_reform_support_pct +]
