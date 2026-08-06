@@ -73,6 +73,7 @@ const IDEO_KEYWORDS = [
 
     // 17 — hard agrarian conservative
     [/völkisch liberalism/i,              16],
+    [/populist agrarian conservatism/i,   16],
     [/agrarian conservatism/i,            17],
     [/social corporatism/i,               16],
 
@@ -1835,7 +1836,7 @@ if ( Q.year == 1928 &&  Q.month == 4 && (Q.weeks == 0 || Q.weeks == 1) && Q.urba
     Q.workers_nsdap += 4;
 }
 
-if (Q.year == 1928 && Q.month == 8 && (Q.weeks == 0 || Q.weeks == 1) && Q.rlb_flavor_1 != 1) {
+if (Q.year == 1928 && Q.month == 8 && Q.weeks < 2 && Q.rlb_flavor_1 == 0) {
     Q.rlb_flavor_1 = 1;
 
     if (Q.cnbl_crisis == 1) { 
@@ -1911,6 +1912,7 @@ if (Q.year == 1928 && Q.month == 8 && (Q.weeks == 0 || Q.weeks == 1) && Q.rlb_fl
 
     if (Q.karl_hepp_votes > Q.martin_schiele_votes) {
         Q.rlb_party_leader = "Karl Hepp";
+        Q.rlb_ideology = "Populist Agrarian Conservatism";
     } else {
         Q.rlb_party_leader = "Martin Schiele";
     }
