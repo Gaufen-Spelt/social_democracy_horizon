@@ -36,6 +36,9 @@ if (Q.advisor_action_timer <= 0) {
 } else {
     Q.pinnedCardsDescription = 'Advisors - next action available in ' + Q.advisor_action_timer + ' months.';
 }
+
+window.disableFocusMode()
+
 !}
 on-display: {!
 document.getElementById('bill-queue-display').innerHTML = Q.bill_list_html || Q.bill_list_text;
@@ -63,6 +66,9 @@ if (Q.advisor_action_timer <= 0) {
 } else {
     Q.pinnedCardsDescription = 'Advisors - next action available in ' + Q.advisor_action_timer + ' months.';
 }
+
+window.disableFocusMode()
+
 !}
 on-display: {!
 document.getElementById('bill-queue-display').innerHTML = Q.bill_list_html || Q.bill_list_text;
@@ -89,6 +95,9 @@ if (Q.advisor_action_timer <= 0) {
 } else {
     Q.pinnedCardsDescription = 'Advisors - next action available in ' + Q.advisor_action_timer + ' months.';
 }
+
+window.disableFocusMode()
+
 !}
 on-display: {!
 document.getElementById('bill-queue-display').innerHTML = Q.bill_list_html || Q.bill_list_text;
@@ -104,6 +113,38 @@ max-cards: 2
 - #advisor
 - @shuffle_leadership_pinned
 - @partyaff
+
+
+
+@main_nightmare
+is-hand: true
+on-arrival: {!
+if (Q.advisor_action_timer <= 0) {
+    Q.pinnedCardsDescription = 'Advisors - an action is available.';
+} else if (Q.advisor_action_timer == 1) {
+    Q.pinnedCardsDescription = 'Advisors - next action available in 1 month.';
+} else {
+    Q.pinnedCardsDescription = 'Advisors - next action available in ' + Q.advisor_action_timer + ' months.';
+}
+
+window.disableFocusMode()
+
+!}
+on-display: {!
+document.getElementById('bill-queue-display').innerHTML = Q.bill_list_html || Q.bill_list_text;
+!}
+max-cards: 1
+
+#Here, the main deck will be displayed. Clicking on the deck draws a card into your hand. Clicking on a card activates that card.
+
+- @party
+- @govt
+- @reichstag
+- @intel
+- #advisor
+- @shuffle_leadership_pinned
+- @partyaff
+
 
 
 @party
@@ -143,3 +184,5 @@ card-image: img/portraits/SchmidtRobert.jpg
 is-deck: true
 
 - @economic_policy
+
+
