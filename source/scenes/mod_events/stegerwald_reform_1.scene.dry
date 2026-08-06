@@ -4,13 +4,7 @@ tags: event
 new-page: true
 view-if: z_party_leader == "Adam Stegerwald" and month >= 2 and weeks >= 1 and year == 1929
 max-visits: 1
-on-arrival: stegerwald_reform = 1; {!
-window.enableFocusMode()
-
-!}
-on-departure: {!
-window.disableFocusMode()
-!}
+on-arrival: stegerwald_reform = 1; 
 
 = Zentrum's earthquake
 
