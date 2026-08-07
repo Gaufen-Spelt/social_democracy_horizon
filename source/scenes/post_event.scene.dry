@@ -888,8 +888,8 @@ if (Q.dnvp_votes_display < 13) {
 // DVP GAMEPLAY NOW
 
 
-Q.dvp_left = Q.dvp_left || 0;
-Q.dvp_right = Q.dvp_right || 0;
+Q.dvp_left = Q.dvp_left || 240;
+Q.dvp_right = Q.dvp_right || 260;
 
 // 1. SPD ELECTORAL PERFORMANCE (nerfed ~65%)
 if (Q.spd_r >= 30) {
@@ -998,6 +998,9 @@ Q.dvp_left += (32 - (Q.new_middle_spd_display || 0)) * 0.06;
 Q.dvp_left += (20 - (Q.new_middle_z_display || 0)) * 0.06;
 Q.dvp_left += (38 - (Q.workers_spd_display || 0)) * 0.06;
 Q.dvp_left += (15 - (Q.workers_z_display || 0)) * 0.06;
+
+Q.dvp_left = Math.max(Q.dvp_left || 0, 0);
+Q.dvp_right = Math.max(Q.dvp_right || 0, 0);
 
 // 6. Global regulation: cap combined total of dvp_left + dvp_right at 500
 {
@@ -1363,7 +1366,6 @@ const _ddp_unemp   = Q.unemployedc_ddp_display || 0;
 
 Q.business_wing_ddp += (_ddp_new_mid + _ddp_old_mid + _ddp_rural) * 0.11;
 Q.social_republican_ddp += (_ddp_workers + _ddp_unemp) * 0.33;
-
 // Global regulation: cap combined total at 500 (or set to 1000 to match Zentrum/DNVP)
 {
     const _ddp_total_cap = 500; 
