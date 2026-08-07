@@ -1226,11 +1226,11 @@ if (Q.spd_r >= 30) {
 }
 console.log("AFTER spd_r block (spd_r =", Q.spd_r, "):", Q.business_wing_ddp, Q.social_republican_ddp);
 
-Q.ddp_new_mid = Q.new_middle_ddp_display || 0;
-Q.ddp_old_mid = Q.old_middle_ddp_display || 0;
-Q.ddp_rural   = Q.rural_ddp_display || 0;
-Q.ddp_workers = Q.workers_ddp_display || 0;
-Q.ddp_unemp   = Q.unemployedc_ddp_display || 0;
+Q.ddp_new_mid = Q.new_middle_ddp || 0;
+Q.ddp_old_mid = Q.old_middle_ddp || 0;
+Q.ddp_rural   = Q.rural_ddp || 0;
+Q.ddp_workers = Q.workers_ddp || 0;
+Q.ddp_unemp   = Q.unemployedc_ddp || 0;
 
 console.log("Demographic raw inputs:", {
     new_mid: Q.ddp_new_mid, old_mid: Q.ddp_old_mid, rural: Q.ddp_rural,
