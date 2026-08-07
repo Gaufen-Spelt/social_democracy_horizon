@@ -990,8 +990,8 @@ if (Q.dvp_relation < 40) Q.dvp_right += 0.7;
 
 Q.dvp_left += ((Q.pro_republic || 0) / 12) * 0.35;
 Q.dvp_right += (Q.nationalism || 0) * 0.6;   // nerfed ~70%
-Q.dvp_left += (((Q.new_middle_dvp || 0) + (Q.workers_dvp || 0) + (Q.unemployedc_dvp || 0)) / 5) * 0.35;
-Q.dvp_right += ((Q.old_middle || 0) * 0.8 + (Q.rural_dvp || 0) * 0.6) * 0.32;
+Q.dvp_left += (((Q.new_middle_dvp_display || 0) + (Q.workers_dvp_display || 0) + (Q.unemployedc_dvp_display || 0)) / 5) * 0.35;
+Q.dvp_right += ((Q.old_middle_dvp_display || 0) * 0.8 + (Q.rural_dvp_display || 0) * 0.6) * 0.32;
 
 // 5. SPD/ZENTRUM DEMOGRAPHIC WEAKNESS OVERTURE (nerfed ~70%)
 Q.dvp_left += (32 - (Q.new_middle_spd_display || 0)) * 0.06;
@@ -1242,6 +1242,127 @@ if (Q.z_party_leader == "Joseph Joos") {
 
 
 
+
+
+
+
+
+// DDP GAMEPLAY
+
+// 0. Initializations
+Q.business_wing_ddp = Q.business_wing_ddp || 370;
+Q.social_republican_ddp = Q.social_republican_ddp || 130;
+
+if (Q.stolper_adopted == 1) {
+    Q.business_wing_ddp += 2.7;
+    Q.social_republican_ddp -= 1.8;
+} else if (Q.stolper_adopted == -1) {
+    Q.business_wing_ddp -= 2.0;
+    Q.social_republican_ddp += 2.5;
+}
+
+if (Q.congress_path == "social_nationalists") {
+    Q.social_republican_ddp += 0.3;
+}
+
+Q.social_republican_ddp += ((Q.ddp_relation || 0) / 8) * 0.35;
+Q.business_wing_ddp += ((100 - (Q.ddp_relation || 0)) * 0.5) * 0.35;
+
+if (Q.welfare <= 0) {
+    Q.social_republican_ddp += Math.abs(Q.welfare || 0) * 0.85;
+}
+
+if (Q.workers_aid <= 0) {
+    Q.social_republican_ddp += Math.abs(Q.workers_aid || 0) * 0.50;
+}
+
+if (Q.ideology == "reformist") Q.social_republican_ddp += 1.8;
+if (Q.ideology == "labor") {
+    Q.social_republican_ddp -= 1.28;
+    Q.business_wing_ddp += 1.28;
+}
+if (Q.ideology == "left") {
+    Q.business_wing_ddp += 2.45; 
+    Q.social_republican_ddp -= 1.8;
+}
+
+if (Q.womens_rights > 0) {
+    Q.social_republican_ddp += 0.11 + womens_rights;
+}
+
+if (Q.family_law > 0) {
+    Q.social_republican_ddp += 0.15 + family_law;
+}
+
+if (Q.womens_work > 0) {
+    Q.social_republican_ddp += 0.10 + womens_work;
+}
+
+if (Q.upper_tax_rates > 0) {
+    Q.business_wing_ddp += 0.57 * Q.upper_tax_rates;  
+}
+
+if (Q.middle_tax_rates > 0) {
+    Q.business_wing_ddp += 1.11 * Q.middle_tax_rates;  
+}
+
+if (Q.lower_tax_rates > 0) {
+    Q.social_republican_ddp += 0.38 * Q.lower_tax_rates;  
+}
+
+if (Q.works_councils > 0) {
+    Q.business_wing_ddp += 1.12 * Q.works_councils; 
+}
+
+if (Q.socialization > 0) {
+    Q.business_wing_ddp += 1.11 * Q.socialization;   
+}
+
+if (Q.cooperatives > 0) {
+    Q.business_wing_ddp += 0.49 * Q.cooperatives;    
+}
+
+if (Q.spd_r >= 30) {
+    Q.business_wing_ddp -= 0.7;
+    Q.social_republican_ddp += 0.7;
+} else if (Q.spd_r >= 27.5) {
+    Q.business_wing_ddp += 0.35;
+    Q.social_republican_ddp += 0.35;
+} else if (Q.spd_r <= 27.5 && Q.spd_r > 25) {
+    Q.business_wing_ddp += 0.7;
+    Q.social_republican_ddp -= 0.7;
+} else { 
+    Q.business_wing_ddp += 1.28;
+    Q.social_republican_ddp -= 1.28;
+}
+
+// Demographic additions with safe fallbacks
+const _ddp_new_mid = Q.new_middle_ddp_display || 0;
+const _ddp_old_mid = Q.old_middle_ddp_display || 0;
+const _ddp_rural   = Q.rural_ddp_display || 0;
+const _ddp_workers = Q.workers_ddp_display || 0;
+const _ddp_unemp   = Q.unemployedc_ddp_display || 0;
+
+Q.business_wing_ddp += (_ddp_new_mid + _ddp_old_mid + _ddp_rural) * 0.11;
+Q.social_republican_ddp += (_ddp_workers + _ddp_unemp) * 0.33;
+
+// Global regulation: cap combined total at 500 (or set to 1000 to match Zentrum/DNVP)
+{
+    const _ddp_total_cap = 500; 
+    const _ddp_tracked = [
+        'business_wing_ddp',
+        'social_republican_ddp'
+    ];
+
+    const _ddp_sum = _ddp_tracked.reduce((sum, key) => sum + Q[key], 0);
+
+    if (_ddp_sum > _ddp_total_cap) {
+        const _ddp_scale = _ddp_total_cap / _ddp_sum;
+        _ddp_tracked.forEach(key => {
+            Q[key] *= _ddp_scale;
+        });
+    }
+}
 
 
 
