@@ -31,6 +31,27 @@ if (!Q.rng_seed) {
     Q.rng_seed = Date.now() & 0xFFFFFFFF;
 }
 
+Q.business_wing_ddp = 370;
+Q.social_republican_ddp = 130;
+Q.z_clerical_power = 250;
+Q.z_left_labor_power = 250;
+Q.z_right_labor_power = 200;
+Q.z_moderate_power = 300;
+Q.dvp_left = 0;
+Q.dvp_right = 0;
+Q.hugenberg_momentum = 0;
+Q.delegate_power_a = 0;
+Q.delegate_power_b = 0;
+Q.delegate_power_yocon = 0;
+Q.delegate_power_christsoc = 0;
+
+
+
+
+
+
+
+
 
 
 
