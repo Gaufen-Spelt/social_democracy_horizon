@@ -174,6 +174,9 @@ for (var j = 0; j < factionData.length; j++) {
     if (f.raw > 0) { visibleFactions.push(f); }
 }
 
+Q.dvp_left_disp = Math.round(Q.dvp_left);
+Q.dvp_right_disp = Math.round(Q.dvp_right);
+
 var byId = {};
 visibleFactions.forEach(function(f) { byId[f.id] = f; });
 Q.dvp_left_pct = byId.left ? byId.left.pct.toFixed(1) : "0.0";
@@ -219,9 +222,9 @@ go-to: party_spy
 
 *Current factional balance within the DVP:*
 
-*Republican Wing: [+ Math.round(dvp_left) +] ([+ dvp_left_pct +]%)*
+*Republican Wing: [+ dvp_left_disp +] ([+ dvp_left_pct +]%)*
 
-*Industrialist Wing: [+ Math.round(dvp_right) +] ([+ dvp_right_pct +]%)*
+*Industrialist Wing: [+ dvp_right_disp +] ([+ dvp_right_pct +]%)*
 
 [? if dvp_right > dvp_left: The industrialist wing currently holds the upper hand. ?]
 
@@ -262,6 +265,11 @@ for (var j = 0; j < factionData.length; j++) {
     f.seats = total > 0 ? Math.round(f.raw / total * displaySeats) : 0;
     if (f.raw > 0) { visibleFactions.push(f); }
 }
+
+Q.z_clerical_disp = Math.round(Q.z_clerical_power);
+Q.z_leftlabor_disp = Math.round(Q.z_left_labor_power);
+Q.z_rightlabor_disp = Math.round(Q.z_right_labor_power);
+Q.z_moderate_disp = Math.round(Q.z_moderate_power);
 
 var byId = {};
 visibleFactions.forEach(function(f) { byId[f.id] = f; });
@@ -310,13 +318,13 @@ go-to: party_spy
 
 *Current factional balance within Zentrum:*
 
-*Clerical Wing: [+ Math.round(z_clerical_power) +] ([+ z_clerical_pct +]%)*
+*Clerical Wing: [+ z_clerical_disp +] ([+ z_clerical_pct +]%)*
 
-*Left Labor Wing: [+ Math.round(z_left_labor_power) +] ([+ z_leftlabor_pct +]%)*
+*Left Labor Wing: [+ z_leftlabor_disp +] ([+ z_leftlabor_pct +]%)*
 
-*Right Labor Wing: [+ Math.round(z_right_labor_power) +] ([+ z_rightlabor_pct +]%)*
+*Right Labor Wing: [+ z_rightlabor_disp +] ([+ z_rightlabor_pct +]%)*
 
-*Moderate Wing: [+ Math.round(z_moderate_power) +] ([+ z_moderate_pct +]%)*
+*Moderate Wing: [+ z_moderate_disp +] ([+ z_moderate_pct +]%)*
 
 
 @ddp
@@ -347,6 +355,9 @@ for (var j = 0; j < factionData.length; j++) {
     f.seats = total > 0 ? Math.round(f.raw / total * displaySeats) : 0;
     if (f.raw > 0) { visibleFactions.push(f); }
 }
+
+Q.ddp_business_disp = Math.round(Q.business_wing_ddp);
+Q.ddp_social_disp = Math.round(Q.social_republican_ddp);
 
 var byId = {};
 visibleFactions.forEach(function(f) { byId[f.id] = f; });
@@ -393,9 +404,9 @@ go-to: party_spy
 
 *Current factional balance within the DDP:*
 
-*Business Wing: [+ Math.round(business_wing_ddp) +] ([+ ddp_business_pct +]%)*
+*Business Wing: [+ ddp_business_disp +] ([+ ddp_business_pct +]%)*
 
-*Social-Republican Wing: [+ Math.round(social_republican_ddp) +] ([+ ddp_social_pct +]%)*
+*Social-Republican Wing: [+ ddp_social_disp +] ([+ ddp_social_pct +]%)*
 
 @unlock_dnvp
 view-if: dnvp_unlocked_spy <= 0
