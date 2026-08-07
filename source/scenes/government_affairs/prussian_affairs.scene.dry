@@ -66,7 +66,7 @@ on-arrival: sa_strength *= 0.9; sa_strength *= 0.75 if prussian_police_loyalty >
 As it turns out, the Nazi SA has many allies in the police and bureaucracy. Our relationship with the police weakens, and the SA can still organize illegally, right under the police's noses. [? if prussian_police_loyalty >= 0.7 : Nevertheless, the SA is substantially weakened by our ban. ?] 
 
 @ban_nsdap_public
-on-arrival: workers_nsdap -= 1; nationalism -= 2; nsdap_speech_ban_timer = 18
+on-arrival: workers_nsdap -= 1; nationalism -= 2; nsdap_speech_ban_timer = 18; prussian_public_nsdap_ban = 1
 view-if: prussian_police_loyalty > 0.45
 choose-if: nsdap_public_banned <= 0
 unavailable-subtitle: NSDAP is already prohibited from the public speeches.
@@ -74,7 +74,7 @@ unavailable-subtitle: NSDAP is already prohibited from the public speeches.
 With the prussian police enforcement, we have banned NSDAP from public speaking, significantly hampering down their capacities to gain the popularity in the Prussia.
 
 @unban_nsdap_public
-on-arrival: workers_nsdap += 1; nationalism += 2; dvp_relation += 2; z_relation += 1; dnvp_relation += 1; prussian_police_loyalty += 0.01
+on-arrival: workers_nsdap += 1; nationalism += 2; dvp_relation += 2; z_relation += 1; dnvp_relation += 1; prussian_police_loyalty += 0.01; prussian_public_nsdap_ban = 0
 view-if: nsdap_public_banned >= 1
 
 We have unbanned the NSDAP from the public speech, allowing them to spout their nonsense once more. This has gathered us some bit of good will with bourgeouisie and prussian police.
