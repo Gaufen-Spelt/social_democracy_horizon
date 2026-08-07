@@ -1265,6 +1265,20 @@ if (Q.congress_path == "social_nationalists") {
     Q.social_republican_ddp += 0.3;
 }
 
+if (Q.ddp_in_government) {
+    if (Q.spd_in_government) {
+        Q.social_republican_ddp += 1.5;
+        Q.business_wing_ddp -= 0.5;
+    } else {
+        Q.business_wing_ddp += 1.2;
+        Q.social_republican_ddp -= 0.8;
+    }
+} else {
+    Q.business_wing_ddp += 1.8;
+    Q.social_republican_ddp -= 1.2;
+}
+
+
 Q.social_republican_ddp += ((Q.ddp_relation || 0) / 8) * 0.35;
 Q.business_wing_ddp += ((100 - (Q.ddp_relation || 0)) * 0.5) * 0.35;
 
@@ -1287,15 +1301,19 @@ if (Q.ideology == "left") {
 }
 
 if (Q.womens_rights > 0) {
-    Q.social_republican_ddp += 0.11 + womens_rights;
+    Q.social_republican_ddp += 0.11 + Q.womens_rights;
+}
+
+if (Q.kwg_research > 0) {
+    Q.social_republican_ddp += 0.51 + Q.kwg_research;
 }
 
 if (Q.family_law > 0) {
-    Q.social_republican_ddp += 0.15 + family_law;
+    Q.social_republican_ddp += 0.15 + Q.family_law;
 }
 
 if (Q.womens_work > 0) {
-    Q.social_republican_ddp += 0.10 + womens_work;
+    Q.social_republican_ddp += 0.10 + Q.womens_work;
 }
 
 if (Q.upper_tax_rates > 0) {
@@ -1363,6 +1381,8 @@ Q.social_republican_ddp += (_ddp_workers + _ddp_unemp) * 0.33;
         });
     }
 }
+
+
 
 
 
@@ -1488,6 +1508,10 @@ if (Q.left_split) {
 }
 
 }
+
+
+
+
 
 
 
