@@ -20,6 +20,8 @@ Current police strength: [+ prussian_police_strength +]. <br>
 - @police_strength: Recruit additional police.
 - @demobilize_police: Discharge the police.
 - @bureaucracy: Purge the bureaucracy of reactionary elements.
+- @ban_nsdap_public: Ban the NSDAP from public speech.
+- @unban_nsdap_public: Unban the NSDAP from public speech.
 - @ban_sa: Ban the SA, the Nazi paramilitary group.
 - @unban_sa: Reverse the SA ban.
 - @ban_rfb: Ban the RFB, the Communist paramilitary.
@@ -59,9 +61,23 @@ The bureaucracy is deeply reactionary, and many abuse their power to favor the p
 
 @ban_sa
 view-if: nazi_urgency >= 3 and sa_banned == 0
-on-arrival: sa_strength *= 0.9; sa_strength *= 0.75 if prussian_police_loyalty >= 0.75; sa_banned = 1; dvp_relation -= 3; prussian_police_loyalty -= 0.05; sa_militancy -= 0.05; sa_ban_timer = 6; sa_strength *= bonus_mdf_reform if full_reform_initiated = 1;
+on-arrival: sa_strength *= 0.9; sa_strength *= 0.75 if prussian_police_loyalty >= 0.75; sa_banned = 1; dvp_relation -= 2; prussian_police_loyalty -= 0.05; sa_militancy -= 0.05; sa_ban_timer = 6; sa_strength *= bonus_mdf_reform if full_reform_initiated = 1;
 
 As it turns out, the Nazi SA has many allies in the police and bureaucracy. Our relationship with the police weakens, and the SA can still organize illegally, right under the police's noses. [? if prussian_police_loyalty >= 0.7 : Nevertheless, the SA is substantially weakened by our ban. ?] 
+
+@ban_nsdap_public
+on-arrival: workers_nsdap -= 1; nationalism -= 2; nsdap_speech_ban_timer = 18
+view-if: prussian_police_loyalty > 0.45
+choose-if: nsdap_public_banned <= 0
+unavailable-subtitle: NSDAP is already prohibited from the public speeches.
+
+With the prussian police enforcement, we have banned NSDAP from public speaking, significantly hampering down their capacities to gain the popularity in the Prussia.
+
+@unban_nsdap_public
+on-arrival: workers_nsdap += 1; nationalism += 2; dvp_relation += 2; z_relation += 1; dnvp_relation += 1; prussian_police_loyalty += 0.01
+view-if: nsdap_public_banned >= 1
+
+We have unbanned the NSDAP from the public speech, allowing them to spout their nonsense once more. This has gathered us some bit of good will with bourgeouisie and prussian police.
 
 @unban_sa
 view-if: sa_banned = 1
