@@ -42,6 +42,12 @@ new-page: true
 
 [? if year = 1928 and month = 8 and weeks >= 1 and lambach_flavor_trigger_1 = 1: Lambach's newest article after "Monarchismus" - "Neuer Arbeiterstatt" has caused sensation amongst his fellow members, calling for Lambach's isolation, though Lambach's growing populariy amongst alienated right wing workers and whitecollars just shows this is a *race against the time*. ?]
 
+# DDP MANNHEIM CONGRESS
+
+[? if year == 1929 and month == 10 and stolper_adopted == 1: At the DDP Mannheim Congress in October 1929, economist Gustav Stolper’s new economic program was officially adopted. Committing the party unequivocally to capitalism, middle-class tax relief, and reduced state spending, the platform has delighted the party's business wing and Hansa-Bund. However, the rightward shift has deeply alienated Anton Erkelenz, Ernst Lemmer, the Young Democrats, and the party's trade union left. This has substantially decreased our influence on DDP, marking the start of the fall-off of relationship between our parties. ?]
+
+[? if year == 1929 and month == 10 and stolper_adopted == -1: At the DDP Mannheim Congress in October 1929, Gustav Stolper’s free-market platform was defeated following fierce resistance from the Young Democrats and trade union allies. The party reasserts its social-liberal commitment to worker emancipation and the welfare state. While keeping Erkelenz's left-wing base intact, the decision has infuriated the party’s business wing and agricultural interests. With no coherent compromise or program, party is further driven into the pessimism... ?]
+
 # Young Plan News
 
 [? if year = 1930 and month = 5 and weeks >= 1 and young_plan_seen: Young Plan has come to the effect, effectively giving Germany some room for the breath and reducing amount of reichswehr we have to pay, including interest rate. [? if spd_in_government: However, this brings some questions and cautions regarding definite goal of SPD being in government. ?] ?]
