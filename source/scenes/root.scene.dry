@@ -2003,7 +2003,7 @@ Q.timers = ['advisor_action', 'confronting_nazis', 'crisis_program',
             'kpd_policy', 'kpd_ultimatum', 'popular_front_dispute',
             'high_inflation', 'banking_crisis', 'march_on_berlin',
             'understanding_enemy', 'schleichers_schemes', 'reichswehr_coup', 'dice', 'party_economic_response',
-            'gsp', 'business_confidence', 'capital_strike', 'dvp_congress', 'dnf_flee', 'joos_vonc',
+            'gsp', 'business_confidence', 'capital_strike', 'dvp_congress', 'dnf_flee', 'joos_vonc', 'nsdap_speech_ban',
             // intel
             'intelligence',
             // economical effects
