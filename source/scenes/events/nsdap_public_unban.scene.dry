@@ -1,0 +1,7 @@
+title: NSDAP is unbanned from public speech.
+subtitle: The judges have lifted the ban.
+view-if: prussian_public_nsdap_ban >= 1 and nsdap_banned != 1 and nsdap_speech_ban_timer == 0 and full_reform_initiated = 0
+on-arrival: prussian_public_nsdap_ban = 0; workers_nsdap += 2; new_middle_nsdap += 2; old_middle_nsdap += 2; rural_nsdap += 3; prussian_police_loyalty -= 0.02
+tags: event
+
+Judges have ordered the NSDAP to be allowed to do public speeches since they believe the National Socialists have been moderated by this time. Whether it's true or not is another question.
