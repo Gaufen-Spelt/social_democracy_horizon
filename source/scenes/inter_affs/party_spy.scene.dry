@@ -11,9 +11,11 @@ Which party should we spy on?
 - @unlock_dnvp: Unlock DNVP
 - @unlock_dvp: Unlock DVP
 - @unlock_z: Unlock Zentrum.
+- @unlock_ddp: Unlock DDP
 - @dnvp: On DNVP
 - @dvp: On DVP
 - @z: On Zentrum.
+- @ddp: On DDP
 - @partyaff: Return back
 
 @dnvp
@@ -79,16 +81,6 @@ var factionData = [
 
 var visibleFactions = factionData.filter(function(f) { return f.votes > 0; });
 
-// Stash flat display vars for [+ +] tags below
-Q.christsoc_name_disp = Q.leader_c_christsoc;
-Q.christsoc_title_disp = Q.leader_c_christsoc_title;
-Q.yocon_name_disp = Q.leader_c_yocon;
-Q.yocon_title_disp = Q.leader_c_yocon_title;
-Q.faction_a_name_disp = Q.leader_a;
-Q.faction_a_title_disp = Q.leader_a_title;
-Q.faction_b_name_disp = Q.leader_b;
-Q.faction_b_title_disp = Q.leader_b_title;
-
 // Determine dominant faction for flavor text below
 var topFaction = null;
 for (var t = 0; t < factionData.length; t++) {
@@ -140,13 +132,13 @@ go-to: party_spy
 
 *The current factional balance within the DNVP (300 congress seats):*
 
-*[+ christsoc_name_disp +] ([+ christsoc_title_disp +]) — Christian Socials: [+ christsoc_final_votes +]*
+*[+ leader_c_christsoc +] ([+ leader_c_christsoc_title +]) — Christian Socials: [+ christsoc_final_votes +]*
 
-*[+ yocon_name_disp +] ([+ yocon_title_disp +]) — Young Conservatives: [+ yocon_final_votes +]*
+*[+ leader_c_yocon +] ([+ leader_c_yocon_title +]) — Young Conservatives: [+ yocon_final_votes +]*
 
-*[+ faction_a_name_disp +] ([+ faction_a_title_disp +]) — Coalitionists: [+ moderate_a_final_votes +]*
+*[+ leader_a +] ([+ leader_a_title +]) — Coalitionists: [+ moderate_a_final_votes +]*
 
-*[+ faction_b_name_disp +] ([+ faction_b_title_disp +]) — Traditionalists: [+ moderate_b_final_votes +]*
+*[+ leader_b +] ([+ leader_b_title +]) — Traditionalists: [+ moderate_b_final_votes +]*
 
 *Alfred Hugenberg (Radical Bloc / Dissident Associations) — Hugenberg Bloc: [+ hugenberg_final_votes +]*
 
@@ -181,9 +173,6 @@ for (var j = 0; j < factionData.length; j++) {
     f.seats = total > 0 ? Math.round(f.raw / total * displaySeats) : 0;
     if (f.raw > 0) { visibleFactions.push(f); }
 }
-
-Q.dvp_left_disp = Math.round(Q.dvp_left);
-Q.dvp_right_disp = Math.round(Q.dvp_right);
 
 var byId = {};
 visibleFactions.forEach(function(f) { byId[f.id] = f; });
@@ -230,9 +219,9 @@ go-to: party_spy
 
 *Current factional balance within the DVP:*
 
-*Republican Wing: [+ dvp_left_disp +] ([+ dvp_left_pct +]%)*
+*Republican Wing: [+ Math.round(dvp_left) +] ([+ dvp_left_pct +]%)*
 
-*Industrialist Wing: [+ dvp_right_disp +] ([+ dvp_right_pct +]%)*
+*Industrialist Wing: [+ Math.round(dvp_right) +] ([+ dvp_right_pct +]%)*
 
 [? if dvp_right > dvp_left: The industrialist wing currently holds the upper hand. ?]
 
@@ -273,11 +262,6 @@ for (var j = 0; j < factionData.length; j++) {
     f.seats = total > 0 ? Math.round(f.raw / total * displaySeats) : 0;
     if (f.raw > 0) { visibleFactions.push(f); }
 }
-
-Q.z_clerical_disp = Math.round(Q.z_clerical_power);
-Q.z_leftlabor_disp = Math.round(Q.z_left_labor_power);
-Q.z_rightlabor_disp = Math.round(Q.z_right_labor_power);
-Q.z_moderate_disp = Math.round(Q.z_moderate_power);
 
 var byId = {};
 visibleFactions.forEach(function(f) { byId[f.id] = f; });
@@ -326,13 +310,92 @@ go-to: party_spy
 
 *Current factional balance within Zentrum:*
 
-*Clerical Wing: [+ z_clerical_disp +] ([+ z_clerical_pct +]%)*
+*Clerical Wing: [+ Math.round(z_clerical_power) +] ([+ z_clerical_pct +]%)*
 
-*Left Labor Wing: [+ z_leftlabor_disp +] ([+ z_leftlabor_pct +]%)*
+*Left Labor Wing: [+ Math.round(z_left_labor_power) +] ([+ z_leftlabor_pct +]%)*
 
-*Right Labor Wing: [+ z_rightlabor_disp +] ([+ z_rightlabor_pct +]%)*
+*Right Labor Wing: [+ Math.round(z_right_labor_power) +] ([+ z_rightlabor_pct +]%)*
 
-*Moderate Wing: [+ z_moderate_disp +] ([+ z_moderate_pct +]%)*
+*Moderate Wing: [+ Math.round(z_moderate_power) +] ([+ z_moderate_pct +]%)*
+
+
+@ddp
+view-if: ddp_unlocked_spy >= 1
+subtitle: The internal situation of DDP is a fight between the business wing and the social-republicans.
+on-display: {!
+
+var isDark = document.body.classList.contains('dark-mode');
+
+Q.business_wing_ddp = Q.business_wing_ddp || 370;
+Q.social_republican_ddp = Q.social_republican_ddp || 130;
+
+var factionData = [
+    { id: "business", name: "Business Wing", subtitle: "Property-Owning / Free-Trade Liberals",
+      raw: Math.max(Q.business_wing_ddp, 0), color: isDark ? "#e0824a" : "#8a3b12" },
+    { id: "social", name: "Social-Republican Wing", subtitle: "Social Republican Line / Left-Liberals",
+      raw: Math.max(Q.social_republican_ddp, 0), color: isDark ? "#9a9bff" : "#595BFF" }
+];
+
+var total = 0;
+for (var i = 0; i < factionData.length; i++) { total += factionData[i].raw; }
+
+var displaySeats = 300;
+var visibleFactions = [];
+for (var j = 0; j < factionData.length; j++) {
+    var f = factionData[j];
+    f.pct = total > 0 ? (f.raw / total * 100) : 0;
+    f.seats = total > 0 ? Math.round(f.raw / total * displaySeats) : 0;
+    if (f.raw > 0) { visibleFactions.push(f); }
+}
+
+var byId = {};
+visibleFactions.forEach(function(f) { byId[f.id] = f; });
+Q.ddp_business_pct = byId.business ? byId.business.pct.toFixed(1) : "0.0";
+Q.ddp_social_pct = byId.social ? byId.social.pct.toFixed(1) : "0.0";
+
+if (window && d3 && document.getElementById("ddp-parliament")) {
+    var width = 600;
+    var height = 300;
+    var contentEl = document.getElementById('content');
+    var screenWidth = contentEl ? contentEl.offsetWidth : 600;
+    if (screenWidth < width - 50) {
+        width = screenWidth - 50;
+        height = Math.round(width / 2);
+    }
+
+    var svg = document.getElementById("ddp-parliament");
+    svg.style.width = width + "px";
+    svg.style.height = height + "px";
+
+    var data = visibleFactions.map(function(f) {
+        return { id: f.id, legend: f.name, name: f.name,
+                 seats: f.seats, color: f.color };
+    });
+
+    var parliament = d3.parliament();
+    parliament.width(width).height(height).innerRadiusCoef(0.4);
+    parliament.enter.fromCenter(true).smallToBig(true);
+    parliament.exit.toCenter(false).bigToSmall(true);
+    d3.select("#ddp-parliament").datum(data).call(parliament);
+
+    visibleFactions.forEach(function(f) {
+        d3.selectAll("#ddp-parliament circle")
+            .filter(function(d) { return d && d.data && d.data.id === f.id; })
+            .style("stroke", "#333")
+            .style("stroke-width", "1px")
+            .style("fill", f.color);
+    });
+}
+!}
+go-to: party_spy
+
+{!<svg id="ddp-parliament" style="width:600px; height:300px;"></svg>!}
+
+*Current factional balance within the DDP:*
+
+*Business Wing: [+ Math.round(business_wing_ddp) +] ([+ ddp_business_pct +]%)*
+
+*Social-Republican Wing: [+ Math.round(social_republican_ddp) +] ([+ ddp_social_pct +]%)*
 
 @unlock_dnvp
 view-if: dnvp_unlocked_spy <= 0
@@ -363,3 +426,13 @@ on-arrival: {! Q.z_unlocked_spy = 1; Q.resources -= 2; !}
 go-to: party_spy
 
 We can now spy on Zentrum.
+
+@unlock_ddp
+view-if: ddp_unlocked_spy <= 0
+choose-if: resources >= 2
+subtitle: -2 resources
+unavailable-subtitle: Not enough resources.
+on-arrival: {! Q.ddp_unlocked_spy = 1; Q.resources -= 2; !}
+go-to: party_spy
+
+We can now spy on DDP.
