@@ -4,9 +4,6 @@ tags: event, economics
 view-if: year = 1929 and month = 1
 max-visits: 1
 face-image: img/schachtparis.jpg
-on-arrival: {!
-window.enableFocusMode()
-!}
 
 = The Reparations Committee
 
@@ -27,9 +24,6 @@ go-to: schacht_solo if dvp_relation < 35 or capital_strike_progress > 3; support
 
 @schacht_solo
 on-arrival: dvp_relation += 2; schacht_relation += 10; reparation_negotiation = "schacht_solo";
-on-departure: {!
-window.disableFocusMode()
-!}
 
 We have taken no active position on this issue, since our government knows better than to interfere with threatening Reichsbank president. Our attempts to somewhat restrict Schacht's relentlessness by Vogler's interference have failed, as Vogler and industrialists were too disheartened to follow the SPD's instructions. Schacht is being sent alone as the head of Delegation. <br>
 
@@ -40,9 +34,6 @@ Whether now he negotiates it out finally to our benefit is up to his reservednes
 @support_schacht
 face-image: img/vogler.jpg
 on-arrival: reparation_negotiation = "schacht"; dvp_relation += 5; z_relation += 3; dnvp_relation += 4; left_dissent += 5; labor_dissent += 3; reichsbank_independent = 1;
-on-departure: {!
-window.disableFocusMode()
-!}
 
 We have taken no active position in this issue, since our government knows very well technocrats will fare better than socialists in negotiations, especially considering bourgeouise nature of both countries.
 
@@ -51,9 +42,6 @@ Schacht and Vogler have departed in the next week to the Paris alongside some me
 We hope this trip will end with success and we finally can reach some sort of agreement to renegotiate this Treaty and it's unfair imposements on Germany.
 
 @propose_alternatives
-on-departure: {!
-window.disableFocusMode()
-!}
 choose-if: spd_in_government
 unavailable-subtitle: [? if not spd_in_government: We need to be in a coalition government to have influence over the delegation composition. ?]
 on-arrival: reparation_negotiation = "labor_included"; labor_strength += 5; left_dissent -= 5; reformist_strength += 3; dvp_relation -= 8; z_relation -= 4; dnvp_relation -= 10
@@ -67,9 +55,6 @@ Our coalition members have pressured us to not interfere further in the ordeal a
 Is our choice wrong after all if we are right?
 
 @hilferding_lead
-on-departure: {!
-window.disableFocusMode()
-!}
 choose-if: spd_in_government and finance_minister_party != "SPD" and spd_votes >= 30
 subtitle: ...Hilferding?
 face-image: img/hilferding.jpg
