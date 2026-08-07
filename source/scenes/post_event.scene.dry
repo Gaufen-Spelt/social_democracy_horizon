@@ -1836,8 +1836,8 @@ if ( Q.year == 1928 &&  Q.month == 4 && (Q.weeks == 0 || Q.weeks == 1) && Q.urba
     Q.workers_nsdap += 4;
 }
 
-if (Q.year == 1928 && Q.month == 8 && Q.weeks < 2 && Q.rlb_flavor_1 == 0) {
-    Q.rlb_flavor_1 = 1;
+if (Q.year == 1928 && Q.month == 8 && Q.rlb_election_flavor_1 != 1) {
+    Q.rlb_election_flavor_1 = 1;
 
     if (Q.cnbl_crisis == 1) { 
         Q.martin_schiele_votes += 2;
@@ -1913,8 +1913,10 @@ if (Q.year == 1928 && Q.month == 8 && Q.weeks < 2 && Q.rlb_flavor_1 == 0) {
     if (Q.karl_hepp_votes > Q.martin_schiele_votes) {
         Q.rlb_party_leader = "Karl Hepp";
         Q.rlb_ideology = "Populist Agrarian Conservatism";
+        Q.rlb_election_flavor_2 = 1;
     } else {
         Q.rlb_party_leader = "Martin Schiele";
+        Q.rlb_election_flavor_2 = 2;
     }
 }
 
