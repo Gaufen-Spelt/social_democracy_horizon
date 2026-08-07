@@ -886,153 +886,248 @@ if (Q.dnvp_votes_display < 13) {
 
 
 // ==========================================
-// DVP GAMEPLAY (instrumented)
+// DVP GAMEPLAY (instrumented - log after every line)
 // ==========================================
 
 console.log("=== DVP START ===");
-console.log("RAW Q.dvp_left before init:", Q.dvp_left, typeof Q.dvp_left);
-console.log("RAW Q.dvp_right before init:", Q.dvp_right, typeof Q.dvp_right);
+
+console.log("RAW Q.dvp_left before init | value:", Q.dvp_left, "| type:", typeof Q.dvp_left);
+console.log("RAW Q.dvp_right before init | value:", Q.dvp_right, "| type:", typeof Q.dvp_right);
 
 Q.dvp_left = Q.dvp_left || 240;
+console.log("LINE: Q.dvp_left = Q.dvp_left || 240  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+
 Q.dvp_right = Q.dvp_right || 260;
+console.log("LINE: Q.dvp_right = Q.dvp_right || 260  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
 
-console.log("AFTER init (|| default):", Q.dvp_left, Q.dvp_right);
+console.log("--- 1. SPD ELECTORAL PERFORMANCE --- spd_r =", Q.spd_r);
 
-// 1. SPD ELECTORAL PERFORMANCE
 if (Q.spd_r >= 30) {
     Q.dvp_left -= 0.7;
+    console.log("LINE: spd_r>=30 branch, dvp_left -= 0.7  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
     Q.dvp_right += 0.7;
+    console.log("LINE: spd_r>=30 branch, dvp_right += 0.7  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
 } else if (Q.spd_r >= 27.5) {
     Q.dvp_left += 0.35;
+    console.log("LINE: spd_r>=27.5 branch, dvp_left += 0.35  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
     Q.dvp_right += 0.35;
+    console.log("LINE: spd_r>=27.5 branch, dvp_right += 0.35  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
 } else if (Q.spd_r <= 27.5 && Q.spd_r > 25) {
     Q.dvp_left += 0.7;
+    console.log("LINE: spd_r<=27.5&&>25 branch, dvp_left += 0.7  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
     Q.dvp_right -= 0.7;
+    console.log("LINE: spd_r<=27.5&&>25 branch, dvp_right -= 0.7  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
 } else { 
     Q.dvp_left += 1.28;
+    console.log("LINE: spd_r else branch, dvp_left += 1.28  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
     Q.dvp_right -= 1.28;
+    console.log("LINE: spd_r else branch, dvp_right -= 1.28  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
 }
-console.log("AFTER spd_r block (spd_r =", Q.spd_r, "):", Q.dvp_left, Q.dvp_right);
 
-// 2. Stresemann cabinet position
+console.log("--- 2. Stresemann cabinet position --- foreign_minister_party =", Q.foreign_minister_party, " kellogg_briand_signed_dvp =", Q.kellogg_briand_signed_dvp);
+
 if (Q.foreign_minister_party == "DVP" || Q.kellogg_briand_signed_dvp == 1) {
     Q.dvp_right += 2.64;
+    console.log("LINE: cabinet branch, dvp_right += 2.64  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
     Q.dvp_left -= 0.7;
+    console.log("LINE: cabinet branch, dvp_left -= 0.7  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
 }
-console.log("AFTER cabinet block:", Q.dvp_left, Q.dvp_right);
 
-// 3. LAMBACH VICTORY OR DNVP SITUATION
+console.log("--- 3. LAMBACH VICTORY OR DNVP SITUATION --- congress_path =", Q.congress_path);
+
 if (Q.congress_path != "capitulation") {
     Q.dvp_left += 0.7;
+    console.log("LINE: congress_path != capitulation, dvp_left += 0.7  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
 }
 if (Q.congress_path == "capitulation") {
     Q.dvp_right += 2.8;
+    console.log("LINE: congress_path == capitulation, dvp_right += 2.8  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
 }
 if (Q.congress_path == "social_nationalists" || Q.congress_path == "coalitionists") {
     Q.dvp_left += 1.8;
-    if (Q.congress_path == "social_nationalists") Q.dvp_left += 0.7;
+    console.log("LINE: congress_path social_nationalists/coalitionists, dvp_left += 1.8  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+    if (Q.congress_path == "social_nationalists") {
+        Q.dvp_left += 0.7;
+        console.log("LINE: congress_path == social_nationalists, dvp_left += 0.7  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+    }
 }
-console.log("AFTER congress_path block (path =", Q.congress_path, "):", Q.dvp_left, Q.dvp_right);
 
-// 4. FINANCIAL TAX situation
+console.log("--- 4. FINANCIAL TAX situation --- upper_tax_rates =", Q.upper_tax_rates, " welfare =", Q.welfare, " working_hours =", Q.working_hours, " ruhr_labor =", Q.ruhr_labor, " works_councils =", Q.works_councils, " socialization =", Q.socialization, " cooperatives =", Q.cooperatives);
+
 if (Q.upper_tax_rates > 0) {
     Q.dvp_right += 0.88 * Q.upper_tax_rates;
+    console.log("LINE: upper_tax_rates>0, dvp_right += 0.88*upper_tax_rates  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
 }
 if (Q.welfare > 1) {
     Q.dvp_right += 0.6 * Q.welfare;
+    console.log("LINE: welfare>1, dvp_right += 0.6*welfare  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
 }
 if (Q.working_hours > 0) {
     Q.dvp_right += 0.6 * Q.working_hours;
+    console.log("LINE: working_hours>0, dvp_right += 0.6*working_hours  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
 }
-if (Q.ruhr_labor > 0) Q.dvp_right += 1.28;
+if (Q.ruhr_labor > 0) {
+    Q.dvp_right += 1.28;
+    console.log("LINE: ruhr_labor>0, dvp_right += 1.28  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+}
 if (Q.works_councils > 0) {
     Q.dvp_right += 1.12 * Q.works_councils;
+    console.log("LINE: works_councils>0, dvp_right += 1.12*works_councils  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
 }
 if (Q.socialization > 0) {
     Q.dvp_right += 2.4 * Q.socialization;
+    console.log("LINE: socialization>0, dvp_right += 2.4*socialization  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
 }
 if (Q.cooperatives > 0) {
     Q.dvp_right += 1.28 * Q.cooperatives;
+    console.log("LINE: cooperatives>0, dvp_right += 1.28*cooperatives  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
 }
-console.log("AFTER tax/policy block:", Q.dvp_left, Q.dvp_right);
 
-if (Q.major_curriculum == "vocational") Q.dvp_left += 1.8;
-if (Q.minor_curriculum == "vocational") Q.dvp_left += 0.7;
-if (Q.secularized == 1) Q.dvp_left += 2.5;
-console.log("AFTER curriculum/secularized block:", Q.dvp_left, Q.dvp_right);
+console.log("--- curriculum/secularized --- major_curriculum =", Q.major_curriculum, " minor_curriculum =", Q.minor_curriculum, " secularized =", Q.secularized);
 
-// Patched Naked Math Operations
+if (Q.major_curriculum == "vocational") {
+    Q.dvp_left += 1.8;
+    console.log("LINE: major_curriculum vocational, dvp_left += 1.8  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+}
+if (Q.minor_curriculum == "vocational") {
+    Q.dvp_left += 0.7;
+    console.log("LINE: minor_curriculum vocational, dvp_left += 0.7  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+}
+if (Q.secularized == 1) {
+    Q.dvp_left += 2.5;
+    console.log("LINE: secularized==1, dvp_left += 2.5  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+}
+
+console.log("--- Naked Math Operations --- capital_strike_progress =", Q.capital_strike_progress, " type:", typeof Q.capital_strike_progress, " workers_safety =", Q.workers_safety, " type:", typeof Q.workers_safety, " judicial_reform =", Q.judicial_reform, " type:", typeof Q.judicial_reform, " reparations_negotiation =", Q.reparations_negotiation, " type:", typeof Q.reparations_negotiation);
+
 Q.dvp_right += (Q.capital_strike_progress || 0) * 0.35;
-Q.dvp_right += (Q.workers_safety || 0) * 0.35;
-Q.dvp_left += (Q.judicial_reform || 0) * 1.28;
-Q.dvp_left += (Q.reparations_negotiation || 0) * 2.0;
-console.log("AFTER naked math block:", Q.dvp_left, Q.dvp_right);
+console.log("LINE: dvp_right += (capital_strike_progress||0)*0.35  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
 
-if (Q.enemies == "bourgeois parties" || Q.enemies == "DVP") Q.dvp_right += 2.64;
-console.log("AFTER enemies block (enemies =", Q.enemies, "):", Q.dvp_left, Q.dvp_right);
+Q.dvp_right += (Q.workers_safety || 0) * 0.35;
+console.log("LINE: dvp_right += (workers_safety||0)*0.35  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+
+Q.dvp_left += (Q.judicial_reform || 0) * 1.28;
+console.log("LINE: dvp_left += (judicial_reform||0)*1.28  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+
+Q.dvp_left += (Q.reparations_negotiation || 0) * 2.0;
+console.log("LINE: dvp_left += (reparations_negotiation||0)*2.0  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+
+console.log("--- enemies check --- enemies =", Q.enemies);
+
+if (Q.enemies == "bourgeois parties" || Q.enemies == "DVP") {
+    Q.dvp_right += 2.64;
+    console.log("LINE: enemies branch, dvp_right += 2.64  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+}
+
+console.log("--- media block --- radio =", Q.radio, " type:", typeof Q.radio, " commercialized_media =", Q.commercialized_media, " type:", typeof Q.commercialized_media);
 
 Q.dvp_left += (Q.radio || 0) * 1.8;
+console.log("LINE: dvp_left += (radio||0)*1.8  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+
 Q.dvp_left += (Q.commercialized_media || 0) * 1.28;
-console.log("AFTER media block:", Q.dvp_left, Q.dvp_right);
+console.log("LINE: dvp_left += (commercialized_media||0)*1.28  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
 
-if (Q.unions_independent) Q.dvp_left += 4.0;
-console.log("AFTER unions_independent block:", Q.dvp_left, Q.dvp_right);
+console.log("--- unions_independent --- value =", Q.unions_independent);
 
-if (Q.ideology == "reformist") Q.dvp_left += 1.8;
+if (Q.unions_independent) {
+    Q.dvp_left += 4.0;
+    console.log("LINE: unions_independent branch, dvp_left += 4.0  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+}
+
+console.log("--- ideology block --- ideology =", Q.ideology);
+
+if (Q.ideology == "reformist") {
+    Q.dvp_left += 1.8;
+    console.log("LINE: ideology reformist, dvp_left += 1.8  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+}
 if (Q.ideology == "labor") {
     Q.dvp_left -= 1.28;
+    console.log("LINE: ideology labor, dvp_left -= 1.28  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
     Q.dvp_right += 1.28;
+    console.log("LINE: ideology labor, dvp_right += 1.28  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
 }
 if (Q.ideology == "left") {
     Q.dvp_right += 2.24;
+    console.log("LINE: ideology left, dvp_right += 2.24  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
     Q.dvp_left -= 1.8;
+    console.log("LINE: ideology left, dvp_left -= 1.8  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
 }
-console.log("AFTER ideology block (ideology =", Q.ideology, "):", Q.dvp_left, Q.dvp_right);
+
+console.log("--- peoples_party_support --- value =", Q.peoples_party_support, " type:", typeof Q.peoples_party_support);
 
 Q.dvp_right += (Q.peoples_party_support || 0) * 0.35;
+console.log("LINE: dvp_right += (peoples_party_support||0)*0.35  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+
 Q.dvp_left += (Q.peoples_party_support || 0) * 0.66;
-console.log("AFTER peoples_party_support block:", Q.dvp_left, Q.dvp_right);
+console.log("LINE: dvp_left += (peoples_party_support||0)*0.66  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+
+console.log("--- dvp_relation block --- dvp_relation =", Q.dvp_relation, " type:", typeof Q.dvp_relation);
 
 Q.dvp_left += ((Q.dvp_relation || 0) / 8) * 0.35;
+console.log("LINE: dvp_left += ((dvp_relation||0)/8)*0.35  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+
 Q.dvp_right += ((100 - (Q.dvp_relation || 0)) * 0.5) * 0.28;
-if (Q.dvp_relation < 40) Q.dvp_right += 0.7;
-console.log("AFTER dvp_relation block (dvp_relation =", Q.dvp_relation, "):", Q.dvp_left, Q.dvp_right);
+console.log("LINE: dvp_right += ((100-(dvp_relation||0))*0.5)*0.28  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+
+if (Q.dvp_relation < 40) {
+    Q.dvp_right += 0.7;
+    console.log("LINE: dvp_relation<40, dvp_right += 0.7  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+}
+
+console.log("--- pro_republic/nationalism/demographics --- pro_republic =", Q.pro_republic, " type:", typeof Q.pro_republic, " nationalism =", Q.nationalism, " type:", typeof Q.nationalism, " new_middle_dvp_display =", Q.new_middle_dvp_display, " type:", typeof Q.new_middle_dvp_display, " workers_dvp_display =", Q.workers_dvp_display, " type:", typeof Q.workers_dvp_display, " unemployedc_dvp_display =", Q.unemployedc_dvp_display, " type:", typeof Q.unemployedc_dvp_display, " old_middle_dvp_display =", Q.old_middle_dvp_display, " type:", typeof Q.old_middle_dvp_display, " rural_dvp_display =", Q.rural_dvp_display, " type:", typeof Q.rural_dvp_display);
 
 Q.dvp_left += ((Q.pro_republic || 0) / 12) * 0.35;
+console.log("LINE: dvp_left += ((pro_republic||0)/12)*0.35  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+
 Q.dvp_right += (Q.nationalism || 0) * 0.6;
+console.log("LINE: dvp_right += (nationalism||0)*0.6  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+
 Q.dvp_left += (((Q.new_middle_dvp_display || 0) + (Q.workers_dvp_display || 0) + (Q.unemployedc_dvp_display || 0)) / 5) * 0.35;
+console.log("LINE: dvp_left += demographic sum /5 *0.35  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+
 Q.dvp_right += ((Q.old_middle_dvp_display || 0) * 0.8 + (Q.rural_dvp_display || 0) * 0.6) * 0.32;
-console.log("AFTER pro_republic/nationalism/demographics block:", Q.dvp_left, Q.dvp_right);
+console.log("LINE: dvp_right += (old_middle*0.8 + rural*0.6)*0.32  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
 
-// 5. SPD/ZENTRUM DEMOGRAPHIC WEAKNESS OVERTURE
+console.log("--- 5. SPD/ZENTRUM DEMOGRAPHIC WEAKNESS OVERTURE --- new_middle_spd_display =", Q.new_middle_spd_display, " new_middle_z_display =", Q.new_middle_z_display, " workers_spd_display =", Q.workers_spd_display, " workers_z_display =", Q.workers_z_display);
+
 Q.dvp_left += (32 - (Q.new_middle_spd_display || 0)) * 0.06;
-Q.dvp_left += (20 - (Q.new_middle_z_display || 0)) * 0.06;
-Q.dvp_left += (38 - (Q.workers_spd_display || 0)) * 0.06;
-Q.dvp_left += (15 - (Q.workers_z_display || 0)) * 0.06;
-console.log("AFTER SPD/Zentrum weakness block:", Q.dvp_left, Q.dvp_right);
+console.log("LINE: dvp_left += (32-new_middle_spd_display)*0.06  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
 
-// 6. Global regulation: cap combined total at 500
+Q.dvp_left += (20 - (Q.new_middle_z_display || 0)) * 0.06;
+console.log("LINE: dvp_left += (20-new_middle_z_display)*0.06  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+
+Q.dvp_left += (38 - (Q.workers_spd_display || 0)) * 0.06;
+console.log("LINE: dvp_left += (38-workers_spd_display)*0.06  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+
+Q.dvp_left += (15 - (Q.workers_z_display || 0)) * 0.06;
+console.log("LINE: dvp_left += (15-workers_z_display)*0.06  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
+
+console.log("--- 6. Global regulation / cap ---");
+
 {
     const _dvp_total_cap = 500;
     const _dvp_tracked = ['dvp_left', 'dvp_right'];
     const _dvp_sum = _dvp_tracked.reduce((sum, key) => sum + Q[key], 0);
 
-    console.log("PRE-CAP dvp_sum:", _dvp_sum, "cap:", _dvp_total_cap);
+    console.log("PRE-CAP  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right, " | dvp_sum =", _dvp_sum, " | cap =", _dvp_total_cap);
 
     if (_dvp_sum > _dvp_total_cap) {
         const _dvp_scale = _dvp_total_cap / _dvp_sum;
         console.log("CAP TRIGGERED. scale factor:", _dvp_scale);
-        _dvp_tracked.forEach(key => {
-            const before = Q[key];
-            Q[key] *= _dvp_scale;
-            console.log(`  scaling ${key}: ${before} -> ${Q[key]}`);
-        });
+
+        const before_left = Q.dvp_left;
+        Q.dvp_left *= _dvp_scale;
+        console.log("LINE: scaling dvp_left  ||  before =", before_left, " | after dvp_left =", Q.dvp_left, " | dvp_right (unchanged so far) =", Q.dvp_right);
+
+        const before_right = Q.dvp_right;
+        Q.dvp_right *= _dvp_scale;
+        console.log("LINE: scaling dvp_right  ||  dvp_left =", Q.dvp_left, " | before =", before_right, " | after dvp_right =", Q.dvp_right);
     } else {
-        console.log("CAP NOT triggered, sum under cap.");
+        console.log("CAP NOT triggered, sum under cap.  ||  dvp_left =", Q.dvp_left, " | dvp_right =", Q.dvp_right);
     }
 }
 
-console.log("=== DVP END === Final:", "dvp_left =", Q.dvp_left, "| dvp_right =", Q.dvp_right);
+console.log("=== DVP END ===  ||  FINAL dvp_left =", Q.dvp_left, " | FINAL dvp_right =", Q.dvp_right);
 console.log("");
 
 
@@ -1131,19 +1226,19 @@ if (Q.spd_r >= 30) {
 }
 console.log("AFTER spd_r block (spd_r =", Q.spd_r, "):", Q.business_wing_ddp, Q.social_republican_ddp);
 
-const _ddp_new_mid = Q.new_middle_ddp_display || 0;
-const _ddp_old_mid = Q.old_middle_ddp_display || 0;
-const _ddp_rural   = Q.rural_ddp_display || 0;
-const _ddp_workers = Q.workers_ddp_display || 0;
-const _ddp_unemp   = Q.unemployedc_ddp_display || 0;
+Q.ddp_new_mid = Q.new_middle_ddp_display || 0;
+Q.ddp_old_mid = Q.old_middle_ddp_display || 0;
+Q.ddp_rural   = Q.rural_ddp_display || 0;
+Q.ddp_workers = Q.workers_ddp_display || 0;
+Q.ddp_unemp   = Q.unemployedc_ddp_display || 0;
 
 console.log("Demographic raw inputs:", {
-    new_mid: _ddp_new_mid, old_mid: _ddp_old_mid, rural: _ddp_rural,
-    workers: _ddp_workers, unemp: _ddp_unemp
+    new_mid: Q.ddp_new_mid, old_mid: Q.ddp_old_mid, rural: Q.ddp_rural,
+    workers: Q.ddp_workers, unemp: Q.ddp_unemp
 });
 
-Q.business_wing_ddp += (_ddp_new_mid + _ddp_old_mid + _ddp_rural) * 0.11;
-Q.social_republican_ddp += (_ddp_workers + _ddp_unemp) * 0.33;
+Q.business_wing_ddp += (Q.ddp_new_mid + Q.ddp_old_mid + Q.ddp_rural) * 0.11;
+Q.social_republican_ddp += (Q.ddp_workers + Q.ddp_unemp) * 0.33;
 console.log("AFTER demographics block:", Q.business_wing_ddp, Q.social_republican_ddp);
 
 // Global regulation: cap combined total at 500
