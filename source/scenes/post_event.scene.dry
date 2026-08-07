@@ -2080,9 +2080,19 @@ if (Q.year == 1928 && Q.month >= 9 && Q.lambach_exile == 1 && Q.weeks >= 0) {
     }
 }
 
+if (Q.year == 1929 && Q.month == 10 && Q.ddp_mannheim_congress != 1) {
+    Q.ddp_mannheim_congress = 1;
+    if (Q.social_republican_ddp > Q.business_wing_ddp) {
+        Q.stolper_adopted = -1;
+        Q.social_republican_ddp += 50;
+    } else { 
+        Q.stolper_adopted = 1;
+        Q.business_wing_ddp += 50;
+  } 
+}
 
 if (Q.year == 1930 && Q.month == 5 && Q.weeks >= 1 && Q.young_plan_seen == 1) {
-    Q.economic_growth += 0.5; // already have this
+    Q.economic_growth += 0.5;
 
     // Improved foreign credit access
     Q.budget         += 1.5;
