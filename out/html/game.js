@@ -623,6 +623,18 @@ Object.keys(wordPhrases).forEach(function(phrase) {
       return bar;
   };
 
+  window.consolidateNullQualities = function() {
+  var Q = window.dendryUI.dendryEngine.state.qualities;
+  var nulls = [];
+  for (var key in Q) {
+    if (key === 'null_qualities') continue; 
+    if (Q[key] == null) {
+      nulls.push(key);
+    }
+  }
+  Q.null_qualities = nulls.join(',');
+  };
+
   window.justLoaded = true;
   window.statusTab = "status";
   window.dendryModifyUI = main;
