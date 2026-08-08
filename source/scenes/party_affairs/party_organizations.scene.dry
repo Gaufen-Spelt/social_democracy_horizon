@@ -3,10 +3,7 @@ new-page: true
 is-card: true
 tags: party_affairs
 view-if: party_organizations_timer <= 0
-on-arrival: {!
-    Q.month_actions += 1;
-    Q.party_organizations_timer = 6 + Q.austerity_fortimers;
-!}
+on-arrival: month_actions += 1; party_organizations_timer = 6 + austerity_fortimers
 card-image: img/Mann_der_Arbeit.jpg
 #subtitle: Outside of electoral politics, the SPD runs a social world onto itself.
 
