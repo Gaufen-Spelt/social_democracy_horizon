@@ -248,40 +248,31 @@ go-to: eg_menu if started == 1; root.start_menu_2 if started == 0
 = Achievements
 
 {!<style>
-.ach { display: flex; align-items: flex-start; padding: 10px 8px; margin: 4px 0; border-left: 4px solid; gap: 10px; }
-.ach-icon { display: inline-block; width: 12px; height: 12px; margin-right: 0; margin-top: 4px; flex-shrink: 0; }
-.ach-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.ach { display: flex; align-items: stretch; padding: 0; margin: 0 0 6px 0; border: 1px solid rgba(0,0,0,0.15); border-radius: 4px; overflow: hidden; }
+.ach-icon-box { width: 64px; height: auto; min-height: 64px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.ach-icon-box .ach-icon { width: 14px; height: 14px; border-radius: 3px; }
+.ach-body { flex: 1; padding: 10px 14px; display: flex; flex-direction: column; justify-content: center; gap: 3px; min-width: 0; }
 .ach-title { font-weight: bold; line-height: 1.25; }
 .ach-title strong { font-weight: bold; }
-.ach-subtitle { font-size: 0.82em; font-weight: normal; opacity: 0.75; line-height: 1.35; }
-.ach-locked { border-color: #999 !important; background-color: rgba(150,150,150,0.1) !important; color: #999; }
+.ach-subtitle { font-size: 0.88em; font-weight: normal; opacity: 0.85; line-height: 1.35; }
+.ach-locked { border-color: #999 !important; }
+.ach-locked .ach-icon-box { background-color: rgba(150,150,150,0.15) !important; }
 .ach-locked .ach-icon { background-color: #999 !important; }
+.ach-locked .ach-body { color: #999; }
 .ach-locked .ach-subtitle { opacity: 0.6; }
 .ach-new { font-size: 0.72em; background: #E3000F; color: white; padding: 1px 6px; border-radius: 3px; margin-left: 8px; vertical-align: middle; }
 .ach-title .ach-new { margin-left: 6px; }
-.ach-mod { padding-left: 24px; }
 h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
-.ach-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-auto-rows: min-content;
-  gap: 6px;
-  margin-bottom: 16px;
-  align-items: start;
-}
+.ach-section { display: flex; flex-direction: column; gap: 0; margin-bottom: 16px; }
+
 .ach-cybersyn {
-    border-left: 6px solid #00FF41;
-    background: #0a0a0a;
     font-family: 'Courier New', Courier, monospace;
     text-transform: uppercase;
-    color: #00FF41;
-    text-shadow: 0 0 8px #00FF41, 0 0 2px #00FF41;
-    box-shadow: inset 0 0 20px rgba(0, 255, 65, 0.08), 0 0 4px rgba(0,255,65,0.2);
     letter-spacing: 1px;
-    font-size: 0.82em;
     position: relative;
     overflow: hidden;
 }
+.ach-cybersyn .ach-body { position: relative; z-index: 1; }
 .ach-cybersyn::before {
     content: '';
     position: absolute;
@@ -295,50 +286,25 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
     );
     pointer-events: none;
 }
-.ach-cybersyn .ach-icon {
-    background: #00FF41 !important;
-    box-shadow: 0 0 6px #00FF41;
-    animation: blink 1.2s step-end infinite;
+
+.ach-liberalismus .ach-icon-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
 }
-.ach-cybersyn.ach-locked {
-    color: #1a3a1a;
-    text-shadow: none;
-    border-color: #1a3a1a;
-    box-shadow: none;
-}
-.ach-cybersyn.ach-locked .ach-icon {
-    background: #1a3a1a !important;
-    box-shadow: none;
-    animation: none;
-}
-
-
-
-
-.ach-liberalismus {
-    border-left: 4px solid #000;
-    border-right: 4px solid #003C78;
-    background: linear-gradient(to right,
-        rgba(0,0,0,0.07) 50%,
-        rgba(0,60,120,0.07) 50%
-    );
-}
-
 .ach-icon-ddp {
     width: 14px;
     height: 14px;
-    margin-right: 4px;
     flex-shrink: 0;
     border-radius: 50%;
     background: linear-gradient(to bottom,
         #000 0% 33%, #CC0000 33% 66%, #FFCE00 66% 100%
     );
 }
-
 .ach-icon-dvp {
     width: 14px;
     height: 14px;
-    margin-right: 8px;
     flex-shrink: 0;
     border-radius: 50%;
     background: #e8e0d0;
@@ -348,7 +314,6 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
     align-items: center;
     justify-content: center;
 }
-
 </style>!}
 
 = Core Achievements
@@ -356,305 +321,305 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
 {!<div class="ach-section">!}
 
 [? if achievement_eiserne_front :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Eiserne Front</strong> - form the Iron Front.!}[? if game_achievement_eiserne_front : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Eiserne Front</strong> - form the Iron Front.!}[? if game_achievement_eiserne_front : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_eiserne_front :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Eiserne Front</strong> - form the Iron Front.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Eiserne Front</strong> - form the Iron Front.</div></div>!}
 ?]
 
 [? if achievement_civil_war :
-{!<div class="ach" style="border-color:#8B0000; background:rgba(139,0,0,0.1)"><span class="ach-icon" style="background:#8B0000"></span><strong>Bürgerkrieg</strong> - enter a long civil war.!}[? if game_achievement_civil_war : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(139,0,0,0.1)"><div class="ach-icon-box" style="background:rgba(139,0,0,0.25)"><span class="ach-icon" style="background:#8B0000"></span></div><div class="ach-body"><strong>Bürgerkrieg</strong> - enter a long civil war.!}[? if game_achievement_civil_war : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_civil_war :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Bürgerkrieg</strong> - enter a long civil war.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Bürgerkrieg</strong> - enter a long civil war.</div></div>!}
 ?]
 
 [? if achievement_einigkeit :
-{!<div class="ach" style="border-color:#000; background:rgba(0,0,0,0.05)"><span class="ach-icon" style="background:#000"></span><strong>Einigkeit</strong> - reach the end without civil war (Easy).!}[? if game_achievement_einigkeit : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(0,0,0,0.05)"><div class="ach-icon-box" style="background:rgba(0,0,0,0.15)"><span class="ach-icon" style="background:#000"></span></div><div class="ach-body"><strong>Einigkeit</strong> - reach the end without civil war (Easy).!}[? if game_achievement_einigkeit : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_einigkeit :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Einigkeit</strong> - reach the end without civil war (Easy).</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Einigkeit</strong> - reach the end without civil war (Easy).</div></div>!}
 ?]
 
 [? if achievement_einigkeit_und_recht :
-{!<div class="ach" style="border-color:#DD0000; background:rgba(221,0,0,0.05)"><span class="ach-icon" style="background:#DD0000"></span><strong>Einigkeit und Recht</strong> - reach the end without civil war (Normal).!}[? if game_achievement_einigkeit_und_recht : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(221,0,0,0.05)"><div class="ach-icon-box" style="background:rgba(221,0,0,0.15)"><span class="ach-icon" style="background:#DD0000"></span></div><div class="ach-body"><strong>Einigkeit und Recht</strong> - reach the end without civil war (Normal).!}[? if game_achievement_einigkeit_und_recht : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_einigkeit_und_recht :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Einigkeit und Recht</strong> - reach the end without civil war (Normal).</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Einigkeit und Recht</strong> - reach the end without civil war (Normal).</div></div>!}
 ?]
 
 [? if achievement_einigkeit_und_recht_und_freiheit :
-{!<div class="ach" style="border-color:#FFCE00; background:rgba(255,206,0,0.1)"><span class="ach-icon" style="background:#FFCE00"></span><strong>Einigkeit und Recht und Freiheit</strong> - reach the end without civil war (Hard).!}[? if game_achievement_einigkeit_und_recht_und_freiheit : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(255,206,0,0.1)"><div class="ach-icon-box" style="background:rgba(255,206,0,0.3)"><span class="ach-icon" style="background:#FFCE00"></span></div><div class="ach-body"><strong>Einigkeit und Recht und Freiheit</strong> - reach the end without civil war (Hard).!}[? if game_achievement_einigkeit_und_recht_und_freiheit : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_einigkeit_und_recht_und_freiheit :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Einigkeit und Recht und Freiheit</strong> - reach the end without civil war (Hard).</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Einigkeit und Recht und Freiheit</strong> - reach the end without civil war (Hard).</div></div>!}
 ?]
 
 [? if achievement_schwarz_rot_gold :
-{!<div class="ach" style="border-color:#000; background:linear-gradient(to bottom,rgba(0,0,0,0.1) 33%,rgba(221,0,0,0.1) 33%,rgba(221,0,0,0.1) 66%,rgba(255,206,0,0.1) 66%)"><span class="ach-icon" style="background:linear-gradient(to bottom,#000 33%,#DD0000 33%,#DD0000 66%,#FFCE00 66%)"></span><strong>Schwarz-Rot-Gold</strong> - reach the end without civil war (Historical).!}[? if game_achievement_schwarz_rot_gold : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:linear-gradient(90deg,rgba(0,0,0,0.1),rgba(221,0,0,0.1),rgba(255,206,0,0.1))"><div class="ach-icon-box" style="background:linear-gradient(to bottom,#000 33%,#DD0000 33%,#DD0000 66%,#FFCE00 66%)"></div><div class="ach-body"><strong>Schwarz-Rot-Gold</strong> - reach the end without civil war (Historical).!}[? if game_achievement_schwarz_rot_gold : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_schwarz_rot_gold :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Schwarz-Rot-Gold</strong> - reach the end without civil war (Historical).</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Schwarz-Rot-Gold</strong> - reach the end without civil war (Historical).</div></div>!}
 ?]
 
 [? if achievement_victory_for_the_republic :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.15)"><span class="ach-icon" style="background:#E3000F"></span><strong>Sieg für die Republik</strong> - win the civil war.!}[? if game_achievement_victory_for_the_republic : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.15)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.3)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Sieg für die Republik</strong> - win the civil war.!}[? if game_achievement_victory_for_the_republic : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_victory_for_the_republic :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Sieg für die Republik</strong> - win the civil war.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Sieg für die Republik</strong> - win the civil war.</div></div>!}
 ?]
 
 [? if achievement_bollwerk_der_demokratie :
-{!<div class="ach" style="border-color:#0077FF; background:rgba(0,119,255,0.1)"><span class="ach-icon" style="background:#0077FF"></span><strong>Bollwerk der Demokratie</strong> - Resist the Prussian Coup and win.!}[? if game_achievement_bollwerk_der_demokratie : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(0,119,255,0.1)"><div class="ach-icon-box" style="background:rgba(0,119,255,0.25)"><span class="ach-icon" style="background:#0077FF"></span></div><div class="ach-body"><strong>Bollwerk der Demokratie</strong> - Resist the Prussian Coup and win.!}[? if game_achievement_bollwerk_der_demokratie : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_bollwerk_der_demokratie :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Bollwerk der Demokratie</strong> - Resist the Prussian Coup and win.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Bollwerk der Demokratie</strong> - Resist the Prussian Coup and win.</div></div>!}
 ?]
 
 [? if achievement_red_tzar_of_prussia :
-{!<div class="ach" style="border-color:#8B0000; background:rgba(139,0,0,0.15)"><span class="ach-icon" style="background:#8B0000"></span><strong>Roter Zar von Preußen</strong> - Otto Braun is President, Chancellor, and Minister-President.!}[? if game_achievement_red_tzar_of_prussia : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(139,0,0,0.15)"><div class="ach-icon-box" style="background:rgba(139,0,0,0.3)"><span class="ach-icon" style="background:#8B0000"></span></div><div class="ach-body"><strong>Roter Zar von Preußen</strong> - Otto Braun is President, Chancellor, and Minister-President.!}[? if game_achievement_red_tzar_of_prussia : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_red_tzar_of_prussia :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Roter Zar von Preußen</strong> - Otto Braun is President, Chancellor, and Minister-President.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Roter Zar von Preußen</strong> - Otto Braun is President, Chancellor, and Minister-President.</div></div>!}
 ?]
 
 [? if achievement_volkspartei :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Volkspartei</strong> - the SPD is a People's Party.!}[? if game_achievement_volkspartei : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Volkspartei</strong> - the SPD is a People's Party.!}[? if game_achievement_volkspartei : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_volkspartei :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Volkspartei</strong> - the SPD is a People's Party.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Volkspartei</strong> - the SPD is a People's Party.</div></div>!}
 ?]
 
 [? if achievement_sohn_seiner_klasse :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Sohn seiner Klasse</strong> - Ernst Thälmann is either president or chancellor.!}[? if game_achievement_sohn_seiner_klasse : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Sohn seiner Klasse</strong> - Ernst Thälmann is either president or chancellor.!}[? if game_achievement_sohn_seiner_klasse : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_sohn_seiner_klasse :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Sohn seiner Klasse</strong> - Ernst Thälmann is either president or chancellor.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Sohn seiner Klasse</strong> - Ernst Thälmann is either president or chancellor.</div></div>!}
 ?]
 
 [? if achievement_rote_millionar :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Der rote Millionär</strong> - Willi Münzenberg is president.!}[? if game_achievement_rote_millionar : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Der rote Millionär</strong> - Willi Münzenberg is president.!}[? if game_achievement_rote_millionar : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_rote_millionar :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Der rote Millionär</strong> - Willi Münzenberg is president.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Der rote Millionär</strong> - Willi Münzenberg is president.</div></div>!}
 ?]
 
 [? if achievement_versohnler :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Versöhnler</strong> - the Conciliators lead the KPD.!}[? if game_achievement_versohnler : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Versöhnler</strong> - the Conciliators lead the KPD.!}[? if game_achievement_versohnler : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_versohnler :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Versöhnler</strong> - the Conciliators lead the KPD.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Versöhnler</strong> - the Conciliators lead the KPD.</div></div>!}
 ?]
 
 [? if achievement_deport_hitler :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Der österreichische Gefreite</strong> - deported Hitler.!}[? if game_achievement_deport_hitler : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Der österreichische Gefreite</strong> - deported Hitler.!}[? if game_achievement_deport_hitler : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_deport_hitler :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Der österreichische Gefreite</strong> - deported Hitler.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Der österreichische Gefreite</strong> - deported Hitler.</div></div>!}
 ?]
 
 [? if achievement_wirtschaftspolitik :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Wirtschaftspolitik</strong> - enact an economic plan.!}[? if game_achievement_wirtschaftspolitik : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Wirtschaftspolitik</strong> - enact an economic plan.!}[? if game_achievement_wirtschaftspolitik : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_wirtschaftspolitik :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Wirtschaftspolitik</strong> - enact an economic plan.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Wirtschaftspolitik</strong> - enact an economic plan.</div></div>!}
 ?]
 
 [? if achievement_wirtschaftswunder :
-{!<div class="ach" style="border-color:#FFD700; background:rgba(255,215,0,0.1)"><span class="ach-icon" style="background:#FFD700"></span><strong>Wirtschaftswunder</strong> - Economic miracle achieved.!}[? if game_achievement_wirtschaftswunder : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(255,215,0,0.1)"><div class="ach-icon-box" style="background:rgba(255,215,0,0.3)"><span class="ach-icon" style="background:#FFD700"></span></div><div class="ach-body"><strong>Wirtschaftswunder</strong> - Economic miracle achieved.!}[? if game_achievement_wirtschaftswunder : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_wirtschaftswunder :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Wirtschaftswunder</strong> - Economic miracle achieved.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Wirtschaftswunder</strong> - Economic miracle achieved.</div></div>!}
 ?]
 
 [? if achievement_wirtschaftsexperiment :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Wirtschaftsexperiment</strong> - enact two different economic plans.!}[? if game_achievement_wirtschaftsexperiment : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Wirtschaftsexperiment</strong> - enact two different economic plans.!}[? if game_achievement_wirtschaftsexperiment : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_wirtschaftsexperiment :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Wirtschaftsexperiment</strong> - enact two different economic plans.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Wirtschaftsexperiment</strong> - enact two different economic plans.</div></div>!}
 ?]
 
 [? if achievement_freie_marktwirtschaft :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Freie Marktwirtschaft</strong> - survive to the end without an economic plan.!}[? if game_achievement_freie_marktwirtschaft : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Freie Marktwirtschaft</strong> - survive to the end without an economic plan.!}[? if game_achievement_freie_marktwirtschaft : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_freie_marktwirtschaft :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Freie Marktwirtschaft</strong> - survive to the end without an economic plan.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Freie Marktwirtschaft</strong> - survive to the end without an economic plan.</div></div>!}
 ?]
 
 [? if achievement_equality :
-{!<div class="ach" style="border-color:#9C27B0; background:rgba(156,39,176,0.1)"><span class="ach-icon" style="background:#9C27B0"></span><strong>Gleichheit</strong> - pass reforms for women's rights.!}[? if game_achievement_equality : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(156,39,176,0.1)"><div class="ach-icon-box" style="background:rgba(156,39,176,0.25)"><span class="ach-icon" style="background:#9C27B0"></span></div><div class="ach-body"><strong>Gleichheit</strong> - pass reforms for women's rights.!}[? if game_achievement_equality : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_equality :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Gleichheit</strong> - pass reforms for women's rights.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Gleichheit</strong> - pass reforms for women's rights.</div></div>!}
 ?]
 
 [? if achievement_hirschfeld :
-{!<div class="ach" style="border-color:#FF1493; background:rgba(255,20,147,0.1)"><span class="ach-icon" style="background:#FF1493"></span><strong>Hirschfeld</strong> - pass reforms for homosexual rights.!}[? if game_achievement_hirschfeld : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(255,20,147,0.1)"><div class="ach-icon-box" style="background:rgba(255,20,147,0.25)"><span class="ach-icon" style="background:#FF1493"></span></div><div class="ach-body"><strong>Hirschfeld</strong> - pass reforms for homosexual rights.!}[? if game_achievement_hirschfeld : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_hirschfeld :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Hirschfeld</strong> - pass reforms for homosexual rights.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Hirschfeld</strong> - pass reforms for homosexual rights.</div></div>!}
 ?]
 
 [? if achievement_women_reichsbanner :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Mädchen in Uniform</strong> - a woman's place is in the Reichsbanner.!}[? if game_achievement_women_reichsbanner : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Mädchen in Uniform</strong> - a woman's place is in the Reichsbanner.!}[? if game_achievement_women_reichsbanner : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_women_reichsbanner :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Mädchen in Uniform</strong> - a woman's place is in the Reichsbanner.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Mädchen in Uniform</strong> - a woman's place is in the Reichsbanner.</div></div>!}
 ?]
 
 [? if achievement_anders_als_die_andern :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Anders als die Andern</strong> - sexual minorities will defend the Republic.!}[? if game_achievement_anders_als_die_andern : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Anders als die Andern</strong> - sexual minorities will defend the Republic.!}[? if game_achievement_anders_als_die_andern : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_anders_als_die_andern :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Anders als die Andern</strong> - sexual minorities will defend the Republic.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Anders als die Andern</strong> - sexual minorities will defend the Republic.</div></div>!}
 ?]
 
 [? if achievement_bruder_zur_sonne :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Brüder, zur Sonne, zur Freiheit</strong> - reduce unemployment, pause reparations, increase women's rights, elect an SPD president, and deport Hitler in one playthrough on at least normal difficulty.!}[? if game_achievement_bruder_zur_sonne : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Brüder, zur Sonne, zur Freiheit</strong> - reduce unemployment, pause reparations, increase women's rights, elect an SPD president, and deport Hitler in one playthrough on at least normal difficulty.!}[? if game_achievement_bruder_zur_sonne : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_bruder_zur_sonne :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Brüder, zur Sonne, zur Freiheit</strong> - reduce unemployment, pause reparations, increase women's rights, elect an SPD president, and deport Hitler in one playthrough on at least normal difficulty.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Brüder, zur Sonne, zur Freiheit</strong> - reduce unemployment, pause reparations, increase women's rights, elect an SPD president, and deport Hitler in one playthrough on at least normal difficulty.</div></div>!}
 ?]
 
 [? if achievement_die_rote_fahne :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Die Rote Fahne</strong> - join the KPD in their May Day march.!}[? if game_achievement_die_rote_fahne : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Die Rote Fahne</strong> - join the KPD in their May Day march.!}[? if game_achievement_die_rote_fahne : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_die_rote_fahne :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Die Rote Fahne</strong> - join the KPD in their May Day march.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Die Rote Fahne</strong> - join the KPD in their May Day march.</div></div>!}
 ?]
 
 [? if achievement_panik_im_mittelstand :
-{!<div class="ach" style="border-color:#FFD700; background:rgba(255,215,0,0.15)"><span class="ach-icon" style="background:#FFD700"></span><strong>Panik im Mittelstand</strong> - SPD new middle class support ≥ 50%.!}[? if game_achievement_panik_im_mittelstand : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(255,215,0,0.15)"><div class="ach-icon-box" style="background:rgba(255,215,0,0.3)"><span class="ach-icon" style="background:#FFD700"></span></div><div class="ach-body"><strong>Panik im Mittelstand</strong> - SPD new middle class support ≥ 50%.!}[? if game_achievement_panik_im_mittelstand : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_panik_im_mittelstand :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Panik im Mittelstand</strong> - SPD new middle class support ≥ 50%.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Panik im Mittelstand</strong> - SPD new middle class support ≥ 50%.</div></div>!}
 ?]
 
 [? if achievement_bauernrevolution :
-{!<div class="ach" style="border-color:#8B4513; background:rgba(139,69,19,0.1)"><span class="ach-icon" style="background:#8B4513"></span><strong>Bauernrevolution</strong> - SPD rural support ≥ 50%.!}[? if game_achievement_bauernrevolution : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(139,69,19,0.1)"><div class="ach-icon-box" style="background:rgba(139,69,19,0.25)"><span class="ach-icon" style="background:#8B4513"></span></div><div class="ach-body"><strong>Bauernrevolution</strong> - SPD rural support ≥ 50%.!}[? if game_achievement_bauernrevolution : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_bauernrevolution :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Bauernrevolution</strong> - SPD rural support ≥ 50%.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Bauernrevolution</strong> - SPD rural support ≥ 50%.</div></div>!}
 ?]
 
 [? if achievement_katholischer_sozialismus :
-{!<div class="ach" style="border-color:#000; background:rgba(0,0,0,0.1)"><span class="ach-icon" style="background:#000"></span><strong>Katholischer Sozialismus</strong> - SPD Catholic support ≥ 50%.!}[? if game_achievement_katholischer_sozialismus : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(0,0,0,0.1)"><div class="ach-icon-box" style="background:rgba(0,0,0,0.2)"><span class="ach-icon" style="background:#000"></span></div><div class="ach-body"><strong>Katholischer Sozialismus</strong> - SPD Catholic support ≥ 50%.!}[? if game_achievement_katholischer_sozialismus : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_katholischer_sozialismus :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Katholischer Sozialismus</strong> - SPD Catholic support ≥ 50%.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Katholischer Sozialismus</strong> - SPD Catholic support ≥ 50%.</div></div>!}
 ?]
 
 [? if achievement_grosse_volkspartei :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.15)"><span class="ach-icon" style="background:#E3000F"></span><strong>Große Volkspartei</strong> - All classes ≥ 40% SPD support.!}[? if game_achievement_grosse_volkspartei : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.15)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.3)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Große Volkspartei</strong> - All classes ≥ 40% SPD support.!}[? if game_achievement_grosse_volkspartei : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_grosse_volkspartei :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Große Volkspartei</strong> - All classes ≥ 40% SPD support.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Große Volkspartei</strong> - All classes ≥ 40% SPD support.</div></div>!}
 ?]
 
 [? if achievement_klassenkampf :
-{!<div class="ach" style="border-color:#8B0000; background:rgba(139,0,0,0.15)"><span class="ach-icon" style="background:#8B0000"></span><strong>Klassenkampf</strong> - Workers ≥ 80%, middle class & rural < 20%.!}[? if game_achievement_klassenkampf : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(139,0,0,0.15)"><div class="ach-icon-box" style="background:rgba(139,0,0,0.3)"><span class="ach-icon" style="background:#8B0000"></span></div><div class="ach-body"><strong>Klassenkampf</strong> - Workers ≥ 80%, middle class & rural < 20%.!}[? if game_achievement_klassenkampf : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_klassenkampf :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Klassenkampf</strong> - Workers ≥ 80%, middle class & rural < 20%.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Klassenkampf</strong> - Workers ≥ 80%, middle class & rural < 20%.</div></div>!}
 ?]
 
 [? if achievement_raterepublik :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Räterepublik</strong> - begin the transformation to a socialist economy.!}[? if game_achievement_raterepublik : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Räterepublik</strong> - begin the transformation to a socialist economy.!}[? if game_achievement_raterepublik : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_raterepublik :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Räterepublik</strong> - begin the transformation to a socialist economy.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Räterepublik</strong> - begin the transformation to a socialist economy.</div></div>!}
 ?]
 
 [? if achievement_polykrise :
-{!<div class="ach" style="border-color:#8B0000; background:rgba(139,0,0,0.1)"><span class="ach-icon" style="background:#8B0000; animation:pulse 2s infinite"></span><strong>Polykrise</strong> - survived capital strike and fascist coup.!}[? if game_achievement_polykrise : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(139,0,0,0.1)"><div class="ach-icon-box" style="background:rgba(139,0,0,0.25)"><span class="ach-icon" style="background:#8B0000; animation:pulse 2s infinite"></span></div><div class="ach-body"><strong>Polykrise</strong> - survived capital strike and fascist coup.!}[? if game_achievement_polykrise : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 {!<style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}</style>!}
 ?]
 [? if not achievement_polykrise :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Polykrise</strong> - survived capital strike and fascist coup.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Polykrise</strong> - survived capital strike and fascist coup.</div></div>!}
 ?]
 
 [? if achievement_syndikalismus :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Syndikalismus</strong> - support factory takeovers by the workers.!}[? if game_achievement_syndikalismus : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Syndikalismus</strong> - support factory takeovers by the workers.!}[? if game_achievement_syndikalismus : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_syndikalismus :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Syndikalismus</strong> - support factory takeovers by the workers.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Syndikalismus</strong> - support factory takeovers by the workers.</div></div>!}
 ?]
 
 [? if achievement_drei_pfeile :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Drei Pfeile</strong> - defeat a coup without a civil war.!}[? if game_achievement_drei_pfeile : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Drei Pfeile</strong> - defeat a coup without a civil war.!}[? if game_achievement_drei_pfeile : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_drei_pfeile :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Drei Pfeile</strong> - defeat a coup without a civil war.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Drei Pfeile</strong> - defeat a coup without a civil war.</div></div>!}
 ?]
 
 [? if achievement_ausnahmezustand :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Ausnahmezustand</strong> - use emergency powers to cancel elections.!}[? if game_achievement_ausnahmezustand : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Ausnahmezustand</strong> - use emergency powers to cancel elections.!}[? if game_achievement_ausnahmezustand : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_ausnahmezustand :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Ausnahmezustand</strong> - use emergency powers to cancel elections.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Ausnahmezustand</strong> - use emergency powers to cancel elections.</div></div>!}
 ?]
 
 [? if achievement_eu :
-{!<div class="ach" style="border-color:#003399; background:rgba(0,51,153,0.1)"><span class="ach-icon" style="background:#003399"></span><strong>Vereinigte Staaten von Europa</strong> - form a "European Union".!}[? if game_achievement_eu : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(0,51,153,0.1)"><div class="ach-icon-box" style="background:rgba(0,51,153,0.25)"><span class="ach-icon" style="background:#003399"></span></div><div class="ach-body"><strong>Vereinigte Staaten von Europa</strong> - form a "European Union".!}[? if game_achievement_eu : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_eu :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Vereinigte Staaten von Europa</strong> - form a "European Union".</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Vereinigte Staaten von Europa</strong> - form a "European Union".</div></div>!}
 ?]
 
 [? if achievement_heidelberger_programm :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.2)"><span class="ach-icon" style="background:#E3000F"></span><strong>Heidelberger Programm</strong> - achieve all Heidelberg Program goals.!}[? if game_achievement_heidelberger_programm : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.2)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.35)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Heidelberger Programm</strong> - achieve all Heidelberg Program goals.!}[? if game_achievement_heidelberger_programm : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_heidelberger_programm :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Heidelberger Programm</strong> - achieve all Heidelberg Program goals.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Heidelberger Programm</strong> - achieve all Heidelberg Program goals.</div></div>!}
 ?]
 
 [? if achievement_verfassungsreform :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Verfassungsreform</strong> - pass a constitutional amendment.!}[? if game_achievement_verfassungsreform : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Verfassungsreform</strong> - pass a constitutional amendment.!}[? if game_achievement_verfassungsreform : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_verfassungsreform :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Verfassungsreform</strong> - pass a constitutional amendment.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Verfassungsreform</strong> - pass a constitutional amendment.</div></div>!}
 ?]
 
 [? if achievement_zeppelin_kapitan :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Zeppelinkapitän</strong> - Hugo Eckener has been elected president.!}[? if game_achievement_zeppelin_kapitan : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Zeppelinkapitän</strong> - Hugo Eckener has been elected president.!}[? if game_achievement_zeppelin_kapitan : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_zeppelin_kapitan :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Zeppelinkapitän</strong> - Hugo Eckener has been elected president.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Zeppelinkapitän</strong> - Hugo Eckener has been elected president.</div></div>!}
 ?]
 
 [? if achievement_wahlrechts :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Wahlrechts für Frauen</strong> - Marie Juchacz has been elected president.!}[? if game_achievement_wahlrechts : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Wahlrechts für Frauen</strong> - Marie Juchacz has been elected president.!}[? if game_achievement_wahlrechts : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_wahlrechts :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Wahlrechts für Frauen</strong> - Marie Juchacz has been elected president.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Wahlrechts für Frauen</strong> - Marie Juchacz has been elected president.</div></div>!}
 ?]
 
 [? if achievement_bundesrepublik :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Bundesrepublik</strong> - Konrad Adenauer or Kurt Schumacher has been elected president, and constitutional reforms have reduced presidential power.!}[? if game_achievement_bundesrepublik : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Bundesrepublik</strong> - Konrad Adenauer or Kurt Schumacher has been elected president, and constitutional reforms have reduced presidential power.!}[? if game_achievement_bundesrepublik : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_bundesrepublik :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Bundesrepublik</strong> - Konrad Adenauer or Kurt Schumacher has been elected president, and constitutional reforms have reduced presidential power.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Bundesrepublik</strong> - Konrad Adenauer or Kurt Schumacher has been elected president, and constitutional reforms have reduced presidential power.</div></div>!}
 ?]
 
 [? if achievement_republik_der_wissenschaft :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Republik der Wissenschaft</strong> - Albert Einstein has been elected president.!}[? if game_achievement_republik_der_wissenschaft : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Republik der Wissenschaft</strong> - Albert Einstein has been elected president.!}[? if game_achievement_republik_der_wissenschaft : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_republik_der_wissenschaft :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Republik der Wissenschaft</strong> - Albert Einstein has been elected president.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Republik der Wissenschaft</strong> - Albert Einstein has been elected president.</div></div>!}
 ?]
 
 [? if achievement_arbeiter_von_wien :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Arbeiter von Wien</strong> - SDAPÖ victory in Austria.!}[? if game_achievement_arbeiter_von_wien : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Arbeiter von Wien</strong> - SDAPÖ victory in Austria.!}[? if game_achievement_arbeiter_von_wien : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_arbeiter_von_wien :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Arbeiter von Wien</strong> - SDAPÖ victory in Austria.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Arbeiter von Wien</strong> - SDAPÖ victory in Austria.</div></div>!}
 ?]
 
 [? if achievement_stolperstein :
-{!<div class="ach" style="border-color:#666; background:rgba(102,102,102,0.1)"><span class="ach-icon" style="background:#666"></span><strong>Stolperstein</strong> - we lost, but history might memorialize us...!}[? if game_achievement_stolperstein : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(102,102,102,0.1)"><div class="ach-icon-box" style="background:rgba(102,102,102,0.25)"><span class="ach-icon" style="background:#666"></span></div><div class="ach-body"><strong>Stolperstein</strong> - we lost, but history might memorialize us...!}[? if game_achievement_stolperstein : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_stolperstein :
-{!<div class="ach ach-locked"><span class="ach-icon"></span><strong>Stolperstein</strong> - we lost, but history might memorialize us...</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Stolperstein</strong> - we lost, but history might memorialize us...</div></div>!}
 ?]
 
 {!</div>!}
@@ -664,103 +629,102 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
 {!<div class="ach-section">!}
 
 [? if achievement_ruhrland :
-{!<div class="ach ach-mod" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Rheinland in Fire</strong> - French reoccupy the Rheinland following catastrophe of Young Plan.!}[? if game_achievement_ruhrland : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Rheinland in Fire</strong> - French reoccupy the Rheinland following catastrophe of Young Plan.!}[? if game_achievement_ruhrland : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_ruhrland :
-{!<div class="ach ach-mod ach-locked"><span class="ach-icon"></span><strong>Rheinland in Fire</strong> - French reoccupy the Rheinland following catastrophe of Young Plan.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Rheinland in Fire</strong> - French reoccupy the Rheinland following catastrophe of Young Plan.</div></div>!}
 ?]
 
 [? if achievement_wien_freien :
-{!<div class="ach ach-mod" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Rot in Wien, Rot im Staat</strong> - SDAPÖ secures victory in Austrian election.!}[? if game_achievement_wien_freien : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Rot in Wien, Rot im Staat</strong> - SDAPÖ secures victory in Austrian election.!}[? if game_achievement_wien_freien : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_wien_freien :
-{!<div class="ach ach-mod ach-locked"><span class="ach-icon"></span><strong>Rot in Wien, Rot im Staat</strong> - SDAPÖ secures victory in Austrian election.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Rot in Wien, Rot im Staat</strong> - SDAPÖ secures victory in Austrian election.</div></div>!}
 ?]
 
 [? if achievement_faustischer_pakt :
-{!<div class="ach ach-mod" style="border-color:#E3800F; background:rgba(120,200,15,0.15)"><span class="ach-icon" style="background:#E3000F"></span><strong>Faustischer</strong> - Accepted Hjalmar Schacht's nationalist economic plan.!}[? if game_achievement_faustischer_pakt : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(120,200,15,0.15)"><div class="ach-icon-box" style="background:rgba(120,200,15,0.3)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Faustischer</strong> - Accepted Hjalmar Schacht's nationalist economic plan.!}[? if game_achievement_faustischer_pakt : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_faustischer_pakt :
-{!<div class="ach ach-mod ach-locked"><span class="ach-icon"></span><strong>Faustischer</strong> - Accepted Hjalmar Schacht's nationalist economic plan.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Faustischer</strong> - Accepted Hjalmar Schacht's nationalist economic plan.</div></div>!}
 ?]
 
 [? if socialist_reichsbank :
-{!<div class="ach ach-mod" style="border-color:#E3000F; background:#ffe5e5"><span class="ach-icon" style="background:#FFD700; border:2px solid #E3000F; width:10px; height:10px"></span><strong style="color:#E3000F">Socialist Reichsbank</strong> — A Socialist has been appointed to lead the Reichsbank.!}[? if game_socialist_reichsbank : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:#ffe5e5"><div class="ach-icon-box" style="background:rgba(255,229,229,0.8)"><span class="ach-icon" style="background:#FFD700; border:2px solid #E3000F"></span></div><div class="ach-body"><strong style="color:#E3000F">Socialist Reichsbank</strong> — A Socialist has been appointed to lead the Reichsbank.!}[? if game_socialist_reichsbank : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not socialist_reichsbank :
-{!<div class="ach ach-mod ach-locked"><span class="ach-icon"></span><strong>Socialist Reichsbank</strong> — A Socialist has been appointed to lead the Reichsbank.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Socialist Reichsbank</strong> — A Socialist has been appointed to lead the Reichsbank.</div></div>!}
 ?]
 
 [? if achievement_commonwealth :
-{!<div class="ach ach-mod" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#FFD700; border:2px solid #E3000F; width:10px; height:10px"></span><strong>Co-operative Commonwealth</strong> - British dream of proletariat, German reality of workers.!}[? if game_achievement_commonwealth : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#FFD700; border:2px solid #E3000F"></span></div><div class="ach-body"><strong>Co-operative Commonwealth</strong> - British dream of proletariat, German reality of workers.!}[? if game_achievement_commonwealth : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_commonwealth :
-{!<div class="ach ach-mod ach-locked"><span class="ach-icon"></span><strong>Co-operative Commonwealth</strong> - British dream of proletariat, German reality of workers.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Co-operative Commonwealth</strong> - British dream of proletariat, German reality of workers.</div></div>!}
 ?]
 
 [? if achievement_tyrole_danubia :
-{!<div class="ach ach-mod" style="border-color:#009246; background:rgba(0,146,70,0.1)"><span style="display:inline-flex; margin-right:8px"><span style="display:inline-block;width:4px;height:12px;background:linear-gradient(to bottom,#000 33%,#DD0000 33%,#DD0000 66%,#FFCE00 66%)"></span><span style="display:inline-block;width:4px;height:12px;background:linear-gradient(to bottom,#DD0000 33%,#F1F2F1 33%,#F1F2F1 66%,#DD0000 66%)"></span><span style="display:inline-block;width:4px;height:12px;background:linear-gradient(to bottom,#009246 33%,#F1F2F1 33%,#F1F2F1 66%,#CE2B37 66%)"></span></span><strong>Tyrol - Danubian Pact</strong> - Italy and Germany has signed non aggression treaty.!}[? if game_achievement_tyrole_danubia : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(0,146,70,0.1)"><div class="ach-icon-box" style="background:rgba(0,146,70,0.25); gap:3px"><span style="display:inline-block;width:4px;height:14px;background:linear-gradient(to bottom,#000 33%,#DD0000 33%,#DD0000 66%,#FFCE00 66%)"></span><span style="display:inline-block;width:4px;height:14px;background:linear-gradient(to bottom,#DD0000 33%,#F1F2F1 33%,#F1F2F1 66%,#DD0000 66%)"></span><span style="display:inline-block;width:4px;height:14px;background:linear-gradient(to bottom,#009246 33%,#F1F2F1 33%,#F1F2F1 66%,#CE2B37 66%)"></span></div><div class="ach-body"><strong>Tyrol - Danubian Pact</strong> - Italy and Germany has signed non aggression treaty.!}[? if game_achievement_tyrole_danubia : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_tyrole_danubia :
-{!<div class="ach ach-mod ach-locked"><span class="ach-icon"></span><strong>Tyrol - Danubian Pact</strong> - Italy and Germany has signed non aggression treaty.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Tyrol - Danubian Pact</strong> - Italy and Germany has signed non aggression treaty.</div></div>!}
 ?]
 
 [? if achievement_revolution_own :
-{!<div class="ach ach-mod" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#FFD700; border:2px solid #E3000F; width:10px; height:10px"></span><strong>Revolution of Three Spears</strong> - SPD has launched the revolution.!}[? if game_achievement_revolution_own : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#FFD700; border:2px solid #E3000F"></span></div><div class="ach-body"><strong>Revolution of Three Spears</strong> - SPD has launched the revolution.!}[? if game_achievement_revolution_own : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_revolution_own :
-{!<div class="ach ach-mod ach-locked"><span class="ach-icon"></span><strong>Revolution of Three Spears</strong> - SPD has launched the revolution.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Revolution of Three Spears</strong> - SPD has launched the revolution.</div></div>!}
 ?]
 
 [? if achievement_popular_frontier :
-{!<div class="ach ach-mod" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#FFD700; border:2px solid #E3000F; width:10px; height:10px"></span><strong>Popular Front</strong> - Popular Front theses has been established.!}[? if game_achievement_popular_frontier : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#FFD700; border:2px solid #E3000F"></span></div><div class="ach-body"><strong>Popular Front</strong> - Popular Front theses has been established.!}[? if game_achievement_popular_frontier : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_popular_frontier :
-{!<div class="ach ach-mod ach-locked"><span class="ach-icon"></span><strong>Popular Front</strong> - Popular Front theses has been established.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Popular Front</strong> - Popular Front theses has been established.</div></div>!}
 ?]
 
 [? if achievement_liberalismus :
-{!<div class="ach ach-liberalismus"><span class="ach-icon-ddp"></span><span class="ach-icon-dvp">🦅</span><strong>United Liberalism</strong> - Liberal movement has been unified.!}[? if game_achievement_liberalismus : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach ach-liberalismus" style="background:linear-gradient(90deg,rgba(0,0,0,0.06),rgba(0,60,120,0.06))"><div class="ach-icon-box"><span class="ach-icon-ddp"></span><span class="ach-icon-dvp">🦅</span></div><div class="ach-body"><strong>United Liberalism</strong> - Liberal movement has been unified.!}[? if game_achievement_liberalismus : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_liberalismus :
-{!<div class="ach ach-liberalismus ach-locked"><span class="ach-icon-ddp"></span><span class="ach-icon-dvp">🦅</span><strong>United Liberalism</strong> - Liberal movement has been unified.</div>!}
+{!<div class="ach ach-liberalismus ach-locked"><div class="ach-icon-box"><span class="ach-icon-ddp" style="background:#999"></span><span class="ach-icon-dvp" style="background:#ccc">🦅</span></div><div class="ach-body"><strong>United Liberalism</strong> - Liberal movement has been unified.</div></div>!}
 ?]
 
 [? if achievement_lambachreich :
-{!<div class="ach ach-mod" style="border-color:#4A4D50; background:rgba(40, 40, 40, 0.15)"><span class="ach-icon" style="background:#8B0000; border:2px solid #222222; width:10px; height:10px"></span><strong>Großer Korporatismus</strong> - Walther Lambach consolidates all power under himself.!}[? if game_achievement_lambachreich : {!<span class="ach-new">Neu!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(40,40,40,0.15)"><div class="ach-icon-box" style="background:rgba(40,40,40,0.3)"><span class="ach-icon" style="background:#8B0000; border:2px solid #222"></span></div><div class="ach-body"><strong>Großer Korporatismus</strong> - Walther Lambach consolidates all power under himself.!}[? if game_achievement_lambachreich : {!<span class="ach-new">Neu!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_lambachreich :
-{!<div class="ach ach-mod ach-locked"><span class="ach-icon"></span><strong>Großer Korporatismus</strong> - Walther Lambach consolidates all power under himself.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Großer Korporatismus</strong> - Walther Lambach consolidates all power under himself.</div></div>!}
 ?]
 
 [? if achievement_volksgemeinschaft :
-{!<div class="ach ach-mod" style="border-color:#005B96; background:rgba(0, 91, 150, 0.12)"><span class="ach-icon" style="background:#005B96; border:2px solid #D4AF37; width:10px; height:10px"></span><strong>Volksgemeinschaft</strong> - All differences are none before Germany.!}[? if game_achievement_volksgemeinschaft : {!<span class="ach-new">Neu!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(0,91,150,0.12)"><div class="ach-icon-box" style="background:rgba(0,91,150,0.25)"><span class="ach-icon" style="background:#005B96; border:2px solid #D4AF37"></span></div><div class="ach-body"><strong>Volksgemeinschaft</strong> - All differences are none before Germany.!}[? if game_achievement_volksgemeinschaft : {!<span class="ach-new">Neu!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_volksgemeinschaft :
-{!<div class="ach ach-mod ach-locked"><span class="ach-icon"></span><strong>Volksgemeinschaft</strong> - All differences are none before Germany</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Volksgemeinschaft</strong> - All differences are none before Germany</div></div>!}
 ?]
 
 [? if achievement_christian_revolution :
-{!<div class="ach ach-mod" style="border-color:#D4AF37; background:rgba(212, 175, 55, 0.12)"><span class="ach-icon" style="background:#FFD700; border:2px solid #B8860B; width:10px; height:10px"></span><strong>Kreuz und Arbeit</strong> - Overcoming the German odds.!}[? if game_achievement_christian_revolution : {!<span class="ach-new">Neu!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(212,175,55,0.12)"><div class="ach-icon-box" style="background:rgba(212,175,55,0.3)"><span class="ach-icon" style="background:#FFD700; border:2px solid #B8860B"></span></div><div class="ach-body"><strong>Kreuz und Arbeit</strong> - Overcoming the German odds.!}[? if game_achievement_christian_revolution : {!<span class="ach-new">Neu!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_christian_revolution :
-{!<div class="ach ach-mod ach-locked"><span class="ach-icon"></span><strong>Kreuz und Arbeit</strong> - Overcoming the German odds.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Kreuz und Arbeit</strong> - Overcoming the German odds.</div></div>!}
 ?]
 
 [? if achievement_national_rejuvenation :
-{!<div class="ach ach-mod" style="border-color:#FFD700; background:rgba(255, 215, 0, 0.15); box-shadow: 0 0 10px rgba(255, 215, 0, 0.3)"><span style="display:inline-flex; margin-right:8px"><span style="display:inline-block;width:4px;height:12px;background:#005B96"></span><span style="display:inline-block;width:4px;height:12px;background:#FFD700"></span><span style="display:inline-block;width:4px;height:12px;background:#E3000F"></span></span><strong>Nationale Erneuerung</strong> - Three pillars, two faiths, one nation - elevated above all differences.!}[? if game_achievement_national_rejuvenation : {!<span class="ach-new">Neu!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(255,215,0,0.15); box-shadow: inset 0 0 10px rgba(255,215,0,0.3)"><div class="ach-icon-box" style="background:rgba(255,215,0,0.3); gap:3px"><span style="display:inline-block;width:4px;height:14px;background:#005B96"></span><span style="display:inline-block;width:4px;height:14px;background:#FFD700"></span><span style="display:inline-block;width:4px;height:14px;background:#E3000F"></span></div><div class="ach-body"><strong>Nationale Erneuerung</strong> - Three pillars, two faiths, one nation - elevated above all differences.!}[? if game_achievement_national_rejuvenation : {!<span class="ach-new">Neu!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_national_rejuvenation :
-{!<div class="ach ach-mod ach-locked"><span class="ach-icon"></span><strong>Nationale Erneuerung</strong> - Three pillars, two faiths, one nation - elevated above all differences.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Nationale Erneuerung</strong> - Three pillars, two faiths, one nation - elevated above all differences.</div></div>!}
 ?]
 
 [? if achievement_cyberworld :
-{!<div class="ach ach-cybersyn" style="border-left: 6px solid #00F3FF; background:rgba(0, 243, 255, 0.05); padding: 10px; margin: 5px 0; color:#00F3FF; font-family:monospace; box-shadow: inset 0 0 10px rgba(0, 243, 255, 0.1);"><span style="display:inline-block; width:10px; height:10px; background:#00F3FF; margin-right:10px; box-shadow:0 0 5px #00F3FF"></span><strong>Project Cybersyn-DE</strong> — Expanded Horizons. Expanded Views. I stand between you and my world.!}[? if game_achievement_cyberworld : {!<span class="ach-new" style="color:#FFF; background:#00F3FF; padding:2px 5px; font-size:0.8em; margin-left:10px">NEW DATA</span>!}?]{!</div>!}
+{!<div class="ach ach-cybersyn" style="background:rgba(0,243,255,0.05); color:#00F3FF; box-shadow: inset 0 0 10px rgba(0,243,255,0.1)"><div class="ach-icon-box" style="background:rgba(0,243,255,0.15)"><span style="display:inline-block; width:12px; height:12px; background:#00F3FF; box-shadow:0 0 5px #00F3FF; border-radius:3px"></span></div><div class="ach-body"><strong>Project Cybersyn-DE</strong> — Expanded Horizons. Expanded Views. I stand between you and my world.!}[? if game_achievement_cyberworld : {!<span class="ach-new" style="color:#FFF; background:#00F3FF; padding:2px 5px; font-size:0.8em; margin-left:10px">NEW DATA</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_cyberworld :
-{!<div class="ach ach-cybersyn ach-locked" style="border-left: 6px solid #333; background:rgba(0,0,0,0.2); padding: 10px; margin: 5px 0; color:#666; font-family:monospace; filter:grayscale(1); opacity:0.6;"><span style="display:inline-block; width:10px; height:10px; background:#333; margin-right:10px"></span><strong>Null</strong> — Forget about this achievement, you should.</div>!}
+{!<div class="ach ach-cybersyn ach-locked" style="background:rgba(0,0,0,0.2); color:#666; filter:grayscale(1); opacity:0.6"><div class="ach-icon-box" style="background:rgba(0,0,0,0.3)"><span style="display:inline-block; width:12px; height:12px; background:#333; border-radius:3px"></span></div><div class="ach-body"><strong>Null</strong> — Forget about this achievement, you should.</div></div>!}
 ?]
-
 
 {!</div>!}
 
@@ -769,56 +733,56 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
 {!<div class="ach-section">!}
 
 [? if achievement_noske_leader :
-{!<div class="ach ach-mod" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Gustav Noske's Comeback</strong>   Elect Noske in the presidential election.!}[? if game_achievement_noske_leader : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Gustav Noske's Comeback</strong> - Elect Noske in the presidential election.!}[? if game_achievement_noske_leader : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_noske_leader :
-{!<div class="ach ach-mod ach-locked" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Gustav Noske's Comeback</strong>   Elect Noske in the presidential election.!}[? if game_achievement_noske_leader : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Gustav Noske's Comeback</strong> - Elect Noske in the presidential election.</div></div>!}
 ?]
 
 [? if achievement_shalhelm_coop :
-{!<div class="ach ach-mod" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Reichsbanner - Stahlelm</strong>  Two brothers, one separation, one unification..!}[? if game_achievement_shalhelm_coop : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Reichsbanner - Stahlelm</strong> - Two brothers, one separation, one unification.!}[? if game_achievement_shalhelm_coop : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_shalhelm_coop :
-{!<div class="ach ach-mod ach-locked"><span class="ach-icon"></span><strong>Reichsbanner - Stahlelm</strong>   Two brothers, one separation, one unification.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Reichsbanner - Stahlelm</strong> - Two brothers, one separation, one unification.</div></div>!}
 ?]
 
 [? if achievement_thalmann_died :
-{!<div class="ach ach-mod" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Better Dead than Red</strong>   Thalmann has been killed, what's next?...!}[? if game_achievement_thalmann_died : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Better Dead than Red</strong> - Thalmann has been killed, what's next?...!}[? if game_achievement_thalmann_died : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_thalmann_died :
-{!<div class="ach ach-mod ach-locked"><span class="ach-icon"></span><strong>Better Dead than Red</strong>   Thalmann has been killed, what's next?...</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Better Dead than Red</strong> - Thalmann has been killed, what's next?...</div></div>!}
 ?]
 
 [? if achievement_wels_comeback :
-{!<div class="ach ach-mod" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong> Wels' Wild Way </strong>  Wels takes the mantle back.!}[? if game_achievement_wels_comeback : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Wels' Wild Way</strong> - Wels takes the mantle back.!}[? if game_achievement_wels_comeback : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_wels_comeback :
-{!<div class="ach ach-mod ach-locked"><span class="ach-icon"></span><strong> Wels' Wild Way </strong>   Wels takes the mantle back.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Wels' Wild Way</strong> - Wels takes the mantle back.</div></div>!}
 ?]
 
 [? if achievement_communist_crushed :
-{!<div class="ach ach-mod" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Second Spartakus</strong>   Communists repeat the fate of Spartakists.!}[? if game_achievement_communist_crushed : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Second Spartakus</strong> - Communists repeat the fate of Spartakists.!}[? if game_achievement_communist_crushed : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_communist_crushed :
-{!<div class="ach ach-mod ach-locked"><span class="ach-icon"></span><strong>Second Spartakus</strong>    Communists repeat the fate of Spartakists.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Second Spartakus</strong> - Communists repeat the fate of Spartakists.</div></div>!}
 ?]
 
 [? if achievement_underboots :
-{!<div class="ach ach-mod" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Under Boots and Stomped</strong>   Reactionaries takes the helm.!}[? if game_achievement_underboots : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Under Boots and Stomped</strong> - Reactionaries takes the helm.!}[? if game_achievement_underboots : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_underboots :
-{!<div class="ach ach-mod ach-locked"><span class="ach-icon"></span><strong>Under Boots and Stomped</strong>    Reactionaries takes the helm.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Under Boots and Stomped</strong> - Reactionaries takes the helm.</div></div>!}
 ?]
 
 [? if achievement_communist_together :
-{!<div class="ach ach-mod" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Together Forever</strong>    United Left is Eternal Brotherhood.!}[? if game_achievement_communist_together : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Together Forever</strong> - United Left is Eternal Brotherhood.!}[? if game_achievement_communist_together : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_communist_together :
-{!<div class="ach ach-mod ach-locked"><span class="ach-icon"></span><strong>Together Forever</strong>   United Left is Eternal Brotherhood.</div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Together Forever</strong> - United Left is Eternal Brotherhood.</div></div>!}
 ?]
 
 [? if achievement_noske_leader_historical :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>True ending - Social Fascism</strong> - Narrator must say it, but, by bringing reformism to capitalism, capitalism brings reformism to your socialism. Be aware.!}[? if game_achievement_noske_leader_historical : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>True ending - Social Fascism</strong> - Narrator must say it, but, by bringing reformism to capitalism, capitalism brings reformism to your socialism. Be aware.!}[? if game_achievement_noske_leader_historical : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 
 {!</div>!}
@@ -829,11 +793,11 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
 {!<div class="ach-section">!}
 
 [? if achievement_chud :
-{!<div class="ach" style="border-color:#E3000F; background:rgba(227,0,15,0.1)"><span class="ach-icon" style="background:#E3000F"></span><strong>Nothing ever happens</strong> - Smallburger Thursday is not worth mentioning at all. Hilferchuding is supreme.!}[? if game_achievement_chud : {!<span class="ach-new">New!</span>!}?]{!</div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Nothing ever happens</strong> - Smallburger Thursday is not worth mentioning at all. Hilferchuding is supreme.!}[? if game_achievement_chud : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 
 [? if achievement_reichswehr_ruhrland :
-{!<div class="ach" style="border-left:8px solid #000; border-right:4px solid #DD0000; background:linear-gradient(90deg,rgba(255,255,255,0.1),rgba(255,206,0,0.05)); padding:12px; margin:10px 0; font-family:serif"><span style="letter-spacing:2px;text-transform:uppercase;font-weight:bold;color:#222"><span style="color:#DD0000">&#10016;</span> Reichswehr-Kommando</span><hr style="border:0;border-top:1px solid #ccc;margin:8px 0"><p style="margin:0;font-style:italic"><strong>Reichsprotection</strong> - Protect the Rheinland from being reoccupied by the French.</p></div>!}[? if game_achievement_reichswehr_ruhrland : {!<span class="ach-new">New!</span>!}?]
+{!<div class="ach" style="background:linear-gradient(90deg,rgba(255,255,255,0.1),rgba(255,206,0,0.05)); font-family:serif"><div class="ach-icon-box" style="background:rgba(221,0,0,0.15)"><span style="color:#DD0000; font-size:18px">&#10016;</span></div><div class="ach-body"><strong style="letter-spacing:1px;text-transform:uppercase">Reichsprotection</strong> - Protect the Rheinland from being reoccupied by the French.!}[? if game_achievement_reichswehr_ruhrland : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 
 {!</div>!}
@@ -842,28 +806,21 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
 (function() {
   function restructureCards() {
     document.querySelectorAll('.ach').forEach(function(div) {
-      if (div.querySelector('.ach-text')) return;
-      var strongEl = div.querySelector('strong');
+      var body = div.querySelector('.ach-body');
+      if (!body || body.querySelector('.ach-title')) return;
+      var strongEl = body.querySelector('strong');
       if (!strongEl) return;
-      var badgeEl = div.querySelector('.ach-new');
-      var nodes = Array.from(div.childNodes);
-      var iconNodes = [];
+      var badgeEl = body.querySelector('.ach-new');
+      var nodes = Array.from(body.childNodes);
       var subtitleText = '';
       var passedStrong = false;
       nodes.forEach(function(node) {
         if (node === strongEl) { passedStrong = true; return; }
         if (badgeEl && node === badgeEl) { return; }
-        if (!passedStrong) {
-          iconNodes.push(node);
-        } else {
-          subtitleText += node.textContent;
-        }
+        if (passedStrong) { subtitleText += node.textContent; }
       });
       subtitleText = subtitleText.replace(/^[\s\u2013\u2014-]+/, '').trim();
-      div.innerHTML = '';
-      iconNodes.forEach(function(n) { div.appendChild(n); });
-      var textWrap = document.createElement('div');
-      textWrap.className = 'ach-text';
+      body.innerHTML = '';
       var titleDiv = document.createElement('div');
       titleDiv.className = 'ach-title';
       titleDiv.appendChild(strongEl);
@@ -871,33 +828,12 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
       var subDiv = document.createElement('div');
       subDiv.className = 'ach-subtitle';
       subDiv.textContent = subtitleText;
-      textWrap.appendChild(titleDiv);
-      textWrap.appendChild(subDiv);
-      div.appendChild(textWrap);
-    });
-  }
-  function reflow() {
-    document.querySelectorAll('.ach-section').forEach(function(section) {
-      var items = Array.from(section.querySelectorAll('.ach'));
-      if (items.length === 0) return;
-      var grid = document.createElement('div');
-      grid.className = 'ach-grid';
-      var col1 = document.createElement('div');
-      col1.style.cssText = 'display:flex;flex-direction:column;gap:6px;';
-      var col2 = document.createElement('div');
-      col2.style.cssText = 'display:flex;flex-direction:column;gap:6px;';
-      items.forEach(function(el, i) {
-        el.parentNode.removeChild(el);
-        (i % 2 === 0 ? col1 : col2).appendChild(el);
-      });
-      grid.appendChild(col1);
-      grid.appendChild(col2);
-      section.appendChild(grid);
+      body.appendChild(titleDiv);
+      body.appendChild(subDiv);
     });
   }
   function init() {
     restructureCards();
-    reflow();
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
