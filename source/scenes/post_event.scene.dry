@@ -1957,6 +1957,8 @@ if ( Q.year == 1928 &&  Q.month == 4 && (Q.weeks == 0 || Q.weeks == 1) && Q.urba
 
 if (Q.year == 1928 && Q.month == 8 && Q.rlb_election_flavor_1 != 1) {
     Q.rlb_election_flavor_1 = 1;
+        Q.karl_hepp_votes = Q.karl_hepp_votes || 0;
+        Q.martin_schiele_votes = Q.martin_schiele_votes || 0;
 
     if (Q.cnbl_crisis == 1) { 
         Q.martin_schiele_votes += 2;
