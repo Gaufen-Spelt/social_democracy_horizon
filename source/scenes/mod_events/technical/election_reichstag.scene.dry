@@ -2532,11 +2532,11 @@ for (var i = 0; i < coalition.length; i++) {
 // Sort by score descending
 all_candidates.sort(function(a, b) { return b.score - a.score; });
 
-// Take top 6 candidates
+// Take top 20 candidates
 Q.chancellor_candidates = [];
 Q.chancellor_candidates_display = "";
 
-var num_candidates = Math.min(10, all_candidates.length);
+var num_candidates = Math.min(20, all_candidates.length);
 for (var i = 0; i < num_candidates; i++) {
     var candidate = all_candidates[i];
     
@@ -2570,7 +2570,8 @@ for (var i = 0; i < num_candidates; i++) {
 Q.num_candidates = Q.chancellor_candidates.length;
 
 // Pre-calculate candidate info for display/conditionals
-for (var i = 0; i < Q.num_candidates && i < 6; i++) {
+
+for (var i = 0; i < Q.num_candidates && i < 20; i++) {
     Q['candidate_' + i + '_name'] = Q.chancellor_candidates[i].name;
     Q['candidate_' + i + '_party'] = Q.chancellor_candidates[i].party;
 }
@@ -2661,6 +2662,16 @@ go-to: chancellor_negotiation_spd
 - @choose_chancellor_8: Support [+ candidate_7_name +] ([+ candidate_7_party +])
 - @choose_chancellor_9: Support [+ candidate_8_name +] ([+ candidate_8_party +])
 - @choose_chancellor_10: Support [+ candidate_9_name +] ([+ candidate_9_party +])
+- @choose_chancellor_11: Support [+ candidate_10_name +] ([+ candidate_10_party +])
+- @choose_chancellor_12: Support [+ candidate_11_name +] ([+ candidate_11_party +])
+- @choose_chancellor_13: Support [+ candidate_12_name +] ([+ candidate_12_party +])
+- @choose_chancellor_14: Support [+ candidate_13_name +] ([+ candidate_13_party +])
+- @choose_chancellor_15: Support [+ candidate_14_name +] ([+ candidate_14_party +])
+- @choose_chancellor_16: Support [+ candidate_15_name +] ([+ candidate_15_party +])
+- @choose_chancellor_17: Support [+ candidate_16_name +] ([+ candidate_16_party +])
+- @choose_chancellor_18: Support [+ candidate_17_name +] ([+ candidate_17_party +])
+- @choose_chancellor_19: Support [+ candidate_18_name +] ([+ candidate_18_party +])
+- @choose_chancellor_20: Support [+ candidate_19_name +] ([+ candidate_19_party +])
 
 
 @choose_chancellor_1
@@ -2753,6 +2764,96 @@ Q.chancellor = Q.chancellor_candidates[9].name;
 !}
 go-to: chancellor_confirmed
 
+@choose_chancellor_11
+view-if: num_candidates >= 11
+on-arrival: {!
+Q.chosen_chancellor_index = 10;
+Q.chancellor_party = Q.chancellor_candidates[10].party;
+Q.chancellor = Q.chancellor_candidates[10].name;
+!}
+go-to: chancellor_confirmed
+
+@choose_chancellor_12
+view-if: num_candidates >= 12
+on-arrival: {!
+Q.chosen_chancellor_index = 11;
+Q.chancellor_party = Q.chancellor_candidates[11].party;
+Q.chancellor = Q.chancellor_candidates[11].name;
+!}
+go-to: chancellor_confirmed
+
+@choose_chancellor_13
+view-if: num_candidates >= 13
+on-arrival: {!
+Q.chosen_chancellor_index = 12;
+Q.chancellor_party = Q.chancellor_candidates[12].party;
+Q.chancellor = Q.chancellor_candidates[12].name;
+!}
+go-to: chancellor_confirmed
+
+@choose_chancellor_14
+view-if: num_candidates >= 14
+on-arrival: {!
+Q.chosen_chancellor_index = 13;
+Q.chancellor_party = Q.chancellor_candidates[13].party;
+Q.chancellor = Q.chancellor_candidates[13].name;
+!}
+go-to: chancellor_confirmed
+
+@choose_chancellor_15
+view-if: num_candidates >= 15
+on-arrival: {!
+Q.chosen_chancellor_index = 14;
+Q.chancellor_party = Q.chancellor_candidates[14].party;
+Q.chancellor = Q.chancellor_candidates[14].name;
+!}
+go-to: chancellor_confirmed
+
+@choose_chancellor_16
+view-if: num_candidates >= 16
+on-arrival: {!
+Q.chosen_chancellor_index = 15;
+Q.chancellor_party = Q.chancellor_candidates[15].party;
+Q.chancellor = Q.chancellor_candidates[15].name;
+!}
+go-to: chancellor_confirmed
+
+@choose_chancellor_17
+view-if: num_candidates >= 17
+on-arrival: {!
+Q.chosen_chancellor_index = 16;
+Q.chancellor_party = Q.chancellor_candidates[16].party;
+Q.chancellor = Q.chancellor_candidates[16].name;
+!}
+go-to: chancellor_confirmed
+
+@choose_chancellor_18
+view-if: num_candidates >= 18
+on-arrival: {!
+Q.chosen_chancellor_index = 17;
+Q.chancellor_party = Q.chancellor_candidates[17].party;
+Q.chancellor = Q.chancellor_candidates[17].name;
+!}
+go-to: chancellor_confirmed
+
+@choose_chancellor_19
+view-if: num_candidates >= 19
+on-arrival: {!
+Q.chosen_chancellor_index = 18;
+Q.chancellor_party = Q.chancellor_candidates[18].party;
+Q.chancellor = Q.chancellor_candidates[18].name;
+!}
+go-to: chancellor_confirmed
+
+@choose_chancellor_20
+view-if: num_candidates >= 20
+on-arrival: {!
+Q.chosen_chancellor_index = 19;
+Q.chancellor_party = Q.chancellor_candidates[19].party;
+Q.chancellor = Q.chancellor_candidates[19].name;
+!}
+go-to: chancellor_confirmed
+
 # ============================================
 # CHANCELLOR NEGOTIATION - AI DECIDES
 # ============================================
@@ -2760,19 +2861,36 @@ go-to: chancellor_confirmed
 @chancellor_negotiation_ai
 on-arrival: {!
 // AI chooses chancellor based on various factors
+
+// ============================================
+// NORMALIZE VOTES TO SHARE OF COALITION
+// ============================================
+
+var total_coalition_votes_ai = 0;
+for (var i = 0; i < coalition.length; i++) {
+    total_coalition_votes_ai += Q[coalition[i].toLowerCase() + '_r'];
+}
+if (total_coalition_votes_ai === 0) total_coalition_votes_ai = 1;
+
 var best_candidate = 0;
 var best_score = -999;
 
 for (var i = 0; i < Q.chancellor_candidates.length; i++) {
     var candidate = Q.chancellor_candidates[i];
-    var score = candidate.score; // Use pre-calculated score
+    
+    // Party's share of the coalition, 0-100 scale, instead of raw votes
+    var party_votes = Q[candidate.party.toLowerCase() + '_r'];
+    var coalition_share = (party_votes / total_coalition_votes_ai) * 100;
+    
+    // Recompute score from coalition share rather than raw candidate.score
+    var score = coalition_share * (candidate.weight / 100);
     
     // Hindenburg preferences
     if (Q.president === "Hindenburg") {
-    var spd_trust = Q.hindenburg_trust_spd || 50;
-    if (candidate.party === "SPD") score -= Math.max(0, 50 - spd_trust) * 1.2;
-    var cam = Q.camarilla_chancellor_scores || {};
-    score += (cam[candidate.name] || 0) * 0.5;
+        var spd_trust = Q.hindenburg_trust_spd || 50;
+        if (candidate.party === "SPD") score -= Math.max(0, 50 - spd_trust) * 1.2;
+        var cam = Q.camarilla_chancellor_scores || {};
+        score += (cam[candidate.name] || 0) * 0.5;
         if (candidate.party === "Z") {
             score += 10;
         }
@@ -2781,6 +2899,81 @@ for (var i = 0; i < Q.chancellor_candidates.length; i++) {
         }
     }
     
+    // Formateur bonus
+    if (candidate.party === Q.formateur) {
+        score += 15;
+    }
+    
+    // Experienced leaders bonus
+    if (candidate.name === "Stresemann" && !Q.stresemann_dead) {
+        score += 15;
+    }
+    if (candidate.name === "Brüning") {
+        score += 12;
+    }
+    if (candidate.name === "Müller" && !Q.muller_dead) {
+        score += 10;
+    }
+    if (candidate.name === "Braun") {
+        score += 8;
+    }
+    
+    if (score > best_score) {
+        best_score = score;
+        best_candidate = i;
+    }
+}
+
+Q.chosen_chancellor_index = best_candidate;
+Q.chancellor_party = Q.chancellor_candidates[best_candidate].party;
+Q.chancellor = Q.chancellor_candidates[best_candidate].name;
+!}
+go-to: chancellor_confirmed
+
+# ============================================
+# CHANCELLOR NEGOTIATION - AI DECIDES
+# ============================================
+
+@chancellor_negotiation_ai
+on-arrival: {!
+// AI chooses chancellor based on various factors
+
+// ============================================
+// NORMALIZE VOTES TO SHARE OF COALITION
+// ============================================
+
+var total_coalition_votes_ai = 0;
+for (var i = 0; i < coalition.length; i++) {
+    total_coalition_votes_ai += Q[coalition[i].toLowerCase() + '_r'];
+}
+if (total_coalition_votes_ai === 0) total_coalition_votes_ai = 1;
+
+var best_candidate = 0;
+var best_score = -999;
+
+for (var i = 0; i < Q.chancellor_candidates.length; i++) {
+    var candidate = Q.chancellor_candidates[i];
+    
+    // Party's share of the coalition, 0-100 scale, instead of raw votes
+    var party_votes = Q[candidate.party.toLowerCase() + '_r'];
+    var coalition_share = (party_votes / total_coalition_votes_ai) * 100;
+    
+    // Recompute score from coalition share
+    var score = coalition_share * (candidate.weight / 100);
+    
+    // Hindenburg preferences
+    if (Q.president === "Hindenburg") {
+        var spd_trust = Q.hindenburg_trust_spd || 50;
+        if (candidate.party === "SPD") score -= Math.max(0, 50 - spd_trust) * 1.2;
+        var cam = Q.camarilla_chancellor_scores || {};
+        score += (cam[candidate.name] || 0) * 0.5;
+        if (candidate.party === "Z") {
+            score += 10;
+        }
+        if (candidate.party === "DVP") {
+            score += 5;
+        }
+    }
     
     // Formateur bonus
     if (candidate.party === Q.formateur) {
@@ -2847,8 +3040,6 @@ if (Q.coalition_type === 'far_right') {
 // Bourgeois coalition (SPD excluded)
 if (Q.in_bourgeois_coalition && !Q.spd_in_government) {
     Q.workers_spd -= 5;
-    Q.left_dissent += 10;
-    Q.labor_dissent += 10;
 }
 !}
 
@@ -2885,6 +3076,7 @@ if (Q.in_bourgeois_coalition && !Q.spd_in_government) {
 
 
 @ministry_allocation
+view-if: spd_in_government >= 1
 on-arrival: {!
 // ============================================
 // CALCULATE BASE SHARE FROM VOTE COUNT
@@ -2949,38 +3141,88 @@ for (var i = 0; i < coalition.length; i++) {
 }
 
 // ============================================
-// ALLOCATE 7 MINISTRIES BASED ON LEVERAGE
+// EXCLUDE PARTIES WHOSE RELATIVE SHARE IS TOO SMALL
+// ============================================
+
+var MIN_RELATIVE_SHARE = 0.05; // 5% of total coalition leverage
+
+var raw_total_leverage = 0;
+for (var i = 0; i < coalition.length; i++) {
+    raw_total_leverage += leverage[coalition[i]];
+}
+
+var excluded_parties = [];
+var eligible_coalition = [];
+
+for (var i = 0; i < coalition.length; i++) {
+    var party = coalition[i];
+    var relative_share = leverage[party] / raw_total_leverage;
+    
+    // Chancellor's party always keeps a seat at the table regardless of size
+    if (relative_share < MIN_RELATIVE_SHARE && party !== Q.chancellor_party) {
+        excluded_parties.push(party);
+    } else {
+        eligible_coalition.push(party);
+    }
+}
+
+// Redistribute excluded parties' leverage proportionally among the rest
+if (excluded_parties.length > 0) {
+    var reclaimed = 0;
+    for (var i = 0; i < excluded_parties.length; i++) {
+        reclaimed += leverage[excluded_parties[i]];
+    }
+    var remaining_total = 0;
+    for (var i = 0; i < eligible_coalition.length; i++) {
+        remaining_total += leverage[eligible_coalition[i]];
+    }
+    for (var i = 0; i < eligible_coalition.length; i++) {
+        var party = eligible_coalition[i];
+        leverage[party] += reclaimed * (leverage[party] / remaining_total);
+    }
+}
+
+Q.excluded_from_cabinet = excluded_parties;
+
+// ============================================
+// ALLOCATE 8 MINISTRIES BASED ON LEVERAGE (ELIGIBLE PARTIES ONLY)
 // ============================================
 
 var ministries = ['foreign', 'interior', 'justice', 'labor', 'economic', 'finance', 'agriculture', 'transport'];
 var allocation = {};
 var ministry_count = {};
 
-// Calculate total leverage
+// Calculate total leverage among eligible parties only
 var total_leverage = 0;
-for (var party in leverage) {
-    total_leverage += leverage[party];
+for (var i = 0; i < eligible_coalition.length; i++) {
+    total_leverage += leverage[eligible_coalition[i]];
 }
 
 // Calculate initial allocation
-for (var i = 0; i < coalition.length; i++) {
-    var party = coalition[i];
+for (var i = 0; i < eligible_coalition.length; i++) {
+    var party = eligible_coalition[i];
     var count = Math.round((leverage[party] / total_leverage) * ministries.length);
     allocation[party] = count;
     ministry_count[party] = 0;
 }
 
-// Adjust for rounding errors
-var total_assigned = 0;
-for (var party in allocation) {
-    total_assigned += allocation[party];
+// Excluded parties explicitly get 0 for display purposes
+for (var i = 0; i < excluded_parties.length; i++) {
+    allocation[excluded_parties[i]] = 0;
 }
 
-// If over-allocated, remove from non-chancellor parties
+// Adjust for rounding errors (only touches eligible parties)
+var total_assigned = 0;
+for (var i = 0; i < eligible_coalition.length; i++) {
+    total_assigned += allocation[eligible_coalition[i]];
+}
+
+// If over-allocated, remove from non-chancellor eligible parties
 while (total_assigned > ministries.length) {
     var max_party = null;
     var max_count = 0;
-    for (var party in allocation) {
+    for (var i = 0; i < eligible_coalition.length; i++) {
+        var party = eligible_coalition[i];
         if (allocation[party] > max_count && party !== Q.chancellor_party) {
             max_party = party;
             max_count = allocation[party];
@@ -2994,11 +3236,12 @@ while (total_assigned > ministries.length) {
     }
 }
 
-// If under-allocated, add to highest leverage parties
+// If under-allocated, add to highest leverage eligible parties
 while (total_assigned < ministries.length) {
     var max_party = null;
     var max_leverage = 0;
-    for (var party in leverage) {
+    for (var i = 0; i < eligible_coalition.length; i++) {
+        var party = eligible_coalition[i];
         if (leverage[party] > max_leverage) {
             max_party = party;
             max_leverage = leverage[party];
@@ -3014,11 +3257,15 @@ while (total_assigned < ministries.length) {
 }
 
 // Pre-calculate ministry display (AFTER allocation is calculated)
+// Includes excluded parties at 0 ministries so it's visible they were shut out
 Q.ministry_display_list = "";
-for (var party in allocation) {
+for (var i = 0; i < coalition.length; i++) {
+    var party = coalition[i];
     var party_votes = Q[party.toLowerCase() + '_r'];
     var rounded_leverage = Math.round(leverage[party] * 10) / 10;
-    Q.ministry_display_list += "- **" + party + "**: " + allocation[party] + " ministries (" + Math.round(party_votes * 10) / 10 + "% votes, leverage: " + rounded_leverage + ")\n";
+    var count = allocation[party] || 0;
+    var shut_out_note = excluded_parties.indexOf(party) >= 0 ? " *(shut out of cabinet)*" : "";
+    Q.ministry_display_list += "- **" + party + "**: " + count + " ministries (" + Math.round(party_votes * 10) / 10 + "% votes, leverage: " + rounded_leverage + ")" + shut_out_note + "\n";
 }
 
 // ============================================
@@ -3041,7 +3288,7 @@ var priorities = {
 };
 
 // ============================================
-// ASSIGN MINISTRIES BY PRIORITY
+// ASSIGN MINISTRIES BY PRIORITY (ELIGIBLE PARTIES ONLY)
 // ============================================
 
 var assignments = {};
@@ -3049,8 +3296,8 @@ for (var i = 0; i < ministries.length; i++) {
     assignments[ministries[i]] = null;
 }
 
-// Sort coalition by leverage (descending)
-var sorted_coalition = coalition.slice().sort(function(a, b) {
+// Sort eligible coalition by leverage (descending)
+var sorted_coalition = eligible_coalition.slice().sort(function(a, b) {
     return leverage[b] - leverage[a];
 });
 
@@ -3088,8 +3335,6 @@ Q.finance_minister_party = assignments.finance || 'I';
 Q.agriculture_minister_party = assignments.agriculture || 'I';
 Q.transport_minister_party = assignments.transport || 'I';
 Q.reichswehr_minister_party = 'I';
-
-// [Keep all your minister name assignment code here - it's unchanged]
 
 // Store allocation for display
 Q.ministry_allocation = allocation;
@@ -3222,8 +3467,6 @@ Q.ministry_leverage = leverage;
 // HINDENBURG'S STATUS UPDATE
 Q.presidential_patience += 10
 
-
-
 !}
 
 = Cabinet Formation Complete
@@ -3247,6 +3490,8 @@ Q.presidential_patience += 10
 
 [? if foreign_minister = 'Unbesetzt' or interior_minister = 'Unbesetzt' or justice_minister = 'Unbesetzt' : **Warning:** Some ministries remain unfilled and will operate under civil service administration. ?]
 
+[? if excluded_from_cabinet.length > 0 : **Note:** Smaller coalition partners were denied cabinet seats due to insufficient negotiating leverage relative to their partners. ?]
+
 [? if kpd_in_government : The KPD has entered government for the first time. The revolutionary left now holds state power. ?]
 
 [? if in_left_front : KPD ministers will push for radical socialist policies. Internal dissent is likely. ?]
@@ -3256,6 +3501,7 @@ Q.presidential_patience += 10
 - @hitler_crushed: Reactionaries are ousted.
 - @root: Continue on...
 - @ministry_renegotiation
+
 
 @hitler_crushed
 subtitle: Time of reaction has ended.
