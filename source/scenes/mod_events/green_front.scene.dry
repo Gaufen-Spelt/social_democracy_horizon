@@ -60,10 +60,23 @@ if (Q.dbp_joins_gf >= 1) {
     Q.green_front_formation_points += 1;
 }
 
-if (Q.rlb_party_leader == "Karl Hepp") {
+if (Q.rlb_party_leader == "Karl Hepp" && Q.rlb_votes > 1.4) {
     Q.green_front_formation_points -= 1;
 } else {
     Q.green_front_formation_points += 1;
 }
-    
 
+if (Q.cnbl_votes < 1.1 || Q.cnbl_r < 1.5) {
+    Q.green_front_formation_points += 1;
+}
+
+!}
+go-to: formation if green_front_formation_points >= 4; collapse if green_front_formation_points < 4
+
+@formation
+
+= Green Front is formed!...
+
+@collapse 
+
+= Green Front collapses...
