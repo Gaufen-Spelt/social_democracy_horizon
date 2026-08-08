@@ -635,34 +635,6 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
 {!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Rheinland in Fire</strong> - French reoccupy the Rheinland following catastrophe of Young Plan.</div></div>!}
 ?]
 
-[? if achievement_wien_freien :
-{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Rot in Wien, Rot im Staat</strong> - SDAPÖ secures victory in Austrian election.!}[? if game_achievement_wien_freien : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
-?]
-[? if not achievement_wien_freien :
-{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Rot in Wien, Rot im Staat</strong> - SDAPÖ secures victory in Austrian election.</div></div>!}
-?]
-
-[? if achievement_faustischer_pakt :
-{!<div class="ach" style="background:rgba(120,200,15,0.15)"><div class="ach-icon-box" style="background:rgba(120,200,15,0.3)"><span class="ach-icon" style="background:#E3000F"></span></div><div class="ach-body"><strong>Faustischer</strong> - Accepted Hjalmar Schacht's nationalist economic plan.!}[? if game_achievement_faustischer_pakt : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
-?]
-[? if not achievement_faustischer_pakt :
-{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Faustischer</strong> - Accepted Hjalmar Schacht's nationalist economic plan.</div></div>!}
-?]
-
-[? if socialist_reichsbank :
-{!<div class="ach" style="background:#ffe5e5"><div class="ach-icon-box" style="background:rgba(255,229,229,0.8)"><span class="ach-icon" style="background:#FFD700; border:2px solid #E3000F"></span></div><div class="ach-body"><strong style="color:#E3000F">Socialist Reichsbank</strong> — A Socialist has been appointed to lead the Reichsbank.!}[? if game_socialist_reichsbank : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
-?]
-[? if not socialist_reichsbank :
-{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Socialist Reichsbank</strong> — A Socialist has been appointed to lead the Reichsbank.</div></div>!}
-?]
-
-[? if achievement_commonwealth :
-{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><span class="ach-icon" style="background:#FFD700; border:2px solid #E3000F"></span></div><div class="ach-body"><strong>Co-operative Commonwealth</strong> - British dream of proletariat, German reality of workers.!}[? if game_achievement_commonwealth : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
-?]
-[? if not achievement_commonwealth :
-{!<div class="ach ach-locked"><div class="ach-icon-box"><span class="ach-icon"></span></div><div class="ach-body"><strong>Co-operative Commonwealth</strong> - British dream of proletariat, German reality of workers.</div></div>!}
-?]
-
 [? if achievement_tyrole_danubia :
 {!<div class="ach" style="background:rgba(0,146,70,0.1)"><div class="ach-icon-box" style="background:rgba(0,146,70,0.25); gap:3px"><span style="display:inline-block;width:4px;height:14px;background:linear-gradient(to bottom,#000 33%,#DD0000 33%,#DD0000 66%,#FFCE00 66%)"></span><span style="display:inline-block;width:4px;height:14px;background:linear-gradient(to bottom,#DD0000 33%,#F1F2F1 33%,#F1F2F1 66%,#DD0000 66%)"></span><span style="display:inline-block;width:4px;height:14px;background:linear-gradient(to bottom,#009246 33%,#F1F2F1 33%,#F1F2F1 66%,#CE2B37 66%)"></span></div><div class="ach-body"><strong>Tyrol - Danubian Pact</strong> - Italy and Germany has signed non aggression treaty.!}[? if game_achievement_tyrole_danubia : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
