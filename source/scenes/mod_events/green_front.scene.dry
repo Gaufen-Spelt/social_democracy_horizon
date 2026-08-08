@@ -8,7 +8,7 @@ on-arrival: rural_rlb += 1
 
 = Green Front
 
-Deepening crisis in the countryside has broken the traditional dominance of Germany's rural elites. [? If geest_wildfire: Spreading peasant revolts have severed ties between conservative landlords and small farmers, shattering rural unity. ?] [? If cnbl_votes_display > 1.6: The breakaway of Hessian and Thuringian Landbund groups has stripped the RLB of its sole monopoly over agricultural policy. ?]
+Deepening crisis in the countryside has broken the traditional dominance of Germany's rural elites. [? if geest_wildfire: Spreading peasant revolts have severed ties between conservative landlords and small farmers, shattering rural unity. ?] [? if cnbl_votes_display > 1.6: The breakaway of Hessian and Thuringian Landbund groups has stripped the RLB of its sole monopoly over agricultural policy. ?]
 
 ​With the new German Peasants' Party (DBP) further splitting the rural electorate, organized agriculture stands hopelessly divided. In a bid to stop the bleeding, the RLB has taken the drastic step of inviting its rival Catholic unions, the DBP, and regional leagues to the table for emergency talks.
 
@@ -33,6 +33,10 @@ if (Q.cnbl_crisis >= 1 || Q.cnbl_r > 0) {
     Q.green_front_formation_points += 1;
 } else {
     Q.green_front_formation_points -= 1;
+}
+
+if (Q.dnvp_party_leader == "Alfred Hugenberg") {
+    Q.green_front_formation_points += 2
 }
 
 if (Q.geest_wildfire) {
@@ -76,6 +80,22 @@ go-to: formation if green_front_formation_points >= 4; collapse if green_front_f
 @formation
 
 = Green Front is formed!...
+
+Green Front now composes of: 
+
+• VdB - Zentrum aligned agricultural body of Andreas Hermes
+
+• RLB - Reichslandbund of [+ rlb_party_leader +]
+
+[? if rlb_party_leader == "Karl Hepp" and cnbl_crisis: • CNBLP, Christian National Peasants Party. ?]
+
+[? if dbp_joins_gf >= 1: • DBP, German Peasants Party. ?]
+
+• Ernst Brandes of the German Chamber of Agriculture (Deutscher Landwirtschaftsrat)
+
+• More of local rural leagues and organizations.
+
+Green Front will now pressure parliament into saving the agriculture of the country.
 
 @collapse 
 
