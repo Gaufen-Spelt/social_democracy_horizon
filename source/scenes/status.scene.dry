@@ -17,18 +17,8 @@ Q.tolerating_parties_display = tolDisplay;
 
 if (Q.peoples_party >= 1) {
     Q.spd_status = "Broad People's Party";
-} else if (Q.ideology == "left") {
-    Q.spd_status = 'Revolutionary Socialist Party';
-} else if (Q.ideology == "centrist") {
-    Q.spd_status = 'Center Marxist Party';
-} else if (Q.ideology == "labor") {
-    Q.spd_status = 'Social Democratic Party';
-} else if (Q.ideology == "reformist") {
-    Q.spd_status = 'Reformist Socialist Party';
-} else if (Q.ideology == "neorev") {
-    Q.spd_status = 'Social Republican Party';
 } else {
-    Q.spd_status = 'Social Democratic Party';
+    Q.spd_status = 'Worker's Party';
 }
 !}
 
@@ -37,11 +27,6 @@ if (Q.peoples_party >= 1) {
 [+ weeks +], [+ weeks: monther +], [+ month : month +] [+ year +]
 
 [? if ruhr_labor_strike: <span style="color: #dc143c;">  Ruhr is under the labor strike! </span> ?]
-
-SPD position: [? if spd_toleration : toleration ?][? if spd_in_government : in government - ?][? if spd_toleration == 0 and spd_in_government == 0 and spd_caretaker == 0 : opposition ?][? if spd_caretaker : caretaker government ?]
-[? if in_weimar_coalition and spd_in_government: Weimar Coalition ?][? if in_grand_coalition and spd_in_government: Grand Coalition ?][? if in_popular_front and spd_in_government: Popular Front ?][? if in_left_front and spd_in_government: Left Front ?][? if in_spd_majority and spd_in_government: SPD majority ?][? if in_minority_government and spd_in_government: minority government ?][? if in_emergency_government and spd_in_government: emergency government ?]
-
-SPD's stance: [+ spd_status +]
 
 Next election: [+ next_election_month : month +] [+ next_election_year +]
 
@@ -63,15 +48,23 @@ Parties in government: [+ parties_in_government_display +]
 
 Government coalition votes: [+ government_total_votes +][? if tolerating_parties_display != "None" :  ([+ government_effective_pct +] effective with toleration) ?]
 
+Budget: [+ budget +]
+
 = Other Positions
 
 Reichsbank President: [+ reichsbank_president +]
 
 Reichstag President: [+ reichstag_president +]
 
-= Resources
+= SPD
 
-[? if spd_in_government = 1 : Budget: [+ budget +] ?]
+SPD Leadership: [+ spd_party_leader +]
+
+SPD position: [? if spd_toleration : toleration ?][? if spd_in_government : in government - ?][? if spd_toleration == 0 and spd_in_government == 0 and spd_caretaker == 0 : opposition ?][? if spd_caretaker : caretaker government ?]
+[? if in_weimar_coalition and spd_in_government: Weimar Coalition ?][? if in_grand_coalition and spd_in_government: Grand Coalition ?][? if in_popular_front and spd_in_government: Popular Front ?][? if in_left_front and spd_in_government: Left Front ?][? if in_spd_majority and spd_in_government: SPD majority ?][? if in_minority_government and spd_in_government: minority government ?][? if in_emergency_government and spd_in_government: emergency government ?]
+
+SPD's stance: [+ spd_status +]
+<br> SPD's ideology: [+ spd_ideology +]
 
 Resources available: [+ resources +]
 
@@ -112,7 +105,7 @@ function partyLabelRelations(p) {
 var ideologyHtml = "";
 for (var i = 0; i < Q.parties.length; i++) {
     var p = Q.parties[i];
-    if (p === 'other') continue;
+    if (p === 'other' || p === 'spd') continue;
     var votes = Q[p + '_votes'];
     if (votes !== undefined && votes > 1) {
         var ideology = Q[p + '_ideology'];
