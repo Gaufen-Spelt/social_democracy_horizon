@@ -19,7 +19,7 @@ if (Q.peoples_party >= 1) {
     Q.spd_status = "Broad People's Party";
 } else if (Q.ideology == "left") {
     Q.spd_status = 'Revolutionary Socialist Party';
-} else if (Q.ideology == "center") {
+} else if (Q.ideology == "centrist") {
     Q.spd_status = 'Center Marxist Party';
 } else if (Q.ideology == "labor") {
     Q.spd_status = 'Social Democratic Party';
