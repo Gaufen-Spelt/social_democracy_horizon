@@ -8,9 +8,9 @@ face-image: img/portraits/LambachWalther.jpg
 
 = Second Vote of No Confidence!
 
-The expulsions and upheaval following Lambach's survival have not quelled the opposition — they have hardened it. Without Hugenberg's faction, which has already departed to form the **DNF**, the remaining dissidents have regrouped. The Traditionalists, unwilling to accept Lambach's consolidation of power, have rallied the uncommitted Moderates and pulled a portion of the Young Conservatives back into opposition.
+After the first vote of no confidence, Walther Lambach has launched purge against all associations and friends of the Hugenberg and his radical faction. With the mass purge, Traditionalists and Moderates have finally realized the gravely danger of the equally as powerful as Hugenberg person - Walther Lambach. This time around, Lambach was seeking to fully dismantle old traditions of the party.
 
-This is their last throw of the dice. If they cannot oust him now, Lambach's grip on the DNVP will be unbreakable.
+With the full regret, Traditionalists and Moderates have broken up with Walther Lambach and have launched full attack on him, forcing second vote of no confidence. Treviranus's faction has also declared their opposition, however they showed no unity on whether to vote against Lambach or support him.
 
 **Will he survive a second time?**
 
@@ -27,16 +27,16 @@ Q.abstain_lambach2 = 0;
 // --- Christian Socials: entirely pro ---
 Q.pro_lambach2 += Q.christsoc_final_votes;
 
-// --- Young Conservatives: 1/4 anti, 3/4 pro ---
-var yocon2_anti = Q.yocon_final_votes * 0.25;
+// --- Young Conservatives: 1/3 anti, 2/3 pro ---
+var yocon2_anti = Q.yocon_final_votes * 0.33;
 Q.anti_lambach2 += yocon2_anti;
 Q.pro_lambach2  += (Q.yocon_final_votes - yocon2_anti);
 
 // --- Traditionalists (moderate_b): entirely anti ---
 Q.anti_lambach2 += Q.moderate_b_final_votes;
 
-// --- Coalitionists (moderate_a): 0.9x anti, remainder pro ---
-var moda2_anti = Q.moderate_a_final_votes * 0.9;
+// --- Coalitionists (moderate_a): 0.95x anti, remainder pro ---
+var moda2_anti = Q.moderate_a_final_votes * 0.95;
 Q.anti_lambach2 += moda2_anti;
 Q.pro_lambach2  += (Q.moderate_a_final_votes - moda2_anti);
 
@@ -248,23 +248,61 @@ go-to: cooked2 if lambach_ousting2 = 1; survives2 if lambach_ousting2 = 0
 
 
 @cooked2
-on-arrival: dnvp_party_leader = "Kuno von Westarp"; dnvp_ideology = "National Conservatism"; old_middle_dnvp += 5; rural_dnvp += 3; workers_dnvp -= 3; new_middle_dnvp -= 5; pro_republic -= 5; nationalism += 5; dnvp_relation -= 20
+on-arrival: dnvp_party_leader = "Kuno von Westarp"; dnvp_ideology = "National Conservatism"; old_middle_dnvp += 5; rural_dnvp += 3; workers_dnvp -= 3; new_middle_dnvp -= 5; pro_republic -= 5; nationalism += 5; dnvp_relation -= 20; lambach_defection = 1; {!
+
+Q.parties.push('csvd');
+Q.csvd_flee = 1;
+Q.workers_dnvp *= 0.3;
+Q.middle_class_dnvp *= 0.45;
+Q.old_middle_dnvp *= 0.89;
+Q.workers_csvd += 15;
+Q.new_middle_csvd += 15;
+Q.old_middle_csvd += 1;
+Q.rural_csvd += 1;
+Q.dnvp_r_share_left = Q.delegate_power_christsoc * 0.01;
+Q.csvd_r += Q.dnvp_r_share_left;
+Q.dnvp_r -= Q.dnvp_r_share_left;
+
+Q.old_csvd_r = 0;
+for (var record of Q.election_records) {
+    record['csvd'] = 0;
+}
+for (var record of Q.party_support_records) {
+    record['csvd'] = 0;
+}
+!}
 
 = Lambach falls on the second vote!
 
-With Hugenberg's bloc already gone, it was the quiet defection of the Moderates and the resolute Traditionalists that finished him. The Christian Socials fought to the last, but without the broader coalition Lambach once relied upon, the numbers were simply not there.
+As it was expected, the majority of old guard and even some of conservative reformist have taken down the Walther Lambach in the vote of no confidence. After the expulsion, rest of the Christian Socials and DHV followed the step of their leader and joined the relatively small CSVD, empowering it with lot of seats.
 
-Walther Lambach steps down from the chairmanship, his experiment in remaking the DNVP ending in defeat.
-
-[Your consequences here]
+Christian Social experiment was ended here.
 
 @survives2
-on-arrival: lambach_stage = 2; workers_dnvp += 5; new_middle_dnvp += 5
+on-arrival: lambach_stage = 2; workers_dnvp += 5; new_middle_dnvp += 5; {!
+
+Q.parties.push('kvp');
+Q.kvp_flee = 1;
+Q.rural_dnvp *= 0.3;
+Q.old_middle_dnvp *= 0.1;
+Q.old_middle_kvp += 20;
+Q.rural_kvp += 20;
+Q.dnvp_r_share_left = Q.delegate_power_a * 0.01 + Q.delegate_power_b * 0.01 + Q.delegate_power_yocon * 0.10;
+Q.kvp_r += Q.dnvp_r_share_left;
+Q.dnvp_r -= Q.dnvp_r_share_left;
+
+Q.old_kvp_r = 0;
+for (var record of Q.election_records) {
+    record['kvp'] = 0;
+}
+for (var record of Q.party_support_records) {
+    record['kvp'] = 0;
+}
+!}
+
 
 = Lambach survives a second time — his grip is iron!
 
 Against all expectations, Walther Lambach has beaten back a second attempt to remove him. The rump opposition, stripped of Hugenberg's resources and organisation, could not muster enough votes even among the Traditionalists and Moderates to cross the threshold.
 
-His position is now unassailable. The dissenters have exhausted every parliamentary tool available to them. What remains of the old DNVP either falls in line — or leaves.
-
-[Your consequences here]
+It seems like, Walther Lambach is now undefeatable and any prospects of resistance ends here. Remnant of the opposition defected to the KVP.
