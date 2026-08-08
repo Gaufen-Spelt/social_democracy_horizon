@@ -4965,11 +4965,13 @@ function computeTarget(party, c) {
 
         case 'aspd': {
             if (Q.aspd_banned) return 0;
-            base = (rep * 8 + nat * 7 + soc * 5) * im.bb;
-            const class_mods = { workers: 0.50, old_middle: 0.50, new_middle: 0.20, rural: 0.55, unemployedc: 0.25 };
+            base = (rep * 3 + nat * 10 + soc * 1) * im.bb;
+            const class_mods = { workers: 0.65, old_middle: 0.05, new_middle: 0.22, rural: 0.01, unemployedc: 0.35 };
             let result = base * (class_mods[c] || 1.0);
-            if (Q.reformists_resign) result *= 1.50;
-            if (Q.neorev_split) result *= 2.50;
+            if (Q.reformists_resign >= 1) result *= 2.50;
+            if (Q.unions_independent >= 1) result *= 2.50;
+            if (Q.neorev_split >= 1) result *= 3.50;
+            if (Q.ideology == "left") result *= 1.50;
             return _applyQOL(result, party, c);
         }
 
