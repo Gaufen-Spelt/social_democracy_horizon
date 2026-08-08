@@ -30,6 +30,7 @@ Q.month_actions = 0;
 if (!Q.rng_seed) {
     Q.rng_seed = Date.now() & 0xFFFFFFFF;
 }
+Q.commercialized_media = Q.commercialized_media || 0;
 
 Q.business_wing_ddp = 370;
 Q.social_republican_ddp = 130;
