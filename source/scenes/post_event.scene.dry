@@ -997,14 +997,14 @@ if (Q.dvp_relation < 40) {
 Q.dvp_left += ((Q.pro_republic || 0) / 12) * 0.35;
 Q.dvp_right += (Q.nationalism || 0) * 0.6;
 
-Q.dvp_left += (((Q.new_middle_dvp || 0) + (Q.workers_dvp || 0) + (Q.unemployedc_dvp || 0)) / 5) * 0.35;
-Q.dvp_right += ((Q.old_middle_dvp || 0) * 0.8 + (Q.rural_dvp || 0) * 0.6) * 0.32;
+// Q.dvp_left += (((Q.new_middle_dvp || 0) + (Q.workers_dvp || 0) + (Q.unemployedc_dvp || 0)) / 5) * 0.35;
+// Q.dvp_right += ((Q.old_middle_dvp || 0) * 0.8 + (Q.rural_dvp || 0) * 0.6) * 0.32;
 
 // 5. SPD/ZENTRUM DEMOGRAPHIC WEAKNESS OVERTURE
-Q.dvp_left += (32 - (Q.new_middle_spd || 0)) * 0.06;
-Q.dvp_left += (20 - (Q.new_middle_z || 0)) * 0.06;
-Q.dvp_left += (38 - (Q.workers_spd || 0)) * 0.06;
-Q.dvp_left += (15 - (Q.workers_z || 0)) * 0.06;
+// Q.dvp_left += (32 - (Q.new_middle_spd || 0)) * 0.06;
+// Q.dvp_left += (20 - (Q.new_middle_z || 0)) * 0.06;
+// Q.dvp_left += (38 - (Q.workers_spd || 0)) * 0.06;
+// Q.dvp_left += (15 - (Q.workers_z || 0)) * 0.06;
 
 // 6. Global regulation / cap
 {
