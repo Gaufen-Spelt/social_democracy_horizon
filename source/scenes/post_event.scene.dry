@@ -4848,7 +4848,7 @@ base = (r * 99 + s * 58) * im.spd * (eim.spd || 1.0) * campaign_boost;
         }
 
         case 'csvd': {
-            if (Q.csvd_banned ||) return 0;
+            if (Q.csvd_banned) return 0;
             let dnvp_split_bonus = 0;
             if (Q.dnvp_party_leader == "Alfred Hugenberg" || Q.lambach_defection >= 1)                              dnvp_split_bonus = 0.5 + (Q.dnvp_r * 0.03);
 
@@ -4901,7 +4901,7 @@ base = (r * 99 + s * 58) * im.spd * (eim.spd || 1.0) * campaign_boost;
         }
 
         case 'kvp': {
-            if (Q.kvp_banned || !Q.kvp_flee) return 0;
+            if (Q.kvp_banned) return 0;
             let split_bonus = Q.dnvp_party_leader == "Alfred Hugenberg" || Q.lambach_stage >= 2 ? 2.5 : 0.8;
             base = (rep * 18 + nat * 14) * split_bonus * im.kvp;
             const class_mods = { workers: 0.10, old_middle: 1.65, new_middle: 1.25, rural: 1.25, unemployedc: 0.10 };
