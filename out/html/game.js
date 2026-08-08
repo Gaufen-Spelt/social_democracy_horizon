@@ -2102,3 +2102,164 @@ window.MusicPlayer = (function () {
   };
 
 }());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+window.Achievements = (function () {
+
+  // ── Registry: ─────────────────────────
+  // key: id, value: {title, description, icon}
+  var REGISTRY = {
+    // first_election: {
+    //   title: 'First Election',
+    //   description: 'Survive your first Reichstag election as Chancellor.',
+    //   icon: 'img/achievements/first_election.png'
+    // },
+  };
+
+  var _queue = [];
+  var _showing = false;
+  var _container = null;
+
+  function _init() {
+    if (_container) return;
+    _container = document.createElement('div');
+    _container.id = 'achievement-popup-container';
+    document.body.appendChild(_container);
+  }
+
+  function _getUnlocked() {
+    var engine = window.dendryUI && window.dendryUI.dendryEngine;
+    if (!engine) return {};
+    if (!engine.state.achievementsUnlocked) {
+      engine.state.achievementsUnlocked = {};
+    }
+    return engine.state.achievementsUnlocked;
+  }
+
+  function isUnlocked(id) {
+    return !!_getUnlocked()[id];
+  }
+
+  function getAll() {
+    return REGISTRY;
+  }
+
+  function getUnlockedList() {
+    var unlocked = _getUnlocked();
+    return Object.keys(REGISTRY).filter(function (id) { return unlocked[id]; });
+  }
+
+  // ── Unlock + queue a popup ────────────────────────────────────────
+  function unlock(id, opts) {
+    opts = opts || {};
+    var def = REGISTRY[id] || {};
+    var title = opts.title || def.title || id;
+    var description = opts.description || def.description || '';
+    var icon = opts.icon || def.icon || null;
+    var allowRepeat = opts.allowRepeat === true;
+    var duration = opts.duration != null ? opts.duration : 5000;
+
+    var unlocked = _getUnlocked();
+    if (unlocked[id] && !allowRepeat) {
+      return false; // already unlocked, don't re-notify
+    }
+    unlocked[id] = true;
+
+    _queue.push({ title: title, description: description, icon: icon, duration: duration });
+    _runQueue();
+    return true;
+  }
+
+  function _runQueue() {
+    if (_showing || _queue.length === 0) return;
+    _showing = true;
+    var item = _queue.shift();
+    _show(item, function () {
+      _showing = false;
+      _runQueue();
+    });
+  }
+
+  function _show(item, onDone) {
+    _init();
+
+    var el = document.createElement('div');
+    el.className = 'achievement-popup';
+
+    var iconHtml = item.icon
+      ? '<img class="achievement-popup-icon" src="' + item.icon + '" alt="">'
+      : '<div class="achievement-popup-icon achievement-popup-icon-default">&#9733;</div>';
+
+    el.innerHTML =
+      iconHtml +
+      '<div class="achievement-popup-text">' +
+        '<div class="achievement-popup-label">Achievement Unlocked</div>' +
+        '<div class="achievement-popup-title"></div>' +
+        (item.description ? '<div class="achievement-popup-desc"></div>' : '') +
+      '</div>';
+
+    // Set text via textContent to avoid injection issues from dynamic strings
+    el.querySelector('.achievement-popup-title').textContent = item.title;
+    if (item.description) {
+      el.querySelector('.achievement-popup-desc').textContent = item.description;
+    }
+
+    _container.appendChild(el);
+
+    // Force reflow then animate in
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        el.classList.add('active');
+      });
+    });
+
+    var closeTimer = setTimeout(function () { _hide(el, onDone); }, item.duration);
+
+    el.addEventListener('click', function () {
+      clearTimeout(closeTimer);
+      _hide(el, onDone);
+    });
+  }
+
+  function _hide(el, onDone) {
+    el.classList.remove('active');
+    el.classList.add('leaving');
+    setTimeout(function () {
+      el.remove();
+      if (onDone) onDone();
+    }, 400);
+  }
+
+  return {
+    unlock: unlock,
+    isUnlocked: isUnlocked,
+    getAll: getAll,
+    getUnlockedList: getUnlockedList,
+    registry: REGISTRY
+  };
+
+})();
