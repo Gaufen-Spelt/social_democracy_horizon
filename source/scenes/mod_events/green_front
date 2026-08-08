@@ -19,3 +19,51 @@ What will happen next and how negotiations shall proceed will be decided right n
 - @results_gf: And the outcome is ...
 
 @results_gf
+on-arrival: {!
+
+Q.green_front_formation_points = Q.green_front_formation_points || 0;
+
+if (Q.dbp_votes > 1 || Q.dbp_r > 1) {
+    Q.green_front_formation_points -= 1
+} else { 
+    Q.green_front_formation_points += 1;
+}
+
+if (Q.cnbl_crisis >= 1 || Q.cnbl_r > 0) {
+    Q.green_front_formation_points += 1;
+} else {
+    Q.green_front_formation_points -= 1;
+}
+
+if (Q.geest_wildfire) {
+    Q.green_front_formation_points += 2
+} else {
+    Q.green_front_formation_points += 1
+}
+
+if (Q.rlb_votes || Q.rlb_r > 1.4) {
+    Q.green_front_formation_points -= 1
+} else {
+    Q.green_front_formation_points += 1
+}
+
+Q.dbp_joins_gf = Q.dbp_joins_gf || 0;
+
+const closeRelation = Q.dbp_relation < 40 && Q.dnvp_party_leader != "Alfred Hugenberg" && Q.rlb_party_leader == "Karl Hepp";
+const lowRelation = Q.dbp_relation < 35;
+
+if (closeRelation || lowRelation) {
+    Q.dbp_joins_gf = 1;
+}
+
+if (Q.dbp_joins_gf >= 1) {
+    Q.green_front_formation_points += 1;
+}
+
+if (Q.rlb_party_leader == "Karl Hepp") {
+    Q.green_front_formation_points -= 1;
+} else {
+    Q.green_front_formation_points += 1;
+}
+    
+
