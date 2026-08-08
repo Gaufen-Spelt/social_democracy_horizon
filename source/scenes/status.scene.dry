@@ -14,6 +14,20 @@ var tolDisplay = (Q.tolerating_parties && Q.tolerating_parties.length > 0)
   ? Q.tolerating_parties.map(function(p){ return p.toUpperCase(); }).join(", ")
   : "None";
 Q.tolerating_parties_display = tolDisplay;
+
+if (Q.peoples_party >= 1) {
+    Q.spd_status = 'Broad People's Party';
+} else if (Q.ideology == "left") {
+    Q.spd_status = 'Revolutionary Socialist Party';
+} else if (Q.ideology == "centrist") {
+    Q.spd_status = 'Center Marxist Party';
+} else if (Q.ideology == "labor") {
+    Q.spd_status = 'Social Democratic Party';
+} else if (Q.ideology == "reformist") {
+    Q.spd_status = 'Reformist Socialist Party';
+} else if (Q.ideology == "neorevisionist") {
+    Q.spd_status = 'Social Republican Party';
+} else Q.spd_status = 'Social Democratic Party';
 !}
 
 = Status
@@ -24,6 +38,8 @@ Q.tolerating_parties_display = tolDisplay;
 
 SPD position: [? if spd_toleration : toleration ?][? if spd_in_government : in government - ?][? if spd_toleration == 0 and spd_in_government == 0 and spd_caretaker == 0 : opposition ?][? if spd_caretaker : caretaker government ?]
 [? if in_weimar_coalition and spd_in_government: Weimar Coalition ?][? if in_grand_coalition and spd_in_government: Grand Coalition ?][? if in_popular_front and spd_in_government: Popular Front ?][? if in_left_front and spd_in_government: Left Front ?][? if in_spd_majority and spd_in_government: SPD majority ?][? if in_minority_government and spd_in_government: minority government ?][? if in_emergency_government and spd_in_government: emergency government ?]
+
+SPD's stance: [+ spd_status +]
 
 Next election: [+ next_election_month : month +] [+ next_election_year +]
 
@@ -152,25 +168,15 @@ Q.party_relations_html = relationsHtml;
 
 Internal dissent: [+ dissent_percent : dissent +] [? if deterministic_mode == 1: [+ dissent_percent +] ?]
 
-{!<span class="tooltip-text" title="The Left is interested in radical, transformative policies and cooperation with the KPD.">Klassenkampf Linke</span>!} strength: [+ left_strength : strength +] [? if deterministic_mode == 1: [+ left_strength +] ?], dissent: [+ left_dissent : dissent +] [? if deterministic_mode == 1: [+ left_dissent +] ?]
+{!<span class="tooltip-text" title="The Left is interested in radical, transformative policies and cooperation with the KPD.">Klassenkampf Linke</span>!} strength: [+ left_strength : strength +] [? if deterministic_mode == 1: [+ left_strength +] ?], dissent: [+ left_dissent : dissent +] [? if deterministic_mode == 1: [+ left_dissent +] ?] [? if left_split: Leftists have defected from our party! ?]
 
-[? if left_split: Leftists have defected from our party! ?]
+{!<span class="tooltip-text" title="The Center is a faction of Center Marxists, between reform and revolution.">Materialist / Center Marxists</span>!} strength: [+ center_strength : strength +] [? if deterministic_mode == 1: [+ center_strength +] ?], dissent: [+ center_dissent : dissent +] [? if deterministic_mode == 1: [+ center_dissent +] ?] [? if centrists_resign: "Center Marxists have defected from our party! ?]
 
-{!<span class="tooltip-text" title="The Center is a faction of Center Marxists, between reform and revolution.">Materialist / Center Marxists</span>!} strength: [+ center_strength : strength +] [? if deterministic_mode == 1: [+ center_strength +] ?], dissent: [+ center_dissent : dissent +] [? if deterministic_mode == 1: [+ center_dissent +] ?]
+{!<span class="tooltip-text" title="Labor's goal is economic reform and benefits for organized workers."> Arbeitergewerkschaft </span>!} strength: [+ labor_strength : strength +] [? if deterministic_mode == 1: [+ labor_strength +] ?], dissent: [+ labor_dissent : dissent +] [? if deterministic_mode == 1: [+ labor_dissent +] ?] [? if unions_independent: Unions have defected from our party! ?]
 
-[? if centrists_resign: "Center Marxists have defected from our party! ?]
+{!<span class="tooltip-text" title="Reformists are pragmatic participants in government, and seek to expand the welfare state and defend democracy."> Reformist / Evolutionary Socialists </span>!} strength: [+ reformist_strength : strength +] [? if deterministic_mode == 1: [+ reformist_strength +] ?], dissent: [+ reformist_dissent : dissent +] [? if deterministic_mode == 1: [+ reformist_dissent +] ?] [? if reformists_resign: Reformists have defected from our party! ?]
 
-{!<span class="tooltip-text" title="Labor's goal is economic reform and benefits for organized workers."> Arbeitergewerkschaft </span>!} strength: [+ labor_strength : strength +] [? if deterministic_mode == 1: [+ labor_strength +] ?], dissent: [+ labor_dissent : dissent +] [? if deterministic_mode == 1: [+ labor_dissent +] ?]
-
-[? if unions_independent: Unions have defected from our party! ?]
-
-{!<span class="tooltip-text" title="Reformists are pragmatic participants in government, and seek to expand the welfare state and defend democracy."> Reformist / Evolutionary Socialists </span>!} strength: [+ reformist_strength : strength +] [? if deterministic_mode == 1: [+ reformist_strength +] ?], dissent: [+ reformist_dissent : dissent +] [? if deterministic_mode == 1: [+ reformist_dissent +] ?]
-
-[? if reformists_resign: Reformists have defected from our party! ?]
-
-[? if neorevisionism > 0 : Neorevisionist / Militant Democrats strength: [+ neorevisionist_strength : strength +] [? if deterministic_mode == 1: [+ neorevisionist_strength +] ?], dissent: [+ neorevisionist_dissent : dissent +] [? if deterministic_mode == 1: [+ neorevisionist_dissent +] ?] ?]
-
-[? if neorevisionism > 0 and neorev_split: Neorevisionists have defected from our party! ?]
+[? if neorevisionism > 0 : Neorevisionist / Militant Democrats strength: [+ neorevisionist_strength : strength +] [? if deterministic_mode == 1: [+ neorevisionist_strength +] ?], dissent: [+ neorevisionist_dissent : dissent +] [? if deterministic_mode == 1: [+ neorevisionist_dissent +] ?] ?] [? if neorevisionism > 0 and neorev_split: Neorevisionists have defected from our party! ?]
 
 = Support for the Forces
 
