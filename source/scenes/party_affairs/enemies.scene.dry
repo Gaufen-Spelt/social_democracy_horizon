@@ -20,7 +20,16 @@ In our media and campaign materials, who should we consider as our main opponent
 - @easy_discard
 
 @anti_dem
-on-arrival: enemies = "anti-democratic parties"; center_strength += 5; reformist_strength += 5; left_dissent += 5; workers_kpd -= 2; workers_nsdap -= 2; workers_dnvp -= 2; kpd_relation -= 10
+on-arrival: {!
+    Q.enemies = "anti-democratic parties";
+    Q.center_strength += (Q.peoples_party === 1) ? 8 : 5;
+    Q.reformist_strength += (Q.peoples_party === 1) ? 8 : 5;
+    Q.left_dissent += (Q.peoples_party === 1) ? 6 : 5;
+    Q.workers_kpd -= 2;
+    Q.workers_nsdap -= 2;
+    Q.workers_dnvp -= 2;
+    Q.kpd_relation -= 8;
+!}
 
 Attacking the far right and left is popular among all but the left wing of our party, who would prefer to be fighting the bourgeois parties. This might also hamper our ability to reconcile with the KPD in the future.
 
@@ -44,6 +53,15 @@ Attacking the KPD is supported by all but the most left-wing socialists, and win
 @bourgeois
 choose-if: (reformist_strength + labor_strength + neorevisionist_strength) < 50
 unavailable-subtitle: Reformist factions suggest us away from attacking bourgeouisie.
-on-arrival: enemies = "bourgeois parties"; left_strength += 8; left_dissent -= 5; dvp_relation -= 5; z_relation -= 5; kpd_relation += 5; reformist_dissent += 8; workers_z -= 3
+on-arrival: {!
+    Q.enemies = "bourgeois parties";
+    Q.left_strength += (Q.peoples_party === 1) ? 5 : 8;
+    Q.left_dissent -= (Q.peoples_party === 1) ? 2 : 5;
+    Q.dvp_relation -= 5;
+    Q.z_relation -= 5;
+    Q.kpd_relation += 5;
+    Q.reformist_dissent += (Q.peoples_party === 1) ? 12 : 8;
+    Q.workers_z -= 3;
+!}
 
 Our anti-bourgeois rhetoric is popular among the left, but may make it harder to build the coalitions that are necessary for government in the future.
