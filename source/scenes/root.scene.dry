@@ -32,19 +32,27 @@ if (!Q.rng_seed) {
 }
 Q.commercialized_media = Q.commercialized_media || 0;
 
+    if (!Q.dues_workers) { Q.dues_workers = 1; }
+    if (!Q.dues_unemployedc) { Q.dues_unemployedc = 0.5; }
+    if (!Q.dues_new_middle) { Q.dues_new_middle = 2; }
+    if (!Q.dues_old_middle) { Q.dues_old_middle = 1; }
+    if (!Q.dues_rural) { Q.dues_rural = 1; }
+
+
+
 Q.business_wing_ddp = 370;
 Q.social_republican_ddp = 130;
 Q.z_clerical_power = 250;
 Q.z_left_labor_power = 250;
 Q.z_right_labor_power = 200;
 Q.z_moderate_power = 300;
-Q.dvp_left = 0;
-Q.dvp_right = 0;
-Q.hugenberg_momentum = 0;
-Q.delegate_power_a = 0;
-Q.delegate_power_b = 0;
-Q.delegate_power_yocon = 0;
-Q.delegate_power_christsoc = 0;
+Q.dvp_left = 550;
+Q.dvp_right = 450;
+Q.hugenberg_momentum = 50;
+Q.delegate_power_a = 70;
+Q.delegate_power_b = 120;
+Q.delegate_power_yocon = 30;
+Q.delegate_power_christsoc = 45;
 
 
 
