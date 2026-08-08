@@ -18,7 +18,7 @@ Q.tolerating_parties_display = tolDisplay;
 if (Q.peoples_party >= 1) {
     Q.spd_status = "Broad People's Party";
 } else {
-    Q.spd_status = 'Worker's Party';
+    Q.spd_status = "Worker's Party";
 }
 !}
 
