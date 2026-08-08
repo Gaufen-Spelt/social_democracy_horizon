@@ -635,16 +635,16 @@ function getRelationSafe(a, b) {
 // perfectly good candidate of their own over a marginal score delta.
 // ---------------------------------------------------------------------
 
-var BLOC_IDEO_FALLBACK_R1 = { far_left: 1, left: 2.5, cultural: 5, center_left: 4,
-                               center: 5, center_right: 6.5, far_right: 9.5 };
+var BLOC_IDEO_FALLBACK_R1 = { far_left: 2, left: 5, cultural: 10, center_left: 8,
+                               center: 10, center_right: 13, far_right: 19 };
 
 function candIdeoScoreR1(name) {
     var key = canonEngine(name);
     var c = CANDIDATES[key];
-    if (!c) return 5;
+    if (!c) return 10;
     var partyKey = (c.party || "").toLowerCase().replace(/[^a-z]/g, "");
     if (Q[partyKey + '_ideo_score'] !== undefined) return Q[partyKey + '_ideo_score'];
-    return (c.bloc && BLOC_IDEO_FALLBACK_R1[c.bloc] !== undefined) ? BLOC_IDEO_FALLBACK_R1[c.bloc] : 5;
+    return (c.bloc && BLOC_IDEO_FALLBACK_R1[c.bloc] !== undefined) ? BLOC_IDEO_FALLBACK_R1[c.bloc] : 10;
 }
 function vetoPenaltyR1(relation) {
     if (relation >= 15) return 0;
@@ -660,9 +660,9 @@ function optionScore(votingPartyKey, candidateName, isOwnBench) {
     var c = CANDIDATES[fKey];
     var candPartyLabel = c ? c.party : "";
     var relation = getRelationSafe(votingPartyKey.toUpperCase(), (candPartyLabel || "").toUpperCase());
-    var myIdeo = (Q[votingPartyKey + '_ideo_score'] !== undefined) ? Q[votingPartyKey + '_ideo_score'] : 5;
+    var myIdeo = (Q[votingPartyKey + '_ideo_score'] !== undefined) ? Q[votingPartyKey + '_ideo_score'] : 10;
     var ideoGap = Math.abs(myIdeo - candIdeoScoreR1(candidateName));
-    var score = -(ideoGap * 20) + (relation * 0.5) - vetoPenaltyR1(relation);
+    var score = -(ideoGap * 10) + (relation * 0.5) - vetoPenaltyR1(relation);
     if (isOwnBench) score += HOME_BENCH_BONUS;
     return score;
 }
@@ -1035,15 +1035,15 @@ if (Q.hindenburg_dead) {
 // soft veto below relation 15. This replaces the old per-party
 // is_unity_candidate/relation-threshold cascades.
 // ---------------------------------------------------------------------
-var BLOC_IDEO_FALLBACK_FC = { far_left: 1, left: 2.5, cultural: 5, center_left: 4,
-                               center: 5, center_right: 6.5, far_right: 9.5 };
+var BLOC_IDEO_FALLBACK_FC = { far_left: 2, left: 5, cultural: 10, center_left: 8,
+                               center: 10, center_right: 13, far_right: 19 };
 function candIdeoScoreFC(name) {
     var key = canon(name);
     var c = CAND_INFO[key];
-    if (!c) return 5;
+    if (!c) return 10;
     var partyKey = (c.party || "").toLowerCase().replace(/[^a-z]/g, "");
     if (Q[partyKey + '_ideo_score'] !== undefined) return Q[partyKey + '_ideo_score'];
-    return (c.bloc && BLOC_IDEO_FALLBACK_FC[c.bloc] !== undefined) ? BLOC_IDEO_FALLBACK_FC[c.bloc] : 5;
+    return (c.bloc && BLOC_IDEO_FALLBACK_FC[c.bloc] !== undefined) ? BLOC_IDEO_FALLBACK_FC[c.bloc] : 10;
 }
 function vetoPenaltyFC(relation) {
     if (relation >= 15) return 0;
@@ -1055,9 +1055,9 @@ function optionScoreFC(votingPartyKey, candidateName, isOwnBench) {
     var c = CAND_INFO[fKey];
     var candPartyLabel = c ? c.party : "";
     var relation = getRelationSafe(votingPartyKey.toUpperCase(), (candPartyLabel || "").toUpperCase());
-    var myIdeo = (Q[votingPartyKey + '_ideo_score'] !== undefined) ? Q[votingPartyKey + '_ideo_score'] : 5;
+    var myIdeo = (Q[votingPartyKey + '_ideo_score'] !== undefined) ? Q[votingPartyKey + '_ideo_score'] : 10;
     var ideoGap = Math.abs(myIdeo - candIdeoScoreFC(candidateName));
-    var score = -(ideoGap * 20) + (relation * 0.5) - vetoPenaltyFC(relation);
+    var score = -(ideoGap * 10) + (relation * 0.5) - vetoPenaltyFC(relation);
     if (isOwnBench) score += HOME_BENCH_BONUS_FC;
     return score;
 }
@@ -1710,12 +1710,12 @@ function tacticalOptionScore(votingPartyKey, candidateName) {
     var c = CAND_INFO_TC[fKey];
     var candPartyLabel = c ? c.party : "";
     var relation = tcGetRelation(votingPartyKey.toUpperCase(), (candPartyLabel || "").toUpperCase());
-    var myIdeo = (Q[votingPartyKey + '_ideo_score'] !== undefined) ? Q[votingPartyKey + '_ideo_score'] : 5;
+    var myIdeo = (Q[votingPartyKey + '_ideo_score'] !== undefined) ? Q[votingPartyKey + '_ideo_score'] : 10;
     var candIdeo = (Q[(candPartyLabel || "").toLowerCase().replace(/[^a-z]/g, "") + '_ideo_score'] !== undefined)
-        ? Q[(candPartyLabel || "").toLowerCase().replace(/[^a-z]/g, "") + '_ideo_score'] : 5;
+        ? Q[(candPartyLabel || "").toLowerCase().replace(/[^a-z]/g, "") + '_ideo_score'] : 10;
     var ideoGap = Math.abs(myIdeo - candIdeo);
     var vetoPenalty = (relation >= 15) ? 0 : (15 - relation) * 4;
-    return -(ideoGap * 20) + (relation * 0.5) - vetoPenalty;
+    return -(ideoGap * 10) + (relation * 0.5) - vetoPenalty;
 }
 
 var TACTICAL_MAX_PASSES = 4;
@@ -2204,16 +2204,16 @@ function currentFinalists() {
 
 // Fallback ideology midpoints, used only when a candidate's party has
 // no Q.<party>_ideo_score yet (independents, splinters not in Q.parties).
-var BLOC_IDEO_FALLBACK = { far_left: 1, left: 2.5, cultural: 5, center_left: 4,
-                            center: 5, center_right: 6.5, far_right: 9.5 };
+var BLOC_IDEO_FALLBACK = { far_left: 2, left: 5, cultural: 10, center_left: 8,
+                            center: 10, center_right: 13, far_right: 19 };
 
 function candIdeoScore(name) {
     var key = canon2(name);
     var c = CANDIDATES[key];
-    if (!c) return 5;
+    if (!c) return 10;
     var partyKey = (c.party || "").toLowerCase().replace(/[^a-z]/g, "");
     if (Q[partyKey + '_ideo_score'] !== undefined) return Q[partyKey + '_ideo_score'];
-    return (c.bloc && BLOC_IDEO_FALLBACK[c.bloc] !== undefined) ? BLOC_IDEO_FALLBACK[c.bloc] : 5;
+    return (c.bloc && BLOC_IDEO_FALLBACK[c.bloc] !== undefined) ? BLOC_IDEO_FALLBACK[c.bloc] : 10;
 }
 
 function vetoPenalty(relation) {
@@ -2226,9 +2226,9 @@ function finalistScore(votingPartyKey, finalist) {
     var c = CANDIDATES[fKey];
     var finalistPartyLabel = c ? c.party : "";
     var relation = getRelationSafe(votingPartyKey.toUpperCase(), (finalistPartyLabel || "").toUpperCase());
-    var myIdeo = (Q[votingPartyKey + '_ideo_score'] !== undefined) ? Q[votingPartyKey + '_ideo_score'] : 5;
+    var myIdeo = (Q[votingPartyKey + '_ideo_score'] !== undefined) ? Q[votingPartyKey + '_ideo_score'] : 10;
     var ideoGap = Math.abs(myIdeo - candIdeoScore(finalist));
-    return -(ideoGap * 20) + (relation * 0.5) - vetoPenalty(relation);
+    return -(ideoGap * 10) + (relation * 0.5) - vetoPenalty(relation);
 }
 
 function pickBestFinalist(votingPartyKey, current_candidate) {
@@ -2458,15 +2458,15 @@ function canon2(name) {
     return CANDIDATES_ALIAS[stripped] || stripped;
 }
 function currentFinalists() { var f=[Q.round1_winner, Q.round1_runner_up]; if (Q.round2_has_third && Q.round1_third) f.push(Q.round1_third); return f; }
-var BLOC_IDEO_FALLBACK = { far_left: 1, left: 2.5, cultural: 5, center_left: 4,
-                            center: 5, center_right: 6.5, far_right: 9.5 };
+var BLOC_IDEO_FALLBACK = { far_left: 2, left: 5, cultural: 10, center_left: 8,
+                            center: 10, center_right: 13, far_right: 19 };
 function candIdeoScore(name) {
     var key = canon2(name);
     var c = CANDIDATES[key];
-    if (!c) return 5;
+    if (!c) return 10;
     var partyKey = (c.party || "").toLowerCase().replace(/[^a-z]/g, "");
     if (Q[partyKey + '_ideo_score'] !== undefined) return Q[partyKey + '_ideo_score'];
-    return (c.bloc && BLOC_IDEO_FALLBACK[c.bloc] !== undefined) ? BLOC_IDEO_FALLBACK[c.bloc] : 5;
+    return (c.bloc && BLOC_IDEO_FALLBACK[c.bloc] !== undefined) ? BLOC_IDEO_FALLBACK[c.bloc] : 10;
 }
 function vetoPenalty(relation) { if (relation >= 15) return 0; return (15 - relation) * 4; }
 function finalistScore(votingPartyKey, finalist) {
@@ -2474,9 +2474,9 @@ function finalistScore(votingPartyKey, finalist) {
     var c = CANDIDATES[fKey];
     var finalistPartyLabel = c ? c.party : "";
     var relation = getRelationSafe(votingPartyKey.toUpperCase(), (finalistPartyLabel || "").toUpperCase());
-    var myIdeo = (Q[votingPartyKey + '_ideo_score'] !== undefined) ? Q[votingPartyKey + '_ideo_score'] : 5;
+    var myIdeo = (Q[votingPartyKey + '_ideo_score'] !== undefined) ? Q[votingPartyKey + '_ideo_score'] : 10;
     var ideoGap = Math.abs(myIdeo - candIdeoScore(finalist));
-    return -(ideoGap * 20) + (relation * 0.5) - vetoPenalty(relation);
+    return -(ideoGap * 10) + (relation * 0.5) - vetoPenalty(relation);
 }
 function pickBestFinalist(votingPartyKey, current_candidate) {
     var finalists = currentFinalists();
@@ -2709,12 +2709,12 @@ function tc2Score(votingPartyKey, candidateName) {
     var c = CAND_INFO_TC2[fKey];
     var candPartyLabel = c ? c.party : "";
     var relation = tc2GetRelation(votingPartyKey.toUpperCase(), (candPartyLabel || "").toUpperCase());
-    var myIdeo = (Q[votingPartyKey + '_ideo_score'] !== undefined) ? Q[votingPartyKey + '_ideo_score'] : 5;
+    var myIdeo = (Q[votingPartyKey + '_ideo_score'] !== undefined) ? Q[votingPartyKey + '_ideo_score'] : 10;
     var candIdeo = (Q[(candPartyLabel || "").toLowerCase().replace(/[^a-z]/g, "") + '_ideo_score'] !== undefined)
-        ? Q[(candPartyLabel || "").toLowerCase().replace(/[^a-z]/g, "") + '_ideo_score'] : 5;
+        ? Q[(candPartyLabel || "").toLowerCase().replace(/[^a-z]/g, "") + '_ideo_score'] : 10;
     var ideoGap = Math.abs(myIdeo - candIdeo);
     var vetoPenalty = (relation >= 15) ? 0 : (15 - relation) * 4;
-    return -(ideoGap * 20) + (relation * 0.5) - vetoPenalty;
+    return -(ideoGap * 10) + (relation * 0.5) - vetoPenalty;
 }
 
 var finalists = tc2CurrentFinalists();
