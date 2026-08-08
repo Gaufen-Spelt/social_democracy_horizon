@@ -16,18 +16,20 @@ var tolDisplay = (Q.tolerating_parties && Q.tolerating_parties.length > 0)
 Q.tolerating_parties_display = tolDisplay;
 
 if (Q.peoples_party >= 1) {
-    Q.spd_status = 'Broad People's Party';
+    Q.spd_status = "Broad People's Party";
 } else if (Q.ideology == "left") {
     Q.spd_status = 'Revolutionary Socialist Party';
-} else if (Q.ideology == "centrist") {
+} else if (Q.ideology == "center") {
     Q.spd_status = 'Center Marxist Party';
 } else if (Q.ideology == "labor") {
     Q.spd_status = 'Social Democratic Party';
 } else if (Q.ideology == "reformist") {
     Q.spd_status = 'Reformist Socialist Party';
-} else if (Q.ideology == "neorevisionist") {
+} else if (Q.ideology == "neorev") {
     Q.spd_status = 'Social Republican Party';
-} else Q.spd_status = 'Social Democratic Party';
+} else {
+    Q.spd_status = 'Social Democratic Party';
+}
 !}
 
 = Status
