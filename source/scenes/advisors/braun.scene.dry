@@ -18,6 +18,7 @@ Braun [? if spd_prussia = 1 : is ?][? if spd_prussia = 0 : was ?] the Minister-P
 
 @republican_rally
 subtitle: Braun can launch premature republican rallies.
+choose-if: advisor_action_timer <= 0
 view-if: ((z_relation > 40 and ddp_relation > 35) or rpb_formed = 0 or rb_exit = 0)
 unavailable-subtitle: [? if advisor_action_timer > 0 : [+ advisor_action_timer +] months before next advisor action. ?]
 on-arrival: advisor_action_timer += 6;
