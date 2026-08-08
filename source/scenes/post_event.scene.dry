@@ -4848,10 +4848,10 @@ base = (r * 99 + s * 58) * im.spd * (eim.spd || 1.0) * campaign_boost;
         }
 
         case 'csvd': {
-            if (Q.csvd_banned || !Q.csvd_flee) return 0;
+            if (Q.csvd_banned ||) return 0;
             let dnvp_split_bonus = 0;
-            if (Q.dnvp_line === 3)                              dnvp_split_bonus = 0.5 + (Q.dnvp_r * 0.03);
-            else if (Q.dnvp_line === 1 && Q.year >= 1930)      dnvp_split_bonus = 0.2;
+            if (Q.dnvp_party_leader == "Alfred Hugenberg" || Q.lambach_defection >= 1)                              dnvp_split_bonus = 0.5 + (Q.dnvp_r * 0.03);
+
 
             let anti_nazi_appeal = 0;
             if (Q.nsdap_r >= 15 && Q.nsdap_r < 30)             anti_nazi_appeal = 0.3 + (Q.church_resist_nazis ? 0.15 : 0);
@@ -4861,14 +4861,14 @@ base = (r * 99 + s * 58) * im.spd * (eim.spd || 1.0) * campaign_boost;
 
             let crisis_factor = Q.unemployed >= 20 ? 0.6 : Q.unemployed >= 12 ? 0.8 : Q.unemployed >= 8 ? 0.85 : 1.0;
 
-            base = (rep * 0.9 + dnvp_split_bonus + anti_nazi_appeal + coalition_stability) * crisis_factor * im.csvd;
+            base = (rep * 15 + (nat * 15) + dnvp_split_bonus + anti_nazi_appeal + coalition_stability) * crisis_factor * im.csvd;
 
             const class_mods = {
-                workers:     0.50 * (Q.peoples_party === 1 ? 0.93 : 1),
-                old_middle:  1.20 * (1 + Math.min(Q.nationalism/100,1)*0.22) * (Q.peoples_party === 1 ? 0.96 : 1),
-                new_middle:  1.10 * (1 + Math.min(Q.nationalism/100,1)*0.18) * (Q.peoples_party === 1 ? 0.96 : 1),
-                rural:       1.30 * (1 + Math.min(Q.nationalism/100,1)*0.25) * (Q.peoples_party === 1 ? 0.96 : 1),
-                unemployedc: 0.60 * (Q.peoples_party === 1 ? 0.93 : 1),
+                workers:     0.95 * (Q.peoples_party === 1 ? 1.10 : 1) * (Q.lambach_defection >= 1 ? 2.50 : 1),
+                old_middle:  0.25 * (1 + Math.min(Q.nationalism/100,1)*0.22) * (Q.peoples_party === 1 ? 0.96 : 1),
+                new_middle:  1.80 * (1 + Math.min(Q.nationalism/100,1)*0.18) * (Q.peoples_party === 1 ? 0.96 : 1) * (Q.lambach_defection >= 1 ? 2.50 : 1),
+                rural:       0.10 * (1 + Math.min(Q.nationalism/100,1)*0.25) * (Q.peoples_party === 1 ? 0.96 : 1),
+                unemployedc: 0.65 * (Q.peoples_party === 1 ? 0.93 : 1),
             };
             return _applyQOL(base * (class_mods[c] || 1.0), party, c);
         }
@@ -4902,9 +4902,9 @@ base = (r * 99 + s * 58) * im.spd * (eim.spd || 1.0) * campaign_boost;
 
         case 'kvp': {
             if (Q.kvp_banned || !Q.kvp_flee) return 0;
-            let split_bonus = Q.dnvp_line === 3 ? 2.2 : 0.8;
+            let split_bonus = Q.dnvp_party_leader == "Alfred Hugenberg" || Q.lambach_stage >= 2 ? 2.5 : 0.8;
             base = (rep * 18 + nat * 14) * split_bonus * im.kvp;
-            const class_mods = { workers: 0.25, old_middle: 1.45, new_middle: 1.20, rural: 0.90, unemployedc: 0.30 };
+            const class_mods = { workers: 0.10, old_middle: 1.65, new_middle: 1.25, rural: 1.25, unemployedc: 0.10 };
             return _applyQOL(base * (class_mods[c] || 1.0), party, c);
         }
 
