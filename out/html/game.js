@@ -2263,3 +2263,30 @@ window.Achievements = (function () {
   };
 
 })();
+
+var _achievePatchInterval = setInterval(function() {
+  if (!window.dendryUI || !window.dendryUI.dendryEngine) return;
+  clearInterval(_achievePatchInterval);
+
+  var engine = window.dendryUI.dendryEngine;
+  if (typeof engine.achieve !== 'function') {
+    console.warn('Achievements: engine.achieve() not found — check dendry version.');
+    return;
+  }
+
+  var _originalAchieve = engine.achieve.bind(engine);
+  engine.achieve = function(name) {
+    var alreadyHad = !!(this.state.achievements && this.state.achievements[name]);
+    var result = _originalAchieve(name);
+
+    if (!alreadyHad) {
+      var def = Achievements.registry[name] || {};
+      Achievements.unlock(name, {
+        title: def.title || name,
+        description: def.description || '',
+        icon: def.icon || null
+      });
+    }
+    return result;
+  };
+}, 100);
