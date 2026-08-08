@@ -3107,6 +3107,7 @@ if (excluded_parties.length > 0) {
 }
 
 Q.excluded_from_cabinet = excluded_parties;
+Q.has_excluded_parties = excluded_parties.length > 0 ? 1 : 0;
 
 // ============================================
 // ALLOCATE 8 MINISTRIES BASED ON LEVERAGE (ELIGIBLE PARTIES ONLY)
@@ -3389,7 +3390,7 @@ Q.ministry_allocation = allocation;
 Q.ministry_leverage = leverage;
 
 // HINDENBURG'S STATUS UPDATE
-Q.presidential_patience += 10
+Q.presidential_patience += 10;
 
 !}
 
@@ -3414,7 +3415,7 @@ Q.presidential_patience += 10
 
 [? if foreign_minister = 'Unbesetzt' or interior_minister = 'Unbesetzt' or justice_minister = 'Unbesetzt' : **Warning:** Some ministries remain unfilled and will operate under civil service administration. ?]
 
-[? if excluded_from_cabinet.length > 0 : **Note:** Smaller coalition partners were denied cabinet seats due to insufficient negotiating leverage relative to their partners. ?]
+[? if has_excluded_parties : **Note:** Smaller coalition partners were denied cabinet seats due to insufficient negotiating leverage relative to their partners. ?]
 
 [? if kpd_in_government : The KPD has entered government for the first time. The revolutionary left now holds state power. ?]
 
