@@ -4870,16 +4870,16 @@ function computeTarget(party, c) {
         case 'bvp': {
             if (Q.bvp_banned) return 0;
             let cath = Q.catholics * 0.10;
-            let rur  = Q.rural    * 0.04;
-            base = Math.min(45, rep * 20 * (nat * 25) * im.bvp + cath + rur);
+            let rur  = Q.rural    * 0.03;
+            base = Math.min(45, rep * 15 * (nat * 22) * im.bvp + cath + rur);
 
             let rural_m = 1.20 * (1 + Math.min(Q.rural / 125, 0.25)) * (Q.peoples_party === 1 ? 0.96 : 1);
             const class_mods = {
-                workers:     0.50 * (Q.peoples_party === 1 ? 0.94 : 1),
-                old_middle:  1.50 * (Q.peoples_party === 1 ? 0.96 : 1),
-                new_middle:  0.88 * (Q.peoples_party === 1 ? 0.96 : 1),
+                workers:     0.41 * (Q.peoples_party === 1 ? 0.94 : 1),
+                old_middle:  1.55 * (Q.peoples_party === 1 ? 0.96 : 1),
+                new_middle:  0.86 * (Q.peoples_party === 1 ? 0.96 : 1),
                 rural:       rural_m,
-                unemployedc: 0.20 * (Q.peoples_party === 1 ? 0.94 : 1),
+                unemployedc: 0.10 * (Q.peoples_party === 1 ? 0.94 : 1),
             };
             return _applyQOL(base * (class_mods[c] || 1.0), party, c);
         }
