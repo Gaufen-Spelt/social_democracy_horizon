@@ -1,0 +1,18 @@
+title: ASPD Congress - Party Program faces the change.
+subtitle: **National Socialist** vision of the ASPD faces the crisis.
+tags: event
+new-page: true
+max-visits: 1
+view-if: year == 1928 and month >= 10 and weeks >= 2 and aspd_votes < 0.4
+priority: -1
+
+= ASPD Congress
+
+On the [+ month +] of 12th, the party's head, [+ aspd_party_leader +], has pushed for the change in the party program to shift away from the **National Socialist** direction of the party in order to please disillusioned right wing social democrats and their bourgeouisie partners in the Saxony. This would only be possible with direct confrontation with their "National Bolshevik" wing, which was led by the Ernst Niekisch and August Winnig (their presence and their rhetoric gained their party 'social fascist' name, due to their attempt to reconcile nationalist patriotism and socialism). If the [+ aspd_party_leader +] is to be successful, ASPD will drift away from the nationalist camp and in theory turn into the party for **social republicans** and **right wing socialists**.
+
+In the retaliation, Ernst Niekisch has pushed for the removal of [+ aspd_party_leader +], which, despite the chance of the current leader being truly ousted, would have **National Bolsheviks** be prepared for the second attempt of assault and prepare to mobilize all their resources. 
+
+- @resultant_aspd: Ernst Niekisch faces the gravely danger...
+
+@resultant_aspd
+on-arrival: {!
