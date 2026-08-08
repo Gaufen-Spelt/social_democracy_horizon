@@ -10,8 +10,6 @@ Q.workers_spd += 1;
 Q.resources += 2
 Q.rural_qol -= 5;
 
-Achievements.unlock('first_election', {title: 'First Election', description: 'You survived your first Reichstag vote.'});
-
 !}
 max-visits: 1
 go-to: normal if april_challenge = 0; april if april_challenge = 1
