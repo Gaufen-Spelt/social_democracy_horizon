@@ -13,7 +13,10 @@ on-arrival: {!
     // Initialize bonus dues if not set
     Q.bonus_dues_workers = Q.bonus_dues_workers || 0;
     Q.bonus_dues_unemployedc = Q.bonus_dues_unemployedc || 0;
-    
+
+    Q.pp_mult_workers = Q.peoples_party ? 0.85 : 1;
+    Q.pp_mult_middle_rural = Q.peoples_party ? 1.15 : 1;
+
     // Use normalized vote shares × 100 to get actual percentages
     Q.workers_pct     = Math.round((Q.workers_spd_normalized     || 0) * 100 * 10) / 10;
     Q.unemployedc_pct = Math.round((Q.unemployedc_spd_normalized || 0) * 100 * 10) / 10;
@@ -22,12 +25,12 @@ on-arrival: {!
     Q.rural_pct       = Math.round((Q.rural_spd_normalized        || 0) * 100 * 10) / 10;
 
     // Income uses population share × SPD vote share within that class
-    Q.workers_income     = Math.round(Q.workers     * Q.workers_pct     * Q.dues_workers     * 0.00364 * (1 - Q.labor_dissent        * 0.007));
+    Q.workers_income     = Math.round(Q.workers     * Q.workers_pct     * Q.dues_workers     * 0.00364 * (1 - Q.labor_dissent        * 0.007) * Q.pp_mult_workers);
+    Q.new_middle_income  = Math.round(Q.new_middle  * Q.new_middle_pct  * Q.dues_new_middle  * 0.00727 * (1 - Q.reformist_dissent     * 0.006) * Q.pp_mult_middle_rural);
+    Q.old_middle_income  = Math.round(Q.old_middle  * Q.old_middle_pct  * Q.dues_old_middle  * 0.01309 * (1 - Q.center_dissent        * 0.006) * Q.pp_mult_middle_rural);
+    Q.rural_income       = Math.round(Q.rural       * Q.rural_pct       * Q.dues_rural       * 0.00945 * (1 - Q.neorevisionist_dissent * 0.006) * Q.pp_mult_middle_rural);    
     Q.unemployedc_income = Math.round(Q.unemployedc * Q.unemployedc_pct * Q.dues_unemployedc * 0.02909 * (1 - Q.left_dissent          * 0.007));
-    Q.new_middle_income  = Math.round(Q.new_middle  * Q.new_middle_pct  * Q.dues_new_middle  * 0.00727 * (1 - Q.reformist_dissent     * 0.006));
-    Q.old_middle_income  = Math.round(Q.old_middle  * Q.old_middle_pct  * Q.dues_old_middle  * 0.01309 * (1 - Q.center_dissent        * 0.006));
-    Q.rural_income       = Math.round(Q.rural       * Q.rural_pct       * Q.dues_rural       * 0.00945 * (1 - Q.neorevisionist_dissent * 0.006));
-    
+
     // Total projected income
     Q.total_projected = (Q.workers_income + Q.bonus_dues_workers) + (Q.unemployedc_income + Q.bonus_dues_unemployedc) + Q.new_middle_income + Q.old_middle_income + Q.rural_income;
     
@@ -80,12 +83,9 @@ What is our fundraising strategy?
 subtitle: +[+ total_projected +] resources
 choose-if: collect_timer <= 0
 unavailable-subtitle: [? if collect_timer > 0 : Cannot collect dues yet. Available in [+ collect_timer +] turns. ?]
-on-arrival: resources += total_projected; collect_timer = 38 + austerity_fortimers
+on-arrival: resources += total_projected; collect_timer = 6 + austerity_fortimers + total_projected
 
 Dues collection proceeds as scheduled. The party treasury receives [+ total_projected +] resources.
-
-[? if total_projected < 10 : The amount is concerning - we may need to expand our membership base or adjust rates. ?]
-[? if total_projected >= 20 : Our strong membership base provides healthy funding. ?]
 
 - @root: Continue.
 
