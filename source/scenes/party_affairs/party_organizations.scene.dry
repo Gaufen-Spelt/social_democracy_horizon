@@ -3,7 +3,10 @@ new-page: true
 is-card: true
 tags: party_affairs
 view-if: party_organizations_timer <= 0
-on-arrival: month_actions += 1; party_organizations_timer = 6 + austerity_fortimers
+on-arrival: {!
+    Q.month_actions += 1;
+    Q.party_organizations_timer = 6 + Q.austerity_fortimers;
+!}
 card-image: img/Mann_der_Arbeit.jpg
 #subtitle: Outside of electoral politics, the SPD runs a social world onto itself.
 
@@ -25,7 +28,16 @@ view-if: landvolk_fury > 0 or year < 1928 or (year >= 1928 and month <= 5)
 choose-if: resources > 0
 unavailable-subtitle: Not enough resources.
 subtitle: -1 resources
-on-arrival: resources -= 1; rural_spd += 5; rural_dnvp -= 5; rural_dvp -= 2; rural_other -= 8; agricultural_assist += 1; landvolk_suppress += 1 if landvolk_fury > 0; reformist_dissent += 5
+on-arrival: {!
+    Q.resources -= 1;
+    Q.rural_spd += (Q.peoples_party === 1) ? 7 : 5;
+    Q.rural_dnvp -= 5;
+    Q.rural_dvp -= 2;
+    Q.rural_other -= 8;
+    Q.agricultural_assist += 1;
+    if (Q.landvolk_fury > 0) { Q.landvolk_suppress += 1; }
+    Q.reformist_dissent += (Q.peoples_party === 1) ? 2 : 5;
+!}
 
 We have assisted the agricultural sector, most neglected by the previous government. [? if year >= 1928: This is especially in the wake of agricultural revolts and protests caused by the Landvolkbewegung and multiple decentralized organizations. ?]
 
@@ -33,7 +45,10 @@ We have assisted the agricultural sector, most neglected by the previous governm
 choose-if: resources > 0
 unavailable-subtitle: Not enough resources.
 subtitle: -1 resources
-on-arrival: resources -= 1; media_timer = 0;
+on-arrival: {!
+    Q.resources -= 1;
+    Q.media_timer = 0;
+!}
 go-to: media
 
 # TODO: differing outcomes based on whether you've seen media, and what kind of media you've supported.
@@ -42,7 +57,14 @@ go-to: media
 choose-if: (resources > 0 and not spd_in_government and labor_minister_party != "SPD") or (resources > 2 and spd_in_government and labor_minister_party = "SPD")
 unavailable-subtitle: Not enough resources.
 subtitle: [? if not spd_in_government and labor_minister_party != "SPD": -1 resources ?] [? if spd_in_government and labor_minister_party = "SPD": -3 resources ?]
-on-arrival: resources -= 1; resources -= 3 if spd_in_government and labor_minister_party = "SPD"; workers_aid += 1; unemployedc_spd += 5*(1 - dissent); welfare += 1 if spd_in_government and labor_minister_party = "SPD"; workers_spd += 3 if welfare > 0; unemployedc_spd += 3 if welfare > 0
+on-arrival: {!
+    Q.resources -= 1;
+    if (Q.spd_in_government && Q.labor_minister_party === "SPD") { Q.resources -= 3; }
+    Q.workers_aid += 1;
+    Q.unemployedc_spd += 5 * (1 - Q.dissent);
+    if (Q.spd_in_government && Q.labor_minister_party === "SPD") { Q.welfare += 1; }
+    if (Q.welfare > 0) { Q.workers_spd += 3; Q.unemployedc_spd += 3; }
+!}
 
 We have increased funding to Workers' Welfare. [? if black_thursday_seen > 0 : In an age of economic crisis, this will be helpful for improving our standing among the unemployed. ?]
 
@@ -52,19 +74,48 @@ We have increased funding to Workers' Welfare. [? if black_thursday_seen > 0 : I
 choose-if: resources > 0
 unavailable-subtitle: Not enough resources.
 subtitle: -1 resources
-on-arrival: resources -= 1; cultural_organizations += 1; left_dissent -= 6; center_dissent -= 6; labor_dissent -= 6; reformist_dissent -= 6; neorevisionist_dissent -= 6; center_strength += 7
+on-arrival: {!
+    Q.resources -= 1;
+    Q.cultural_organizations += 1;
+    Q.left_dissent -= (Q.peoples_party === 1) ? 3 : 6;
+    Q.labor_dissent -= (Q.peoples_party === 1) ? 4 : 6;
+    Q.center_dissent -= (Q.peoples_party === 1) ? 3 : 6;
+    Q.reformist_dissent -= (Q.peoples_party === 1) ? 9 : 6;
+    Q.neorevisionist_dissent -= (Q.peoples_party === 1) ? 8 : 6;
+    Q.center_strength += 5;
+!}
 
 It is not enough for the SPD to solely be a political party. The Worker Singer's League, Worker's Sports, and our schools and libraries are crucial to our members' lives. Funding these organizations makes our members more committed to the party, even when our policies might not be to their liking.
 
-[? if sa_strength > 500 : However, it feels frivolous to spend on sports and choirs when the fascists are murdering us in the streets. ?]
+[? if sa_strength > 500 or sh_strength > 1000: However, it feels frivolous to spend on sports and choirs when the fascists are murdering us in the streets. ?]
 
 @youth
 choose-if: resources > 0
 unavailable-subtitle: Not enough resources.
 subtitle: -1 resources
-on-arrival: resources -= 1; rb_strength += 50; rb_militancy += 0.02; young_socialists += 1; left_strength += 5; neorevisionist_strength += 5; radicalization += 1; socialism += 1; workers_z *= 0.99; workers_ddp *= 0.98; workers_dvp *= 0.97; workers_dnvp *= 0.95; workers_nsdap *= 0.96; workers_bvp *= 0.97; workers_wp *= 0.90; workers_kpd *= 1.02; workers_spd *= 1.03
+on-arrival: {!
+    Q.resources -= 1;
+    Q.rb_strength += 50;
+    Q.rb_militancy += 0.02;
+    Q.young_socialists += 1;
+    Q.left_strength += (Q.peoples_party === 1) ? 2 : 5;
+    Q.neorevisionist_strength += (Q.peoples_party === 1) ? 7 : 5;
+    Q.reformist_strength += (Q.peoples_party === 1) ? 3 : 0;
+    Q.radicalization += (Q.peoples_party === 1) ? 0.5 : 1;
+    Q.socialism += (Q.peoples_party === 1) ? 0 : 1;
+    Q.labor_dissent += (Q.peoples_party === 1) ? 2 : 0;
+    Q.workers_z *= 0.99;
+    Q.workers_ddp *= 0.98;
+    Q.workers_dvp *= 0.97;
+    Q.workers_dnvp *= 0.95;
+    Q.workers_nsdap *= 0.96;
+    Q.workers_bvp *= 0.97;
+    Q.workers_wp *= 0.90;
+    Q.workers_kpd *= 1.02;
+    Q.workers_spd *= 1.03;
+!}
 
-Our new youth members flock to the left or neorevisionist wings of the party, and also bring new radicalism to the Reichsbanner. Additionally, workerist class (of course, youth) radicalizes to the left side, siding with bourgeuoise or reactionaries far less frequently.
+Our new youth members flock to the left or neorevisionist wings of the party, and also bring new radicalism to the Reichsbanner. Additionally, workerist class (of course, youth) radicalizes to the left side, siding with bourgeuoise or reactionaries far less frequently. [? if peoples_party >= 1: With our expansion of the base, it seems, that radical rhetoric is not effective anymore. ?]
 
 @nothing
 
