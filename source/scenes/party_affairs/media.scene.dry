@@ -25,9 +25,16 @@ The SPD runs a veritable media empire, with many newspapers throughout every Ger
 @commercial
 title: Make our newspapers more commercialized by broadening their appeal beyond party supporters.
 subtitle: This might upset ideological purists, but it may bring in more funds and perhaps expose the middle class to socialist views.
-on-arrival: resources += 1; commercialized_media += 1; new_middle_spd += 4*(1 - dissent); old_middle_spd += 3*(1-dissent); left_dissent += 10; labor_dissent += 10
+on-arrival: {!
+    Q.resources += (Q.peoples_party === 1) ? 2 : 1;
+    Q.commercialized_media += 1;
+    Q.new_middle_spd += (Q.peoples_party === 1 ? 6 : 4) * (1 - Q.dissent);
+    Q.old_middle_spd += (Q.peoples_party === 1 ? 5 : 3) * (1 - Q.dissent);
+    Q.left_dissent += (Q.peoples_party === 1) ? 8 : 10;
+    Q.labor_dissent += (Q.peoples_party === 1) ? 6 : 10;
+!}
 
-Our commercialized newspapers are able to bring in more funds. However, the left and labor factions express their displeasure.
+Our commercialized newspapers are able to bring in more funds. However, the left and labor factions express their displeasure. [? if peoples_party == 1: With the expansion of our base, funds have been increased by lot more. ?]
 
 @campaign
 title: The purpose of our media is to elect more Social Democrats.
@@ -39,7 +46,13 @@ Our campaign media is mostly reaching the workers who are already saturated with
 @ideological
 title: We will have vibrant ideological debate within our newspapers.
 subtitle: There will be space for all factions to air their views.
-on-arrival: left_dissent -= 6; labor_dissent -= 6; center_dissent -= 6; reformist_dissent -= 6; neorevisionist_dissent -= 6
+on-arrival: {!
+    Q.left_dissent -= (Q.peoples_party === 1) ? 3 : 6;
+    Q.labor_dissent -= (Q.peoples_party === 1) ? 4 : 6;
+    Q.center_dissent -= (Q.peoples_party === 1) ? 3 : 6;
+    Q.reformist_dissent -= (Q.peoples_party === 1) ? 9 : 6;
+    Q.neorevisionist_dissent -= (Q.peoples_party === 1) ? 8 : 6;
+!}
 
 This has been our media course historically, and it has successfully paved over the many tensions in our party.
 
@@ -49,7 +62,17 @@ subtitle: -2 resources
 choose-if: resources >= 2
 unavailable-subtitle: Not enough resources.
 view-if: radio = 0
-on-arrival: radio += 1; resources -= 2; new_middle_spd += 4*(1 - dissent); old_middle_spd += 3*(1 - dissent); workers_spd += 2*(1 - dissent); labor_dissent += 5; socialism += 3*(1 - dissent); nationalism -= 3*(1 - dissent) if pacifism > 1; pro_republic += 3*(1-dissent) if democratization > 1
+on-arrival: {!
+    Q.radio += 1;
+    Q.resources -= 2;
+    Q.new_middle_spd += (Q.peoples_party === 1 ? 5 : 4) * (1 - Q.dissent);
+    Q.old_middle_spd += (Q.peoples_party === 1 ? 4 : 3) * (1 - Q.dissent);
+    Q.workers_spd += 2 * (1 - Q.dissent);
+    Q.labor_dissent += (Q.peoples_party === 1) ? 3 : 5;
+    Q.socialism += 3 * (1 - Q.dissent);
+    if (Q.pacifism > 1) { Q.nationalism -= 3 * (1 - Q.dissent); }
+    if (Q.democratization > 1) { Q.pro_republic += 3 * (1 - Q.dissent); }
+!}
 
 Our new radio station allows us to connect to people in a more intimate setting than before, spreading the message of socialism along with music and other popular content. Since most proletarians cannot afford family radios right now, we are reaching the middle class, a fact of which our labor comrades are painfully aware.
 
