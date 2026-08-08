@@ -4,9 +4,9 @@ card-image: img/muller_cabinet.jpg
 on-arrival: last_pia_action = 1
 new-page: true 
 
-= Cabinet
+= Internal Affairs
 
-We can control the internal affairs and questions within our party or country. For example, we can push our own spd candidate forward to the elections.
+This is our operational base and serves multiple (miscellanious) functions, which you can find below in these options. 
 
 - #party_aff
 - @back: Return to main
