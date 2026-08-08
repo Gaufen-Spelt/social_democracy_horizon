@@ -5308,6 +5308,7 @@ if (!Q.math_broken) {
         }
         for (var party of Q.parties) {
             Q[c + '_' + party + '_normalized'] = class_votes > 0 ? Q[c + '_' + party] / class_votes : 0;
+            Q[c + '_' + party + '_pct']        = Number((Q[c + '_' + party + '_normalized'] * 100).toFixed(1));
             Q[c + '_' + party + '_display']    = (Q[c + '_' + party + '_normalized'] * 100).toFixed(1);
         }
     }
@@ -5319,7 +5320,9 @@ if (!Q.math_broken) {
         }
         for (var party of Q.parties) {
             Q[c + '_' + party + '_normalized'] = Q.impossible_multiply(Q[c + '_' + party], 1 / class_votes);
-            Q[c + '_' + party + '_display']    = Q.impossible_percentage(Q[c + '_' + party + '_normalized'] * 100).toFixed(1);
+            var _classPctStr = Q.impossible_percentage(Q[c + '_' + party + '_normalized'] * 100).toFixed(1);
+            Q[c + '_' + party + '_pct']        = Number(_classPctStr);
+            Q[c + '_' + party + '_display']    = _classPctStr;
         }
     }
 }
@@ -5448,6 +5451,7 @@ if (!Q.math_broken) {
             for (var party of Q.parties) {
                 var ckey = c + '_' + idn + '_' + party;
                 Q[ckey + '_normalized'] = cell_votes > 0 ? Q[ckey] / cell_votes : 0;
+                Q[ckey + '_pct']        = Number((Q[ckey + '_normalized'] * 100).toFixed(1));
                 Q[ckey + '_display']    = (Q[ckey + '_normalized'] * 100).toFixed(1);
             }
         }
@@ -5463,11 +5467,14 @@ if (!Q.math_broken) {
             for (var party of Q.parties) {
                 var ckey = c + '_' + idn + '_' + party;
                 Q[ckey + '_normalized'] = Q.impossible_multiply(Q[ckey] || 0, 1 / cell_votes);
-                Q[ckey + '_display']    = Q.impossible_percentage(Q[ckey + '_normalized'] * 100).toFixed(1);
+                var _cellPctStr = Q.impossible_percentage(Q[ckey + '_normalized'] * 100).toFixed(1);
+                Q[ckey + '_pct']        = Number(_cellPctStr);
+                Q[ckey + '_display']    = _cellPctStr;
             }
         }
     }
 }
+
 
 
 
