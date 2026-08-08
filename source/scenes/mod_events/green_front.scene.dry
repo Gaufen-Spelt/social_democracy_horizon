@@ -12,11 +12,11 @@ Deepening crisis in the countryside has broken the traditional dominance of Germ
 
 ​With the new German Peasants' Party (DBP) further splitting the rural electorate, organized agriculture stands hopelessly divided. In a bid to stop the bleeding, the RLB has taken the drastic step of inviting its rival Catholic unions, the DBP, and regional leagues to the table for emergency talks.
 
-[? if rlb_party_leader == "Martin Schiele": Martin Schiele's proposal was driven by the pressure from below to address the current crisis, subdue the agricultural fury and to form the united agricultural lobbying body. ?] [? if rlb_party_leader == "Karl Hepp": Karl Hepp, controversial leader of the [? if cnbl_crisis >= 1: CNBLP ?] [? if cnbl_crisis <= 0: RLB ?], has pushed this idea forward in order to unite the agricultural forces behind one umbrella. However, Karl Hepp's ambigious positions do not bode well with anxious Junkers, with them demanding to install Martin Schiele in charge of this body. ?] 
+[? if rlb_party_leader == "Martin Schiele": Martin Schiele's proposal was driven by the pressure from below to address the current crisis, subdue the agricultural fury and to form the united agricultural lobbying body. ?] [? if rlb_party_leader == "Karl Hepp": Karl Hepp, controversial leader of the [? if cnbl_crisis >= 1: CNBLP ?] [? if cnbl_crisis <= 0: RLB ?] has pushed this idea forward in order to unite the agricultural forces behind one umbrella. However, Karl Hepp's ambigious positions do not bode well with anxious Junkers, with them demanding to install Martin Schiele in charge of this body. ?] 
 
-What will happen next and how negotiations shall proceed will be decided right now:
+What will happen next and how negotiations shall proceed will be decided right now.
 
-- @results_gf: And the outcome is ...
+- @results_gf: Will they unite or will their differences part their ways?
 
 @results_gf
 on-arrival: {!
@@ -41,7 +41,7 @@ if (Q.geest_wildfire) {
     Q.green_front_formation_points += 1
 }
 
-if (Q.rlb_votes || Q.rlb_r > 1.4) {
+if (Q.rlb_votes > 1.4 || Q.rlb_r > 1.4) {
     Q.green_front_formation_points -= 1
 } else {
     Q.green_front_formation_points += 1
