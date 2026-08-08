@@ -2,7 +2,7 @@ title: Green Front's Birth.
 subtitle: Agrarian forces are unifying... or is the RLB consolidating power?
 tags: event
 max-visits: 1
-view-if: (geest_wildfire == 1 or cnbl_votes_display > 1.6) and ((rural_dnvp_display + rural_z_display + rural_rlb_display) < 50 or rural_other > 20) and (rlb_votes > 0 or dnvp_votes > 0) and year == 1929 and month >= 3 and month <= 6
+view-if: (geest_wildfire = 1 or cnbl_votes_display > 1.6) and ((rural_dnvp + rural_z + rural_rlb < 50) or rural_other > 20) and year == 1929 and month >= 3 and month <= 6
 new-page: true
 on-arrival: rural_rlb += 1
 
