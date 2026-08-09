@@ -2235,6 +2235,7 @@ go-to: neorevisionist_dissent
 
 
 @class_votes
+subtitle: Deprecated, USE adjustments in the next page. This way you will be able to influence parties. This one does not work due to algorithm.
 
 - @workers_votes: Workers
 - @new_middle_votes: New Middle
