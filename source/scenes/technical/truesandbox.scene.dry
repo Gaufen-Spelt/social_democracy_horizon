@@ -9,19 +9,16 @@ True Sandbox menu, where you can actually change things around. Be sure to keep 
 - @class_votes: Class popularities of parties
 - @dissent: Party dissents
 - @advisor: Advisor Action Timer
-- @kpd: KPD normalization (50 relation, communist coalition 6)
-- @hinden: Hindenburg patience
-- @dvpposition: Change DVP orientation
-- @dnvpposition: Change DNVP orientation
-- @changeddp: Change DDP orientation
-- @coup: Launch right coup
-- @strike: Launch capital strike
-- @generale: Launch general strike
-- @forces: Forces
+- @hinden: [+ president +]'s patience
+- @forces: Paramilitary Forces
 - @bans: Party Ban Statuses
 - @kill_me: Set time
 - @deterministic: Turn on deterministic mod
 - @bypasshistoricalsaves: Historical mode saves removed
+- @coup: Launch right coup
+- @strike: Launch capital strike
+- @generale: Launch general strike
+- @kpd: KPD normalization (50 relation, communist coalition 6)
 - @true_sandbox_second: Second page
 - @sandbox.sandbox_menu: Back
 
@@ -7638,6 +7635,14 @@ go-to: resources_var
 on-arrival: resources -= 100;
 go-to: resources_var
 
+
+
+
+
+
+
+
+
 // ============================================================
 // RELATIONS MENU
 // ============================================================
@@ -7661,6 +7666,23 @@ go-to: resources_var
 - @kvp_relat: Relationship with KVP
 - @dhp_relat: Relationship with DHP
 - @bb_relat: Relationship with BB
+- @aspd_relat: Relationship with ASPD
+- @cvp_relat: Relationship with CVP
+- @dbp_relat: Relationship with DBP
+- @dnf_relat: Relationship with DNF
+- @dsbp_relat: Relationship with DSBP
+- @dtsp_relat: Relationship with DTSP
+- @dvfp_relat: Relationship with DVFP
+- @faud_relat: Relationship with FAUD
+- @hl_relat: Relationship with HL
+- @kapd_relat: Relationship with KAPD
+- @kpo_relat: Relationship with KPO
+- @lb_relat: Relationship with LB
+- @rdp_relat: Relationship with RDP
+- @rlb_relat: Relationship with RLB
+- @sl_relat: Relationship with SL
+- @sls_relat: Relationship with SLS
+- @vnr_relat: Relationship with VNR
 - @truesandbox: Back
 
 @ddp_relat
@@ -8849,6 +8871,1195 @@ go-to: bb_relat
 on-arrival: bb_relation -= 100;
 go-to: bb_relat
 
+// ============================================================
+// ASPD RELATIONS
+// ============================================================
+
+@aspd_relat
+
+Change aspd relation
+
+- @aspd_increase_2: +2
+- @aspd_increase_5: +5
+- @aspd_increase_10: +10
+- @aspd_increase_20: +20
+- @aspd_increase_50: +50
+- @aspd_increase_100: +100
+- @aspd_decrease_2: -2
+- @aspd_decrease_5: -5
+- @aspd_decrease_10: -10
+- @aspd_decrease_20: -20
+- @aspd_decrease_50: -50
+- @aspd_decrease_100: -100
+- @relaton: Back
+
+@aspd_increase_2
+on-arrival: aspd_relation += 2;
+go-to: aspd_relat
+
+@aspd_increase_5
+on-arrival: aspd_relation += 5;
+go-to: aspd_relat
+
+@aspd_increase_10
+on-arrival: aspd_relation += 10;
+go-to: aspd_relat
+
+@aspd_increase_20
+on-arrival: aspd_relation += 20;
+go-to: aspd_relat
+
+@aspd_increase_50
+on-arrival: aspd_relation += 50;
+go-to: aspd_relat
+
+@aspd_increase_100
+on-arrival: aspd_relation += 100;
+go-to: aspd_relat
+
+@aspd_decrease_2
+on-arrival: aspd_relation -= 2;
+go-to: aspd_relat
+
+@aspd_decrease_5
+on-arrival: aspd_relation -= 5;
+go-to: aspd_relat
+
+@aspd_decrease_10
+on-arrival: aspd_relation -= 10;
+go-to: aspd_relat
+
+@aspd_decrease_20
+on-arrival: aspd_relation -= 20;
+go-to: aspd_relat
+
+@aspd_decrease_50
+on-arrival: aspd_relation -= 50;
+go-to: aspd_relat
+
+@aspd_decrease_100
+on-arrival: aspd_relation -= 100;
+go-to: aspd_relat
+
+// ============================================================
+// CVP RELATIONS
+// ============================================================
+
+@cvp_relat
+
+Change cvp relation
+
+- @cvp_increase_2: +2
+- @cvp_increase_5: +5
+- @cvp_increase_10: +10
+- @cvp_increase_20: +20
+- @cvp_increase_50: +50
+- @cvp_increase_100: +100
+- @cvp_decrease_2: -2
+- @cvp_decrease_5: -5
+- @cvp_decrease_10: -10
+- @cvp_decrease_20: -20
+- @cvp_decrease_50: -50
+- @cvp_decrease_100: -100
+- @relaton: Back
+
+@cvp_increase_2
+on-arrival: cvp_relation += 2;
+go-to: cvp_relat
+
+@cvp_increase_5
+on-arrival: cvp_relation += 5;
+go-to: cvp_relat
+
+@cvp_increase_10
+on-arrival: cvp_relation += 10;
+go-to: cvp_relat
+
+@cvp_increase_20
+on-arrival: cvp_relation += 20;
+go-to: cvp_relat
+
+@cvp_increase_50
+on-arrival: cvp_relation += 50;
+go-to: cvp_relat
+
+@cvp_increase_100
+on-arrival: cvp_relation += 100;
+go-to: cvp_relat
+
+@cvp_decrease_2
+on-arrival: cvp_relation -= 2;
+go-to: cvp_relat
+
+@cvp_decrease_5
+on-arrival: cvp_relation -= 5;
+go-to: cvp_relat
+
+@cvp_decrease_10
+on-arrival: cvp_relation -= 10;
+go-to: cvp_relat
+
+@cvp_decrease_20
+on-arrival: cvp_relation -= 20;
+go-to: cvp_relat
+
+@cvp_decrease_50
+on-arrival: cvp_relation -= 50;
+go-to: cvp_relat
+
+@cvp_decrease_100
+on-arrival: cvp_relation -= 100;
+go-to: cvp_relat
+
+// ============================================================
+// DBP RELATIONS
+// ============================================================
+
+@dbp_relat
+
+Change dbp relation
+
+- @dbp_increase_2: +2
+- @dbp_increase_5: +5
+- @dbp_increase_10: +10
+- @dbp_increase_20: +20
+- @dbp_increase_50: +50
+- @dbp_increase_100: +100
+- @dbp_decrease_2: -2
+- @dbp_decrease_5: -5
+- @dbp_decrease_10: -10
+- @dbp_decrease_20: -20
+- @dbp_decrease_50: -50
+- @dbp_decrease_100: -100
+- @relaton: Back
+
+@dbp_increase_2
+on-arrival: dbp_relation += 2;
+go-to: dbp_relat
+
+@dbp_increase_5
+on-arrival: dbp_relation += 5;
+go-to: dbp_relat
+
+@dbp_increase_10
+on-arrival: dbp_relation += 10;
+go-to: dbp_relat
+
+@dbp_increase_20
+on-arrival: dbp_relation += 20;
+go-to: dbp_relat
+
+@dbp_increase_50
+on-arrival: dbp_relation += 50;
+go-to: dbp_relat
+
+@dbp_increase_100
+on-arrival: dbp_relation += 100;
+go-to: dbp_relat
+
+@dbp_decrease_2
+on-arrival: dbp_relation -= 2;
+go-to: dbp_relat
+
+@dbp_decrease_5
+on-arrival: dbp_relation -= 5;
+go-to: dbp_relat
+
+@dbp_decrease_10
+on-arrival: dbp_relation -= 10;
+go-to: dbp_relat
+
+@dbp_decrease_20
+on-arrival: dbp_relation -= 20;
+go-to: dbp_relat
+
+@dbp_decrease_50
+on-arrival: dbp_relation -= 50;
+go-to: dbp_relat
+
+@dbp_decrease_100
+on-arrival: dbp_relation -= 100;
+go-to: dbp_relat
+
+// ============================================================
+// DNF RELATIONS
+// ============================================================
+
+@dnf_relat
+
+Change dnf relation
+
+- @dnf_increase_2: +2
+- @dnf_increase_5: +5
+- @dnf_increase_10: +10
+- @dnf_increase_20: +20
+- @dnf_increase_50: +50
+- @dnf_increase_100: +100
+- @dnf_decrease_2: -2
+- @dnf_decrease_5: -5
+- @dnf_decrease_10: -10
+- @dnf_decrease_20: -20
+- @dnf_decrease_50: -50
+- @dnf_decrease_100: -100
+- @relaton: Back
+
+@dnf_increase_2
+on-arrival: dnf_relation += 2;
+go-to: dnf_relat
+
+@dnf_increase_5
+on-arrival: dnf_relation += 5;
+go-to: dnf_relat
+
+@dnf_increase_10
+on-arrival: dnf_relation += 10;
+go-to: dnf_relat
+
+@dnf_increase_20
+on-arrival: dnf_relation += 20;
+go-to: dnf_relat
+
+@dnf_increase_50
+on-arrival: dnf_relation += 50;
+go-to: dnf_relat
+
+@dnf_increase_100
+on-arrival: dnf_relation += 100;
+go-to: dnf_relat
+
+@dnf_decrease_2
+on-arrival: dnf_relation -= 2;
+go-to: dnf_relat
+
+@dnf_decrease_5
+on-arrival: dnf_relation -= 5;
+go-to: dnf_relat
+
+@dnf_decrease_10
+on-arrival: dnf_relation -= 10;
+go-to: dnf_relat
+
+@dnf_decrease_20
+on-arrival: dnf_relation -= 20;
+go-to: dnf_relat
+
+@dnf_decrease_50
+on-arrival: dnf_relation -= 50;
+go-to: dnf_relat
+
+@dnf_decrease_100
+on-arrival: dnf_relation -= 100;
+go-to: dnf_relat
+
+// ============================================================
+// DSBP RELATIONS
+// ============================================================
+
+@dsbp_relat
+
+Change dsbp relation
+
+- @dsbp_increase_2: +2
+- @dsbp_increase_5: +5
+- @dsbp_increase_10: +10
+- @dsbp_increase_20: +20
+- @dsbp_increase_50: +50
+- @dsbp_increase_100: +100
+- @dsbp_decrease_2: -2
+- @dsbp_decrease_5: -5
+- @dsbp_decrease_10: -10
+- @dsbp_decrease_20: -20
+- @dsbp_decrease_50: -50
+- @dsbp_decrease_100: -100
+- @relaton: Back
+
+@dsbp_increase_2
+on-arrival: dsbp_relation += 2;
+go-to: dsbp_relat
+
+@dsbp_increase_5
+on-arrival: dsbp_relation += 5;
+go-to: dsbp_relat
+
+@dsbp_increase_10
+on-arrival: dsbp_relation += 10;
+go-to: dsbp_relat
+
+@dsbp_increase_20
+on-arrival: dsbp_relation += 20;
+go-to: dsbp_relat
+
+@dsbp_increase_50
+on-arrival: dsbp_relation += 50;
+go-to: dsbp_relat
+
+@dsbp_increase_100
+on-arrival: dsbp_relation += 100;
+go-to: dsbp_relat
+
+@dsbp_decrease_2
+on-arrival: dsbp_relation -= 2;
+go-to: dsbp_relat
+
+@dsbp_decrease_5
+on-arrival: dsbp_relation -= 5;
+go-to: dsbp_relat
+
+@dsbp_decrease_10
+on-arrival: dsbp_relation -= 10;
+go-to: dsbp_relat
+
+@dsbp_decrease_20
+on-arrival: dsbp_relation -= 20;
+go-to: dsbp_relat
+
+@dsbp_decrease_50
+on-arrival: dsbp_relation -= 50;
+go-to: dsbp_relat
+
+@dsbp_decrease_100
+on-arrival: dsbp_relation -= 100;
+go-to: dsbp_relat
+
+// ============================================================
+// DTSP RELATIONS
+// ============================================================
+
+@dtsp_relat
+
+Change dtsp relation
+
+- @dtsp_increase_2: +2
+- @dtsp_increase_5: +5
+- @dtsp_increase_10: +10
+- @dtsp_increase_20: +20
+- @dtsp_increase_50: +50
+- @dtsp_increase_100: +100
+- @dtsp_decrease_2: -2
+- @dtsp_decrease_5: -5
+- @dtsp_decrease_10: -10
+- @dtsp_decrease_20: -20
+- @dtsp_decrease_50: -50
+- @dtsp_decrease_100: -100
+- @relaton: Back
+
+@dtsp_increase_2
+on-arrival: dtsp_relation += 2;
+go-to: dtsp_relat
+
+@dtsp_increase_5
+on-arrival: dtsp_relation += 5;
+go-to: dtsp_relat
+
+@dtsp_increase_10
+on-arrival: dtsp_relation += 10;
+go-to: dtsp_relat
+
+@dtsp_increase_20
+on-arrival: dtsp_relation += 20;
+go-to: dtsp_relat
+
+@dtsp_increase_50
+on-arrival: dtsp_relation += 50;
+go-to: dtsp_relat
+
+@dtsp_increase_100
+on-arrival: dtsp_relation += 100;
+go-to: dtsp_relat
+
+@dtsp_decrease_2
+on-arrival: dtsp_relation -= 2;
+go-to: dtsp_relat
+
+@dtsp_decrease_5
+on-arrival: dtsp_relation -= 5;
+go-to: dtsp_relat
+
+@dtsp_decrease_10
+on-arrival: dtsp_relation -= 10;
+go-to: dtsp_relat
+
+@dtsp_decrease_20
+on-arrival: dtsp_relation -= 20;
+go-to: dtsp_relat
+
+@dtsp_decrease_50
+on-arrival: dtsp_relation -= 50;
+go-to: dtsp_relat
+
+@dtsp_decrease_100
+on-arrival: dtsp_relation -= 100;
+go-to: dtsp_relat
+
+// ============================================================
+// DVFP RELATIONS
+// ============================================================
+
+@dvfp_relat
+
+Change dvfp relation
+
+- @dvfp_increase_2: +2
+- @dvfp_increase_5: +5
+- @dvfp_increase_10: +10
+- @dvfp_increase_20: +20
+- @dvfp_increase_50: +50
+- @dvfp_increase_100: +100
+- @dvfp_decrease_2: -2
+- @dvfp_decrease_5: -5
+- @dvfp_decrease_10: -10
+- @dvfp_decrease_20: -20
+- @dvfp_decrease_50: -50
+- @dvfp_decrease_100: -100
+- @relaton: Back
+
+@dvfp_increase_2
+on-arrival: dvfp_relation += 2;
+go-to: dvfp_relat
+
+@dvfp_increase_5
+on-arrival: dvfp_relation += 5;
+go-to: dvfp_relat
+
+@dvfp_increase_10
+on-arrival: dvfp_relation += 10;
+go-to: dvfp_relat
+
+@dvfp_increase_20
+on-arrival: dvfp_relation += 20;
+go-to: dvfp_relat
+
+@dvfp_increase_50
+on-arrival: dvfp_relation += 50;
+go-to: dvfp_relat
+
+@dvfp_increase_100
+on-arrival: dvfp_relation += 100;
+go-to: dvfp_relat
+
+@dvfp_decrease_2
+on-arrival: dvfp_relation -= 2;
+go-to: dvfp_relat
+
+@dvfp_decrease_5
+on-arrival: dvfp_relation -= 5;
+go-to: dvfp_relat
+
+@dvfp_decrease_10
+on-arrival: dvfp_relation -= 10;
+go-to: dvfp_relat
+
+@dvfp_decrease_20
+on-arrival: dvfp_relation -= 20;
+go-to: dvfp_relat
+
+@dvfp_decrease_50
+on-arrival: dvfp_relation -= 50;
+go-to: dvfp_relat
+
+@dvfp_decrease_100
+on-arrival: dvfp_relation -= 100;
+go-to: dvfp_relat
+
+// ============================================================
+// FAUD RELATIONS
+// ============================================================
+
+@faud_relat
+
+Change faud relation
+
+- @faud_increase_2: +2
+- @faud_increase_5: +5
+- @faud_increase_10: +10
+- @faud_increase_20: +20
+- @faud_increase_50: +50
+- @faud_increase_100: +100
+- @faud_decrease_2: -2
+- @faud_decrease_5: -5
+- @faud_decrease_10: -10
+- @faud_decrease_20: -20
+- @faud_decrease_50: -50
+- @faud_decrease_100: -100
+- @relaton: Back
+
+@faud_increase_2
+on-arrival: faud_relation += 2;
+go-to: faud_relat
+
+@faud_increase_5
+on-arrival: faud_relation += 5;
+go-to: faud_relat
+
+@faud_increase_10
+on-arrival: faud_relation += 10;
+go-to: faud_relat
+
+@faud_increase_20
+on-arrival: faud_relation += 20;
+go-to: faud_relat
+
+@faud_increase_50
+on-arrival: faud_relation += 50;
+go-to: faud_relat
+
+@faud_increase_100
+on-arrival: faud_relation += 100;
+go-to: faud_relat
+
+@faud_decrease_2
+on-arrival: faud_relation -= 2;
+go-to: faud_relat
+
+@faud_decrease_5
+on-arrival: faud_relation -= 5;
+go-to: faud_relat
+
+@faud_decrease_10
+on-arrival: faud_relation -= 10;
+go-to: faud_relat
+
+@faud_decrease_20
+on-arrival: faud_relation -= 20;
+go-to: faud_relat
+
+@faud_decrease_50
+on-arrival: faud_relation -= 50;
+go-to: faud_relat
+
+@faud_decrease_100
+on-arrival: faud_relation -= 100;
+go-to: faud_relat
+
+// ============================================================
+// HL RELATIONS
+// ============================================================
+
+@hl_relat
+
+Change hl relation
+
+- @hl_increase_2: +2
+- @hl_increase_5: +5
+- @hl_increase_10: +10
+- @hl_increase_20: +20
+- @hl_increase_50: +50
+- @hl_increase_100: +100
+- @hl_decrease_2: -2
+- @hl_decrease_5: -5
+- @hl_decrease_10: -10
+- @hl_decrease_20: -20
+- @hl_decrease_50: -50
+- @hl_decrease_100: -100
+- @relaton: Back
+
+@hl_increase_2
+on-arrival: hl_relation += 2;
+go-to: hl_relat
+
+@hl_increase_5
+on-arrival: hl_relation += 5;
+go-to: hl_relat
+
+@hl_increase_10
+on-arrival: hl_relation += 10;
+go-to: hl_relat
+
+@hl_increase_20
+on-arrival: hl_relation += 20;
+go-to: hl_relat
+
+@hl_increase_50
+on-arrival: hl_relation += 50;
+go-to: hl_relat
+
+@hl_increase_100
+on-arrival: hl_relation += 100;
+go-to: hl_relat
+
+@hl_decrease_2
+on-arrival: hl_relation -= 2;
+go-to: hl_relat
+
+@hl_decrease_5
+on-arrival: hl_relation -= 5;
+go-to: hl_relat
+
+@hl_decrease_10
+on-arrival: hl_relation -= 10;
+go-to: hl_relat
+
+@hl_decrease_20
+on-arrival: hl_relation -= 20;
+go-to: hl_relat
+
+@hl_decrease_50
+on-arrival: hl_relation -= 50;
+go-to: hl_relat
+
+@hl_decrease_100
+on-arrival: hl_relation -= 100;
+go-to: hl_relat
+
+// ============================================================
+// KAPD RELATIONS
+// ============================================================
+
+@kapd_relat
+
+Change kapd relation
+
+- @kapd_increase_2: +2
+- @kapd_increase_5: +5
+- @kapd_increase_10: +10
+- @kapd_increase_20: +20
+- @kapd_increase_50: +50
+- @kapd_increase_100: +100
+- @kapd_decrease_2: -2
+- @kapd_decrease_5: -5
+- @kapd_decrease_10: -10
+- @kapd_decrease_20: -20
+- @kapd_decrease_50: -50
+- @kapd_decrease_100: -100
+- @relaton: Back
+
+@kapd_increase_2
+on-arrival: kapd_relation += 2;
+go-to: kapd_relat
+
+@kapd_increase_5
+on-arrival: kapd_relation += 5;
+go-to: kapd_relat
+
+@kapd_increase_10
+on-arrival: kapd_relation += 10;
+go-to: kapd_relat
+
+@kapd_increase_20
+on-arrival: kapd_relation += 20;
+go-to: kapd_relat
+
+@kapd_increase_50
+on-arrival: kapd_relation += 50;
+go-to: kapd_relat
+
+@kapd_increase_100
+on-arrival: kapd_relation += 100;
+go-to: kapd_relat
+
+@kapd_decrease_2
+on-arrival: kapd_relation -= 2;
+go-to: kapd_relat
+
+@kapd_decrease_5
+on-arrival: kapd_relation -= 5;
+go-to: kapd_relat
+
+@kapd_decrease_10
+on-arrival: kapd_relation -= 10;
+go-to: kapd_relat
+
+@kapd_decrease_20
+on-arrival: kapd_relation -= 20;
+go-to: kapd_relat
+
+@kapd_decrease_50
+on-arrival: kapd_relation -= 50;
+go-to: kapd_relat
+
+@kapd_decrease_100
+on-arrival: kapd_relation -= 100;
+go-to: kapd_relat
+
+// ============================================================
+// KPO RELATIONS
+// ============================================================
+
+@kpo_relat
+
+Change kpo relation
+
+- @kpo_increase_2: +2
+- @kpo_increase_5: +5
+- @kpo_increase_10: +10
+- @kpo_increase_20: +20
+- @kpo_increase_50: +50
+- @kpo_increase_100: +100
+- @kpo_decrease_2: -2
+- @kpo_decrease_5: -5
+- @kpo_decrease_10: -10
+- @kpo_decrease_20: -20
+- @kpo_decrease_50: -50
+- @kpo_decrease_100: -100
+- @relaton: Back
+
+@kpo_increase_2
+on-arrival: kpo_relation += 2;
+go-to: kpo_relat
+
+@kpo_increase_5
+on-arrival: kpo_relation += 5;
+go-to: kpo_relat
+
+@kpo_increase_10
+on-arrival: kpo_relation += 10;
+go-to: kpo_relat
+
+@kpo_increase_20
+on-arrival: kpo_relation += 20;
+go-to: kpo_relat
+
+@kpo_increase_50
+on-arrival: kpo_relation += 50;
+go-to: kpo_relat
+
+@kpo_increase_100
+on-arrival: kpo_relation += 100;
+go-to: kpo_relat
+
+@kpo_decrease_2
+on-arrival: kpo_relation -= 2;
+go-to: kpo_relat
+
+@kpo_decrease_5
+on-arrival: kpo_relation -= 5;
+go-to: kpo_relat
+
+@kpo_decrease_10
+on-arrival: kpo_relation -= 10;
+go-to: kpo_relat
+
+@kpo_decrease_20
+on-arrival: kpo_relation -= 20;
+go-to: kpo_relat
+
+@kpo_decrease_50
+on-arrival: kpo_relation -= 50;
+go-to: kpo_relat
+
+@kpo_decrease_100
+on-arrival: kpo_relation -= 100;
+go-to: kpo_relat
+
+// ============================================================
+// LB RELATIONS
+// ============================================================
+
+@lb_relat
+
+Change lb relation
+
+- @lb_increase_2: +2
+- @lb_increase_5: +5
+- @lb_increase_10: +10
+- @lb_increase_20: +20
+- @lb_increase_50: +50
+- @lb_increase_100: +100
+- @lb_decrease_2: -2
+- @lb_decrease_5: -5
+- @lb_decrease_10: -10
+- @lb_decrease_20: -20
+- @lb_decrease_50: -50
+- @lb_decrease_100: -100
+- @relaton: Back
+
+@lb_increase_2
+on-arrival: lb_relation += 2;
+go-to: lb_relat
+
+@lb_increase_5
+on-arrival: lb_relation += 5;
+go-to: lb_relat
+
+@lb_increase_10
+on-arrival: lb_relation += 10;
+go-to: lb_relat
+
+@lb_increase_20
+on-arrival: lb_relation += 20;
+go-to: lb_relat
+
+@lb_increase_50
+on-arrival: lb_relation += 50;
+go-to: lb_relat
+
+@lb_increase_100
+on-arrival: lb_relation += 100;
+go-to: lb_relat
+
+@lb_decrease_2
+on-arrival: lb_relation -= 2;
+go-to: lb_relat
+
+@lb_decrease_5
+on-arrival: lb_relation -= 5;
+go-to: lb_relat
+
+@lb_decrease_10
+on-arrival: lb_relation -= 10;
+go-to: lb_relat
+
+@lb_decrease_20
+on-arrival: lb_relation -= 20;
+go-to: lb_relat
+
+@lb_decrease_50
+on-arrival: lb_relation -= 50;
+go-to: lb_relat
+
+@lb_decrease_100
+on-arrival: lb_relation -= 100;
+go-to: lb_relat
+
+// ============================================================
+// RDP RELATIONS
+// ============================================================
+
+@rdp_relat
+
+Change rdp relation
+
+- @rdp_increase_2: +2
+- @rdp_increase_5: +5
+- @rdp_increase_10: +10
+- @rdp_increase_20: +20
+- @rdp_increase_50: +50
+- @rdp_increase_100: +100
+- @rdp_decrease_2: -2
+- @rdp_decrease_5: -5
+- @rdp_decrease_10: -10
+- @rdp_decrease_20: -20
+- @rdp_decrease_50: -50
+- @rdp_decrease_100: -100
+- @relaton: Back
+
+@rdp_increase_2
+on-arrival: rdp_relation += 2;
+go-to: rdp_relat
+
+@rdp_increase_5
+on-arrival: rdp_relation += 5;
+go-to: rdp_relat
+
+@rdp_increase_10
+on-arrival: rdp_relation += 10;
+go-to: rdp_relat
+
+@rdp_increase_20
+on-arrival: rdp_relation += 20;
+go-to: rdp_relat
+
+@rdp_increase_50
+on-arrival: rdp_relation += 50;
+go-to: rdp_relat
+
+@rdp_increase_100
+on-arrival: rdp_relation += 100;
+go-to: rdp_relat
+
+@rdp_decrease_2
+on-arrival: rdp_relation -= 2;
+go-to: rdp_relat
+
+@rdp_decrease_5
+on-arrival: rdp_relation -= 5;
+go-to: rdp_relat
+
+@rdp_decrease_10
+on-arrival: rdp_relation -= 10;
+go-to: rdp_relat
+
+@rdp_decrease_20
+on-arrival: rdp_relation -= 20;
+go-to: rdp_relat
+
+@rdp_decrease_50
+on-arrival: rdp_relation -= 50;
+go-to: rdp_relat
+
+@rdp_decrease_100
+on-arrival: rdp_relation -= 100;
+go-to: rdp_relat
+
+// ============================================================
+// RLB RELATIONS
+// ============================================================
+
+@rlb_relat
+
+Change rlb relation
+
+- @rlb_increase_2: +2
+- @rlb_increase_5: +5
+- @rlb_increase_10: +10
+- @rlb_increase_20: +20
+- @rlb_increase_50: +50
+- @rlb_increase_100: +100
+- @rlb_decrease_2: -2
+- @rlb_decrease_5: -5
+- @rlb_decrease_10: -10
+- @rlb_decrease_20: -20
+- @rlb_decrease_50: -50
+- @rlb_decrease_100: -100
+- @relaton: Back
+
+@rlb_increase_2
+on-arrival: rlb_relation += 2;
+go-to: rlb_relat
+
+@rlb_increase_5
+on-arrival: rlb_relation += 5;
+go-to: rlb_relat
+
+@rlb_increase_10
+on-arrival: rlb_relation += 10;
+go-to: rlb_relat
+
+@rlb_increase_20
+on-arrival: rlb_relation += 20;
+go-to: rlb_relat
+
+@rlb_increase_50
+on-arrival: rlb_relation += 50;
+go-to: rlb_relat
+
+@rlb_increase_100
+on-arrival: rlb_relation += 100;
+go-to: rlb_relat
+
+@rlb_decrease_2
+on-arrival: rlb_relation -= 2;
+go-to: rlb_relat
+
+@rlb_decrease_5
+on-arrival: rlb_relation -= 5;
+go-to: rlb_relat
+
+@rlb_decrease_10
+on-arrival: rlb_relation -= 10;
+go-to: rlb_relat
+
+@rlb_decrease_20
+on-arrival: rlb_relation -= 20;
+go-to: rlb_relat
+
+@rlb_decrease_50
+on-arrival: rlb_relation -= 50;
+go-to: rlb_relat
+
+@rlb_decrease_100
+on-arrival: rlb_relation -= 100;
+go-to: rlb_relat
+
+// ============================================================
+// SL RELATIONS
+// ============================================================
+
+@sl_relat
+
+Change sl relation
+
+- @sl_increase_2: +2
+- @sl_increase_5: +5
+- @sl_increase_10: +10
+- @sl_increase_20: +20
+- @sl_increase_50: +50
+- @sl_increase_100: +100
+- @sl_decrease_2: -2
+- @sl_decrease_5: -5
+- @sl_decrease_10: -10
+- @sl_decrease_20: -20
+- @sl_decrease_50: -50
+- @sl_decrease_100: -100
+- @relaton: Back
+
+@sl_increase_2
+on-arrival: sl_relation += 2;
+go-to: sl_relat
+
+@sl_increase_5
+on-arrival: sl_relation += 5;
+go-to: sl_relat
+
+@sl_increase_10
+on-arrival: sl_relation += 10;
+go-to: sl_relat
+
+@sl_increase_20
+on-arrival: sl_relation += 20;
+go-to: sl_relat
+
+@sl_increase_50
+on-arrival: sl_relation += 50;
+go-to: sl_relat
+
+@sl_increase_100
+on-arrival: sl_relation += 100;
+go-to: sl_relat
+
+@sl_decrease_2
+on-arrival: sl_relation -= 2;
+go-to: sl_relat
+
+@sl_decrease_5
+on-arrival: sl_relation -= 5;
+go-to: sl_relat
+
+@sl_decrease_10
+on-arrival: sl_relation -= 10;
+go-to: sl_relat
+
+@sl_decrease_20
+on-arrival: sl_relation -= 20;
+go-to: sl_relat
+
+@sl_decrease_50
+on-arrival: sl_relation -= 50;
+go-to: sl_relat
+
+@sl_decrease_100
+on-arrival: sl_relation -= 100;
+go-to: sl_relat
+
+// ============================================================
+// SLS RELATIONS
+// ============================================================
+
+@sls_relat
+
+Change sls relation
+
+- @sls_increase_2: +2
+- @sls_increase_5: +5
+- @sls_increase_10: +10
+- @sls_increase_20: +20
+- @sls_increase_50: +50
+- @sls_increase_100: +100
+- @sls_decrease_2: -2
+- @sls_decrease_5: -5
+- @sls_decrease_10: -10
+- @sls_decrease_20: -20
+- @sls_decrease_50: -50
+- @sls_decrease_100: -100
+- @relaton: Back
+
+@sls_increase_2
+on-arrival: sls_relation += 2;
+go-to: sls_relat
+
+@sls_increase_5
+on-arrival: sls_relation += 5;
+go-to: sls_relat
+
+@sls_increase_10
+on-arrival: sls_relation += 10;
+go-to: sls_relat
+
+@sls_increase_20
+on-arrival: sls_relation += 20;
+go-to: sls_relat
+
+@sls_increase_50
+on-arrival: sls_relation += 50;
+go-to: sls_relat
+
+@sls_increase_100
+on-arrival: sls_relation += 100;
+go-to: sls_relat
+
+@sls_decrease_2
+on-arrival: sls_relation -= 2;
+go-to: sls_relat
+
+@sls_decrease_5
+on-arrival: sls_relation -= 5;
+go-to: sls_relat
+
+@sls_decrease_10
+on-arrival: sls_relation -= 10;
+go-to: sls_relat
+
+@sls_decrease_20
+on-arrival: sls_relation -= 20;
+go-to: sls_relat
+
+@sls_decrease_50
+on-arrival: sls_relation -= 50;
+go-to: sls_relat
+
+@sls_decrease_100
+on-arrival: sls_relation -= 100;
+go-to: sls_relat
+
+// ============================================================
+// VNR RELATIONS
+// ============================================================
+
+@vnr_relat
+
+Change vnr relation
+
+- @vnr_increase_2: +2
+- @vnr_increase_5: +5
+- @vnr_increase_10: +10
+- @vnr_increase_20: +20
+- @vnr_increase_50: +50
+- @vnr_increase_100: +100
+- @vnr_decrease_2: -2
+- @vnr_decrease_5: -5
+- @vnr_decrease_10: -10
+- @vnr_decrease_20: -20
+- @vnr_decrease_50: -50
+- @vnr_decrease_100: -100
+- @relaton: Back
+
+@vnr_increase_2
+on-arrival: vnr_relation += 2;
+go-to: vnr_relat
+
+@vnr_increase_5
+on-arrival: vnr_relation += 5;
+go-to: vnr_relat
+
+@vnr_increase_10
+on-arrival: vnr_relation += 10;
+go-to: vnr_relat
+
+@vnr_increase_20
+on-arrival: vnr_relation += 20;
+go-to: vnr_relat
+
+@vnr_increase_50
+on-arrival: vnr_relation += 50;
+go-to: vnr_relat
+
+@vnr_increase_100
+on-arrival: vnr_relation += 100;
+go-to: vnr_relat
+
+@vnr_decrease_2
+on-arrival: vnr_relation -= 2;
+go-to: vnr_relat
+
+@vnr_decrease_5
+on-arrival: vnr_relation -= 5;
+go-to: vnr_relat
+
+@vnr_decrease_10
+on-arrival: vnr_relation -= 10;
+go-to: vnr_relat
+
+@vnr_decrease_20
+on-arrival: vnr_relation -= 20;
+go-to: vnr_relat
+
+@vnr_decrease_50
+on-arrival: vnr_relation -= 50;
+go-to: vnr_relat
+
+@vnr_decrease_100
+on-arrival: vnr_relation -= 100;
+go-to: vnr_relat
 
 
 
@@ -8866,84 +10077,10 @@ go-to: bb_relat
 
 
 
-@changeddp
-
-DDP position?
-
-- @ddp_right: DDP turns DStP.
-- @ddp_left: DDP turns democratic.
-- @truesandbox: Back
-
-@ddp_right
-on-arrival: ddp_name = "DStP"; ddp_dstp_seen = 1;
-go-to: changeddp
-
-DDP is now DStP.
-
----
-
-@ddp_left
-on-arrival: ddp_name = "DDP"; ddp_dstp_seen = 0;
-go-to: changeddp
-
-DDP is now Democratic.
-
-@dnvpposition
-
-DNvp position?
-
-- @dnvp_right: Hugenberg bossman
-- @dnvp_left: Emil Hartwig Left guys
-- @dnvp_center: Westarp guys
-- @truesandbox: Back
-
-@dnvp_right
-on-arrival: dnvp_line = 3
-go-to: dnvpposition
-
-DNVP is now Hugenbossite.
-
----
-
-@dnvp_left
-on-arrival: dnvp_line = 1
-go-to: dnvpposition
-
-DNVP is now democratic (?).
-
----
-
-@dnvp_center
-on-arrival: dnvp_line = 2
-go-to: dnvpposition
-
-Westarp rules now
-
----
 
 
 
-@dvpposition
 
-Dvp position?
-
-- @dvp_right: Dvp shifts right - Dingeldey
-- @dvp_left: Dvp shifts left - Curtius
-- @truesandbox: Back
-
-@dvp_right
-on-arrival: dvp_right_shift = 1
-go-to: dvpposition
-
-DVP is now Hitlerist.
-
----
-
-@dvp_left
-on-arrival: dvp_right_shift = 0
-go-to: dvpposition
-
-DVP is now Democratic.
 
 
 
