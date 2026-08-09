@@ -21,4 +21,9 @@ if (Q[card.id + "_timer"]) {
 if (this.state.visits[card.id]) {
     this.state.visits[card.id] -= 1;
 }
+
+if (Q.lobbying_on == 1) {
+    Q.lobbying_timer = 0;
+}
+
 !}
