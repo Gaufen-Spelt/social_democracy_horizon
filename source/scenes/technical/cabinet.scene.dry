@@ -11,7 +11,7 @@ new-page: true
 With an SPD chancellor and SPD cabinet members, we can direct the affairs of the national government.
 
 - #cabinet
-- @lobbying
+- @lobbying: Lobbying
 - @back: Return to main
 
 @back
