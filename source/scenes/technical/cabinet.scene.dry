@@ -21,11 +21,16 @@ go-to: root
 @lobbying
 subtitle: We could lobby our partners. ( -2 resources and drop in relation)
 view-if: lobbying_active >= 1 and lobbying_timer <= 0
+on-arrival: lobbying_timer += 12
 
 Whichever ministry should we lobby?
 
 - #lobby_target
-- @cabinet: Back
+- @cabinet_2: Back
+
+@cabinet_2
+go-to: cabinet
+on-arrival: lobbying_timer = 0
 
 @lobby_foreign_minister
 title: Lobby the [+ foreign_minister_party +] — Foreign Ministry
