@@ -4,14 +4,14 @@ Your second page.
 
 - @adjustments
 - @sandbox.sandbox_menu: Back to beginning
-- @truesandbox: Back to first page
+- @true_sandbox: Back to first page
 
 @adjustments
 title: Adjustment Sandbox
 
 - @party_adjustments: Party Adjustments
 - @class_adjustments: Class Adjustments
-- @truesandbox: Back
+- @true_sandbox_second: Back
 
 @party_adjustments
 title: Party Adjustments
