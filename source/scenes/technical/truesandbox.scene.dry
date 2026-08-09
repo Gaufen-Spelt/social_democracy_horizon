@@ -22,6 +22,7 @@ True Sandbox menu, where you can actually change things around. Be sure to keep 
 - @kill_me: Set time
 - @deterministic: Turn on deterministic mod
 - @bypasshistoricalsaves: Historical mode saves removed
+- @true_sandbox_second: Second page
 - @sandbox.sandbox_menu: Back
 
 @deterministic
@@ -100,7 +101,80 @@ Which way?
 - @dnvp_ban_on: DNVP - Ban
 - @nsdap_ban_off: NSDAP - Unban
 - @nsdap_ban_on: NSDAP - Ban
+- @dnf_ban_off: DNF - Unban
+- @dnf_ban_on: DNF - Ban
+- @dsbp_ban_off: DSBP - Unban
+- @dsbp_ban_on: DSBP - Ban
+- @faud_ban_off: FAUD - Unban
+- @faud_ban_on: FAUD - Ban
+- @kapd_ban_off: KAPD - Unban
+- @kapd_ban_on: KAPD - Ban
+- @rlb_ban_off: RLB - Unban
+- @rlb_ban_on: RLB - Ban
+- @spd_ban_off: SPD - Unban
+- @spd_ban_on: SPD - Ban
 - @truesandbox: Leave
+
+@dnf_ban_on
+view-if: dnf_banned = 0
+on-arrival: dnf_banned = 1
+go-to: bans
+
+@dnf_ban_off
+view-if: dnf_banned = 1
+on-arrival: dnf_banned = 0
+go-to: bans
+
+@dsbp_ban_on
+view-if: dsbp_banned = 0
+on-arrival: dsbp_banned = 1
+go-to: bans
+
+@dsbp_ban_off
+view-if: dsbp_banned = 1
+on-arrival: dsbp_banned = 0
+go-to: bans
+
+@faud_ban_on
+view-if: faud_banned = 0
+on-arrival: faud_banned = 1
+go-to: bans
+
+@faud_ban_off
+view-if: faud_banned = 1
+on-arrival: faud_banned = 0
+go-to: bans
+
+@kapd_ban_on
+view-if: kapd_banned = 0
+on-arrival: kapd_banned = 1
+go-to: bans
+
+@kapd_ban_off
+view-if: kapd_banned = 1
+on-arrival: kapd_banned = 0
+go-to: bans
+
+@rlb_ban_on
+view-if: rlb_banned = 0
+on-arrival: rlb_banned = 1
+go-to: bans
+
+@rlb_ban_off
+view-if: rlb_banned = 1
+on-arrival: rlb_banned = 0
+go-to: bans
+
+@spd_ban_on
+view-if: spd_banned = 0
+on-arrival: spd_banned = 1
+go-to: bans
+
+@spd_ban_off
+view-if: spd_banned = 1
+on-arrival: spd_banned = 0
+go-to: bans
+
 
 @sapd_ban_on
 view-if: sapd_banned = 0
@@ -463,6 +537,8 @@ go-to: kill_me
 @year
 
 Which year?
+
+You can also set year in "technical work" through set variable. variable: year : [+ year +] , month : [+ month +], weeks : [+ weeks +]
 
 - @year_1928: 1928
 - @year_1929: 1929
