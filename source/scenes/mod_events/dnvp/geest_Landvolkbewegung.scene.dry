@@ -98,10 +98,30 @@ on-arrival: {!
   Q.nationalism += 1;
   Q.pro_republic -= 1;
   Q.rural_dnvp += 1; // Lacking momentum, they begrudgingly stick with traditional choices
+  Q.rural_qol -= 20;
 !}
+achievement: winterschwelen 
 
 = A Simmering, Bitter Provincial Winter
 
-The outright defiance finds it difficult to create a mass base outside its epicenter in the north. Since the macro-economic parameters are not yet disastrous, or perhaps due to the fact that the government has kept the rural situation stable by being cautious, the outright defiance finds itself contained. In the Baltic Hill Zone, the stable tenant farmers and the rural bourgeoisie do not give way; they adhere to their political conservatism. The local police forces are successful in putting down the tax boycotts, which are few in number. While the outright defiance is contained, the underlying economic rot continues in the Geest. To say the rural base is very dissapointed is to say nothing...
+<div style="width:100%;">
+  <img src="img/achievements/winterschwelen.png" alt="Landvolk Collapses" style="width:100%; display:block;">
+</div>
 
+And soon I stared at the crowd of the people. Or, what was left of it.
 
+One day, my poor son asked:
+
+"Is there no justice? Why can't we do that?"
+
+... 
+
+Because, we were not angry enough, not willing enough and most importantly - there was no unity, for we have failed to co-ordinate [? if agricultural_assist > 0:, for we have been subdued by the *Golden Democrats*. ?].
+
+I took one careful look at my son.
+
+...
+
+...
+
+Not anymore.
