@@ -437,6 +437,37 @@ for (var i = 0; i < portfolios.length; i++) {
 
 
 
+
+
+
+
+
+// === LOBBYING ACTIVITY CHECK ===
+// Active if any party with relation >= 80 currently holds a ministry portfolio
+Q.lobbying_active = 0;
+
+var ministry_parties = [];
+for (var i = 0; i < portfolios.length; i++) {
+    var mp = (Q[portfolios[i] + '_party'] || '').toLowerCase();
+    if (mp) ministry_parties.push(mp);
+}
+
+for (var i = 0; i < Q.parties.length; i++) {
+    var p = Q.parties[i];
+    if ((Q[p + '_relation'] || 0) >= 80 && ministry_parties.indexOf(p) !== -1) {
+        Q.lobbying_active = 1;
+        break;
+    }
+}
+
+
+
+
+
+
+
+
+
 // UPDATE PARTY RELATIONSHIPS EACH TIME.
 
 function updatePartyRelations() {
