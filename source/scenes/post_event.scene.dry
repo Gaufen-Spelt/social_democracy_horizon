@@ -2070,6 +2070,7 @@ if (Q.year == 1928 && Q.month == 8 && Q.rlb_election_flavor_1 != 1) {
         Q.rlb_party_leader = "Karl Hepp";
         Q.rlb_ideology = "Populist Agrarian Conservatism";
         Q.rlb_election_flavor_2 = 1;
+        this.achieve('karl_hepp_rlb');
     } else {
         Q.rlb_party_leader = "Martin Schiele";
         Q.rlb_election_flavor_2 = 2;
