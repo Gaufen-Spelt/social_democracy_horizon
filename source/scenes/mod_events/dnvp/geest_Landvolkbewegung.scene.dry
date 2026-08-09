@@ -104,7 +104,7 @@ window.enableFocusMode()
 on-departure: {!
   window.disableFocusMode()
 !}
-achievement: achievement_winterschwelen 
+achievement: winterschwelen 
 
 = A Simmering, Bitter Provincial Winter
 
