@@ -1,15 +1,11 @@
 title: Second page
-go-to: true_sandbox_second_secondary
-
-@true_sandbox_second_secondary
-title: Second page
 new-page: true
 
 Your second page.
 
 - @adjustments
 - @sandbox.sandbox_menu: Back to beginning
-- @true_sandbox: Back to first page
+- @truesandbox: Back to first page
 
 @adjustments
 title: Adjustment Sandbox
