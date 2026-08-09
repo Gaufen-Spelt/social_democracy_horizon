@@ -2363,6 +2363,11 @@ window.Achievements = (function () {
       description: 'SPD has launched the revolution.',
       icon: null
     },
+    achievement_winterschwelen: {
+      title: 'Winterschwelen',
+      description: 'They are silent, lonely, despairly and bonely, aren`t they?.',
+      icon: 'img/achievements/winterschwelen.png'
+    },
     achievement_popular_frontier: {
       title: 'Popular Front',
       description: 'Popular Front theses has been established.',
