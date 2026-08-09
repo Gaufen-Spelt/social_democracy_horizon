@@ -39,6 +39,26 @@ if (Q.dnvp_party_leader == "Alfred Hugenberg") {
     Q.green_front_formation_points += 2
 }
 
+if (Q.rural_qol < 90) {
+    Q.green_front_formation_points += 2
+} else if (Q.rural_qol < 100) {
+    Q.green_front_formation_points += 1
+} else if (Q.rural_qol >= 100) {
+    Q.green_front_formation_points -= 1
+}
+
+if (Q.land_reform > 0) {
+    Q.green_front_formation_points += Q.land_reform || 0;
+}
+
+if (Q.agricultural_finance > 0) {
+    Q.green_front_formation_points -= Q.agricultural_finance || 0;
+}
+
+if (Q.agricultural_minister_party == "Z") {
+    Q.green_front_formation_points += 1
+}
+
 if (Q.geest_wildfire) {
     Q.green_front_formation_points += 2
 } else {
@@ -75,7 +95,7 @@ if (Q.cnbl_votes < 1.1 || Q.cnbl_r < 1.5) {
 }
 
 !}
-go-to: formation if green_front_formation_points >= 4; collapse if green_front_formation_points < 4
+go-to: formation if green_front_formation_points >= 6; collapse if green_front_formation_points < 6
 
 @formation
 
