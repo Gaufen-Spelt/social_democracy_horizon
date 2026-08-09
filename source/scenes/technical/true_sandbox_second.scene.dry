@@ -1,4 +1,9 @@
 title: Second page
+go-to: true_sandbox_second_secondary
+
+@true_sandbox_second_secondary
+title: Second page
+new-page: true
 
 Your second page.
 
