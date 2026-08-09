@@ -834,6 +834,10 @@ if (Q.welfare < 0) Q.delegate_power_christsoc += 2.5 * Math.abs(Q.welfare);
 
 if (Q.unions_independent) Q.delegate_power_christsoc *= 1.06;
 
+if (Q.lambach_stage >= 2) {
+    Q.delegate_power_christsoc += 30;
+}
+
 // 4. Class Influence
 Q.hugenberg_momentum += (Q.old_middle_dnvp_display * 0.27);
 Q.hugenberg_momentum += (Q.rural_dnvp_display * 0.17);
