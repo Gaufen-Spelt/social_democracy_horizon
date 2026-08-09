@@ -443,20 +443,20 @@ for (var i = 0; i < portfolios.length; i++) {
 
 
 // === LOBBYING ACTIVITY CHECK ===
-// Active if any party with relation >= 80 currently holds a ministry portfolio
 Q.lobbying_active = 0;
+Q.lobbyable_ministries = [];
 
-var ministry_parties = [];
 for (var i = 0; i < portfolios.length; i++) {
-    var mp = (Q[portfolios[i] + '_party'] || '').toLowerCase();
-    if (mp) ministry_parties.push(mp);
-}
+    var port = portfolios[i];
+    var mp = (Q[port + '_party'] || '').toLowerCase();
+    var qualifies = mp && (Q[mp + '_relation'] || 0) >= 80;
 
-for (var i = 0; i < Q.parties.length; i++) {
-    var p = Q.parties[i];
-    if ((Q[p + '_relation'] || 0) >= 80 && ministry_parties.indexOf(p) !== -1) {
+    // flat boolean per portfolio, for use in plain view-if: syntax
+    Q['lobby_' + port + '_available'] = qualifies ? 1 : 0;
+
+    if (qualifies) {
         Q.lobbying_active = 1;
-        break;
+        Q.lobbyable_ministries.push({ portfolio: port, party: mp });
     }
 }
 
