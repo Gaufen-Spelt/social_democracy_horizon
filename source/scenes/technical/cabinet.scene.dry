@@ -28,7 +28,7 @@ Whichever ministry should we lobby?
 - @cabinet: Back
 
 @lobby_foreign_minister
-title: Lobby the [+Q.foreign_minister_party+] — Foreign Ministry
+title: Lobby the [+ foreign_minister_party +] — Foreign Ministry
 tags: lobby_target
 view-if: lobby_foreign_minister_available >= 1
 on-arrival: {!
@@ -39,7 +39,7 @@ Q[party + '_relation'] -= 5;
 go-to: foreign_policy
 
 @lobby_interior_minister
-title: Lobby the [+Q.interior_minister_party+] — Interior Ministry
+title: Lobby the [+ interior_minister_party +] — Interior Ministry
 tags: lobby_target
 view-if: lobby_interior_minister_available >= 1
 on-arrival: {!
@@ -50,7 +50,7 @@ Q[party + '_relation'] -= 5;
 go-to: police
 
 @lobby_justice_minister
-title: Lobby the [+Q.justice_minister_party+] — Justice Ministry
+title: Lobby the [+ justice_minister_party +] — Justice Ministry
 tags: lobby_target
 view-if: lobby_justice_minister_available >= 1
 on-arrival: {!
@@ -61,7 +61,7 @@ Q[party + '_relation'] -= Q.random_factor(10);
 go-to: judiciary
 
 @lobby_labor_minister
-title: Lobby the [+Q.labor_minister_party+] — Labor Ministry
+title: Lobby the [+ labor_minister_party +] — Labor Ministry
 tags: lobby_target
 view-if: lobby_labor_minister_available >= 1
 on-arrival: {!
@@ -72,7 +72,7 @@ Q[party + '_relation'] -= Q.random_factor(10);
 go-to: labor_rights
 
 @lobby_economic_minister
-title: Lobby the [+Q.economic_minister_party+] — Economic Ministry
+title: Lobby the [+ economic_minister_party +] — Economic Ministry
 tags: lobby_target
 view-if: lobby_economic_minister_available >= 1
 on-arrival: {!
@@ -83,7 +83,7 @@ Q[party + '_relation'] -= Q.random_factor(10);
 go-to: economic_policy
 
 @lobby_finance_minister
-title: Lobby the [+Q.finance_minister_party+] — Finance Ministry
+title: Lobby the [+ finance_minister_party +] — Finance Ministry
 tags: lobby_target
 view-if: lobby_finance_minister_available >= 1
 on-arrival: {!
@@ -94,7 +94,7 @@ Q[party + '_relation'] -= Q.random_factor(10);
 go-to: fiscal_policy
 
 @lobby_agriculture_minister
-title: Lobby the [+Q.agriculture_minister_party+] — Agriculture Ministry
+title: Lobby the [+ agriculture_minister_party +] — Agriculture Ministry
 tags: lobby_target
 view-if: lobby_agriculture_minister_available >= 1
 on-arrival: {!
@@ -105,7 +105,7 @@ Q[party + '_relation'] -= Q.random_factor(10);
 go-to: agricultural_policy
 
 @lobby_transport_minister
-title: Lobby the [+Q.transport_minister_party+] — Transport Ministry
+title: Lobby the [+ transport_minister_party +] — Transport Ministry
 tags: lobby_target
 view-if: lobby_transport_minister_available >= 1 and placeholder >= 1
 unavailable-subtitle: you can not do anything with this anyways for now.
