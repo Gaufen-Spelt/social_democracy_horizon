@@ -3000,7 +3000,6 @@ if (Q.in_bourgeois_coalition && !Q.spd_in_government) {
 
 
 @ministry_allocation
-view-if: spd_in_government >= 1
 on-arrival: {!
 // ============================================
 // CALCULATE BASE SHARE FROM VOTE COUNT
@@ -4211,6 +4210,7 @@ on-arrival: {!
 // ============================================
 
 @ministry_renegotiation
+view-if: spd_in_government >= 1
 title: Ministry Reshuffle
 subtitle: Reallocate cabinet positions within the current coalition
 
