@@ -3,7 +3,7 @@ subtitle: **National Socialist** vision of the ASPD faces the crisis.
 tags: event
 new-page: true
 max-visits: 1
-view-if: year == 1928 and month >= 10 and weeks >= 2 and aspd_votes < 0.4
+view-if: year == 1928 and month >= 10 and weeks >= 2 and aspd_votes_pct < 0.6
 priority: -1
 
 = ASPD Congress
@@ -16,3 +16,47 @@ In the retaliation, Ernst Niekisch has pushed for the removal of [+ aspd_party_l
 
 @resultant_aspd
 on-arrival: {!
+
+Q.aspd_nb_survival_points = Q.aspd_nb_survival_points || 0;
+
+if ((Q.nationalism * 1.1) + Q.aspd_votes_pct > 15) Q.aspd_nb_survival_points += 1;
+if (Q.ideology == "Left") Q.aspd_nb_survival_points += 1;
+if (Q.ideology == "reformist") Q.aspd_nb_survival_points -= 1;
+if (Q.spd_r < 29 || Q.spd_votes < 25.4) Q.aspd_nb_survival_points += 1
+if (Q.z_relation + Q.dvp_relation + Q.ddp_relation > 170) {
+    Q.aspd_nb_survival_points -= 1;
+} else {
+    Q.aspd_nb_survival_points += 1;
+}
+if (Q.dnvp_party_leader == "Walther Lambach") Q.aspd_nb_survival_points += 1;
+
+if (Q.spd_in_government <= 0) Q.aspd_nb_survival_points += 1
+
+if (Q.peoples_party) Q.aspd_nb_survival_points -= 10;
+if (Q.peoples_party_support > 1) Q.aspd_nb_survival_points -= Q.peoples_party_support;
+
+if (Q.aspd_votes_pct > 0.4) Q.aspd_nb_survival_points += 1;
+if (Q.vnr_momentum > 0) Q.aspd_nb_survival_points += 1;
+if (Q.nsdap_votes_pct < 3) Q.aspd_nb_survival_points += 1;
+if (Q.reformists_resign) Q.aspd_nb_survival_points -= 1;
+if (Q.unions_independent) Q.aspd_nb_survival_points += 2;
+if (Q.labor_dissent > 30 && !Q.unions_independent) Q.aspd_nb_survival_points += 1;
+if (Q.jungdo_strength + Q.stahlhelm_strength > 800) Q.aspd_nb_survival_points += 1;
+
+// Sum votes_pct of all parties whose ideo_score is 16-20 (far-right band)
+let farRightTotal = 0;
+for (const p of Q.parties) {
+    const scoreKey = p + '_ideo_score';
+    const votesKey = p + '_votes_pct';
+    if (Q[scoreKey] !== undefined && Q[scoreKey] >= 16 && Q[scoreKey] <= 20) {
+        farRightTotal += (Q[votesKey] || 0);
+    }
+}
+if (farRightTotal > 20) Q.aspd_nb_survival_points += 1;
+
+}
+go-to: aspd_natbol_died if aspd_nb_survival_points < 5; aspd_natbol_survival if aspd_nb_survival_points >= 5 and aspd_nb_survival_points < 7; aspd_nb_assumes if aspd_nb_survival_points >= 7
+
+@aspd_natbol_died
+
+In the unsurprising turn of the events, (+ aspd_party_leader +] has successfully pushed through this change.
