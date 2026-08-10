@@ -737,26 +737,26 @@ if (Q.month_actions >= 1) {
 // DNVP GAMEPLAY
 
 if (Q.lambach_exile == 1) {
-    Q.hugenberg_momentum += 3.6;
+    Q.hugenberg_momentum += 3.8;
     Q.delegate_power_christsoc -= 1.4;   // DHV wing bleeds most
     Q.delegate_power_yocon -= 0.6;
     Q.delegate_power_b -= 1.0;
 } else if (Q.lambach_reinstated == 1) {
-    Q.hugenberg_momentum += 1.6;
+    Q.hugenberg_momentum += 1.8;
     Q.delegate_power_a += 1.0;
     Q.delegate_power_christsoc += 0.4;
     Q.delegate_power_yocon += 0.2;
-} else if (Q.lambach_exile == 0) {
-    Q.delegate_power_christsoc += 5.6; // DHV vindicated
-    Q.delegate_power_yocon += 2.0;
+} else if (Q.lambach_exile == 0 && Q.month >= 8) {
+    Q.delegate_power_christsoc += 5.9; // DHV vindicated
+    Q.delegate_power_yocon += 2.3;
 } else {
-    Q.hugenberg_momentum += 2.0;
+    Q.hugenberg_momentum += 1.9;
 }
 
 if (Q.cnbl_crisis == 1) {
-    Q.hugenberg_momentum += 4.0;
+    Q.hugenberg_momentum += 3.2;
 } else {
-    Q.delegate_power_b += 2.0;
+    Q.delegate_power_b += 1.7;
     Q.delegate_power_yocon += 0.8;
     Q.delegate_power_christsoc += 0.5;
 }
@@ -767,7 +767,7 @@ if (Q.vnr_momentum == 0) {
     Q.delegate_power_a += 0.5;
 } else {
     Q.delegate_power_b += 2.0;
-    Q.hugenberg_momentum += 3.0;
+    Q.hugenberg_momentum += 2.0;
 }
 
 if (Q.geest_wildfire == 0) {
@@ -802,7 +802,7 @@ if (Q.land_reform > 0) {
 
 // 3d. Government Participation Bonus
 if (Q.dnvp_in_government) {
-    Q.delegate_power_a += 4.0;
+    Q.delegate_power_a += 4.4;
     Q.delegate_power_b += 2.0;
     Q.delegate_power_yocon += 2.2;
     Q.delegate_power_christsoc += 1.8;
@@ -839,19 +839,19 @@ if (Q.lambach_stage >= 2) {
 }
 
 // 4. Class Influence
-Q.hugenberg_momentum += (Q.old_middle_dnvp_display * 0.27);
-Q.hugenberg_momentum += (Q.rural_dnvp_display * 0.17);
+Q.hugenberg_momentum += ((Q.old_middle_dnvp_pct || 0) * 0.27);
+Q.hugenberg_momentum += ((Q.rural_dnvp_pct || 0) * 0.17);
 
-Q.delegate_power_a += (Q.new_middle_dnvp_display * 0.32);
-Q.delegate_power_a += (Q.old_middle_dnvp_display * 0.11);
+Q.delegate_power_a += ((Q.new_middle_dnvp_pct || 0) * 0.32);
+Q.delegate_power_a += ((Q.old_middle_dnvp_pct || 0) * 0.11);
 
-Q.delegate_power_b += (Q.rural_dnvp_display * 0.20);
-Q.delegate_power_b += (Q.old_middle_dnvp_display * 0.08);
+Q.delegate_power_b += ((Q.rural_dnvp_pct || 0) * 0.20);
+Q.delegate_power_b += ((Q.old_middle_dnvp_pct || 0) * 0.08);
 
 // Young Conservatives: new middle class + small worker slice + some old middle
-Q.delegate_power_yocon += (Q.workers_dnvp_display * 0.16) + (Q.new_middle_dnvp_display * 0.25) + (Q.old_middle_dnvp_display * 0.06);
+Q.delegate_power_yocon += ((Q.workers_dnvp_pct || 0) * 0.16) + ((Q.new_middle_dnvp_pct || 0) * 0.25) + ((Q.old_middle_dnvp_pct || 0) * 0.06);
 // Christian Socials: worker-heavy + half of new middle
-Q.delegate_power_christsoc += (Q.workers_dnvp_display * 0.6) + (Q.new_middle_dnvp_display * 0.33);
+Q.delegate_power_christsoc += ((Q.workers_dnvp_pct || 0) * 0.6) + ((Q.new_middle_dnvp_pct || 0) * 0.33);
 
 // 5. Ideological Reinforcements
 Q.hugenberg_momentum += Q.nationalism * 4.0;
@@ -1032,14 +1032,15 @@ if (Q.dvp_relation < 40) {
 Q.dvp_left += ((Q.pro_republic || 0) / 12) * 0.35;
 Q.dvp_right += (Q.nationalism || 0) * 0.6;
 
-// Q.dvp_left += (((Q.new_middle_dvp || 0) + (Q.workers_dvp || 0) + (Q.unemployedc_dvp || 0)) / 5) * 0.35;
-// Q.dvp_right += ((Q.old_middle_dvp || 0) * 0.8 + (Q.rural_dvp || 0) * 0.6) * 0.32;
+// 4. DEMOGRAPHIC CLASS INFLUENCE
+Q.dvp_left += (((Q.new_middle_dvp_pct || 0) + (Q.workers_dvp_pct || 0) + (Q.unemployedc_dvp_pct || 0)) / 5) * 0.35;
+Q.dvp_right += ((Q.old_middle_dvp_pct || 0) * 0.8 + (Q.rural_dvp_pct || 0) * 0.6) * 0.32;
 
 // 5. SPD/ZENTRUM DEMOGRAPHIC WEAKNESS OVERTURE
-// Q.dvp_left += (32 - (Q.new_middle_spd || 0)) * 0.06;
-// Q.dvp_left += (20 - (Q.new_middle_z || 0)) * 0.06;
-// Q.dvp_left += (38 - (Q.workers_spd || 0)) * 0.06;
-// Q.dvp_left += (15 - (Q.workers_z || 0)) * 0.06;
+Q.dvp_left += (32 - (Q.new_middle_spd_pct || 0)) * 0.06;
+Q.dvp_left += (20 - (Q.new_middle_z_pct || 0)) * 0.06;
+Q.dvp_left += (38 - (Q.workers_spd_pct || 0)) * 0.06;
+Q.dvp_left += (15 - (Q.workers_z_pct || 0)) * 0.06;
 
 // 6. Global regulation / cap
 {
@@ -1134,11 +1135,11 @@ if (Q.spd_r >= 30) {
     Q.social_republican_ddp -= 1.28;
 }
 
-Q.ddp_new_mid = Q.new_middle_ddp || 0;
-Q.ddp_old_mid = Q.old_middle_ddp || 0;
-Q.ddp_rural   = Q.rural_ddp || 0;
-Q.ddp_workers = Q.workers_ddp || 0;
-Q.ddp_unemp   = Q.unemployedc_ddp || 0;
+Q.ddp_new_mid = Q.new_middle_ddp_pct || 0;
+Q.ddp_old_mid = Q.old_middle_ddp_pct || 0;
+Q.ddp_rural   = Q.rural_ddp_pct || 0;
+Q.ddp_workers = Q.workers_ddp_pct || 0;
+Q.ddp_unemp   = Q.unemployedc_ddp_pct || 0;
 
 Q.business_wing_ddp += (Q.ddp_new_mid + Q.ddp_old_mid + Q.ddp_rural) * 0.11;
 Q.social_republican_ddp += (Q.ddp_workers + Q.ddp_unemp) * 0.33;
@@ -1314,10 +1315,10 @@ if (Q.secularized == 1 || Q.major_curriculum == "scientific") {
 
 // 5. DEMOGRAPHICS & CLASS TENSIONS
 // Center's internal delegate power is heavily swayed by voter class composition.
-const workers_z = Q.workers_z_display || 0;
-const rural_z = Q.rural_z_display || 0;
-const old_middle_z = Q.old_middle_z_display || 0;
-const new_middle_z = Q.new_middle_z_display || 0;
+const workers_z = Q.workers_z_pct || 0;
+const rural_z = Q.rural_z_pct || 0;
+const old_middle_z = Q.old_middle_z_pct || 0;
+const new_middle_z = Q.new_middle_z_pct || 0;
 
 Q.z_left_labor_power += (workers_z * 0.50) + (new_middle_z * 0.18);
 Q.z_right_labor_power += (workers_z * 0.48) + (new_middle_z * 0.05);
@@ -1354,6 +1355,7 @@ if (new_middle_z > 20 || old_middle_z > 25) {
         });
     }
 }
+
 
 if (Q.z_party_leader == "Joseph Joos") {
 
