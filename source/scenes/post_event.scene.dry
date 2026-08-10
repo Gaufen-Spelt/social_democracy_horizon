@@ -916,6 +916,80 @@ if (Q.dnvp_votes_display < 13) {
 
 
 
+// ==========================================
+// NSDAP GAMEPLAY
+// ==========================================
+
+Q.hitlerist_power = Q.hitlerist_power || 800;
+Q.strasserist_power = Q.strasserist_power || 50;
+Q.rohmite_power = Q.rohmite_power || 150;
+
+// 1. GEEST WILDFIRE & TIMING EVENTS
+if (Q.geest_wildfire == 1) {
+    
+    Q.hitlerist_power += 8.0;
+} else if (Q.month >= 2 && !(Q.geest_wildfire <= 0)) {
+    
+    Q.strasserist_power += 2.0;
+}
+
+// 2. HITLER YOUTH FUNDING
+if (Q.hitler_young_funded >= 1) {
+    Q.hitlerist_power *= 1.10;
+}
+
+// 3. IDEOLOGY
+if (Q.ideology == "reformist") {
+    Q.strasserist_power += 1.5;
+}
+
+Q.hitlerist_power += (Q.nationalism || 0) * 0.5;
+Q.rohmite_power += (Q.nationalism || 0) * 0.5;
+
+{
+    const _ns_total = Q.hitlerist_power + Q.strasserist_power + Q.rohmite_power;
+    const _strasser_share = _ns_total > 0 ? (Q.strasserist_power / _ns_total) : 0.05;
+    Q.strasserist_power += (Q.socialism || 0) * _strasser_share;
+}
+
+// 5. DEMOGRAPHIC CLASS INFLUENCE
+// Old middle class & rural: fully Hitlerist
+Q.hitlerist_power += (Q.old_middle_nsdap_pct || 0);
+Q.hitlerist_power += (Q.rural_nsdap_pct || 0);
+
+// Unemployed: Röhm 40%, Hitler 40%, Strasser 20%
+Q.rohmite_power += (Q.unemployedc_nsdap_pct || 0) * 0.40;
+Q.hitlerist_power += (Q.unemployedc_nsdap_pct || 0) * 0.40;
+Q.strasserist_power += (Q.unemployedc_nsdap_pct || 0) * 0.20;
+
+// Workers: mostly Strasser 60%, Hitler 15%, Röhm 25%
+Q.strasserist_power += (Q.workers_nsdap_pct || 0) * 0.60;
+Q.hitlerist_power += (Q.workers_nsdap_pct || 0) * 0.15;
+Q.rohmite_power += (Q.workers_nsdap_pct || 0) * 0.25;
+
+// 6. GLOBAL REGULATION: cap combined total of all 3 tracked vars at 1000
+{
+    const _ns_total_cap = 1000;
+    const _ns_tracked = [
+        'hitlerist_power',
+        'strasserist_power',
+        'rohmite_power'
+    ];
+
+    const _ns_sum = _ns_tracked.reduce((sum, key) => sum + Q[key], 0);
+
+    if (_ns_sum > _ns_total_cap) {
+        const _ns_scale = _ns_total_cap / _ns_sum;
+        _ns_tracked.forEach(key => {
+            Q[key] *= _ns_scale;
+        });
+    }
+}
+
+
+
+
+
 
 
 
