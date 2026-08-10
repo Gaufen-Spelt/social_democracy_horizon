@@ -59,7 +59,7 @@ go-to: aspd_natbol_died if aspd_nb_survival_points < 7; aspd_natbol_survival if 
 
 @aspd_natbol_died
 
-In the unsurprising turn of the events, (+ aspd_party_leader +] has successfully pushed through this change.
+In the unsurprising turn of the events, [+ aspd_party_leader +] has successfully pushed through this change.
 
 @aspd_natbol_survival
 achievement: herbstingwer
