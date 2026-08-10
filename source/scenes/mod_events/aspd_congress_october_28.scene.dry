@@ -54,7 +54,7 @@ for (const p of Q.parties) {
 }
 if (farRightTotal > 20) Q.aspd_nb_survival_points += 1;
 
-}
+!}
 go-to: aspd_natbol_died if aspd_nb_survival_points < 7; aspd_natbol_survival if aspd_nb_survival_points >= 7 and aspd_nb_survival_points < 9; aspd_nb_assumes if aspd_nb_survival_points >= 9
 
 @aspd_natbol_died
