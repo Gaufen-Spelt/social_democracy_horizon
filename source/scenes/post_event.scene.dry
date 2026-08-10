@@ -4432,7 +4432,7 @@ function computeTarget(party, c) {
             base *= _partyAdj('nsdap');
 
             // Young NSDAP boost: only applies pre-1930
-            const young_nsdap = (Q.young_nsdap == 1 && Q.year < 1930);
+            const young_nsdap = (Q.hitler_young_funded == 1 && Q.year < 1930);
             const urban_flavor = (Q.urban_plan_flavor_1 == 1);
             const rural_flavor = (Q.geest_wildfire == 1);
 
@@ -4445,13 +4445,13 @@ function computeTarget(party, c) {
             };
 
             // Small standalone worker boost, independent of young_nsdap
-            const worker_urban_boost = urban_flavor ? 1.02 : 1.0;
+            const worker_urban_boost = urban_flavor ? 1.05 : 1.0;
 
             const class_mods = {
-                workers:     0.90 * (Q.peoples_party === 1 ? 1.1 : 1) * young_boost.workers * worker_urban_boost,
+                workers:     0.90 * (Q.peoples_party === 1 ? 1.1 : 1) * young_boost.workers * worker_urban_boost * (rural_flavor ? 1 : 1.3),
                 old_middle:  2.10 * (1 + (Q.nationalism/100) * 0.5) * young_boost.old_middle,
                 new_middle:  1.80 * (1 + (Q.nationalism/100) * 0.4) * young_boost.new_middle,
-                rural:       2.00 * (1 + (Q.nationalism/100) * 0.6) * young_boost.rural * (rural_flavor ? 1.4 : 1), // Rural core
+                rural:       2.20 * (1 + (Q.nationalism/100) * 0.6) * young_boost.rural * (rural_flavor ? 1.4 : 1), // Rural core
                 unemployedc: 2.10 * (1 + Math.min(Q.unemployed/10, 1.0)) * young_boost.unemployedc,
             };
             return _applyQOL(base * (class_mods[c] || 1.0) * _classAdj('nsdap', c), party, c);
