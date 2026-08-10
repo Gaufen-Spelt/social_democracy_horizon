@@ -1,0 +1,280 @@
+title: Alfred Hugenberg faces organized opposition...
+subtitle: PLACEHOLDER SUBTITLE
+tags: event
+new-page: true
+view-if: year = 1929 and month >= 1 and dnvp_party_leader = "Alfred Hugenberg" and lmabach_stage = -1
+max-visits: 1
+face-image: img/portraits/HugenbergAlfred.jpg
+
+= Contest
+
+PLACEHOLDER: intro paragraph explaining Lambach has regrouped People's Conservatives + sympathetic Moderates against Hugenberg.
+
+PLACEHOLDER: paragraph listing who has joined the anti-Hugenberg coalition (Lambach, People's Conservatives, disaffected Moderates/Traditionalists, possibly Westarp/Schiele/Keudell/Hergt group referenced earlier).
+
+PLACEHOLDER: paragraph on who remains loyal to Hugenberg (radicals, volkists, Junkers, Industrialists) and why.
+
+**PLACEHOLDER: closing hook line**
+
+- @result: And it all ends on...
+
+@result
+on-arrival:{!
+
+// === RAW BLOC SCORES (seats only — final_votes are static, untouched) ===
+Q.pro_hugenberg = 0;
+Q.anti_hugenberg = 0;
+Q.abstain_hugenberg = 0;
+
+// --- Christian Socials: entirely anti (Lambach's base), no remainder ---
+Q.anti_hugenberg += Q.christsoc_final_votes;
+
+// --- Hugenberg's own radical/volkist bloc: entirely pro, no remainder ---
+Q.pro_hugenberg += Q.hugenberg_final_votes;
+
+// --- Young Conservatives: PLACEHOLDER split ratio (currently 50/50) ---
+var yocon_pro = Q.yocon_final_votes / 2;
+Q.pro_hugenberg += yocon_pro;
+Q.abstain_hugenberg += (Q.yocon_final_votes - yocon_pro);
+
+// --- Coalitionists (moderate_a): PLACEHOLDER split ratio (currently 30% anti) ---
+var moda_anti = Q.moderate_a_final_votes * 0.30;
+Q.anti_hugenberg += moda_anti;
+Q.abstain_hugenberg += (Q.moderate_a_final_votes - moda_anti);
+
+// --- Traditionalists (moderate_b): PLACEHOLDER split ratio (currently 40% anti) ---
+var modb_anti = Q.moderate_b_final_votes * 0.40;
+Q.anti_hugenberg += modb_anti;
+Q.abstain_hugenberg += (Q.moderate_b_final_votes - modb_anti);
+
+// --- Nationalism: pulls a % of abstain pool into pro (Hugenberg benefits from nationalist sentiment) ---
+var nationalism_pull = Q.abstain_hugenberg * (Q.nationalism / 100);
+nationalism_pull = Math.min(nationalism_pull, Q.abstain_hugenberg);
+Q.pro_hugenberg += nationalism_pull;
+Q.abstain_hugenberg -= nationalism_pull;
+
+// --- Lambach's residual standing: pulls a % of abstain pool into anti ---
+// (only applies if he retains momentum/hasn't been fully sidelined)
+if (Q.lambach_exile == 0 || Q.lambach_momentum == 1) {
+    var lambach_pull_rate = 0.25; // PLACEHOLDER — tune this
+    var lambach_pull = Q.abstain_hugenberg * lambach_pull_rate;
+    lambach_pull = Math.min(lambach_pull, Q.abstain_hugenberg);
+
+    Q.anti_hugenberg += lambach_pull;
+    Q.abstain_hugenberg -= lambach_pull;
+}
+
+// Floor at zero
+Q.pro_hugenberg    = Math.max(0, Math.round(Q.pro_hugenberg));
+Q.anti_hugenberg   = Math.max(0, Math.round(Q.anti_hugenberg));
+Q.abstain_hugenberg = Math.max(0, Math.round(Q.abstain_hugenberg));
+
+// === NORMALIZE TO 100 SEATS (Largest Remainder) ===
+var vonc_raw_total = Q.pro_hugenberg + Q.anti_hugenberg + Q.abstain_hugenberg;
+
+var vonc_buckets = [
+    { key: "vonc_pro",     raw: Q.pro_hugenberg },
+    { key: "vonc_anti",    raw: Q.anti_hugenberg },
+    { key: "vonc_abstain", raw: Q.abstain_hugenberg }
+];
+
+var vonc_allocated = 0;
+for (var i = 0; i < vonc_buckets.length; i++) {
+    var exact = vonc_raw_total > 0 ? (vonc_buckets[i].raw / vonc_raw_total * 100) : 0;
+    vonc_buckets[i].floor = Math.floor(exact);
+    vonc_buckets[i].remainder = exact - vonc_buckets[i].floor;
+    vonc_allocated += vonc_buckets[i].floor;
+}
+
+var vonc_remaining = 100 - vonc_allocated;
+var vonc_sorted = vonc_buckets.slice().sort(function(x, y) { return y.remainder - x.remainder; });
+for (var j = 0; j < vonc_sorted.length; j++) {
+    vonc_sorted[j].seats = vonc_sorted[j].floor + (j < vonc_remaining ? 1 : 0);
+}
+for (var k = 0; k < vonc_buckets.length; k++) {
+    Q[vonc_buckets[k].key] = vonc_buckets[k].seats;
+}
+
+// === OUTCOME ===
+// Passes if Anti > Pro (abstainers do not save him)
+Q.hugenberg_ousting = (Q.vonc_anti > Q.vonc_pro) ? 1 : 0;
+
+!}
+go-to: vonc_display_hugenberg
+
+@vonc_display_hugenberg
+on-display: {!
+
+var voncData = [
+    {
+        id: "anti",
+        label: "For the VoNC",
+        sublabel: "PLACEHOLDER SUBLABEL — anti-Hugenberg coalition",
+        votes: Q.vonc_anti,
+        color: "#3d0000",
+        outline: "#cc0000",
+        side: "anti"
+    },
+    {
+        id: "abstain",
+        label: "Abstaining",
+        sublabel: "PLACEHOLDER SUBLABEL — uncommitted centre",
+        votes: Q.vonc_abstain,
+        color: "#a8a8a8",
+        outline: "#666666",
+        side: "abstain"
+    },
+    {
+        id: "pro",
+        label: "Against the VoNC",
+        sublabel: "PLACEHOLDER SUBLABEL — Hugenberg loyalists",
+        votes: Q.vonc_pro,
+        color: "#FC7CD2",
+        outline: "#cc44aa",
+        side: "pro"
+    }
+];
+
+var totalVotes = voncData.reduce(function(s, f) { return s + (f.votes || 0); }, 0);
+var visibleFactions = voncData.filter(function(f) { return f.votes > 0; });
+
+// --- Parliament diagram ---
+if (window && d3 && document.getElementById("hugenberg-vonc")) {
+    var width = 600;
+    var height = 300;
+    var contentEl = document.getElementById('content');
+    var screenWidth = contentEl ? contentEl.offsetWidth : 600;
+    if (screenWidth < width - 50) {
+        width = screenWidth - 50;
+        height = Math.round(width / 2);
+    }
+
+    var svg = document.getElementById("hugenberg-vonc");
+    svg.style.width = width + "px";
+    svg.style.height = height + "px";
+
+    var data = visibleFactions.map(function(f) {
+        return { id: f.id, legend: f.label, name: f.label, seats: f.votes, color: f.color };
+    });
+
+    var parliament = d3.parliament();
+    parliament.width(width).height(height).innerRadiusCoef(0.4);
+    parliament.enter.fromCenter(true).smallToBig(true);
+    parliament.exit.toCenter(false).bigToSmall(true);
+    d3.select("#hugenberg-vonc").datum(data).call(parliament);
+
+    // Re-apply colors and outlines by id
+    visibleFactions.forEach(function(f) {
+        d3.selectAll("#hugenberg-vonc circle")
+            .filter(function(d) { return d && d.data && d.data.id === f.id; })
+            .style("stroke", f.outline)
+            .style("stroke-width", "2px")
+            .style("fill", f.color);
+    });
+}
+
+// --- Faction bars ---
+var container = document.getElementById("hugenberg-vonc-factions");
+if (container) {
+    container.innerHTML = "";
+    container.style.marginTop = "16px";
+    container.style.fontFamily = "Georgia, serif";
+
+    visibleFactions.forEach(function(f) {
+        var pct = totalVotes > 0 ? (f.votes / totalVotes * 100) : 0;
+
+        var nameColor = "#1a1a1a";
+        if (f.side === "pro")     nameColor = "#8b005a";
+        if (f.side === "anti")    nameColor = "#cc2200";
+        if (f.side === "abstain") nameColor = "#444444";
+
+        var block = document.createElement("div");
+        block.style.marginBottom = "12px";
+
+        var header = document.createElement("div");
+        header.style.display = "flex";
+        header.style.justifyContent = "space-between";
+        header.style.alignItems = "baseline";
+        header.style.marginBottom = "3px";
+
+        var nameSpan = document.createElement("span");
+        nameSpan.style.fontWeight = "bold";
+        nameSpan.style.fontSize = "0.92em";
+        nameSpan.style.color = nameColor;
+        nameSpan.textContent = f.label;
+
+        var voteSpan = document.createElement("span");
+        voteSpan.style.fontSize = "0.85em";
+        voteSpan.style.color = "#666";
+        voteSpan.textContent = f.votes + " delegates (" + pct.toFixed(1) + "%)";
+
+        header.appendChild(nameSpan);
+        header.appendChild(voteSpan);
+
+        var sub = document.createElement("div");
+        sub.style.fontSize = "0.78em";
+        sub.style.color = "#888";
+        sub.style.marginBottom = "4px";
+        sub.style.fontStyle = "italic";
+        sub.textContent = f.sublabel;
+
+        var barTrack = document.createElement("div");
+        barTrack.style.width = "100%";
+        barTrack.style.height = "14px";
+        barTrack.style.backgroundColor = "#e8e8e8";
+        barTrack.style.borderRadius = "3px";
+        barTrack.style.overflow = "hidden";
+        barTrack.style.border = "1px solid " + f.outline;
+
+        var barFill = document.createElement("div");
+        barFill.style.width = pct + "%";
+        barFill.style.height = "100%";
+        barFill.style.backgroundColor = f.color;
+        barFill.style.transition = "width 0.6s ease";
+
+        barTrack.appendChild(barFill);
+        block.appendChild(header);
+        block.appendChild(sub);
+        block.appendChild(barTrack);
+        container.appendChild(block);
+    });
+
+    // Majority line label
+    var majorityNote = document.createElement("div");
+    majorityNote.style.fontSize = "0.78em";
+    majorityNote.style.color = "#666";
+    majorityNote.style.marginTop = "6px";
+    majorityNote.style.fontStyle = "italic";
+    majorityNote.textContent = "Majority threshold: 51 delegates. Abstentions do not count as support.";
+    container.appendChild(majorityNote);
+}
+
+!}
+go-to: hugenberg_cooked if hugenberg_ousting = 1; hugenberg_survives if hugenberg_ousting = 0
+
+{!<svg id="hugenberg-vonc" style="width:600px; height:300px;"></svg>!}
+{!<div id="hugenberg-vonc-factions"></div>!}
+
+*The final tally of delegate votes (100 congress seats):*
+
+*For the VoNC (anti-Hugenberg coalition): [+ vonc_anti +]*
+
+*Against the VoNC (Hugenberg loyalists): [+ vonc_pro +]*
+
+*Abstaining (uncommitted centre): [+ vonc_abstain +]*
+
+
+@hugenberg_cooked
+on-arrival: dnvp_party_leader = "PLACEHOLDER — likely Walther Lambach or compromise candidate"; dnvp_ideology = "PLACEHOLDER"; old_middle_dnvp -= 5; rural_dnvp -= 3; workers_dnvp += 3; new_middle_dnvp += 5; pro_republic += 5; nationalism -= 5; dnvp_relation -= 20; lmabach_stage = 2
+
+= PLACEHOLDER HEADER — Hugenberg has been defeated in the vote of no confidence!
+
+PLACEHOLDER: outcome paragraph — Hugenberg ousted, Lambach/coalition triumphant, consequences for DNF split plans, party realignment.
+
+
+@hugenberg_survives
+on-arrival: lmabach_stage = -2
+
+= PLACEHOLDER HEADER — Hugenberg survives the vote of no confidence!
+
+PLACEHOLDER: outcome paragraph — Hugenberg survives, purges dissidents, Lambach's remaining influence crushed or driven further out, party trajectory locked in toward Hugenbergite radicalization.
