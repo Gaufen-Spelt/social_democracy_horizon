@@ -4,7 +4,7 @@ subtitle: A new agreement on reparations and brewing opposition to the plan...
 tags: event
 view-if: (year = 1929 and month >= 7 and young_plan_seen = 0 and young_delayed = 0 and (dnvp_party_leader == "Alfred Hugenberg" or congress_path == "traditionalists")) or (year = 1929 and month >= 9 and young_plan_seen = 0 and young_delayed = 1 and (dnvp_party_leader == "Alfred Hugenberg" or congress_path == "traditionalists"))
 max-visits: 1
-on-arrival: young_plan_seen_2 = 1; young_opposition = (((dnvp_votes / ((yocon_final_votes + christsoc_final_votes) * 0.10)) + kvp_votes + csvd_votes + dvfp_votes + nsdap_votes + dtsp_votes + cnbl_votes + other_votes + dnf_votes) * 0.8) + (nationalism / 2) + (stahlhelm_strength * 0.08); young_opposition -= 1 if dnvp_party_leader != "Alfred Hugenberg"; young_opposition -= 3 if yocon_final_votes + christsoc_final_votes > 30
+on-arrival: hitler_young_funded = 1 if if dnvp_party_leader == "Alfred Hugenberg"; young_plan_seen_2 = 1; young_opposition = (((dnvp_votes / ((yocon_final_votes + christsoc_final_votes) * 0.10)) + kvp_votes + csvd_votes + dvfp_votes + nsdap_votes + dtsp_votes + cnbl_votes + other_votes + dnf_votes) * 0.8) + (nationalism / 2) + (stahlhelm_strength * 0.08); young_opposition -= 1 if dnvp_party_leader != "Alfred Hugenberg"; young_opposition += 1 if hitler_young_funded > 0; young_opposition -= 3 if yocon_final_votes + christsoc_final_votes > 30
 
 = The Young Plan
 
@@ -12,7 +12,7 @@ The Young Plan is an agreement with the Western powers to reduce Germany's repar
 
 While this seems to be a positive development, the Right is campaigning hard against it with their "Liberty Law," as are the Communists for whatever reason. They claim reparations are a form of national slavery, and that any minister who signs the plan should be jailed for treason. A referendum looms.
 
-[? if dnvp_party_leader == "Alfred Hugenberg" and hugenberg_final_votes < 40: It seems that internal dissent inside DNVP has been tearing it apart, giving no adequate momentum to form nationalist opposition against Young Plan. ?]
+[? if dnvp_party_leader == "Alfred Hugenberg": Alfred Hugenberg, rich magnate, media empire owner and vehement nationalist politician, has come forward towards the Hitler of the NSDAP with an attempt to utilize his agitational talents for his benefit and rally the Germany in opposition towards the plan. ?] [? if dnvp_party_leader == "Alfred Hugenberg" and hugenberg_final_votes < 40: It seems that internal dissent inside DNVP has been tearing it apart, giving no adequate momentum to form nationalist opposition against Young Plan. ?]
 
 - @pro_plan: Campaign in favor of the Young Plan and against the referendum.
 - @no_plan: Do not campaign on the Young Plan, one way or another.
@@ -53,3 +53,5 @@ The referendum fails, with only [+ young_opposition +]% supporting it. However, 
 on-arrival: nationalism += 20; socialism += 5; pro_republic -= 5; workers_spd += 2; old_middle_dnvp += 4; rural_dnvp += 5; nsdap_unemployedc += 5; kpd_workers += 7; rural_dvp -= 2; workers_ddp -= 2; workers_csvd += 2; new_middle_kvp += 3; young_nsdap = 1
 
 The referendum fails, but the high turnout for the "Freedom Law" has sent a shockwave through the establishment, with [+ young_opposition +]% of voters supporting it. The sentiment against reparations is genuine, and the National Opposition has found its footing.
+
+[? if hitler_young_funded > 0: This has especially gave the NSDAP to gain the ground amongst the radicals and volkists that were frustrated with no alternatives to moderate nationalists or Hugenberg. ?]
