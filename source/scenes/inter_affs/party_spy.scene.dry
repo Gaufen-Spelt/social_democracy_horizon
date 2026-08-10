@@ -12,10 +12,12 @@ Which party should we spy on?
 - @unlock_dvp: Unlock DVP
 - @unlock_z: Unlock Zentrum.
 - @unlock_ddp: Unlock DDP
+- @unlock_nsdap: Unlock NSDAP
 - @dnvp: On DNVP
 - @dvp: On DVP
 - @z: On Zentrum.
 - @ddp: On DDP
+- @nsdap: On NSDAP
 - @partyaff: Return back
 
 @dnvp
@@ -424,6 +426,106 @@ go-to: party_spy
 *Business Wing: [+ ddp_business_disp +] ([+ ddp_business_pct +]%)*
 
 *Social-Republican Wing: [+ ddp_social_disp +] ([+ ddp_social_pct +]%)*
+
+@nsdap
+view-if: nsdap_unlocked_spy >= 1
+subtitle: The internal situation of NSDAP is a struggle between Hitlerist loyalists, Strasserist radicals, and Röhm's paramilitary faction.
+on-arrival: {!
+
+Q.hitlerist_power = Q.hitlerist_power || 800;
+Q.strasserist_power = Q.strasserist_power || 50;
+Q.rohmite_power = Q.rohmite_power || 150;
+
+var total = Math.max(Q.hitlerist_power, 0) + Math.max(Q.strasserist_power, 0) + Math.max(Q.rohmite_power, 0);
+
+Q.nsdap_hitler_disp = Math.round(Q.hitlerist_power);
+Q.nsdap_strasser_disp = Math.round(Q.strasserist_power);
+Q.nsdap_rohm_disp = Math.round(Q.rohmite_power);
+
+Q.nsdap_hitler_pct = total > 0 ? (Math.max(Q.hitlerist_power, 0) / total * 100).toFixed(1) : "0.0";
+Q.nsdap_strasser_pct = total > 0 ? (Math.max(Q.strasserist_power, 0) / total * 100).toFixed(1) : "0.0";
+Q.nsdap_rohm_pct = total > 0 ? (Math.max(Q.rohmite_power, 0) / total * 100).toFixed(1) : "0.0";
+
+!}
+on-display: {!
+
+var isDark = document.body.classList.contains('dark-mode');
+
+var factionData = [
+    { id: "hitlerist", name: "Hitlerist Wing", subtitle: "Führer Loyalists",
+      raw: Math.max(Q.hitlerist_power, 0), color: isDark ? "#a9762f" : "#8a5a2b" },
+    { id: "strasserist", name: "Strasserist Wing", subtitle: "Anti-Capitalist Radicals",
+      raw: Math.max(Q.strasserist_power, 0), color: isDark ? "#dc143c" : "#990015" },
+    { id: "rohmite", name: "Röhmite Wing", subtitle: "SA Paramilitary Faction",
+      raw: Math.max(Q.rohmite_power, 0), color: isDark ? "#2b1a12" : "#1a0f0a" }
+];
+
+var total = 0;
+for (var i = 0; i < factionData.length; i++) { total += factionData[i].raw; }
+
+var displaySeats = 300;
+var visibleFactions = [];
+for (var j = 0; j < factionData.length; j++) {
+    var f = factionData[j];
+    f.seats = total > 0 ? Math.round(f.raw / total * displaySeats) : 0;
+    if (f.raw > 0) { visibleFactions.push(f); }
+}
+
+if (window && d3 && document.getElementById("nsdap-parliament")) {
+    var width = 600;
+    var height = 300;
+    var contentEl = document.getElementById('content');
+    var screenWidth = contentEl ? contentEl.offsetWidth : 600;
+    if (screenWidth < width - 50) {
+        width = screenWidth - 50;
+        height = Math.round(width / 2);
+    }
+
+    var svg = document.getElementById("nsdap-parliament");
+    svg.style.width = width + "px";
+    svg.style.height = height + "px";
+
+    var data = visibleFactions.map(function(f) {
+        return { id: f.id, legend: f.name, name: f.name,
+                 seats: f.seats, color: f.color };
+    });
+
+    var parliament = d3.parliament();
+    parliament.width(width).height(height).innerRadiusCoef(0.4);
+    parliament.enter.fromCenter(true).smallToBig(true);
+    parliament.exit.toCenter(false).bigToSmall(true);
+    d3.select("#nsdap-parliament").datum(data).call(parliament);
+
+    visibleFactions.forEach(function(f) {
+        d3.selectAll("#nsdap-parliament circle")
+            .filter(function(d) { return d && d.data && d.data.id === f.id; })
+            .style("stroke", "#333")
+            .style("stroke-width", "1px")
+            .style("fill", f.color);
+    });
+}
+!}
+go-to: party_spy
+
+{!<svg id="nsdap-parliament" style="width:600px; height:300px;"></svg>!}
+
+*Current factional balance within the NSDAP:*
+
+*Hitlerist Wing: [+ nsdap_hitler_disp +] ([+ nsdap_hitler_pct +]%)*
+
+*Strasserist Wing: [+ nsdap_strasser_disp +] ([+ nsdap_strasser_pct +]%)*
+
+*Röhmite Wing: [+ nsdap_rohm_disp +] ([+ nsdap_rohm_pct +]%)*
+
+@unlock_nsdap
+view-if: nsdap_unlocked_spy <= 0
+choose-if: resources >= 2
+subtitle: -2 resources
+unavailable-subtitle: Not enough resources.
+on-arrival: {! Q.nsdap_unlocked_spy = 1; Q.resources -= 2; !}
+go-to: party_spy
+
+We can now spy on NSDAP.
 
 @unlock_dnvp
 view-if: dnvp_unlocked_spy <= 0
