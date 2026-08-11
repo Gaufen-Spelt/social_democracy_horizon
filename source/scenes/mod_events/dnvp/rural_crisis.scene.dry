@@ -8,10 +8,10 @@ on-arrival: {!
   console.log("=== INDIVIDUAL RURAL CRISIS VARIABLE CHECK ===");
   console.log("1. Q.commercialized_media =", Q.commercialized_media, "| >= 2? ->", Q.commercialized_media >= 2);
   console.log("2. Q.radio =", Q.radio, "| >= 1? ->", Q.radio >= 1);
-  console.log("3. Q.rural_spd_display =", Q.rural_spd_display, "| >= 16.3? ->", Q.rural_spd_display >= 16.3);
+  console.log("3. Q.rural_spd_display =", Q.rural_spd_display, "| >= 18.5? ->", Q.rural_spd_display >= 18.5);
   console.log("4. Q.local_rally =", Q.local_rally, "| >= 1? ->", Q.local_rally >= 1);
-  console.log("5. Q.nationalism =", Q.nationalism, "| > 15.4? ->", Q.nationalism > 15.4);
-  console.log("6. Q.dnvp_votes =", Q.dnvp_votes, "| >= 19.3? ->", Q.dnvp_votes >= 19.3);
+  console.log("5. Q.nationalism =", Q.nationalism, "| > 20.5? ->", Q.nationalism > 20.5);
+  console.log("6. Q.dnvp_votes =", Q.dnvp_votes, "| >= 20.3? ->", Q.dnvp_votes >= 20.3);
   console.log("7. Q.pro_republic =", Q.pro_republic, "| <= 67.2? ->", Q.pro_republic <= 67.2);
   console.log("8. Q.enemies =", Q.enemies, "| == 'DNVP' or 'far right'? ->", (Q.enemies == "DNVP" || Q.enemies == "far right"));
   console.log("9. Q.peoples_party =", Q.peoples_party, "| == 1? ->", Q.peoples_party == 1);
@@ -21,10 +21,10 @@ on-arrival: {!
   const conditions = [
     Q.commercialized_media >= 2,
     Q.radio >= 1,
-    Q.rural_spd_display >= 16.3,
+    Q.rural_spd_display >= 18.5,
     Q.local_rally >= 1,
-    Q.nationalism > 15.4,
-    Q.dnvp_votes >= 19.3,
+    Q.nationalism > 205,
+    Q.dnvp_votes >= 20.3,
     Q.pro_republic <= 67.2,
     (Q.enemies == "DNVP" || Q.enemies == "far right"),
     Q.peoples_party == 1,
