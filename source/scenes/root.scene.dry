@@ -52,11 +52,11 @@ Q.z_right_labor_power = 200;
 Q.z_moderate_power = 300;
 Q.dvp_left = 550;
 Q.dvp_right = 450;
-Q.hugenberg_momentum = 50;
-Q.delegate_power_a = 70;
-Q.delegate_power_b = 120;
-Q.delegate_power_yocon = 30;
-Q.delegate_power_christsoc = 45;
+Q.hugenberg_momentum = 20;
+Q.delegate_power_a = 120;
+Q.delegate_power_b = 300;
+Q.delegate_power_yocon = 50;
+Q.delegate_power_christsoc = 65;
 
 
 
