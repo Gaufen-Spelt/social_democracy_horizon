@@ -761,7 +761,7 @@ if (Q.cnbl_crisis == 1) {
     Q.delegate_power_christsoc += 0.5;
 }
 
-if (Q.vnr_momentum == 0) {
+if (Q.jungdo_formed == 0) {
     Q.delegate_power_yocon += 0.5;    
     Q.delegate_power_christsoc += 1.4;
     Q.delegate_power_a += 0.5;
