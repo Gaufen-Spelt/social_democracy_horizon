@@ -7013,7 +7013,7 @@ if (Q.year == 1928 && Q.month == 8 && Q.rlb_election_flavor_1 != 1) {
         Q.karl_hepp_votes += 1;
     }
 
-    if (Q.karl_hepp_votes > Q.martin_schiele_votes) {
+    if (Q.karl_hepp_votes >= Q.martin_schiele_votes) {
         Q.rlb_party_leader = "Karl Hepp";
         Q.rlb_ideology = "Populist Agrarian Conservatism";
         Q.rlb_election_flavor_2 = 1;
