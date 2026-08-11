@@ -2049,173 +2049,7 @@ Q.budget_audit_text =
 
 
 
-// EVENTS
 
-if (Q.inflation > 10) {
-        Q.inflation_crisis_event = 0;
-}
-
-if (Q.year == 1928 && Q.month >= 1 && Q.bayernbund_flavor_1 != 1) {
-    Q.bayernbund_flavor_1 = 1;
-    Q.parties.push('dbp');
-    Q.bb_banned = 1;
-}
-
-if ( Q.year == 1928 &&  Q.month == 4 && (Q.weeks == 0 || Q.weeks == 1) && Q.urban_plan_flavor_1 != 1 &&  ( (Q.workers_nsdap_display * 2 > Q.rural_nsdap_display && Q.geest_wildfire >= 1) || (Q.workers_nsdap_display * 3.5 > Q.rural_nsdap_display) ) ) {
-    Q.urban_plan_flavor_1 = 1;
-    Q.workers_nsdap += 4;
-}
-
-if (Q.year == 1928 && Q.month == 8 && Q.rlb_election_flavor_1 != 1) {
-    Q.rlb_election_flavor_1 = 1;
-        Q.karl_hepp_votes = Q.karl_hepp_votes || 0;
-        Q.martin_schiele_votes = Q.martin_schiele_votes || 0;
-
-    if (Q.cnbl_crisis == 1) { 
-        Q.martin_schiele_votes += 2;
-        Q.karl_hepp_votes -= 2;
-    } else {
-        Q.martin_schiele_votes += 1;
-        Q.karl_hepp_votes += 2;
-    }
-
-    if (Q.rural_dnvp_display + Q.rural_rlb_display < 50) {
-        Q.martin_schiele_votes -= 1;
-        Q.karl_hepp_votes += 1;
-    }
-
-    if (Q.rural_qol > 100) {
-        Q.martin_schiele_votes += 1;
-        Q.karl_hepp_votes -= 1;
-    } else if (Q.rural_qol > 90) {
-        Q.martin_schiele_votes -= 1;
-        Q.karl_hepp_votes += 1;
-    } else if (Q.rural_qol > 80) {
-        Q.martin_schiele_votes -= 2;
-        Q.karl_hepp_votes += 1;
-    } else {
-        Q.karl_hepp_votes += 2;
-        Q.martin_schiele_votes -= 3;
-    }
-
-    if (Q.rural_dnvp_display > 30) {
-        Q.martin_schiele_votes += 1;
-    }
-
-    if (Q.rural_cnbl_display > 10) {
-        Q.karl_hepp_votes += 1;
-    }
-
-    
-    if (Q.rural_other_display > 15) {
-        Q.karl_hepp_votes += 2;
-    } else if (Q.rural_other_display > 10) {
-        Q.karl_hepp_votes += 1;
-    }
-
-    if (Q.dnvp_in_government) {
-        Q.martin_schiele_votes += 2;
-    }
-
-    if (Q.geest_wildfire) {
-        Q.karl_hepp_votes += 1;
-    } else {
-        Q.martin_schiele_votes += 1;
-    }
-
-    if (Q.rlb_votes_display < 0.7) {
-        Q.karl_hepp_votes += 1;
-    }
-
-    if (Q.cnbl_votes_display > 1.9) {
-        Q.karl_hepp_votes += 1;
-    } else {
-        Q.karl_hepp_votes -= 1;
-        Q.martin_schiele_votes += 1;
-    }
-
-    if (Q.dbp_votes_display >= 1) {
-        Q.karl_hepp_votes += 1;
-    }
-
-    if (Q.spd_rural_display >= 15) {
-        Q.karl_hepp_votes += 1;
-    }
-
-    if (Q.karl_hepp_votes > Q.martin_schiele_votes) {
-        Q.rlb_party_leader = "Karl Hepp";
-        Q.rlb_ideology = "Populist Agrarian Conservatism";
-        Q.rlb_election_flavor_2 = 1;
-        this.achieve('karl_hepp_rlb');
-    } else {
-        Q.rlb_party_leader = "Martin Schiele";
-        Q.rlb_election_flavor_2 = 2;
-    }
-}
-
-
-if (Q.year >= 1929 && Q.vnr_momentum_trigger_flavor_1 == 0) { 
-    Q.vnr_momentum = 0;
-    Q.vnr_momentum_trigger_flavor_1 = 1;
-}
-
-
-if (Q.year == 1928 && Q.month >= 9 && Q.lambach_exile == 1 && Q.weeks >= 0) {
-    if ((Q.anti_lambach - Q.pro_lambach) < 20) {
-        Q.lambach_reinstated = 1;
-    } else {
-        Q.lambach_reinstated = -1;
-    }
-}
-
-if (Q.year == 1929 && Q.month == 10 && Q.ddp_mannheim_congress != 1) {
-    Q.ddp_mannheim_congress = 1;
-    if (Q.social_republican_ddp > Q.business_wing_ddp) {
-        Q.stolper_adopted = -1;
-        Q.social_republican_ddp += 50;
-    } else { 
-        Q.stolper_adopted = 1;
-        Q.business_wing_ddp += 50;
-  } 
-}
-
-if (Q.year == 1930 && Q.month == 5 && Q.weeks >= 1 && Q.young_plan_seen == 1) {
-    Q.economic_growth += 0.5;
-
-    // Improved foreign credit access
-    Q.budget         += 1.5;
-
-    Q.demand_impulse  -= 0.10;
-    Q.z_relation      -= 5;
-    Q.dvp_relation     -= 5;
-    Q.bvp_relation     -= 5;
-}
-
-if (Q.year >= 1930 && Q.year < 1932) {
-    Q.demand_impulse   -= 0.1;
-    Q.price_pressure   -= 0.05;
-    Q.unemployed       += 0.12;
-    Q.inflation         -= 0.11;
-    Q.economic_growth   -= 0.10;
-}
-
-
-if (Q.year >= 1928 && Q.year < 1929 && Q.geest_wildfire == 1 && (Q.state_buyer == 1 || Q.agricultural_finance == 1 || Q.land_reform == 1 || Q.tariffs > 1) && Q.landvolkbewegung_flavor != 1)  {
-    Q.landvolkbewegung_flavor_1 = 1;
-    Q.rural_dnvp += 5;
-    Q.rural_cnbl += 2;
-    Q.landvolk_fury = 0;
-}
-
-if (Q.year == 1930 && Q.month == 11 && Q.weeks < 2 && (Q.scholz_victory || Q.dvp_successor_outcome == "scholz_victory")) {
-    Q.dvp_party_leader = "Eduard Dingeldey";
-    Q.dvp_ideology = "Authoritarian National Liberalism";
-}
-
-if (Q.dvp_in_government && Q.spd_in_government && Q.dvp_ideology == "Authoritarian National Liberalism" && Q.year < 1935) {
-    Q.dvp_in_government = 0;
-    Q.government_parties = Q.government_parties.filter(function(p) { return p !== 'DVP'; });
-}
 
 
 /// SMALL SETTINGS
@@ -6513,6 +6347,176 @@ if (Q.prussian_police_training < 1) {
     }
 
 
+
+
+
+// EVENTS
+
+if (Q.inflation > 10) {
+        Q.inflation_crisis_event = 0;
+}
+
+if (Q.year == 1928 && Q.month >= 1 && Q.bayernbund_flavor_1 != 1) {
+    Q.bayernbund_flavor_1 = 1;
+    Q.parties.push('dbp');
+    Q.bb_banned = 1;
+}
+
+if ( Q.year == 1928 &&  Q.month == 4 && (Q.weeks == 0 || Q.weeks == 1) && Q.urban_plan_flavor_1 != 1 &&  ( (Q.workers_nsdap_display * 2 > Q.rural_nsdap_display && Q.geest_wildfire >= 1) || (Q.workers_nsdap_display * 3.5 > Q.rural_nsdap_display) ) ) {
+    Q.urban_plan_flavor_1 = 1;
+    Q.workers_nsdap += 4;
+}
+
+if (Q.year == 1928 && Q.month == 8 && Q.rlb_election_flavor_1 != 1) {
+    Q.rlb_election_flavor_1 = 1;
+        Q.karl_hepp_votes = Q.karl_hepp_votes || 0;
+        Q.martin_schiele_votes = Q.martin_schiele_votes || 0;
+
+    if (Q.cnbl_crisis == 1) { 
+        Q.martin_schiele_votes += 2;
+        Q.karl_hepp_votes -= 2;
+    } else {
+        Q.martin_schiele_votes += 1;
+        Q.karl_hepp_votes += 2;
+    }
+
+    if (Q.rural_dnvp_display + Q.rural_rlb_display < 50) {
+        Q.martin_schiele_votes -= 1;
+        Q.karl_hepp_votes += 1;
+    }
+
+    if (Q.rural_qol > 100) {
+        Q.martin_schiele_votes += 1;
+        Q.karl_hepp_votes -= 1;
+    } else if (Q.rural_qol > 90) {
+        Q.martin_schiele_votes -= 1;
+        Q.karl_hepp_votes += 1;
+    } else if (Q.rural_qol > 80) {
+        Q.martin_schiele_votes -= 2;
+        Q.karl_hepp_votes += 1;
+    } else {
+        Q.karl_hepp_votes += 2;
+        Q.martin_schiele_votes -= 3;
+    }
+
+    if (Q.rural_dnvp_pct > 30) {
+        Q.martin_schiele_votes += 1;
+    }
+
+    if (Q.rural_cnbl_display > 10) {
+        Q.karl_hepp_votes += 1;
+    }
+
+    
+    if (Q.rural_other_pct > 15) {
+        Q.karl_hepp_votes += 2;
+    } else if (Q.rural_other_pct > 10) {
+        Q.karl_hepp_votes += 1;
+    }
+
+    if (Q.dnvp_in_government) {
+        Q.martin_schiele_votes += 2;
+    }
+
+    if (Q.geest_wildfire >= 1) {
+        Q.karl_hepp_votes += 1;
+    } else {
+        Q.martin_schiele_votes += 1;
+    }
+
+    if (Q.rlb_votes_pct < 0.7) {
+        Q.karl_hepp_votes += 1;
+    }
+
+    if (Q.cnbl_votes_display > 1.9) {
+        Q.karl_hepp_votes += 1;
+    } else {
+        Q.karl_hepp_votes -= 1;
+        Q.martin_schiele_votes += 1;
+    }
+
+    if (Q.dbp_votes_display >= 1) {
+        Q.karl_hepp_votes += 1;
+    }
+
+    if (Q.spd_rural_display >= 15) {
+        Q.karl_hepp_votes += 1;
+    }
+
+    if (Q.karl_hepp_votes > Q.martin_schiele_votes) {
+        Q.rlb_party_leader = "Karl Hepp";
+        Q.rlb_ideology = "Populist Agrarian Conservatism";
+        Q.rlb_election_flavor_2 = 1;
+        this.achieve('karl_hepp_rlb');
+    } else {
+        Q.rlb_party_leader = "Martin Schiele";
+        Q.rlb_election_flavor_2 = 2;
+    }
+}
+
+
+if (Q.year >= 1929 && Q.vnr_momentum_trigger_flavor_1 == 0) { 
+    Q.vnr_momentum = 0;
+    Q.vnr_momentum_trigger_flavor_1 = 1;
+}
+
+
+if (Q.year == 1928 && Q.month >= 9 && Q.lambach_exile == 1 && Q.weeks >= 0) {
+    if ((Q.anti_lambach - Q.pro_lambach) < 20) {
+        Q.lambach_reinstated = 1;
+    } else {
+        Q.lambach_reinstated = -1;
+    }
+}
+
+if (Q.year == 1929 && Q.month == 10 && Q.ddp_mannheim_congress != 1) {
+    Q.ddp_mannheim_congress = 1;
+    if (Q.social_republican_ddp > Q.business_wing_ddp) {
+        Q.stolper_adopted = -1;
+        Q.social_republican_ddp += 50;
+    } else { 
+        Q.stolper_adopted = 1;
+        Q.business_wing_ddp += 50;
+  } 
+}
+
+if (Q.year == 1930 && Q.month == 5 && Q.weeks >= 1 && Q.young_plan_seen == 1) {
+    Q.economic_growth += 0.5;
+
+    // Improved foreign credit access
+    Q.budget         += 1.5;
+
+    Q.demand_impulse  -= 0.10;
+    Q.z_relation      -= 5;
+    Q.dvp_relation     -= 5;
+    Q.bvp_relation     -= 5;
+}
+
+if (Q.year >= 1930 && Q.year < 1932) {
+    Q.demand_impulse   -= 0.1;
+    Q.price_pressure   -= 0.05;
+    Q.unemployed       += 0.12;
+    Q.inflation         -= 0.11;
+    Q.economic_growth   -= 0.10;
+}
+
+
+if (Q.year >= 1928 && Q.year < 1929 && Q.geest_wildfire == 1 && (Q.state_buyer == 1 || Q.agricultural_finance == 1 || Q.land_reform == 1 || Q.tariffs > 1) && Q.landvolkbewegung_flavor != 1)  {
+    Q.landvolkbewegung_flavor_1 = 1;
+    Q.rural_dnvp += 5;
+    Q.rural_cnbl += 2;
+    Q.landvolk_fury = 0;
+}
+
+if (Q.year == 1930 && Q.month == 11 && Q.weeks < 2 && (Q.scholz_victory || Q.dvp_successor_outcome == "scholz_victory")) {
+    Q.dvp_party_leader = "Eduard Dingeldey";
+    Q.dvp_ideology = "Authoritarian National Liberalism";
+}
+
+if (Q.dvp_in_government && Q.spd_in_government && Q.dvp_ideology == "Authoritarian National Liberalism" && Q.year < 1935) {
+    Q.dvp_in_government = 0;
+    Q.government_parties = Q.government_parties.filter(function(p) { return p !== 'DVP'; });
+}
 
 
 
