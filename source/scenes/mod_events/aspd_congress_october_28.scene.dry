@@ -36,7 +36,7 @@ if (Q.peoples_party) Q.aspd_nb_survival_points -= 10;
 if (Q.peoples_party_support > 1) Q.aspd_nb_survival_points -= Q.peoples_party_support;
 
 if (Q.aspd_votes_pct > 0.4) Q.aspd_nb_survival_points += 1;
-if (Q.vnr_momentum > 0) Q.aspd_nb_survival_points += 1;
+if (Q.jungdo_formed > 0) Q.aspd_nb_survival_points += 1;
 if (Q.nsdap_votes_pct < 3) Q.aspd_nb_survival_points += 1;
 if (Q.reformists_resign) Q.aspd_nb_survival_points -= 1;
 if (Q.unions_independent) Q.aspd_nb_survival_points += 2;
