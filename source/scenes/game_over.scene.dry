@@ -312,11 +312,11 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
 {!<div class="ach ach-locked"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/karlhepprlb.png"></div><div class="ach-body"><strong>Landpopulistenurteil</strong> - Karl Hepp has been elected as the Reichslandbund (RLB) president. </div></div>!}
 ?]
 
-[? if achievement_annahmeerklärung :	
-{!<div class="ach" style="background:rgba(128, 0, 0, 0.94)"><div class="ach-icon-box" style="background:rgba(225, 135, 25, 0.35)"><img class="ach-icon" src="img/achievements/annahmeerklärung.png"></div><div class="ach-body"><strong>Annahmeerklärung</strong> - Republicans by the dishonority, not of the reason.!}[? if game_achievement_annahmeerklärung : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}	
+[? if achievement_annahmeerklarung :	
+{!<div class="ach" style="background:rgba(128, 0, 0, 0.94)"><div class="ach-icon-box" style="background:rgba(225, 135, 25, 0.35)"><img class="ach-icon" src="img/achievements/annahmeerklarung.png"></div><div class="ach-body"><strong>Annahmeerklärung</strong> - Republicans by the dishonority, not of the reason.!}[? if game_achievement_annahmeerklarung : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}	
 ?]
-[? if not achievement_annahmeerklärung :	
-{!<div class="ach ach-locked"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/annahmeerklärung.png"></div><div class="ach-body"><strong>Annahmeerklärung</strong> - Republicans by the dishonority, not of the reason.</div></div>!}
+[? if not achievement_annahmeerklarung :	
+{!<div class="ach ach-locked"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/annahmeerklarung.png"></div><div class="ach-body"><strong>Annahmeerklärung</strong> - Republicans by the dishonority, not of the reason.</div></div>!}
 ?]
 
 [? if achievement_herbstingwer :	
