@@ -7078,6 +7078,12 @@ if (Q.year >= 1928 && Q.year < 1929 && Q.geest_wildfire == 1 && (Q.state_buyer =
     Q.landvolk_fury = 0;
 }
 
+if (Q.month >= 11 && Q.year == 1929 && Q.dsbp_votes <= 0 && Q.jungdo_formed <= 0) {
+      Q.jungdo_formed = 1;
+      Q.parties.push('vnr');
+      Q.jungdo_strength += 100;
+}
+
 if (Q.year == 1930 && Q.month == 11 && Q.weeks < 2 && (Q.scholz_victory || Q.dvp_successor_outcome == "scholz_victory")) {
     Q.dvp_party_leader = "Eduard Dingeldey";
     Q.dvp_ideology = "Authoritarian National Liberalism";
