@@ -1,25 +1,47 @@
-title: DNVP's new theorema?
-subtitle: Last element of the Sammelpartei...
+title: Walther Lambach's gambit.
+subtitle: DHV went on the offensive.
 tags: event
 new-page: true
 view-if: year == 1928 and month >= 8 and month <= 9 and weeks >= 1 and lambach_flavor_trigger = 0 and (lambach_exile = 0 and lambach_momentum = 0)
 on-arrival: {!  
     Q.lambach_momentum = 1;
-    Q.workers_dnvp += 8;
-    Q.new_middle_dnvp += 12;
+    Q.workers_dnvp += 10;
+    Q.new_middle_dnvp += 19;
     Q.old_middle_dnvp -= 5;
-    Q.rural_dnvp -= 8;
+    Q.rural_dnvp -= 10;
+    Q.hugenberg_momentum -= 50;
+    Q.hugenberg_momentum *= 0.90;
     Q.lambach_flavor_trigger_1 = 1;
+    Q.delegate_power_yocon += 10;
+    Q.delegate_power_christsoc += 50;
+    Q.delegate_power_christsoc *= 1.05;
+    Q.delegate_power_a *= 0.75;
+    Q.delegate_power_b *= 0.50;
+    Q.workers += 1;
+    Q.new_middle += 0.5;
+    Q.nationalism += 3;
+    Q.socialism -= 5;
+    Q.pro_republic += 5;
 !}
 
-= Full tent has been formed...
+= Walther Lambach's new work.
 
-In the recent development and finalization, old idea of sammelpartei of middle classes, protestants, monarchists, agrarians, industrialists, republicans and landowners has recently been falling down in it's relevance. In the search for answer for antidote, member of the Christian Social faction and member of DHV, nationalist union, Walther Lambach has formulated new thought:
+In the recent development and the stagnation of the DNVP, threats of Alfred Hugenberg and his radicals taking over the party, most ardent oppositionist to his ruling - Walther Lambach - has published the new work with the naming "Neuer Arbeiterstatt". This was part of the offensive doctrine accepted by the DHV, leaders of which believe the momentum is at it's most.
 
-• Alongside with recent Monarchismus postulates, Walther adds: DNVP as party should reorient toward making conditions for German worker welfare in order to gain their attention and counteract marxist influence amongst workers. 
+The new work describes the relation between the (primarily blue collars and white collars) workers of the Germany and the party, with Lambach arguing that the current relationship between them is merely parasitic and should transit to mutual beneficiary, where party and worker work together: Party represents the interests of workers and workers gives their voice to the cause of DNVP – to **Save the Germany** from the marxist disease and corporate overreach.
 
-• DNVP should adopt Corporatist policy, attempting to make ceasefire between rich, poor and state - bringing them to one system.
+Additional details on the work: 
 
-• DNVP should form tent coalition or preferably even lesser right wing coalitions to combat Marxism.
+• Unions are to be given bigger influence on the party, further expanding on the Sammelpartei conception.
 
-DNVP is going curious way...
+• Expulsion of all unproductive members of the party, especially those adherent of *catastrophepolitik** of Alfred Hugenberg.
+
+• Push for the co-operation between the worker, capitalist and state; advancement of labor friendly policies in order to gain the sympathies of dominantly marxist class (though mostly driven by the economical reasons).
+
+• Potentially accepting the framework of the republic to slowly erode it towards republican dictatorship under the leadership of Hindenburg or his successors. Walther Lambach expects that Zentrum, DVP and other minor parties with persuasion should help this come true.
+
+This has arisen the confusion amonsgt the old guard of DNVP (Coalitionists + Traditionalists + Rural Interests), who perceive this as an attempt to erode their influence within the party, but mostly, this has further inflammated the long standing conflict between furthest wings of the party: Christian Socials (under the Walther Lambach) and Radicals (under the Alfred Hugenberg). Alfred has launched the full assault on Christian Socials, DHV and especially Walther Lambach, calling him "crypto-socialist", "spy of the SPD, who was sent to sabotage their main opponent" and "puppet of the Republic". This has rallied the Pan - German League, Ruhrlade and many more Hugenberg aligned movements to prevent the Walther Lambach's win in the following congress by all means possible.
+
+Nationalist party found itself in the state of strange development and rabid civil war.
+
+Who will stand in this battle?
