@@ -34,6 +34,7 @@ Q.commercialized_media = Q.commercialized_media || 0;
 Q.cultural_organizations = Q.cultural_organizations || 0;
 Q.agricultural_assist = Q.agricultural_assist || 0;
 Q.radio = Q.radio || 0;
+Q.landvolk_suppress = Q.landvolk_suppress || 0;
 
 
     if (!Q.dues_workers) { Q.dues_workers = 1; }
