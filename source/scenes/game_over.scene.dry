@@ -389,6 +389,13 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
 {!<div class="ach ach-locked"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/national_rejuvenation.png"></div><div class="ach-body"><strong>Nationale Erneuerung</strong> - Three pillars, two faiths, one nation - elevated above all differences.</div></div>!}
 ?]
 
+[? if achievement_sanctuary :
+{!<div class="ach" style="background:rgba(255,215,0,0.15); box-shadow: inset 0 0 10px rgba(255,215,0,0.3)"><div class="ach-icon-box" style="background:rgba(255,215,0,0.3)"><img class="ach-icon" src="img/achievements/sanctuary.png"></div><div class="ach-body"><strong>Zuflucht</strong> - Take a close look again.!}[? if game_achievement_sanctuary : {!<span class="ach-new">Neu!</span>!}?]{!</div></div>!}
+?]
+[? if not achievement_sanctuary :
+{!<div class="ach ach-locked"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/national_rejuvenation.png"></div><div class="ach-body"><strong>Zuflucht</strong> - Come back, when you find the true meaning behind this...</div></div>!}
+?]
+
 {!</div>!}
 
 = Social Fascism
