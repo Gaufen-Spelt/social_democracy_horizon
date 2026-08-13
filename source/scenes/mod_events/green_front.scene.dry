@@ -2,7 +2,7 @@ title: Green Front's Birth.
 subtitle: Agrarian forces are unifying... or is the RLB consolidating power?
 tags: event
 max-visits: 1
-view-if: (geest_wildfire >= 1 or cnbl_votes_pct > 1.6) and ((rural_dnvp_pct + rural_z_pct + rural_rlb_pct < 50) or rural_other_pct > 20) and year == 1929 and month >= 3 and month <= 9
+view-if: (geest_wildfire >= 1 or cnbl_votes_pct > 1.6 or rural_other_pct > 10) and (rural_dnvp_pct + rural_z_pct + rural_rlb_pct < 50) and year == 1929 and month >= 3 and month <= 9
 new-page: true
 on-arrival: rural_rlb += 1
 
@@ -75,8 +75,9 @@ Q.dbp_joins_gf = Q.dbp_joins_gf || 0;
 
 const closeRelation = Q.dbp_relation < 40 && Q.dnvp_party_leader != "Alfred Hugenberg" && Q.rlb_party_leader == "Karl Hepp";
 const lowRelation = Q.dbp_relation < 35;
+const landvolk = Q.landvolk_fury > 5;
 
-if (closeRelation || lowRelation) {
+if (closeRelation || lowRelation || landvolk) {
     Q.dbp_joins_gf = 1;
 }
 
@@ -92,6 +93,10 @@ if (Q.rlb_party_leader == "Karl Hepp" && Q.rlb_votes > 1.4) {
 
 if (Q.cnbl_votes < 1.1 || Q.cnbl_r < 1.5) {
     Q.green_front_formation_points += 1;
+}
+
+if (Q.dbp_joins_gf >= 1 && Q.rlb_party_leader == "Karl Hepp" && Q.cnbl_crisis >= 1) {
+    this.achieve('gesamtlandliche_vertretung')
 }
 
 !}
