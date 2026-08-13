@@ -2132,328 +2132,154 @@ window.Achievements = (function () {
 
   // ── Registry: ─────────────────────────
   // key: id, value: {title, description, icon}
-  var REGISTRY = {
-    eiserne_front: {
-      title: 'Eiserne Front',
-      description: 'form the Iron Front.',
-      icon: null
-    },
-    civil_war: {
-      title: 'Bürgerkrieg',
-      description: 'enter a long civil war.',
-      icon: null
-    },
-    einigkeit: {
-      title: 'Einigkeit',
-      description: 'reach the end without civil war (Easy).',
-      icon: null
-    },
-    einigkeit_und_recht: {
-      title: 'Einigkeit und Recht',
-      description: 'reach the end without civil war (Normal).',
-      icon: null
-    },
-    einigkeit_und_recht_und_freiheit: {
-      title: 'Einigkeit und Recht und Freiheit',
-      description: 'reach the end without civil war (Hard).',
-      icon: null
-    },
-    schwarz_rot_gold: {
-      title: 'Schwarz-Rot-Gold',
-      description: 'reach the end without civil war (Historical).',
-      icon: null
-    },
-    victory_for_the_republic: {
-      title: 'Sieg für die Republik',
-      description: 'win the civil war.',
-      icon: null
-    },
-    bollwerk_der_demokratie: {
-      title: 'Bollwerk der Demokratie',
-      description: 'Resist the Prussian Coup and win.',
-      icon: null
-    },
-    red_tzar_of_prussia: {
-      title: 'Roter Zar von Preußen',
-      description: 'Otto Braun is President, Chancellor, and Minister-President.',
-      icon: null
-    },
-    volkspartei: {
-      title: 'Volkspartei',
-      description: 'the SPD is a People\'s Party.',
-      icon: null
-    },
-    sohn_seiner_klasse: {
-      title: 'Sohn seiner Klasse',
-      description: 'Ernst Thälmann is either president or chancellor.',
-      icon: null
-    },
-    rote_millionar: {
-      title: 'Der rote Millionär',
-      description: 'Willi Münzenberg is president.',
-      icon: null
-    },
-    versohnler: {
-      title: 'Versöhnler',
-      description: 'the Conciliators lead the KPD.',
-      icon: null
-    },
-    deport_hitler: {
-      title: 'Der österreichische Gefreite',
-      description: 'deported Hitler.',
-      icon: null
-    },
-    wirtschaftspolitik: {
-      title: 'Wirtschaftspolitik',
-      description: 'enact an economic plan.',
-      icon: null
-    },
-    wirtschaftswunder: {
-      title: 'Wirtschaftswunder',
-      description: 'Economic miracle achieved.',
-      icon: null
-    },
-    wirtschaftsexperiment: {
-      title: 'Wirtschaftsexperiment',
-      description: 'enact two different economic plans.',
-      icon: null
-    },
-    freie_marktwirtschaft: {
-      title: 'Freie Marktwirtschaft',
-      description: 'survive to the end without an economic plan.',
-      icon: null
-    },
-    equality: {
-      title: 'Gleichheit',
-      description: 'pass reforms for women\'s rights.',
-      icon: null
-    },
-    hirschfeld: {
-      title: 'Hirschfeld',
-      description: 'pass reforms for homosexual rights.',
-      icon: null
-    },
-    women_reichsbanner: {
-      title: 'Mädchen in Uniform',
-      description: 'a woman\'s place is in the Reichsbanner.',
-      icon: null
-    },
-    anders_als_die_andern: {
-      title: 'Anders als die Andern',
-      description: 'sexual minorities will defend the Republic.',
-      icon: null
-    },
-    bruder_zur_sonne: {
-      title: 'Brüder, zur Sonne, zur Freiheit',
-      description: 'reduce unemployment, pause reparations, increase women\'s rights, elect an SPD president, and deport Hitler in one playthrough on at least normal difficulty.',
-      icon: null
-    },
-    die_rote_fahne: {
-      title: 'Die Rote Fahne',
-      description: 'join the KPD in their May Day march.',
-      icon: null
-    },
-    panik_im_mittelstand: {
-      title: 'Panik im Mittelstand',
-      description: 'SPD new middle class support ≥ 50%.',
-      icon: null
-    },
-    bauernrevolution: {
-      title: 'Bauernrevolution',
-      description: 'SPD rural support ≥ 50%.',
-      icon: null
-    },
-    katholischer_sozialismus: {
-      title: 'Katholischer Sozialismus',
-      description: 'SPD Catholic support ≥ 50%.',
-      icon: null
-    },
-    grosse_volkspartei: {
-      title: 'Große Volkspartei',
-      description: 'All classes ≥ 40% SPD support.',
-      icon: null
-    },
-    klassenkampf: {
-      title: 'Klassenkampf',
-      description: 'Workers ≥ 80%, middle class & rural < 20%.',
-      icon: null
-    },
-    raterepublik: {
-      title: 'Räterepublik',
-      description: 'begin the transformation to a socialist economy.',
-      icon: null
-    },
-    polykrise: {
-      title: 'Polykrise',
-      description: 'survived capital strike and fascist coup.',
-      icon: null
-    },
-    syndikalismus: {
-      title: 'Syndikalismus',
-      description: 'support factory takeovers by the workers.',
-      icon: null
-    },
-    drei_pfeile: {
-      title: 'Drei Pfeile',
-      description: 'defeat a coup without a civil war.',
-      icon: null
-    },
-    ausnahmezustand: {
-      title: 'Ausnahmezustand',
-      description: 'use emergency powers to cancel elections.',
-      icon: null
-    },
-    eu: {
-      title: 'Vereinigte Staaten von Europa',
-      description: 'form a "European Union".',
-      icon: null
-    },
-    heidelberger_programm: {
-      title: 'Heidelberger Programm',
-      description: 'achieve all Heidelberg Program goals.',
-      icon: null
-    },
-    verfassungsreform: {
-      title: 'Verfassungsreform',
-      description: 'pass a constitutional amendment.',
-      icon: null
-    },
-    zeppelin_kapitan: {
-      title: 'Zeppelinkapitän',
-      description: 'Hugo Eckener has been elected president.',
-      icon: null
-    },
-    wahlrechts: {
-      title: 'Wahlrechts für Frauen',
-      description: 'Marie Juchacz has been elected president.',
-      icon: null
-    },
-    bundesrepublik: {
-      title: 'Bundesrepublik',
-      description: 'Konrad Adenauer or Kurt Schumacher has been elected president, and constitutional reforms have reduced presidential power.',
-      icon: null
-    },
-    republik_der_wissenschaft: {
-      title: 'Republik der Wissenschaft',
-      description: 'Albert Einstein has been elected president.',
-      icon: null
-    },
-    arbeiter_von_wien: {
-      title: 'Arbeiter von Wien',
-      description: 'SDAPÖ victory in Austria.',
-      icon: null
-    },
-    stolperstein: {
-      title: 'Stolperstein',
-      description: 'we lost, but history might memorialize us...',
-      icon: null
-    },
+    var REGISTRY = {
     ruhrland: {
       title: 'Rheinland in Fire',
       description: 'French reoccupy the Rheinland following catastrophe of Young Plan.',
-      icon: null
+      icon: 'img/achievements/ruhrland.png'
     },
     tyrole_danubia: {
       title: 'Tyrol - Danubian Pact',
       description: 'Italy and Germany has signed non aggression treaty.',
-      icon: null
+      icon: 'img/achievements/tyrole_danubia.png'
     },
     revolution_own: {
       title: 'Revolution of Three Spears',
       description: 'SPD has launched the revolution.',
-      icon: null
-    },
-    winterschwelen: {
-      title: 'Winterschwelen',
-      description: 'They are silent, lonely, despairly and bonely, aren`t they?.',
-      icon: 'img/achievements/winterschwelen.png'
+      icon: 'img/achievements/revolution_own.png'
     },
     popular_frontier: {
       title: 'Popular Front',
       description: 'Popular Front theses has been established.',
-      icon: null
+      icon: 'img/achievements/popular_frontier.png'
+    },
+    winterschwelen: {
+      title: 'Winterschwelen',
+      description: 'The cold and despairly winter envelops the landvolk...',
+      icon: 'img/achievements/winterschwelen.png'
+    },
+    landlicher_zorn: {
+      title: 'Ländlicher Zorn',
+      description: 'Rural wrath engulfes the Germany...',
+      icon: 'img/achievements/landlicher_zorn.png'
+    },
+    karl_hepp_rlb: {
+      title: 'Landpopulistenurteil',
+      description: 'Karl Hepp has been elected as the Reichslandbund (RLB) president.',
+      icon: 'img/achievements/karlhepprlb.png'
+    },
+    gesamtlandliche_vertretung: {
+      title: 'Gesamtlandliche Vertretung',
+      description: 'Green Front encompasses maximal amount of members possible.',
+      icon: 'img/achievements/gesamtlandliche_vertretung.png'
+    },
+    annahmeerklarung: {
+      title: 'Annahmeerklärung',
+      description: 'Republicans by the dishonority, not of the reason.',
+      icon: 'img/achievements/annahmeerklarung.png'
+    },
+    herbstingwer: {
+      title: 'Herbstingwer',
+      description: 'Ernst Niekisch and his national socialists have survived the test of the time.',
+      icon: 'img/achievements/herbstingwer.png'
+    },
+    im_staub_der_zeit: {
+      title: 'Im Staub der Zeit',
+      description: 'Ultimate failure of the fortunes.',
+      icon: 'img/achievements/im_staub_der_zeit.png'
     },
     liberalismus: {
       title: 'United Liberalism',
       description: 'Liberal movement has been unified.',
-      icon: null
+      icon: 'img/achievements/liberalismus.png'
     },
     lambachreich: {
       title: 'Großer Korporatismus',
       description: 'Walther Lambach consolidates all power under himself.',
-      icon: null
+      icon: 'img/achievements/lambachreich.png'
+    },
+    jugendrevolution: {
+      title: 'Jugendrevolution',
+      description: 'Grandmaster Mahraun ascends the nationalist movement.',
+      icon: 'img/achievements/jugendrevolution.png'
+    },
+    neue_generation: {
+      title: 'Neue Generation',
+      description: 'Passing the mantle.',
+      icon: 'img/achievements/neue_generation.png'
     },
     volksgemeinschaft: {
       title: 'Volksgemeinschaft',
       description: 'All differences are none before Germany.',
-      icon: null
+      icon: 'img/achievements/volksgemeinschaft.png'
     },
     christian_revolution: {
       title: 'Kreuz und Arbeit',
       description: 'Overcoming the German odds.',
-      icon: null
+      icon: 'img/achievements/christian_revolution.png'
     },
     national_rejuvenation: {
       title: 'Nationale Erneuerung',
       description: 'Three pillars, two faiths, one nation - elevated above all differences.',
-      icon: null
+      icon: 'img/achievements/national_rejuvenation.png'
     },
-    cyberworld: {
-      title: 'Project Cybersyn-DE',
-      description: 'Expanded Horizons. Expanded Views. I stand between you and my world.',
-      icon: null
+    sanctuary: {
+      title: 'Zuflucht',
+      description: 'Come back, when you find the true meaning behind this...',
+      icon: 'img/achievements/sanctuary.png'
     },
     noske_leader: {
       title: 'Gustav Noske\'s Comeback',
       description: 'Elect Noske in the presidential election.',
-      icon: null
+      icon: 'img/achievements/noske_leader.png'
     },
     shalhelm_coop: {
       title: 'Reichsbanner - Stahlelm',
       description: 'Two brothers, one separation, one unification.',
-      icon: null
+      icon: 'img/achievements/shalhelm_coop.png'
     },
     thalmann_died: {
       title: 'Better Dead than Red',
       description: 'Thalmann has been killed, what\'s next?...',
-      icon: null
+      icon: 'img/achievements/thalmann_died.png'
     },
     wels_comeback: {
       title: 'Wels\' Wild Way',
       description: 'Wels takes the mantle back.',
-      icon: null
+      icon: 'img/achievements/wels_comeback.png'
     },
     communist_crushed: {
       title: 'Second Spartakus',
       description: 'Communists repeat the fate of Spartakists.',
-      icon: null
+      icon: 'img/achievements/communist_crushed.png'
     },
     underboots: {
       title: 'Under Boots and Stomped',
       description: 'Reactionaries takes the helm.',
-      icon: null
+      icon: 'img/achievements/underboots.png'
     },
     communist_together: {
       title: 'Together Forever',
       description: 'United Left is Eternal Brotherhood.',
-      icon: null
+      icon: 'img/achievements/communist_together.png'
     },
     noske_leader_historical: {
       title: 'True ending - Social Fascism',
       description: 'Narrator must say it, but, by bringing reformism to capitalism, capitalism brings reformism to your socialism. Be aware.',
-      icon: null
+      icon: 'img/achievements/noske_leader_historical.png'
     },
     chud: {
       title: 'Nothing ever happens',
       description: 'Smallburger Thursday is not worth mentioning at all. Hilferchuding is supreme.',
-      icon: null
+      icon: 'img/achievements/chud.png'
     },
     reichswehr_ruhrland: {
       title: 'Reichsprotection',
       description: 'Protect the Rheinland from being reoccupied by the French.',
-      icon: null
+      icon: 'img/achievements/reichswehr_ruhrland.png'
     }
   };
+
 
   var _queue = [];
   var _showing = false;
