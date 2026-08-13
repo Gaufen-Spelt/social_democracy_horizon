@@ -718,6 +718,9 @@ if (Q.month_actions >= 1) {
         if (Q.month >= 13) {
             Q.month = 1;
             Q.year += 1;
+            if (Q.landvolk_fury) {
+                Q.landvolk_fury -= 1;
+            }
             if (Q.historical_mode) {
                 Q.resources += 2;
             }
@@ -4568,7 +4571,7 @@ function computeTarget(party, c) {
             if (Q.cnbl_banned) return 0;
             base = (rep * 11 + nat * 19) * (1 + Q.rural * 0.009) * im.cnbl;
             base *= _partyAdj('cnbl');
-            let rural_m = 1.80 * (1 + Math.min(Q.rural / 100, 0.4));
+            let rural_m = 1.80 * (1 + Math.min(Q.rural / 100, 0.4)) * (Q.landvolk_fury > 0 ? (1 + Math.min(0.25 * (Math.pow(1.15, Q.landvolk_fury) - 1), 4) + Math.min(0.06 * (Math.pow(1.85, Q.landvolk_fury) - 1), 3)) : 1);
             const class_mods = { workers: 0.25, old_middle: 0.60, new_middle: 0.40, rural: rural_m, unemployedc: 0.30 };
             return _applyQOL(base * (class_mods[c] || 1.0) * _classAdj('cnbl', c), party, c);
         }
@@ -4967,7 +4970,7 @@ function computeTarget(party, c) {
         workers: 0.30, 
         old_middle: 0.85, 
         new_middle: 0.80, 
-        rural: 1.15 * (Q.landvolk_fury > 0 ? Q.landvolk_fury / 1.05 : 1) * (Q.parties.includes('cnbl') ? 1.5953 : 1), 
+        rural: 1.15 * (Q.parties.includes('cnbl') ? 1.5953 : 1) * (Q.landvolk_fury > 0 ? (1 + Math.min(0.03 * (Math.pow(1.15, Q.landvolk_fury) - 1), 3) + Math.min(0.20 * (Math.pow(1.85, Q.landvolk_fury) - 1), 6)) : 1),
         unemployedc: 0.30 };
             return _applyQOL(base * (class_mods[c] || 1.0) * _classAdj('other', c), party, c);
         }
@@ -5106,7 +5109,7 @@ function computeTarget(party, c) {
         workers:     0.15,   // minimal worker base
         old_middle:  0.75,   // small traders, rural artisans — present but not the core
         new_middle:  0.40,   // modest white-collar presence
-        rural:       2.20 * (Q.parties.includes('cnbl') && Q.year >= 1928 && Q.month >= 3 ? 1 : 1.35),
+        rural:       2.20 * (Q.parties.includes('cnbl') && Q.year >= 1928 && Q.month >= 3 ? 1 : 1.35) * (Q.landvolk_fury > 0 ? (1 + Math.min(0.02 * (Math.pow(1.15, Q.landvolk_fury) - 1), 2) + Math.min(0.05 * (Math.pow(1.85, Q.landvolk_fury) - 1), 3)) : 1),
         unemployedc: 0.25,
     };
     return _applyQOL(base * (class_mods[c] || 1.0) * _classAdj('dbp', c), party, c);
