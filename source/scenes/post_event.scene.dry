@@ -6920,6 +6920,13 @@ if (!Q.math_broken) {
 if (Q.subevents >= 1) {
     Q.subevents = 0;
 
+// ACHIEVEMENTS
+
+if (Q.rural_dbp_pct + Q.rural_cnbl_pct + Q.rural_other_pct > 50 && Q.achievement_landlicher_zorn != 1) {
+    this.achieve('landlicher_zorn')
+}
+
+
 // EVENTS
 
 if (Q.inflation > 10) {
