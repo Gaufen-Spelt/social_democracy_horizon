@@ -929,15 +929,14 @@ Q.strasserist_power = Q.strasserist_power || 50;
 Q.rohmite_power = Q.rohmite_power || 150;
 
 // 1. GEEST WILDFIRE & TIMING EVENTS
-if (Q.geest_wildfire == 1) {
-    
-    Q.hitlerist_power += 8.0;
-} else if (Q.month >= 2 && !(Q.geest_wildfire <= 0)) {
-    
+if (Q.geest_wildfire == 1) {    
+    Q.hitlerist_power += 6.0;
+} else if (Q.month >= 2 && Q.geest_wildfire <= 0) {
+  
     Q.strasserist_power += 2.0;
 }
 
-// 2. HITLER YOUTH FUNDING
+// 2. HITLER FUNDING
 if (Q.hitler_young_funded >= 1) {
     Q.hitlerist_power *= 1.10;
 }
@@ -945,6 +944,34 @@ if (Q.hitler_young_funded >= 1) {
 // 3. IDEOLOGY
 if (Q.ideology == "reformist") {
     Q.strasserist_power += 1.5;
+}
+
+if (Q.welfare <= 0) {
+    Q.strasserist_power += 1 * Q.welfare; 
+}
+
+if (Q.unions_independent) {
+    Q.strasserist_power += 2.8;
+}
+
+if (Q.workers_spd_pct + Q.workers_kpd_pct < 60) {
+    Q.strasserist_power += 2 + (Q.workers_nsdap_pct * 0.2);
+}
+
+if (Q.year >= 1928 && Q.month >= 10 && (Q.dnvp_party_leader == "Alfred Hugenberg" || Q.dnvp_ideology == "National Conservatism (Hugenbergite)")) {
+    Q.hitlerist_power += 5.5 * (Q.dnvp_pct * 0.2);
+} else {
+    Q.strasserist_power += 3 * (Q.nsdap_pct * 0.25);
+}
+
+if (Q.year >= 1929 && Q.month >= 2 && (Q.dvp_party_leader == "Ernst Scholz" || Q.dvp_ideology == "National Liberalism (Scholzite)" || Q.dvp_ideology == "Authoritarian National Liberalism")) {
+    Q.hitlerist_power += 3.5 * (Q.dvp_pct * 0.4);
+} else {
+    Q.strasserist_power += 2 * (Q.nsdap_pct * 0.2);
+}
+
+if (Q.workers_spd_pct < 40) {
+    Q.strasserist_power += 2 + (Q.workers_spd_pct * 0.05);
 }
 
 Q.hitlerist_power += (Q.nationalism || 0) * 0.5;
@@ -966,10 +993,10 @@ Q.rohmite_power += (Q.unemployedc_nsdap_pct || 0) * 0.40;
 Q.hitlerist_power += (Q.unemployedc_nsdap_pct || 0) * 0.40;
 Q.strasserist_power += (Q.unemployedc_nsdap_pct || 0) * 0.20;
 
-// Workers: mostly Strasser 60%, Hitler 15%, Röhm 25%
-Q.strasserist_power += (Q.workers_nsdap_pct || 0) * 0.60;
-Q.hitlerist_power += (Q.workers_nsdap_pct || 0) * 0.15;
-Q.rohmite_power += (Q.workers_nsdap_pct || 0) * 0.25;
+// Workers: mostly Strasser 70%, Hitler 10%, Röhm 20%
+Q.strasserist_power += (Q.workers_nsdap_pct || 0) * 0.70;
+Q.hitlerist_power += (Q.workers_nsdap_pct || 0) * 0.10;
+Q.rohmite_power += (Q.workers_nsdap_pct || 0) * 0.20;
 
 // 6. GLOBAL REGULATION: cap combined total of all 3 tracked vars at 1000
 {
