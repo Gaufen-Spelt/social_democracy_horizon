@@ -188,7 +188,7 @@ on-arrival: sa_strength *= 0.7; sa_militancy -= 0.05
 We have arrested more of the SA's leaders and confiscated their weapons.
 
 @ban_sh
-on-arrival: sh_strength *= 0.85; sh_strength *= 0.7 if interior_police_loyalty >= 0.7; sh_banned = 1; dvp_relation -= 5; prussian_police_loyalty -= 0.1; interior_police_loyalty -= 0.05; coalition_dissent += 1 if spd_in_government = 1 and in_grand_coalition = 1 and president = "Hindenburg"; sh_ban_timer = 6;
+on-arrival: sh_strength *= 0.85; sh_strength *= 0.7 if interior_police_loyalty >= 0.7; sh_banned = 1; dvp_relation -= 5; prussian_police_loyalty -= 0.1; interior_police_loyalty -= 0.05; coalition_dissent += 1 if spd_in_government = 1 and in_grand_coalition = 1 and president = "Hindenburg"; sh_ban_timer = 6; sh_bans += 1
 view-if: sh_banned == 0
 choose-if: not rb_sh_front
 unavailable-subtitle: They are pretty much our allies.
