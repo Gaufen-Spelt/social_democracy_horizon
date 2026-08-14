@@ -32,6 +32,10 @@ new-page: true
 
 [? if year == 1928 and month == 8 and rlb_election_flavor_1 = 1 and rlb_election_flavor_2 = 2: In the result of Reichslandbund (RLB) leadership election, as expected, Martin Schiele, [? if not dnvp_in_government or dnvp_in_government and not agricultural_minister_party == "DNVP": formerly ?] [? if dnvp_in_government and agricultural_minister_party == "DNVP": current ?] agricultural minister of the Fourth Marx cabinet, has gained tremendous support from Junkers and DNVP to secure his victory. ?]
 
+[? if year == 1928 and month == 8 and furstenwalde_message = 1: Stahlhelm evil message. ?]
+
+[? if year == 1928 and month == 8 and furstenwalde_message = 2: Stahlhelm kind message. ?]
+
 # Other news
 
 [? if year < 1929 and month < 10 and landvolkbewegung_flavor_1 = 1: As the result of government's help to agrarian sector, Landvolkbewegung has mostly died out as serious force, leaving behind smaller radical groups. ?]
