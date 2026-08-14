@@ -7073,6 +7073,7 @@ if (Q.year == 1928 && Q.month == 9 && Q.stahlhelm_furstenwalde != 1) {
         this.achieve('annahmeerklarung')
     } else {
         Q.furstenwalde_message = 1;
+  } 
 }
 
 if (Q.year == 1929 && Q.month == 10 && Q.ddp_mannheim_congress != 1) {
