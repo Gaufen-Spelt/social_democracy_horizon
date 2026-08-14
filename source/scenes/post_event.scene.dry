@@ -7066,6 +7066,15 @@ if (Q.year == 1928 && Q.month >= 9 && Q.lambach_exile == 1 && Q.weeks >= 0) {
     }
 }
 
+if (Q.year == 1928 && Q.month == 9 && Q.stahlhelm_furstenwalde != 1) {
+    Q.stahlhelm_furstenwalde = 1;
+    if (Q.sh_bans < 1 || Q.sh_bans_p < 1 || Q.nationalism < 10 || Q.hugenberg_momentum < 450 || Q.ideology != "Left" || !Q.cnbl_crisis || !Q.geest_wildfire) {
+        Q.furstenwalde_message = 2;
+        this.achieve('annahmeerklarung')
+    } else {
+        Q.furstenwalde_message = 1;
+}
+
 if (Q.year == 1929 && Q.month == 10 && Q.ddp_mannheim_congress != 1) {
     Q.ddp_mannheim_congress = 1;
     if (Q.social_republican_ddp > Q.business_wing_ddp) {
