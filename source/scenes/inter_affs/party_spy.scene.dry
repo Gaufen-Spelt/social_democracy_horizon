@@ -429,7 +429,7 @@ go-to: party_spy
 
 @nsdap
 view-if: nsdap_unlocked_spy >= 1
-subtitle: The internal situation of NSDAP is a struggle between Hitlerist loyalists, Strasserist radicals, and Röhm's paramilitary faction.
+subtitle: The internal situation of NSDAP is a struggle between Hitlerist loyalists and Strasserist radicals.
 on-arrival: {!
 
 Q.hitlerist_power = Q.hitlerist_power || 800;
@@ -456,7 +456,7 @@ var factionData = [
       raw: Math.max(Q.hitlerist_power, 0), color: isDark ? "#a9762f" : "#8a5a2b" },
     { id: "strasserist", name: "Strasserist Wing", subtitle: "Anti-Capitalist Radicals",
       raw: Math.max(Q.strasserist_power, 0), color: isDark ? "#dc143c" : "#990015" },
-    { id: "rohmite", name: "Röhmite Wing", subtitle: "SA Paramilitary Faction",
+    { id: "rohmite", name: "SA Wing", subtitle: "SA Paramilitary Faction",
       raw: Math.max(Q.rohmite_power, 0), color: isDark ? "#2b1a12" : "#1a0f0a" }
 ];
 
@@ -515,7 +515,7 @@ go-to: party_spy
 
 *Strasserist Wing: [+ nsdap_strasser_disp +] ([+ nsdap_strasser_pct +]%)*
 
-*Röhmite Wing: [+ nsdap_rohm_disp +] ([+ nsdap_rohm_pct +]%)*
+*SA Wing: [+ nsdap_rohm_disp +] ([+ nsdap_rohm_pct +]%)*
 
 @unlock_nsdap
 view-if: nsdap_unlocked_spy <= 0
