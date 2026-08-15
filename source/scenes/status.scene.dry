@@ -297,16 +297,14 @@ window.renderReichstagMini = function(svgId, barId) {
     if (!svgEl || !barEl) return;
     if (!Q.partyData) return; // no election has run yet
 
-
     if (!document.getElementById('reichstag-mini-style')) {
         var style = document.createElement('style');
         style.id = 'reichstag-mini-style';
         style.textContent =
             '#' + svgId + ' .seat.spd { stroke: none !important; }\n' +
-            '#' + svgId + ' .seat.in-coalition { stroke: #FFD700; stroke-width: 2px; }';
+            '#' + svgId + ' .seat.in-coalition { stroke: #FFD700 !important; stroke-width: 0.3px !important; }';
         document.head.appendChild(style);
     }
-
     var coalitionParties = {};
     for (var i = 0; i < Q.parties.length; i++) {
         var p = Q.parties[i];
@@ -364,8 +362,8 @@ window.renderReichstagMini = function(svgId, barId) {
             seg.title = p.name + ": " + p.seats + " seats";
 
             if (coalitionParties[p.id]) {
-                seg.style.outline = "2px solid #FFD700";
-                seg.style.outlineOffset = "-2px";
+                seg.style.outline = "0.3px solid #FFD700";
+                seg.style.outlineOffset = "-0.3px";
             }
 
             if (pct > 0.06) {
