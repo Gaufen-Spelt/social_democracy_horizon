@@ -499,13 +499,15 @@ Minor:
 
 • Opinion dynamics (hidden ideology variable mover system) overhauled to fit the new ideology system
 
-• Achievements have been reworked and now pop-up if completed.
+• Achievements have been reworked and now pop-up if completed; New achievements have replaced the older achievements.
+
+• Status scene (the panel aside the main one) is overhauled.
 
 Minor events added and changed:
 
 • Stegerwald's reforms.
 
-• Lambach's victory or defeat causes KVP split (if second VONC failed) or CSVD (if second VONC succeeds)
+• Lambach's victory or defeat causes KVP split (if second VONC failed) or CSVD (if second VONC succeeds); Lambach can launch VONC against Hugenberg instead.
 
 • Marx can now be ousted by the Hindenburg to replace him with Julius Curtius of the DVP. This can cause Hugenberg's faction to revolt.
 
@@ -538,5 +540,9 @@ Minor additions:
 • Party factions spying added.
 
 • Small changes in sidebar.
+
+Technical:
+
+• General overhaul of demographic support for majority of parties.
 
 - @flavors: Back
