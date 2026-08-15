@@ -357,6 +357,8 @@ window.renderReichstagMini = function(svgId, barId) {
         });
     }
 };
+
+window.renderReichstagMini && window.renderReichstagMini('reichstag-mini', 'party-color-bar-mini');
 !}
 on-arrival: {!
 
