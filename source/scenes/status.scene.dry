@@ -303,29 +303,28 @@ window.renderReichstagMini = function(svgId, barId) {
     });
 
     if (window && d3) {
-        var width = 600;
-        var height = 300;
-        var screenWidth = document.getElementById('content').offsetWidth;
-        if (screenWidth < width - 50) {
-            width = screenWidth - 50;
-            height = Math.round(width / 2);
-            svgEl.style.height = height + "px";
-        }
+        // Size to the svg's own parent container (sidebar), not #content
+        var container = svgEl.parentElement;
+        var maxWidth = 280; // adjust to fit your sidebar width
+        var width = Math.min(maxWidth, container.offsetWidth || maxWidth);
+        var height = Math.round(width / 2);
+
         svgEl.style.width = width + "px";
         svgEl.style.height = height + "px";
 
         var parliament = d3.parliament();
         parliament.width(width).height(height).innerRadiusCoef(0.4);
-        parliament.enter.fromCenter(true).smallToBig(true);
-        parliament.exit.toCenter(false).bigToSmall(true);
+        // No enter/exit animation config here on purpose —
+        // avoids the "forming" fly-in animation on every tab switch.
+        if (parliament.duration) parliament.duration(0);
         d3.select("#" + svgId).datum(data).call(parliament);
 
         var totalSeats = visibleParties.reduce(function(sum, p) { return sum + p.seats; }, 0);
         barEl.innerHTML = "";
         barEl.style.display = "flex";
         barEl.style.width = "100%";
-        barEl.style.height = "28px";
-        barEl.style.marginTop = "8px";
+        barEl.style.height = "20px";
+        barEl.style.marginTop = "6px";
         barEl.style.overflow = "hidden";
         barEl.style.borderRadius = "3px";
 
@@ -342,9 +341,9 @@ window.renderReichstagMini = function(svgId, barId) {
             seg.style.boxSizing = "border-box";
             seg.title = p.name + ": " + p.seats + " seats";
 
-            if (pct > 0.035) {
+            if (pct > 0.06) {
                 var label = document.createElement("span");
-                label.style.fontSize = "10px";
+                label.style.fontSize = "8px";
                 label.style.fontWeight = "bold";
                 label.style.color = "#fff";
                 label.style.textShadow = "0 0 2px #000, 0 0 2px #000";
