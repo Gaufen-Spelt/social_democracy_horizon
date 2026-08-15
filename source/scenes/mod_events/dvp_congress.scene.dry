@@ -1,17 +1,15 @@
 title: DVP Congress
 subtitle: DVP holds another congress for leadership...
 tags: event
-view-if: ((year = 1929 and month = 11 and stresemann_dead and not trigger_stresemann_event_fix) or (dvp_congress_timer <= 0)) and dvp_votes > 0
+view-if: (year = 1929 and month = 12 and stresemann_dead and not trigger_stresemann_event_fix) and dvp_votes > 0
 new-page: true
 on-arrival: dvp_congress_timer = 48; trigger_stresemann_event_fix = 1
 
 = Post Stresemann congress
 
-The atmosphere inside the convention hall is thick with cigar smoke, nervous whispers, and an overarching sense of dread. Gustav Stresemann is gone. The man who single-handedly held the Deutsche Volkspartei together—and frequently anchored the Weimar Republic itself—has left behind an ideological vacuum that threatens to rip the party apart.
+Following the death of the Gustav Stresemann, greatest poltician of the Weimar period, DVP's volkspartei / left wing has been considerably weakened and could hope to win only through the intensive co-operation and grassroot works. On the other side, Ernst Scholz, candidate of the majority of national liberals and industrialist interests, whose opposition to the liberal unification and indifference to the youth movements have made himself enemies in the face of youth movements and labor unions.
 
-On one side, the reformist left-wing demands a continuation of the Grand Coalition with the SPD. On the other, the heavy industrialists of the right-wing demand a sharp turn toward the DNVP. 
-
-The ballots are cast, counted, and the final tally is announced from the podium...
+Perhaps, there could rise another compromise candidates, but one wouldn't be so sure.
 
 - @winner_dvp_1929_congress: And the power gains...
 
@@ -21,25 +19,24 @@ on-arrival: {!
 Q.dvp_curtius = 0;
 Q.dvp_luther = 0;
 Q.dvp_scholz = 0;
+Q.dvp_dingeldey = 0;
 
-Q.dvp_curtius += Q.dvp_left
-Q.dvp_scholz += Q.dvp_right
-Q.dvp_luther += (Q.dvp_left + Q.dvp_right) / 2;
-
-var max_score = Math.max(Q.dvp_curtius, Q.dvp_luther, Q.dvp_scholz);
-
+var left = Q.dvp_left;
+var right = Q.dvp_right;
+var total = left + right;
+var margin = total > 0 ? (right - left) / total : 0;
 // ==========================================
 // 5. FINAL OUTCOME ROUTER EVALUATION
 // ==========================================
-if (Q.dvp_curtius > (Q.dvp_luther + Q.dvp_scholz) / 2 && Q.dvp_curtius > Q.dvp_luther && Q.dvp_curtius > Q.dvp_scholz) {
+if (margin <= -0.10) {
     Q.dvp_successor_outcome = "curtius_victory";
     Q.dvp_party_leader = "Julius Curtius";
     Q.dvp_ideology = "National Liberalism";
-} else if (Q.dvp_luther > (Q.dvp_curtius + Q.dvp_scholz) / 2 && Q.dvp_luther > Q.dvp_curtius && Q.dvp_luther > Q.dvp_scholz) {
+} else if (margin < 0) {
     Q.dvp_successor_outcome = "luther_victory";
     Q.dvp_party_leader = "Hans Luther";
     Q.dvp_ideology = "National Liberalism";
-} else if (Q.dvp_scholz > (Q.dvp_curtius + Q.dvp_luther) / 2 && Q.dvp_scholz > Q.dvp_curtius && Q.dvp_scholz > Q.dvp_luther) {
+} else if (margin >= 0.10) {
     Q.dvp_successor_outcome = "scholz_victory";
     Q.dvp_party_leader = "Ernst Scholz";
     Q.dvp_ideology = "National Liberalism (Scholzite)";
@@ -55,19 +52,19 @@ go-to: curtius_victory if dvp_successor_outcome = "curtius_victory"; luther_vict
 @curtius_victory
 title: The Mantle of Stresemann
 
-= Curtius
+= Julius Curtius secures the congress
 
 @luther_victory
 title: The Technocratic Compromise
 
-= Luther
+= Hans Luther presides over the congress
 
 @scholz_victory
 title: The Rightward Turn
 
-= Scholz
+= Ernst Scholz takes over the congress
 
 @eduard_victory
 title: The Generational Gridlock
 
-= Dingeldey
+= Eduard Dingeldey steps forward
