@@ -5,16 +5,6 @@ on-arrival: {!
 Q.game_over = 1;
 this.achieve('game_completed');
 
-if (Q.president == 'Braun' && Q.chancellor == 'Braun' && Q.spd_prussia) { this.achieve('red_tzar_of_prussia'); }
-if (Q.long_war) { this.achieve('civil_war'); }
-if (Q.president === "Gustav Noske" && Q.historical_mode === 1 && Q.civil_war_end === "republic") { this.achieve('noske_leader_historical'); }
-if (Q.republic_victory) { this.achieve('victory_for_the_republic'); }
-if (Q.year >= 1932 && Q.unemployed < 8.6 && Q.budget > 0 && Q.inflation < 5) { this.achieve('wirtschaftswunder'); }
-if (Q.republic_victory && Q.resist_coup) { this.achieve('bollwerk_der_demokratie'); }
-if (Q.homosexual_rights >= 2) { this.achieve('hirschfeld'); }
-if ((Q.womens_work && Q.womens_rights >= 5) || (Q.abortion_rights && Q.womens_rights >= 3)) { this.achieve('equality'); }
-if (Q.chancellor == "Thälmann" || Q.president == "Thälmann") { this.achieve('sohn_seiner_klasse'); }
-
 for (var c of Q.classes) {
     var class_votes = 0;
     for (var party of Q.parties) {
@@ -25,19 +15,6 @@ for (var c of Q.classes) {
         Q[c + '_' + party + '_normalized'] = Math.round(100*Q[c+'_'+party]/class_votes);
     }
 }
-
-if (Q.new_middle_spd_normalized && Q.new_middle_spd_normalized >= 50) { this.achieve('panik_im_mittelstand'); }
-if (Q.rural_spd_normalized && Q.rural_spd_normalized >= 50) { this.achieve('bauernrevolution'); }
-if (Q.catholics_spd_normalized && Q.catholics_spd_normalized >= 50) { this.achieve('katholischer_sozialismus'); }
-if (Q.workers_spd_normalized >= 80 && Q.new_middle_spd_normalized <= 20 && Q.old_middle_spd_normalized <= 20 && Q.rural_spd_normalized <= 20) { this.achieve('klassenkampf'); }
-if (Q.workers_spd_normalized >= 40 && Q.new_middle_spd_normalized >= 40 && Q.old_middle_spd_normalized >= 40 && Q.rural_spd_normalized >= 40) { this.achieve('grosse_volkspartei'); }
-if (Q.spd_in_government && ((Q.nationalization_progress >= 2 && Q.economic_democracy >= 3) || (Q.nationalization_progress >= 1 && Q.economic_democracy >= 4))) { this.achieve('raterepublik'); }
-if (Q.march_on_berlin_seen && Q.capital_strike_seen && Q.chancellor != "Hitler" && Q.president != "Hitler" && !Q.total_defeat) { this.achieve("polykrise"); }
-if ((Q.nationalization_progress >= 1 && Q.wtb_implemented >= 1) || (Q.wtb_implemented >= 1 && Q.moderate_plan_progress >= 1) || (Q.nationalization_progress >= 1 && Q.moderate_plan_progress >= 1)) { this.achieve("wirtschaftsexperiment"); }
-if (Q.factory_takeovers >= 2) { this.achieve("syndikalismus"); }
-if (Q.commonwealth_cooperation >= 2) { this.achieve("commonwealth"); }
-if ((Q.chancellor_party == "NSDAP" || Q.chancellor == "Hitler" || Q.president == "Hitler") && Q.total_defeat) { this.achieve('stolperstein'); }
-if ((Q.welfare > 0 && Q.judicial_reform >= 2 && Q.womens_work >= 1 && Q.family_law >= 1 && Q.upper_tax_rates > Q.lower_tax_rates && Q.works_councils > 0 && Q.eu > 0)) { this.achieve('heidelberger_programm'); }
 !}
 
 
@@ -48,7 +25,12 @@ if ((Q.welfare > 0 && Q.judicial_reform >= 2 && Q.womens_work >= 1 && Q.family_l
 
 - #endings
 - @end_game: End game.
+- @want: I want to continue.
 
+@want
+subtitle; Alrighty. If you notice any bugs, report me, but anything impacted by sandbox is very likely not worth reporting it.
+on-arrival: game_over = 0; sandbox = 1
+go-to: post_event
 
 @hitler_wins
 view-if: (chancellor == "Hitler" or president == "Hitler") and (total_defeat==1 or civil_war_seen == 0)
@@ -360,6 +342,8 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
 [? if not achievement_lambachreich :
 {!<div class="ach ach-locked"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/lambachreich.png"></div><div class="ach-body"><strong>Großer Korporatismus</strong> - Walther Lambach consolidates all power under himself.</div></div>!}
 ?]
+
+= Unfinished / Unobtainable achievements
 
 [? if achievement_jugendrevolution :	
 {!<div class="ach" style="background:rgba(60,60,60,0.15)"><div class="ach-icon-box" style="background:rgba(60,60,60,0.35)"><img class="ach-icon" src="img/achievements/jugendrevolution.png"></div><div class="ach-body"><strong>Jugendrevolution</strong> - Grandmaster Mahraun ascends the nationalist movement.!}[? if game_achievement_jugendrevolution : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}	
