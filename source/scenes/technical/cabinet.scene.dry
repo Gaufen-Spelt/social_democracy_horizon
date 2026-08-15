@@ -39,7 +39,10 @@ view-if: lobby_foreign_minister_available >= 1
 on-arrival: {!
 Q.resources -= 2;
 var party = (Q.foreign_minister_party || '').toLowerCase();
-Q[party + '_relation'] -= 5;
+var delta = 5;
+Q[party + '_relation'] -= delta;
+Q.lobby_last_party = party;
+Q.lobby_last_delta = delta;
 !}
 go-to: foreign_policy
 
@@ -50,7 +53,10 @@ view-if: lobby_interior_minister_available >= 1
 on-arrival: {!
 Q.resources -= 2;
 var party = (Q.interior_minister_party || '').toLowerCase();
-Q[party + '_relation'] -= 5;
+var delta = 5;
+Q[party + '_relation'] -= delta;
+Q.lobby_last_party = party;
+Q.lobby_last_delta = delta;
 !}
 go-to: police
 
@@ -61,7 +67,10 @@ view-if: lobby_justice_minister_available >= 1
 on-arrival: {!
 Q.resources -= 2;
 var party = (Q.justice_minister_party || '').toLowerCase();
-Q[party + '_relation'] -= Q.random_factor(10);
+var delta = 5;
+Q[party + '_relation'] -= delta;
+Q.lobby_last_party = party;
+Q.lobby_last_delta = delta;
 !}
 go-to: judiciary
 
@@ -72,7 +81,10 @@ view-if: lobby_labor_minister_available >= 1
 on-arrival: {!
 Q.resources -= 2;
 var party = (Q.labor_minister_party || '').toLowerCase();
-Q[party + '_relation'] -= Q.random_factor(10);
+var delta = 5;
+Q[party + '_relation'] -= delta;
+Q.lobby_last_party = party;
+Q.lobby_last_delta = delta;
 !}
 go-to: labor_rights
 
@@ -83,7 +95,10 @@ view-if: lobby_economic_minister_available >= 1
 on-arrival: {!
 Q.resources -= 2;
 var party = (Q.economic_minister_party || '').toLowerCase();
-Q[party + '_relation'] -= Q.random_factor(10);
+var delta = 5;
+Q[party + '_relation'] -= delta;
+Q.lobby_last_party = party;
+Q.lobby_last_delta = delta;
 !}
 go-to: economic_policy
 
@@ -94,7 +109,10 @@ view-if: lobby_finance_minister_available >= 1
 on-arrival: {!
 Q.resources -= 2;
 var party = (Q.finance_minister_party || '').toLowerCase();
-Q[party + '_relation'] -= Q.random_factor(10);
+var delta = 5;
+Q[party + '_relation'] -= delta;
+Q.lobby_last_party = party;
+Q.lobby_last_delta = delta;
 !}
 go-to: fiscal_policy
 
@@ -105,7 +123,10 @@ view-if: lobby_agriculture_minister_available >= 1
 on-arrival: {!
 Q.resources -= 2;
 var party = (Q.agriculture_minister_party || '').toLowerCase();
-Q[party + '_relation'] -= Q.random_factor(10);
+var delta = 5;
+Q[party + '_relation'] -= delta;
+Q.lobby_last_party = party;
+Q.lobby_last_delta = delta;
 !}
 go-to: agricultural_policy
 
@@ -117,5 +138,8 @@ unavailable-subtitle: you can not do anything with this anyways for now.
 on-arrival: {!
 Q.resources -= 2;
 var party = (Q.transport_minister_party || '').toLowerCase();
-Q[party + '_relation'] -= Q.random_factor(10);
+var delta = 5;
+Q[party + '_relation'] -= delta;
+Q.lobby_last_party = party;
+Q.lobby_last_delta = delta;
 !}
