@@ -4584,8 +4584,8 @@ function computeTarget(party, c) {
             base = rep * 19 * nat * 17 * middle_norm * Math.max(0.3, crisis) * im.wp;
             base *= _partyAdj('wp');
 
-            let old_middle_m = 1.50 * (1 + Math.max(0, Q.inflation * 0.008)) * (Q.peoples_party === 1 ? 0.96 : 1);
-            let new_middle_m = 1.30 * (Q.peoples_party === 1 ? 0.96 : 1);
+            let old_middle_m = 1.70 * (1 + Math.max(0, Q.inflation * 0.008)) * (Q.peoples_party === 1 ? 0.96 : 1);
+            let new_middle_m = 1.60 * (Q.peoples_party === 1 ? 0.96 : 1);
 
             const class_mods = { workers: 0.12, old_middle: old_middle_m, new_middle: new_middle_m, rural: 0.12, unemployedc: 0.12 };
             return _applyQOL(base * (class_mods[c] || 1.0) * _classAdj('wp', c), party, c);
@@ -4709,7 +4709,7 @@ function computeTarget(party, c) {
 
     let m;
     if (c === 'workers') {
-        m = 1.15;
+        m = 1.10;
         if (Q.peoples_party === 1)  m *= 0.82;
         if (Q.ideology === 'left')      m *= 1.12;
         if (Q.ideology === 'reformist') m *= 0.92;
@@ -4732,7 +4732,7 @@ function computeTarget(party, c) {
         if (Q.lower_tax_rates > 0)       m -= Q.lower_tax_rates * 0.25;
     } else if (c === 'old_middle') {
 
-        m = 0.28;
+        m = 0.15;
         if (Q.peoples_party === 1)   m *= 1.15;
         if (Q.ideology === 'left')       m *= 0.88;
         if (Q.ideology === 'reformist')  m *= 1.10;
@@ -4746,7 +4746,7 @@ function computeTarget(party, c) {
         m *= oldMiddleDuesDiff > 0 ? (1 - oldMiddleDuesDiff * 0.12) : (1 - oldMiddleDuesDiff * 0.07);
         if (Q.land_reform > 0)      m -= Q.land_reform     * 0.15;
     } else if (c === 'new_middle') {
-        m = 0.80;
+        m = 0.65;
         if (Q.peoples_party === 1)   m *= 1.15;
         if (Q.ideology === 'left')       m *= 0.88;
         if (Q.ideology === 'reformist')  m *= 1.10;
@@ -4761,19 +4761,19 @@ function computeTarget(party, c) {
         if (Q.wtb_timer > 0)        m += (Q.new_middle / 100) * 0.27;
         if (Q.reformists_resign === 1) m *= 0.50;
     } else if (c === 'rural') {
-        m = 0.30;
-        if (Q.peoples_party === 1)   m *= 1.12;
-        if (Q.campaign_focus === 'rural'     && ci > 0) m += ci * 0.11;
+        m = 0.10;
+        if (Q.peoples_party === 1)   m *= 1.30;
+        if (Q.campaign_focus === 'rural'     && ci > 0) m += ci * 0.15;
         if (Q.campaign_focus === 'catholics' && ci > 0) m += ci * 0.07 * (Q.catholics / 35);
         
         let ruralDuesDiff = Q.dues_rural - 1;
         m *= ruralDuesDiff > 0 ? (1 - ruralDuesDiff * 0.11) : (1 - ruralDuesDiff * 0.065);
-        if (Q.land_reform > 0)      m += Q.land_reform          * 0.32;
-        if (Q.agricultural_finance > 0) m += Q.agricultural_finance * 0.22;
+        if (Q.land_reform > 0)      m += Q.land_reform          * 0.48;
+        if (Q.agricultural_finance > 0) m += Q.agricultural_finance * 0.25;
         if (Q.pro_consumer > 0)     m += Q.pro_consumer          * 0.03;
-        if (Q.state_buyer > 0)      m += Q.state_buyer          * 0.45;
+        if (Q.state_buyer > 0)      m += Q.state_buyer          * 1.22;
     } else if (c === 'unemployedc') {
-        m = 1.05;
+        m = 0.91;
         if (Q.peoples_party === 1)   m *= 0.88;
         if (Q.ideology === 'left')   m *= 1.10;
         if (Q.campaign_focus === 'unemployed' && ci > 0) m += ci * 0.12;
@@ -4937,10 +4937,10 @@ function computeTarget(party, c) {
             let rural_m = 1.20 * (1 + Math.min(Q.rural / 125, 0.25)) * (Q.peoples_party === 1 ? 0.96 : 1);
             const class_mods = {
                 workers:     0.20 * (Q.peoples_party === 1 ? 0.94 : 1),
-                old_middle:  1.55 * (Q.peoples_party === 1 ? 0.96 : 1),
-                new_middle:  0.86 * (Q.peoples_party === 1 ? 0.96 : 1),
+                old_middle:  1.30 * (Q.peoples_party === 1 ? 0.96 : 1),
+                new_middle:  0.80 * (Q.peoples_party === 1 ? 0.96 : 1),
                 rural:       rural_m,
-                unemployedc: 0.10 * (Q.peoples_party === 1 ? 0.94 : 1),
+                unemployedc: 0.05 * (Q.peoples_party === 1 ? 0.94 : 1),
             };
             return _applyQOL(base * (class_mods[c] || 1.0) * _classAdj('bvp', c), party, c);
         }
@@ -5183,7 +5183,7 @@ function computeTarget(party, c) {
         workers:     0.08,
         old_middle:  0.20,
         new_middle:  0.15,
-        rural:       2.80 * (1 + Math.min(Q.nationalism/100,1)*0.35)
+        rural:       3.15 * (1 + Math.min(Q.nationalism/100,1)*0.35)
                      * (Q.parties.includes('dbp') ? 0.95 : 1)
                      * (Q.parties.includes('cnbl') ? 0.85 : 1),
         unemployedc: 0.15,
@@ -6993,13 +6993,7 @@ if (Q.year == 1928 && Q.month == 8 && Q.rlb_election_flavor_1 != 1) {
         Q.karl_hepp_votes += 1;
     }
 
-    if (Q.landvolk_fury >= 1) {
-        Q.martin_schiele_votes -= 1;
-        Q.karl_hepp_votes += 1;
-    }
-
     if (Q.landvolk_fury >= 6) {
-        Q.martin_schiele_votes -= 1;
         Q.karl_hepp_votes += 1;
     }
 
@@ -7096,7 +7090,7 @@ if (Q.year == 1928 && Q.month >= 9 && Q.lambach_exile == 1 && Q.weeks >= 0) {
 
 if (Q.year == 1928 && Q.month == 9 && Q.stahlhelm_furstenwalde != 1) {
     Q.stahlhelm_furstenwalde = 1;
-    if (Q.sh_bans < 1 || Q.sh_bans_p < 1 || Q.nationalism < 10 || Q.hugenberg_momentum < 450 || Q.ideology != "Left" || !Q.cnbl_crisis || !Q.geest_wildfire) {
+    if (Q.sh_bans < 1 || Q.sh_bans_p < 1 || Q.nationalism < 10 || Q.hugenberg_momentum < 450 || Q.ideology != "Left" || !Q.cnbl_crisis || !Q.geest_wildfire || (Q.spd_r || 0) + (Q.kpd_r || 0) + (Q.sapd_r || 0) + (Q.lb_r || 0) + (Q.ddp_r || 0) + (Q.srpd_r || 0) < 40 ) {
         Q.furstenwalde_message = 2;
         this.achieve('annahmeerklarung')
     } else {
