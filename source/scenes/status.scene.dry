@@ -56,6 +56,8 @@ Reichsbank President: [+ reichsbank_president +]
 
 Reichstag President: [+ reichstag_president +]
 
+<hr>
+
 = SPD
 
 SPD Leadership: [+ spd_party_leader +]
@@ -77,15 +79,10 @@ Q.pacifism_disp = Q.pacifism;
 Q.democratization_disp = Q.democratization;
 Q.radicalization_disp = Q.radicalization;
 
-// Display-name overrides for the "Parties" (ideology/leadership) section.
-// Original used a hardcoded literal "DDP/DStP" there (not ddp_name).
 var partyNameOverrideIdeology = {
     ddp: 'DDP/DStP'
 };
 
-// Display-name overrides for the "Inter-party Relations" section.
-// Original dynamically used ddp_name (falling back to literal "DDP")
-// and dsbp_name (no fallback shown, printed as-is) there instead.
 var partyNameOverrideRelations = {
     ddp: Q.ddp_name || 'DDP',
     dsbp: Q.dsbp_name
@@ -149,15 +146,18 @@ for (var i = 0; i < Q.parties.length; i++) {
                       "<br>";
 }
 Q.party_relations_html = relationsHtml;
+
+// --- Merge both blocks into a single combined output ---
+Q.politics_combined_html =
+    "<b>Parties</b><br><br>" + ideologyHtml +
+    "<b>Inter Party Relations</b><br><br>" + relationsHtml;
 !}
 
-= Parties
+<hr>
 
-[+ party_ideology_leadership_html +]
+= Politics
 
-= Inter-party Relations
-
-[+ party_relations_html +]
+[+ politics_combined_html +]
 
 = Internal Factions of the SPD
 
@@ -400,6 +400,8 @@ Q.class_identity_breakdown_display = buildClassIdentitySection(Q.classes, Q.iden
 [+ party_results_list +]
 
 = Projected election results
+
+<hr>
 
 [+ projected_results +]
 
