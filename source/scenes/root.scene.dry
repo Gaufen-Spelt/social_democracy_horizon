@@ -1708,6 +1708,12 @@ for (const _c of _CLASSES_QOL) {
     Q[_c + '_qol_vel']  = 0;
 }
 
+Q.rural_qol = 85;
+Q.old_middle_qol = 75;
+Q.new_middle_qol = 90;
+Q.workers_qol = 95;
+Q.unemployedc_qol = 50;
+
 
 Q.classes = ['workers', 'old_middle', 'new_middle', 'rural', 'unemployedc'];
 Q.parties = ['spd', 'kpd', 'z', 'bvp', 'bb', 'ddp', 'dvp', 'dhp', 'csrp', 'wp', 'vrp', 'aspd', 'dtsp', 'dnvp', 'nsdap', 'rlb', 'other'];
