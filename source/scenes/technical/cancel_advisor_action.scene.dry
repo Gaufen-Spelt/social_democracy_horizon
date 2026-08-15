@@ -25,9 +25,13 @@ if (this.state.visits[card.id]) {
 if (Q.lobbying_on == 1) {
     Q.lobbying_timer = 0;
     Q.resources += 2;
-    var party = (Q.foreign_minister_party || '').toLowerCase();
-    Q[party + '_relation'] += 5;
+    var party = Q.lobby_last_party;
+    if (party) {
+        Q[party + '_relation'] += 5;
+    }
     Q.lobbying_on = 0;
+    Q.lobby_last_party = '';
+    Q.lobby_last_delta = 0;
 }
 
 !}
