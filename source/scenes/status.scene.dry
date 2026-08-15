@@ -376,23 +376,31 @@ Q.class_identity_breakdown_display = buildClassIdentitySection(Q.classes, Q.iden
 
 !}
 
+<hr>
+
 = Reichstag
 
 [+ party_results_list +]
 
-= Projected election results
-
 <hr>
 
+= Projected election results
+
 [+ projected_results +]
+
+<hr>
 
 **Detailed results for each demographic**
 
 [+ classes_breakdown_display +]
 
+<hr>
+
 = Class × identity breakdown
 
 [+ class_identity_breakdown_display +]
+
+<hr>
 
 @foreign
 on-arrival: {!
