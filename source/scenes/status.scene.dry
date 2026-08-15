@@ -42,7 +42,7 @@ Chancellor: [+ chancellor +] ([+ chancellor_party +])
 
 Prussian Minister-President: [+ prussian_mp +] ([+ prussian_government +])
 
-Parties in government: [+ parties_in_government_display +]
+Coalition in government: [+ coalition_name +] ([+ parties_in_government_display +])
 
 [? if tolerating_parties_display != "None" : Tolerated by: [+ tolerating_parties_display +] ?]
 
