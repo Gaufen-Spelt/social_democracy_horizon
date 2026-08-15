@@ -1,0 +1,31 @@
+title: Hitler's Fate
+subtitle: Height of conflict between revolutionaries and conservatives reached the boiling point...
+tags: event
+new-page: true
+max-visits: 1
+priority: -1
+view-if: urban_plan_flavor_1 >= 1 and geest_wildfire <= 0 and hitler_young_funded <= 0 and nsdap_pct < 3 and (strasserist_power + rohmite_power) > hitlerist_power and year >= 1929 and month >= 7 and (nsdap_party_leader == "Hitler" or nsdap_party_leader == "Adolf Hitler")
+
+= Hitler is facing the confidence crisis.
+
+In the failure of being unable to gain any in-roads benefits and advantages, Adolf Hitler has faced the confidence crisis from his fierce opponents from revolutionary wing, led by Gregor and Otto Strassers (supported by Paul Schulz & Ernst Schultz, key members of "Northern Group"). It would not help that SA has turned on him after realising that their partnership has been disastrous, including the interpersonal disdain between Adolf Hitler and SA's Supreme Leader Franz Pfeffer von Salomon.
+
+Goebbels and Youth movements have rallied the rest of still Hitlerites against the Adolf Hitler, supporting his owm candidacy in order to prevent the Strasserites from securing the position. Alfred Rosenberg has supported Goebbels, believing that letting Strassers secure the position would mean his career's end.
+
+Adolf Hitler in his order has rallied what was left of loyalists, including Heinrich Himmler, Hermann Göring, Rudolf Hess and Julius Streicher.
+
+- @fate: Where will Hitler end up?
+
+@fate
+on-arrival: nsdap_party_leader = "Gregor Strasser"; nsdap_ideology = "National Socialism (Strasserism)"
+achievement: im_staub_der_zeit
+  
+= Hitler has been ousted!
+
+Following the power moves, Hitler has been ousted afted the SA units threatened with the murder and assassinations of the multiple figures in his support. Being unable to impose political authority themselves, they went on compromise with Strassers to install Gregor Strasser of Northern / Revolutionary wing but with the condition of SA's independence and NSDAP funding the SA when requested to do so.
+
+Gregor Strasser has accepted the following conditions and stepped forward, becoming the new leader of the party.
+
+Rest of Hitler's loyalists have turned away from the party alongside Hitler, joining the DVFP or remaining without party whatsover.
+
+NSDAP is forever shattered and thus, begins the new era.
