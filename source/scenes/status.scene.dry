@@ -303,9 +303,8 @@ window.renderReichstagMini = function(svgId, barId) {
     });
 
     if (window && d3) {
-        // Size to the svg's own parent container (sidebar), not #content
         var container = svgEl.parentElement;
-        var maxWidth = 280; // adjust to fit your sidebar width
+        var maxWidth = 280;
         var width = Math.min(maxWidth, container.offsetWidth || maxWidth);
         var height = Math.round(width / 2);
 
@@ -314,9 +313,11 @@ window.renderReichstagMini = function(svgId, barId) {
 
         var parliament = d3.parliament();
         parliament.width(width).height(height).innerRadiusCoef(0.4);
-        // No enter/exit animation config here on purpose —
-        // avoids the "forming" fly-in animation on every tab switch.
-        if (parliament.duration) parliament.duration(0);
+        
+        parliament.enter.fromCenter(false).smallToBig(false);
+        parliament.exit.toCenter(false).bigToSmall(false);
+        parliament.update.animate(false);
+
         d3.select("#" + svgId).datum(data).call(parliament);
 
         var totalSeats = visibleParties.reduce(function(sum, p) { return sum + p.seats; }, 0);
