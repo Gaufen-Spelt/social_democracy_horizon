@@ -518,6 +518,10 @@ Object.keys(wordPhrases).forEach(function(phrase) {
     var displayContent = dendryUI.dendryEngine._makeDisplayContent(scene.content, true);
     $('#qualities').append(dendryUI.contentToHTML.convert(displayContent));
 
+    if (scene.onDisplay) {
+        dendryUI.dendryEngine._runActions(scene.onDisplay);
+    }
+
     if (window.statusTab === 'status') {
         var Q = dendryUI.dendryEngine.state.qualities;
         var qualitiesEl = document.getElementById('qualities');
