@@ -1785,3 +1785,75 @@ body.dark-mode tr.row-neutral   { background-color: rgba(120, 120, 120, 0.10); }
 
 
 
+.save_overlay_top {
+  max-width: min(92vw, 640px);
+}
+
+.save_tab_container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin-bottom: 0.75em;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.save_tab_button {
+  font-family: "Playfair Display", Georgia, serif;
+  background-color: var(--tab-color);
+  color: var(--text-color);
+  border: none;
+  outline: none;
+  flex: 1;
+  padding: 0.6em 0.4em;
+  font-size: 0.85em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.save_tab_button + .save_tab_button {
+  border-left: 1px solid var(--border-color);
+}
+
+.save_tab_button.active {
+  background-color: var(--content-bg-color);
+  color: var(--link-color);
+}
+
+.save_tab_button:hover {
+  background-color: var(--tab-hover-color);
+  color: var(--link-color);
+}
+
+/* Auto-save table always visible above the tabbed pages */
+#saves_table_auto {
+  width: 100%;
+  margin-bottom: 0.5em;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5em;
+}
+
+/* Tabbed pages: only .active page is shown */
+.save_tab_page {
+  width: 100%;
+  display: none;
+}
+
+.save_tab_page.active {
+  display: table;
+}
+
+#saves_table_footer {
+  width: 100%;
+  margin-top: 0.5em;
+  border-top: 1px solid var(--border-color);
+  padding-top: 0.5em;
+}
+
+@media screen and (max-width: 560px) {
+  .save_tab_button { font-size: 0.75em; padding: 0.5em 0.2em; }
+}
+
+
