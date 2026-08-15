@@ -297,6 +297,24 @@ window.renderReichstagMini = function(svgId, barId) {
     if (!svgEl || !barEl) return;
     if (!Q.partyData) return; // no election has run yet
 
+
+    if (!document.getElementById('reichstag-mini-style')) {
+        var style = document.createElement('style');
+        style.id = 'reichstag-mini-style';
+        style.textContent =
+            '#' + svgId + ' .seat.spd { stroke: none !important; }\n' +
+            '#' + svgId + ' .seat.in-coalition { stroke: #FFD700; stroke-width: 2px; }';
+        document.head.appendChild(style);
+    }
+
+    var coalitionParties = {};
+    for (var i = 0; i < Q.parties.length; i++) {
+        var p = Q.parties[i];
+        if (Q[p + '_in_government'] == 1) {
+            coalitionParties[p] = true;
+        }
+    }
+
     var visibleParties = Q.partyData.filter(function(p) { return p.show && p.seats > 0; });
     var data = visibleParties.map(function(p) {
         return { id: p.id, legend: p.name, name: p.name, seats: p.seats };
@@ -313,12 +331,15 @@ window.renderReichstagMini = function(svgId, barId) {
 
         var parliament = d3.parliament();
         parliament.width(width).height(height).innerRadiusCoef(0.4);
-        
         parliament.enter.fromCenter(false).smallToBig(false);
         parliament.exit.toCenter(false).bigToSmall(false);
         parliament.update.animate(false);
 
         d3.select("#" + svgId).datum(data).call(parliament);
+
+        d3.select("#" + svgId).selectAll(".seat").classed("in-coalition", function(d) {
+            return d.party && coalitionParties[d.party.id];
+        });
 
         var totalSeats = visibleParties.reduce(function(sum, p) { return sum + p.seats; }, 0);
         barEl.innerHTML = "";
@@ -341,6 +362,11 @@ window.renderReichstagMini = function(svgId, barId) {
             seg.style.overflow = "hidden";
             seg.style.boxSizing = "border-box";
             seg.title = p.name + ": " + p.seats + " seats";
+
+            if (coalitionParties[p.id]) {
+                seg.style.outline = "2px solid #FFD700";
+                seg.style.outlineOffset = "-2px";
+            }
 
             if (pct > 0.06) {
                 var label = document.createElement("span");
