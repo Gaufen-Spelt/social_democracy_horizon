@@ -545,6 +545,7 @@ Object.keys(wordPhrases).forEach(function(phrase) {
 
         attachPortrait(Q.president, 'President:', 'president-row', 'status-portrait');
         attachPortrait(Q.chancellor, 'Chancellor:', 'chancellor-row', 'chancellor-portrait');
+        attachPortrait(Q.ministerpresident, 'Prussian Minister-President:', 'ministerpresident-row', 'ministerpresident-portrait');
     }
 };
 
