@@ -738,749 +738,7 @@ if (Q.month_actions >= 1) {
 
 
 
-// DNVP GAMEPLAY
 
-if (Q.lambach_exile == 1) {
-    Q.hugenberg_momentum += 3.8;
-    Q.delegate_power_christsoc -= 1.4;   // DHV wing bleeds most
-    Q.delegate_power_yocon -= 0.6;
-    Q.delegate_power_b -= 1.0;
-} else if (Q.lambach_reinstated == 1) {
-    Q.hugenberg_momentum += 1.8;
-    Q.delegate_power_a += 1.0;
-    Q.delegate_power_christsoc += 0.4;
-    Q.delegate_power_yocon += 0.2;
-} else if (Q.lambach_exile == 0 && Q.month >= 8) {
-    Q.delegate_power_christsoc += 5.9; // DHV vindicated
-    Q.delegate_power_yocon += 2.3;
-} else {
-    Q.hugenberg_momentum += 1.9;
-}
-
-if (Q.cnbl_crisis == 1) {
-    Q.hugenberg_momentum += 3.2;
-} else {
-    Q.delegate_power_b += 1.7;
-    Q.delegate_power_yocon += 0.8;
-    Q.delegate_power_christsoc += 0.5;
-}
-
-if (Q.jungdo_formed == 0) {
-    Q.delegate_power_yocon += 0.5;    
-    Q.delegate_power_christsoc += 1.4;
-    Q.delegate_power_a += 0.5;
-} else {
-    Q.delegate_power_b += 2.0;
-    Q.hugenberg_momentum += 2.0;
-}
-
-if (Q.geest_wildfire == 0) {
-    Q.delegate_power_yocon += 1.3;
-    Q.delegate_power_christsoc += 1.2;
-    Q.delegate_power_a += 1.8;
-    Q.delegate_power_b += 1.1;
-    Q.hugenberg_momentum -= 1.2;
-} else {
-    Q.hugenberg_momentum += 5.0;
-    Q.delegate_power_yocon += 1.5;    // split the old +10 to c
-    Q.delegate_power_christsoc += 1.1;
-    Q.delegate_power_a += 0.3;
-    Q.delegate_power_b -= 1.0;
-}
-
-// 3b. Media Dominance Check
-if (Q.commercialized_media >= 1 || Q.radio >= 1) {
-    Q.hugenberg_momentum -= 2.0;
-}
-
-// Media beating
-
-if (Q.hugenberg_media_attack >= 1 ) {
-    Q.hugenberg_momentum -= 10.0;
-}
-
-// 3c. Land Reform Threat
-if (Q.land_reform > 0) {
-    Q.hugenberg_momentum += 4.0 * Q.land_reform;
-}
-
-// 3d. Government Participation Bonus
-if (Q.dnvp_in_government) {
-    Q.delegate_power_a += 4.4;
-    Q.delegate_power_b += 2.0;
-    Q.delegate_power_yocon += 2.2;
-    Q.delegate_power_christsoc += 1.8;
-}
-
-if (Q.ideology == "reformist") {
-    Q.delegate_power_a -= 0.3;
-    Q.delegate_power_b -= 0.3;
-    Q.delegate_power_yocon -= 0.1;
-    Q.delegate_power_christsoc += 0.8;
-    Q.hugenberg_momentum -= 0.1;
-}
-if (Q.ideology == "labor") {
-    Q.delegate_power_christsoc -= 0.5;
-    Q.delegate_power_a += 0.3;
-    Q.delegate_power_b += 0.3;
-    Q.delegate_power_yocon += 0.3;
-    Q.hugenberg_momentum += 0.1;
-}
-if (Q.ideology == "left") {
-    Q.hugenberg_momentum += 1;
-    Q.delegate_power_a += 0.5;
-    Q.delegate_power_b -= 1.2;
-    Q.delegate_power_yocon += 0.5;
-    Q.delegate_power_christsoc -= 0.5;
-}
-
-if (Q.welfare < 0) Q.delegate_power_christsoc += 2.5 * Math.abs(Q.welfare);
-
-if (Q.unions_independent) Q.delegate_power_christsoc *= 1.06;
-
-if (Q.lambach_stage >= 2) {
-    Q.delegate_power_christsoc += 30;
-}
-
-// 4. Class Influence
-Q.hugenberg_momentum += ((Q.old_middle_dnvp_pct || 0) * 0.27);
-Q.hugenberg_momentum += ((Q.rural_dnvp_pct || 0) * 0.17);
-
-Q.delegate_power_a += ((Q.new_middle_dnvp_pct || 0) * 0.32);
-Q.delegate_power_a += ((Q.old_middle_dnvp_pct || 0) * 0.11);
-
-Q.delegate_power_b += ((Q.rural_dnvp_pct || 0) * 0.20);
-Q.delegate_power_b += ((Q.old_middle_dnvp_pct || 0) * 0.08);
-
-// Young Conservatives: new middle class + small worker slice + some old middle
-Q.delegate_power_yocon += ((Q.workers_dnvp_pct || 0) * 0.16) + ((Q.new_middle_dnvp_pct || 0) * 0.25) + ((Q.old_middle_dnvp_pct || 0) * 0.06);
-// Christian Socials: worker-heavy + half of new middle
-Q.delegate_power_christsoc += ((Q.workers_dnvp_pct || 0) * 0.6) + ((Q.new_middle_dnvp_pct || 0) * 0.33);
-
-// 5. Ideological Reinforcements
-Q.hugenberg_momentum += Q.nationalism * 4.0;
-Q.delegate_power_b += Q.nationalism * 0.13 * Q.pro_republic * 0.1;
-Q.delegate_power_a += Q.pro_republic * 0.034 + Q.nationalism * 0.056;
-Q.delegate_power_yocon += Q.pro_republic * 0.25;
-Q.delegate_power_christsoc += Q.socialism * 0.28 + Q.pro_republic * 0.12;
-
-// 6. Failure Penalty
-if (Q.dnvp_votes_display < 13) {
-    Q.delegate_power_a -= 2.0;
-    Q.delegate_power_b -= 2.0;
-    Q.hugenberg_momentum += 3.0;
-} else if (Q.dnvp_votes_display < 14) {
-    Q.delegate_power_a -= 0.6;
-    Q.delegate_power_b -= 1.0;
-    Q.hugenberg_momentum += 1.0;
-    Q.delegate_power_yocon += 0.6;
-    Q.delegate_power_christsoc += 0.4;
-} else if (Q.dnvp_votes_display < 16) {
-    Q.delegate_power_a -= 0.2;
-    Q.delegate_power_b -= 0.4;
-    Q.hugenberg_momentum += 0.6;
-    Q.delegate_power_yocon += 1.0;
-    Q.delegate_power_christsoc += 0.6;
-} else if (Q.dnvp_votes_display < 18) {
-    Q.delegate_power_a += 1.2;
-    Q.delegate_power_b -= 0.5;
-    Q.hugenberg_momentum -= 1.0;
-    Q.delegate_power_yocon += 2.0;
-    Q.delegate_power_christsoc += 1.7;
-} else {
-    Q.delegate_power_a += 1.5;
-    Q.delegate_power_b -= 0.6;
-    Q.hugenberg_momentum -= 1.2;
-    Q.delegate_power_yocon += 2.3;
-    Q.delegate_power_christsoc += 2.0;
-}
-
-// 7. Global regulation: cap combined total of all 6 tracked vars at 1000
-{
-    const _dnvp_total_cap = 1000;
-    const _dnvp_tracked = [
-        'hugenberg_momentum',
-        'delegate_power_a',
-        'delegate_power_b',
-        'delegate_power_yocon',
-        'delegate_power_christsoc'
-    ];
-
-    const _dnvp_sum = _dnvp_tracked.reduce((sum, key) => sum + Q[key], 0);
-
-    if (_dnvp_sum > _dnvp_total_cap) {
-        const _dnvp_scale = _dnvp_total_cap / _dnvp_sum;
-        _dnvp_tracked.forEach(key => {
-            Q[key] *= _dnvp_scale;
-        });
-    }
-}
-
-
-
-
-
-// ==========================================
-// NSDAP GAMEPLAY
-// ==========================================
-
-Q.hitlerist_power = Q.hitlerist_power || 800;
-Q.strasserist_power = Q.strasserist_power || 50;
-Q.rohmite_power = Q.rohmite_power || 150;
-
-// 1. GEEST WILDFIRE & TIMING EVENTS
-if (Q.geest_wildfire == 1) {    
-    Q.hitlerist_power += 6.0;
-} else if (Q.month >= 2 && Q.geest_wildfire <= 0) {
-  
-    Q.strasserist_power += 2.0;
-}
-
-// 2. HITLER FUNDING
-if (Q.hitler_young_funded >= 1) {
-    Q.hitlerist_power *= 1.10;
-}
-
-// 3. IDEOLOGY
-if (Q.ideology == "reformist") {
-    Q.strasserist_power += 1.5;
-}
-
-if (Q.welfare <= 0) {
-    Q.strasserist_power += 1 * Q.welfare; 
-}
-
-if (Q.unions_independent) {
-    Q.strasserist_power += 2.8;
-}
-
-if (Q.workers_spd_pct + Q.workers_kpd_pct < 60) {
-    Q.strasserist_power += 2 + (Q.workers_nsdap_pct * 0.2);
-}
-
-if (Q.year >= 1928 && Q.month >= 10 && (Q.dnvp_party_leader == "Alfred Hugenberg" || Q.dnvp_ideology == "National Conservatism (Hugenbergite)")) {
-    Q.hitlerist_power += 5.5 * (Q.dnvp_pct * 0.2);
-} else {
-    Q.strasserist_power += 3 * (Q.nsdap_pct * 0.25);
-}
-
-if (Q.year >= 1929 && Q.month >= 2 && (Q.dvp_party_leader == "Ernst Scholz" || Q.dvp_ideology == "National Liberalism (Scholzite)" || Q.dvp_ideology == "Authoritarian National Liberalism")) {
-    Q.hitlerist_power += 3.5 * (Q.dvp_pct * 0.4);
-} else {
-    Q.strasserist_power += 2 * (Q.nsdap_pct * 0.2);
-}
-
-if (Q.workers_spd_pct < 40) {
-    Q.strasserist_power += 2 + (Q.workers_spd_pct * 0.05);
-}
-
-Q.hitlerist_power += (Q.nationalism || 0) * 0.5;
-Q.rohmite_power += (Q.nationalism || 0) * 0.5;
-
-{
-    const _ns_total = Q.hitlerist_power + Q.strasserist_power + Q.rohmite_power;
-    const _strasser_share = _ns_total > 0 ? (Q.strasserist_power / _ns_total) : 0.05;
-    Q.strasserist_power += (Q.socialism || 0) * _strasser_share;
-}
-
-// 5. DEMOGRAPHIC CLASS INFLUENCE
-// Old middle class & rural: fully Hitlerist
-Q.hitlerist_power += (Q.old_middle_nsdap_pct || 0);
-Q.hitlerist_power += (Q.rural_nsdap_pct || 0);
-
-// Unemployed: Röhm 40%, Hitler 40%, Strasser 20%
-Q.rohmite_power += (Q.unemployedc_nsdap_pct || 0) * 0.40;
-Q.hitlerist_power += (Q.unemployedc_nsdap_pct || 0) * 0.40;
-Q.strasserist_power += (Q.unemployedc_nsdap_pct || 0) * 0.20;
-
-// Workers: mostly Strasser 70%, Hitler 10%, Röhm 20%
-Q.strasserist_power += (Q.workers_nsdap_pct || 0) * 0.70;
-Q.hitlerist_power += (Q.workers_nsdap_pct || 0) * 0.10;
-Q.rohmite_power += (Q.workers_nsdap_pct || 0) * 0.20;
-
-// 6. GLOBAL REGULATION: cap combined total of all 3 tracked vars at 1000
-{
-    const _ns_total_cap = 1000;
-    const _ns_tracked = [
-        'hitlerist_power',
-        'strasserist_power',
-        'rohmite_power'
-    ];
-
-    const _ns_sum = _ns_tracked.reduce((sum, key) => sum + Q[key], 0);
-
-    if (_ns_sum > _ns_total_cap) {
-        const _ns_scale = _ns_total_cap / _ns_sum;
-        _ns_tracked.forEach(key => {
-            Q[key] *= _ns_scale;
-        });
-    }
-}
-
-
-
-
-
-
-
-
-
-// ==========================================
-// DVP GAMEPLAY
-// ==========================================
-
-Q.dvp_left = Q.dvp_left || 240;
-Q.dvp_right = Q.dvp_right || 260;
-
-if (Q.spd_r >= 30) {
-    Q.dvp_left -= 0.7;
-    Q.dvp_right += 0.7;
-} else if (Q.spd_r >= 27.5) {
-    Q.dvp_left += 0.35;
-    Q.dvp_right += 0.35;
-} else if (Q.spd_r <= 27.5 && Q.spd_r > 25) {
-    Q.dvp_left += 0.7;
-    Q.dvp_right -= 0.7;
-} else { 
-    Q.dvp_left += 1.28;
-    Q.dvp_right -= 1.28;
-}
-
-if (Q.foreign_minister_party == "DVP" || Q.kellogg_briand_signed_dvp == 1) {
-    Q.dvp_right += 2.64;
-    Q.dvp_left -= 0.7;
-}
-
-if (Q.congress_path != "capitulation") {
-    Q.dvp_left += 0.7;
-}
-if (Q.congress_path == "capitulation") {
-    Q.dvp_right += 2.8;
-}
-if (Q.congress_path == "social_nationalists" || Q.congress_path == "coalitionists") {
-    Q.dvp_left += 1.8;
-    if (Q.congress_path == "social_nationalists") {
-        Q.dvp_left += 0.7;
-    }
-}
-
-if (Q.upper_tax_rates > 0) {
-    Q.dvp_right += 0.88 * Q.upper_tax_rates;
-}
-if (Q.welfare > 1) {
-    Q.dvp_right += 0.6 * Q.welfare;
-}
-if (Q.working_hours > 0) {
-    Q.dvp_right += 0.6 * Q.working_hours;
-}
-if (Q.ruhr_labor > 0) {
-    Q.dvp_right += 1.28;
-}
-if (Q.works_councils > 0) {
-    Q.dvp_right += 1.12 * Q.works_councils;
-}
-if (Q.socialization > 0) {
-    Q.dvp_right += 2.4 * Q.socialization;
-}
-if (Q.cooperatives > 0) {
-    Q.dvp_right += 1.28 * Q.cooperatives;
-}
-
-if (Q.major_curriculum == "vocational") {
-    Q.dvp_left += 1.8;
-}
-if (Q.minor_curriculum == "vocational") {
-    Q.dvp_left += 0.7;
-}
-if (Q.secularized == 1) {
-    Q.dvp_left += 2.5;
-}
-
-Q.dvp_right += (Q.capital_strike_progress || 0) * 0.35;
-Q.dvp_right += (Q.workers_safety || 0) * 0.35;
-Q.dvp_left += (Q.judicial_reform || 0) * 1.28;
-Q.dvp_left += (Q.reparations_negotiation || 0) * 2.0;
-
-if (Q.enemies == "bourgeois parties" || Q.enemies == "DVP") {
-    Q.dvp_right += 2.64;
-}
-
-Q.dvp_left += (Q.radio || 0) * 1.8;
-Q.dvp_left += (Q.commercialized_media || 0) * 1.28;
-
-if (Q.unions_independent) {
-    Q.dvp_left += 4.0;
-}
-
-if (Q.ideology == "reformist") {
-    Q.dvp_left += 1.8;
-}
-if (Q.ideology == "labor") {
-    Q.dvp_left -= 1.28;
-    Q.dvp_right += 1.28;
-}
-if (Q.ideology == "left") {
-    Q.dvp_right += 2.24;
-    Q.dvp_left -= 1.8;
-}
-
-Q.dvp_right += (Q.peoples_party_support || 0) * 0.35;
-Q.dvp_left += (Q.peoples_party_support || 0) * 0.66;
-
-Q.dvp_left += ((Q.dvp_relation || 0) / 8) * 0.35;
-Q.dvp_right += ((100 - (Q.dvp_relation || 0)) * 0.5) * 0.28;
-
-if (Q.dvp_relation < 40) {
-    Q.dvp_right += 0.7;
-}
-
-Q.dvp_left += ((Q.pro_republic || 0) / 12) * 0.35;
-Q.dvp_right += (Q.nationalism || 0) * 0.6;
-
-// 4. DEMOGRAPHIC CLASS INFLUENCE
-Q.dvp_left += (((Q.new_middle_dvp_pct || 0) + (Q.workers_dvp_pct || 0) + (Q.unemployedc_dvp_pct || 0)) / 5) * 0.35;
-Q.dvp_right += ((Q.old_middle_dvp_pct || 0) * 0.8 + (Q.rural_dvp_pct || 0) * 0.6) * 0.32;
-
-// 5. SPD/ZENTRUM DEMOGRAPHIC WEAKNESS OVERTURE
-Q.dvp_left += (32 - (Q.new_middle_spd_pct || 0)) * 0.06;
-Q.dvp_left += (20 - (Q.new_middle_z_pct || 0)) * 0.06;
-Q.dvp_left += (38 - (Q.workers_spd_pct || 0)) * 0.06;
-Q.dvp_left += (15 - (Q.workers_z_pct || 0)) * 0.06;
-
-// 6. Global regulation / cap
-{
-    const _dvp_total_cap = 500;
-    const _dvp_tracked = ['dvp_left', 'dvp_right'];
-    const _dvp_sum = _dvp_tracked.reduce((sum, key) => sum + Q[key], 0);
-
-    if (_dvp_sum > _dvp_total_cap) {
-        const _dvp_scale = _dvp_total_cap / _dvp_sum;
-        Q.dvp_left *= _dvp_scale;
-        Q.dvp_right *= _dvp_scale;
-    }
-}
-
-
-// ==========================================
-// DDP GAMEPLAY
-// ==========================================
-
-Q.business_wing_ddp = Q.business_wing_ddp || 370;
-Q.social_republican_ddp = Q.social_republican_ddp || 130;
-
-if (Q.stolper_adopted == 1) {
-    Q.business_wing_ddp += 2.7;
-    Q.social_republican_ddp -= 1.8;
-} else if (Q.stolper_adopted == -1) {
-    Q.business_wing_ddp -= 2.0;
-    Q.social_republican_ddp += 2.5;
-}
-
-if (Q.congress_path == "social_nationalists") {
-    Q.social_republican_ddp += 0.3;
-}
-
-if (Q.ddp_in_government) {
-    if (Q.spd_in_government) {
-        Q.social_republican_ddp += 1.5;
-        Q.business_wing_ddp -= 0.5;
-    } else {
-        Q.business_wing_ddp += 1.2;
-        Q.social_republican_ddp -= 0.8;
-    }
-} else {
-    Q.business_wing_ddp += 1.8;
-    Q.social_republican_ddp -= 1.2;
-}
-
-Q.social_republican_ddp += ((Q.ddp_relation || 0) / 8) * 0.35;
-Q.business_wing_ddp += ((100 - (Q.ddp_relation || 0)) * 0.5) * 0.35;
-
-if (Q.welfare <= 0) {
-    Q.social_republican_ddp += Math.abs(Q.welfare || 0) * 0.85;
-}
-
-if (Q.workers_aid <= 0) {
-    Q.social_republican_ddp += Math.abs(Q.workers_aid || 0) * 0.50;
-}
-
-if (Q.ideology == "reformist") Q.social_republican_ddp += 1.8;
-if (Q.ideology == "labor") {
-    Q.social_republican_ddp -= 1.28;
-    Q.business_wing_ddp += 1.28;
-}
-if (Q.ideology == "left") {
-    Q.business_wing_ddp += 2.45; 
-    Q.social_republican_ddp -= 1.8;
-}
-
-if (Q.womens_rights > 0) Q.social_republican_ddp += 0.11 + Q.womens_rights;
-if (Q.kwg_research > 0) Q.social_republican_ddp += 0.51 + Q.kwg_research;
-if (Q.family_law > 0) Q.social_republican_ddp += 0.15 + Q.family_law;
-if (Q.womens_work > 0) Q.social_republican_ddp += 0.10 + Q.womens_work;
-
-if (Q.upper_tax_rates > 0) Q.business_wing_ddp += 0.57 * Q.upper_tax_rates;
-if (Q.middle_tax_rates > 0) Q.business_wing_ddp += 1.11 * Q.middle_tax_rates;
-if (Q.lower_tax_rates > 0) Q.social_republican_ddp += 0.38 * Q.lower_tax_rates;
-if (Q.works_councils > 0) Q.business_wing_ddp += 1.12 * Q.works_councils;
-if (Q.socialization > 0) Q.business_wing_ddp += 1.11 * Q.socialization;
-if (Q.cooperatives > 0) Q.business_wing_ddp += 0.49 * Q.cooperatives;
-
-if (Q.spd_r >= 30) {
-    Q.business_wing_ddp -= 0.7;
-    Q.social_republican_ddp += 0.7;
-} else if (Q.spd_r >= 27.5) {
-    Q.business_wing_ddp += 0.35;
-    Q.social_republican_ddp += 0.35;
-} else if (Q.spd_r <= 27.5 && Q.spd_r > 25) {
-    Q.business_wing_ddp += 0.7;
-    Q.social_republican_ddp -= 0.7;
-} else { 
-    Q.business_wing_ddp += 1.28;
-    Q.social_republican_ddp -= 1.28;
-}
-
-Q.ddp_new_mid = Q.new_middle_ddp_pct || 0;
-Q.ddp_old_mid = Q.old_middle_ddp_pct || 0;
-Q.ddp_rural   = Q.rural_ddp_pct || 0;
-Q.ddp_workers = Q.workers_ddp_pct || 0;
-Q.ddp_unemp   = Q.unemployedc_ddp_pct || 0;
-
-Q.business_wing_ddp += (Q.ddp_new_mid + Q.ddp_old_mid + Q.ddp_rural) * 0.11;
-Q.social_republican_ddp += (Q.ddp_workers + Q.ddp_unemp) * 0.33;
-
-// Global regulation: cap combined total at 500
-{
-    const _ddp_total_cap = 500; 
-    const _ddp_tracked = ['business_wing_ddp', 'social_republican_ddp'];
-    const _ddp_sum = _ddp_tracked.reduce((sum, key) => sum + Q[key], 0);
-
-    if (_ddp_sum > _ddp_total_cap) {
-        const _ddp_scale = _ddp_total_cap / _ddp_sum;
-        _ddp_tracked.forEach(key => {
-            Q[key] *= _ddp_scale;
-        });
-    }
-}
-
-
-
-
-// ==========================================
-// ZENTRUM (CENTER PARTY) INTERNAL DYNAMICS
-// ==========================================
-
-Q.z_clerical_power = Q.z_clerical_power || 250;
-Q.z_left_labor_power = Q.z_left_labor_power || 250;
-Q.z_right_labor_power = Q.z_right_labor_power || 200;
-Q.z_moderate_power = Q.z_moderate_power || 300;
-
-// 1. THE CONCORDAT & VATICAN INFLUENCE
-// Historically, Pacelli's push for Catholic Action and the Prussian Concordat 
-// sidelined lay labor leaders and favored clerical control under Kaas.
-if (Q.prussian_concordat >= 1) {
-    // With the Prussian Concordat signed, Kaas is historically vindicated but 
-    // focuses on Rome, leaving a vacuum that splits the labor wings.
-    Q.z_clerical_power -= 3.5;
-    Q.z_right_labor_power += 3.8; 
-    Q.z_moderate_power += 2.0;
-} else if (Q.prussian_concordat_progress == 0) {
-    // Ongoing negotiations and Vatican pressure boost clerical authority.
-    Q.z_clerical_power += 3.5;
-    Q.z_right_labor_power -= 1.8; 
-} else if (Q.prussian_concordat_progress >= 1) {
-    Q.z_clerical_power += 2.5;
-    Q.z_left_labor_power += 1.0;
-    Q.z_right_labor_power -= 0.8; // Vatican opposes Stegerwald's interconfessional plans
-
-    Q.z_clerical_power -= 0.5 * Q.prussian_concordat_progress;
-    Q.z_right_labor_power += 0.7 * Q.prussian_concordat_progress;
-    Q.z_left_labor_power += 0.1 * Q.prussian_concordat_progress;
-    Q.z_moderate_power += 0.1 * Q.prussian_concordat_progress;
-}
-
-
-if (Q.catholic_action_influence >= 1) {
-    Q.z_clerical_power += 4.5;
-    Q.z_left_labor_power -= 1.5;  // KAB is pressured to accept clerical supervision
-    Q.z_right_labor_power -= 3.0; // Christian Unions (DGB) hate clerical interference
-}
-
-if (Q.ideology == "reformist") {
-    Q.z_left_labor_power += 2.5;
-    Q.z_moderate_power += 0.5;
-    Q.z_right_labor_power += 1.0;
-} else if (Q.ideology == "labor") {
-    Q.z_left_labor_power -= 1.5;
-    Q.z_right_labor_power += 1.0;
-    Q.z_moderate_power += 1.5;
-    Q.z_clerical_power += 1.5;
-} else if (Q.ideology == "left") {
-    Q.z_left_labor_power -= 3.5;
-    Q.z_right_labor_power += 4.0;
-    Q.z_moderate_power += 0.5;
-    Q.z_clerical_power += 3.5;
-}
-
-if (Q.enemies == "bourgeois parties") {
-    Q.z_right_labor_power += 3.0;
-    Q.z_left_labor_power -= 3.0;
-    Q.z_clerical_power += 1.0;
-    Q.z_moderate_power += 1.2;
-}
-
-// 2. COALITION STATUS & SPD RELATIONS
-// Joos and Brauns rely on a stable, cooperative relationship with the SPD.
-// If relations sour or the SPD acts aggressively, the bourgeois base swings to Kaas/Stegerwald.
-
-if (Q.z_relation >= 70) {
-    let multiplier = Q.z_relation / 10; // e.g., 7.5 multiplier at 75 relation
-    
-    Q.z_left_labor_power += 3.0 * multiplier;
-    Q.z_moderate_power += 1.5 * multiplier;
-    Q.z_right_labor_power -= 2.0 * multiplier;
-
-} else if (Q.z_relation < 70 && Q.z_relation >= 60) {
-
-    let multiplier = (70 - Q.z_relation) / 10; // e.g., 0.5 multiplier at 65 relation
-    if (multiplier < 0.1) multiplier = 0.1;   // Safety floor so it always triggers at least a tiny bit
-    
-    Q.z_clerical_power += 1.5 * multiplier;
-    Q.z_right_labor_power += 1.5 * multiplier;
-    Q.z_left_labor_power -= 1.0 * multiplier;
-    Q.z_moderate_power += 1.0 * multiplier;
-
-} else {
-
-    let multiplier = (80 - Q.z_relation) / 10; // e.g., 6.0 multiplier at 20 relation
-    
-    Q.z_clerical_power += 1.5 * multiplier;
-    Q.z_right_labor_power += 2.9 * multiplier;
-    Q.z_left_labor_power -= 1.2 * multiplier;
-    Q.z_moderate_power -= 0.5 * multiplier;
-}
-
-
-if (Q.spd_in_government && Q.z_in_government) {
-    Q.z_moderate_power += 2.5;
-    Q.z_left_labor_power += 1.5;
-} else if (Q.z_in_government && !Q.spd_in_government) {
-    Q.z_clerical_power += 1.0;
-    Q.z_right_labor_power += 3.0;
-    Q.z_left_labor_power -= 0.6;
-    Q.z_moderate_power += 0.1;
-} else {
-    Q.z_clerical_power += 1.5;
-    Q.z_left_labor_power -= 1.0;
-    Q.z_moderate_power -= 1.5;
-    Q.z_right_labor_power += 3.5;
-}
-
-// 3. SOCIAL POLICY & LABOR CONFLICTS
-// The fight over Welfare defines the labor split.
-const welfare_val = Q.welfare || 0;
-if (welfare_val > 0) {
-    Q.z_left_labor_power += 1.5 * welfare_val;
-    Q.z_moderate_power += 2.0 * welfare_val; // Validates Brauns' welfare-state legacy
-} else if (welfare_val < 0) {
-    // Austerity triggers union militancy, but also a defensive bourgeois backlash
-    Q.z_right_labor_power += 3.5 * Math.abs(welfare_val);
-    Q.z_clerical_power += 1.5 * Math.abs(welfare_val);
-    Q.z_moderate_power -= 2.5 * Math.abs(welfare_val);
-}
-
-if (Q.unions_independent) {
-    // ADBG unions strengthen the lay DGB wing
-    Q.z_right_labor_power += 6.0;
-    Q.z_left_labor_power += 2.5;
-}
-
-if (Q.lambach_exile == 0 && (Q.year >= 1928 && Q.month >= 7) && Q.year < 1930) {
-    Q.z_left_labor_power += 1.0;
-    Q.z_right_labor_power += 5.7;
-    Q.z_moderate_power -= 1.5;
-    Q.z_clerical_power -= 2.7;
-}
-
-if (Q.congress_path == "social_nationalists" && Q.year < 1930) {
-    Q.z_left_labor_power += 2.5;
-    Q.z_right_labor_power += 12;
-    Q.z_moderate_power -= 1.5;
-    Q.z_clerical_power -= 3.5;
-}
-
-// 4. THE CULTURE WAR (Secularization Threat)
-// Nothing unites and radicalizes Zentrum like threats to religious schools.
-// High secularization efforts by the SPD trigger a massive clerical backlash.
-if (Q.secularized == 1 || Q.major_curriculum == "scientific") {
-    Q.z_clerical_power += 5.5;    // Defensive Catholic mobilization
-    Q.z_left_labor_power -= 4.0;  // Socialists' "allies" are blamed for cultural betrayal
-    Q.z_moderate_power -= 2.0;
-}
-
-// 5. DEMOGRAPHICS & CLASS TENSIONS
-// Center's internal delegate power is heavily swayed by voter class composition.
-const workers_z = Q.workers_z_pct || 0;
-const rural_z = Q.rural_z_pct || 0;
-const old_middle_z = Q.old_middle_z_pct || 0;
-const new_middle_z = Q.new_middle_z_pct || 0;
-
-Q.z_left_labor_power += (workers_z * 0.50) + (new_middle_z * 0.18);
-Q.z_right_labor_power += (workers_z * 0.48) + (new_middle_z * 0.05);
-
-Q.z_clerical_power += (rural_z * 0.35) + (old_middle_z * 0.25);
-Q.z_moderate_power += (new_middle_z * 0.40) + (old_middle_z * 0.15);
-
-// Bourgeois Backlash: Historically, civil servants and academics feared Stegerwald 
-// would turn Zentrum into a "workers' party." High middle-class representation suppresses him.
-if (new_middle_z > 20 || old_middle_z > 25) {
-    Q.z_right_labor_power -= 3.5;
-    Q.z_clerical_power += 2.0;
-} else {
-    Q.z_right_labor_power += workers_z * 0.15;
-    Q.z_left_labor_power += workers_z * 0.07;
-}
-
-// 6. GLOBAL REGULATION: Cap combined total of all 4 tracked variables at 1000
-{
-    const _z_total_cap = 1000;
-    const _z_tracked = [
-        'z_clerical_power',
-        'z_left_labor_power',
-        'z_right_labor_power',
-        'z_moderate_power'
-    ];
-
-    const _z_sum = _z_tracked.reduce((sum, key) => sum + Q[key], 0);
-
-    if (_z_sum > _z_total_cap) {
-        const _z_scale = _z_total_cap / _z_sum;
-        _z_tracked.forEach(key => {
-            Q[key] *= _z_scale;
-        });
-    }
-}
-
-
-if (Q.z_party_leader == "Joseph Joos") {
-
-    // Right labor always counts fully toward the anti-Joos bloc
-    let vonc_score = Q.z_right_labor_power;
-
-    const relation = Q.z_relation != null ? Q.z_relation : 50;
-    const relation_deficit = Math.max(0, 70 - relation) / 70; // 0 to 1
-    const clerical_weight = Math.pow(relation_deficit, 2);    // exponential curve
-
-    vonc_score += Q.z_clerical_power * clerical_weight;
-
-    const threshold_floor = 450;
-    const threshold_ceiling = 600;
-    const vonc_threshold = threshold_ceiling - (relation_deficit * (threshold_ceiling - threshold_floor));
-
-    if (vonc_score >= vonc_threshold) {
-        Q.z_vonc_triggered = 1;
-    }
-}
 
 
 
@@ -2853,49 +2111,18 @@ if (Q.presidential_powers == 0 && !Q.government_dismissed) {
 
     
 // ============================================================
-// OPINION DYNAMICS — v3 (IDEOLOGY-SCORE REBUILD)
+// OPINION DYNAMICS — v2
 // Tick = 2 weeks (semi-month)
 //
-// This version replaces the old discrete party-bucket system
-// (socialist_party_count / centrist_party_count / nationalist_party_count,
-// built from long if-chains of named parties) with a continuous
-// 0–20 ideology score per party (Q.[party]_ideo_score, produced by the
-// AUTO IDEOLOGY SCORER — must run BEFORE this file each tick).
-//
-// BANDS (score 0-20, 10 = dead center):
-//   radical-left    0-4
-//   moderate-left   5-9
-//   centrist        10
-//   moderate-right  11-14
-//   radical-right   15-20
-//
-// INFLUENCE: each government party's influence = |score - 10| / 10
-//   (0 at dead center, 1.0 at the extremes). Band influence is the
-//   sum of its members' influence, capped at 1.0. This replaces the
-//   old bloc_influence() count-based formula entirely.
-//
-// FEED MODEL (this is the actual behavioral change from v2):
-//   - MODERATE bands (moderate-left, moderate-right) push socialism/
-//     nationalism respectively at ALL times, scaled only by their
-//     influence — NOT gated by econ_negative, NOT counted as
-//     "radicalization." This is the crisis-independent floor: it's
-//     what keeps nationalism/socialism from bottoming out near 0.1%
-//     during good times, because a moderate-right DNVP-line government
-//     (say) keeps some nationalist sentiment alive purely by existing,
-//     regardless of the economy.
-//   - RADICAL bands (radical-left, radical-right) push socialism/
-//     nationalism ONLY when econ_negative > 0 — i.e. crisis-gated,
-//     same spirit as the old ember/radicalization mechanic, but now a
-//     live term (no persistent stock) scaled by influence * econ_negative.
-//
-// FLAGS: downstream mechanics (honeymoon, TSE, cross-pressure, betrayal)
-// still want simple booleans. We provide BOTH general flags
-// (socialist_in_power / nationalist_in_power / centrist_in_power) that
-// treat radical+moderate as one side, AND finer subtyped flags
-// (radical_left_in_power / moderate_left_in_power / radical_right_in_power /
-// moderate_right_in_power) so mechanics that care about the radical/
-// moderate distinction (e.g. TSE blame deflection, betrayal thresholds)
-// can use the sharper flag where it matters.
+// Key changes from v1:
+//   - Velocity/momentum tracking (trajectory matters, not just position)
+//   - Continuous economy signal instead of binary good/bad gates
+//   - Differentiated inertia: nationalism spikes fast/bleeds slow,
+//     socialism is sticky, republic legitimacy is sluggish both ways
+//   - Faction-weighted influence (junior partners absorb more blame)
+//   - Honeymoon/fatigue: grace period on entry, erosion over time
+//   - TSE effects multiply into signals rather than stacking additively
+//   - All base magnitudes scaled down for fortnightly ticks
 // ============================================================
 
 // ============================================================
@@ -2950,34 +2177,51 @@ var tse = Q.transformed_socialist_economy ? 1 : 0;
 
 // ============================================================
 // TICK SCALING
+// Base tick = 2 weeks. All deltas are approximately 1/26 of
+// annual-scale effects. We don't divide everything by 26 literally —
+// instead we reduce the master scaling constants and let the
+// continuous signals carry the weight.
 // ============================================================
 
-var TICK = 0.38; // master scalar
+var TICK = 0.38; // master scalar (replaces the flat 0.65 everywhere)
 
 // ============================================================
 // CONTINUOUS ECONOMY SIGNAL
-// Returns a value in [-1, +1]: +1 = prosperity, -1 = crisis, 0 = mixed.
+// Replaces binary economy_good / economy_bad.
+// Returns a value in [-1, +1]:
+//   +1 = unambiguous prosperity
+//   -1 = severe crisis
+//    0 = neutral / mixed
+// This feeds into push/pull as a continuous weight rather than a gate.
 // ============================================================
 
-var unemp_score     = 1 - scale(Q.unemployed,       3, 22);
-var inflation_score = 1 - scale(Math.abs(Q.inflation), 2, 14);
-var growth_score    = scale(Q.economic_growth,      -4, 6);
+var unemp_score     = 1 - scale(Q.unemployed,       3, 22);   // 1=good, 0=bad
+var inflation_score = 1 - scale(Math.abs(Q.inflation), 2, 14); // 1=stable, 0=bad
+var growth_score    = scale(Q.economic_growth,      -4, 6);   // 1=growing, 0=shrinking
 
+// Weighted composite: unemployment dominates, then growth, then inflation
 var econ_composite = (unemp_score * 0.40) + (growth_score * 0.35) + (inflation_score * 0.25);
+// Remap from [0,1] to [-1,+1]
 var econ_signal = (econ_composite - 0.5) * 2.0;
 
+// TSE raises the bar — transformation promised structural full employment.
+// Shift the signal downward slightly if TSE active (harder to reach "good")
 if (tse) {
     econ_signal -= scale(Q.unemployed, 4, 10) * 0.25;
 }
 
+// Clamp to [-1, +1]
 econ_signal = Math.max(-1, Math.min(1, econ_signal));
 
-var econ_positive = Math.max(0,  econ_signal);
-var econ_negative = Math.max(0, -econ_signal);
-var econ_mixed    = 1 - Math.abs(econ_signal);
+// Convenience aliases for partial-signal zones
+var econ_positive = Math.max(0,  econ_signal);  // 0 when bad, >0 when good
+var econ_negative = Math.max(0, -econ_signal);  // 0 when good, >0 when bad
+var econ_mixed    = 1 - Math.abs(econ_signal);  // peaks at 0, 1 when perfectly mixed
 
 // ============================================================
 // PHASE MULTIPLIERS
+// Now applied as multipliers on specific components of econ_negative/positive,
+// rather than flat scalars on pre-computed stress values.
 // ============================================================
 
 var phase_unemp_mult       = 1.0;
@@ -3021,6 +2265,8 @@ switch (Q.phase) {
         break;
 }
 
+// Phase-weighted economy signal for unemployment, inflation, and growth
+// components separately — lets phases tilt which dimension of distress bites
 var unemp_neg    = scale(Q.unemployed,           8, 25) * phase_unemp_mult;
 var unemp_pos    = (1 - scale(Q.unemployed,      3, 10)) * (2.0 - phase_unemp_mult);
 var infl_neg     = scale(Math.abs(Q.inflation),  5, 15) * phase_inflation_mult;
@@ -3028,6 +2274,7 @@ var infl_pos     = (1 - scale(Math.abs(Q.inflation), 3, 8)) * (2.0 - phase_infla
 var growth_pos   = scale(Q.economic_growth,      1,  6) * phase_growth_mult;
 var growth_neg   = scale(-Q.economic_growth,     1, 10) * phase_growth_mult;
 
+// TSE amplifies unemployment signals bidirectionally
 if (tse) {
     unemp_neg *= 1.4;
     unemp_pos *= 1.3;
@@ -3037,117 +2284,82 @@ unemp_pos  = Math.max(0, Math.min(1, unemp_pos));
 infl_pos   = Math.max(0, Math.min(1, infl_pos));
 
 // ============================================================
-// IDEOLOGY BANDS AND INFLUENCE
-// Requires Q.[party]_ideo_score to already be set (AUTO IDEOLOGY
-// SCORER block runs earlier in the tick, before this file).
-// Requires Q.parties (array of active party keys) and government
-// status flags Q.[party]_in_government, as before.
+// PARTY BLOC COUNTS AND INFLUENCE
+// Junior coalition partners now weighted differently —
+// the smallest partner absorbs disproportionate blame.
 // ============================================================
 
-const IDEO_BANDS = {
-    radical_left:   (s) => s <= 4,
-    moderate_left:  (s) => s >= 5  && s <= 9,
-    centrist:       (s) => s === 10,
-    moderate_right: (s) => s >= 11 && s <= 14,
-    radical_right:  (s) => s >= 15,
-};
+var socialist_party_count   = 0;
+var centrist_party_count    = 0;
+var nationalist_party_count = 0;
 
-function bandOf(score) {
-    if (score === undefined || score === null) return "centrist"; // unscored -> treat as neutral
-    if (IDEO_BANDS.radical_left(score))   return "radical_left";
-    if (IDEO_BANDS.moderate_left(score))  return "moderate_left";
-    if (IDEO_BANDS.centrist(score))       return "centrist";
-    if (IDEO_BANDS.moderate_right(score)) return "moderate_right";
-    return "radical_right";
-}
+if (Q.ideology === "left" && Q.spd_in_government && Q.social_fascism_adopted != 1) socialist_party_count++;
+if (Q.kpd_in_government)  socialist_party_count++;
+if (Q.sapd_in_government) socialist_party_count++;
+if (Q.sl_in_government)   socialist_party_count++;
+if (Q.kpo_in_government)  socialist_party_count++;
+if (Q.lb_in_government) socialist_party_count++;
 
-// party_influence = |score - 10| / 10, clamped to [0,1]
-function partyInfluence(score) {
-    if (score === undefined || score === null) return 0;
-    return Math.max(0, Math.min(1, Math.abs(score - 10) / 10));
-}
+if (Q.spd_in_government && Q.ideology !== "left") centrist_party_count++;
+if (Q.z_in_government)    centrist_party_count++;
+if (Q.ddp_in_government)  centrist_party_count++;
+if (Q.dvp_in_government && (Q.dvp_right_shift || 0) < 1) centrist_party_count++;
+if (Q.srpd_in_government) centrist_party_count++;
+if (Q.wp_in_government)   centrist_party_count++;
+if (Q.bvp_in_government)  centrist_party_count++;
+if (Q.dnvp_in_government && Q.dnvp_line === 1) centrist_party_count++;
+if (Q.aspd_in_government) centrist_party_count++;
+if (Q.vnr_in_government)  centrist_party_count++;
+if (Q.hl_in_government)   centrist_party_count++;
+if (Q.sls_in_government)   centrist_party_count++;
+if (Q.cvp_in_government)   centrist_party_count++;
+if (Q.rdp_in_government)   centrist_party_count++;
+if (Q.dbp_in_government)   centrist_party_count++;
+if (Q.dsbp_in_government)   centrist_party_count++;
 
-var band_influence = {
-    radical_left:   0,
-    moderate_left:  0,
-    centrist:       0,
-    moderate_right: 0,
-    radical_right:  0,
-};
-var band_party_count = {
-    radical_left:   0,
-    moderate_left:  0,
-    centrist:       0,
-    moderate_right: 0,
-    radical_right:  0,
-};
+if (Q.vnr_in_government)  nationalist_party_count++;
+if (Q.dtsp_in_government)  nationalist_party_count++;
+if (Q.dnvp_in_government && Q.dnvp_line !== 1) nationalist_party_count++;
+if (Q.cnbl_in_government) nationalist_party_count++;
+if (Q.nsdap_in_government) nationalist_party_count++;
+if (Q.dvfp_in_government) nationalist_party_count++;
+if (Q.dvp_in_government && (Q.dvp_right_shift || 0) >= 1) nationalist_party_count++;
 
-// Union of Q.parties plus any extra scored parties not in that array
-// (splinters, etc. — anything carrying a [party]_ideo_score).
-var _ideo_party_set = {};
-if (Q.parties) {
-    for (const p of Q.parties) _ideo_party_set[p] = true;
-}
-for (const key in Q) {
-    if (key.endsWith('_ideo_score')) {
-        _ideo_party_set[key.slice(0, -'_ideo_score'.length)] = true;
-    }
-}
-
-for (const p in _ideo_party_set) {
-    if (!Q[p + '_in_government']) continue; // only governing parties count toward influence
-    const score = Q[p + '_ideo_score'];
-    const band  = bandOf(score);
-    const infl  = partyInfluence(score);
-    band_influence[band] += infl;
-    band_party_count[band] += 1;
-}
-
-// Cap each band's summed influence at 1.0, same ceiling as the old bloc_influence.
-for (const b in band_influence) {
-    band_influence[b] = Math.min(1.0, band_influence[b]);
-}
-
-// ---- General flags (either radical or moderate on that side counts) ----
-var socialist_in_power   = (band_party_count.radical_left  > 0) || (band_party_count.moderate_left  > 0);
-var nationalist_in_power = (band_party_count.radical_right > 0) || (band_party_count.moderate_right > 0);
-var centrist_in_power    = band_party_count.centrist > 0;
-
-// ---- Subtyped flags (radical vs moderate distinction preserved) ----
-var radical_left_in_power   = band_party_count.radical_left   > 0;
-var moderate_left_in_power  = band_party_count.moderate_left  > 0;
-var radical_right_in_power  = band_party_count.radical_right  > 0;
-var moderate_right_in_power = band_party_count.moderate_right > 0;
-
-// ---- General influence (replaces socialist_influence / nationalist_influence / centrist_influence) ----
-// Combined influence of a side = larger of its two sub-band influences, not the sum,
-// to avoid double-counting when a coalition has both a radical and moderate partner
-// on the same side (mirrors how the old bloc_influence capped at 1.0 per side).
-var socialist_influence   = Math.min(1.0, Math.max(band_influence.radical_left,  band_influence.moderate_left));
-var nationalist_influence = Math.min(1.0, Math.max(band_influence.radical_right, band_influence.moderate_right));
-var centrist_influence    = band_influence.centrist;
-
-// Junior-partner amplification, same spirit as v2: if a side's entire government
-// presence is a single lone party in a coalition of >=3 total parties, its exposure
-// to blame is boosted 15%. Recomputed against total governing party count.
-var total_govt_parties = 0;
-for (const b in band_party_count) total_govt_parties += band_party_count[b];
+// Influence: junior partners (single-party-count blocs in large coalitions)
+// take amplified blame. The smaller you are relative to the coalition,
+// the more exposed you are to voter punishment.
+var total_govt_parties = socialist_party_count + centrist_party_count + nationalist_party_count;
 var coalition_size_factor = total_govt_parties > 0 ? total_govt_parties : 1;
 
-function juniorBoost(count, influence) {
-    if (count === 1 && coalition_size_factor >= 3) return Math.min(1.0, influence * 1.15);
-    return influence;
+function bloc_influence(count) {
+    if (count === 0) return 0;
+    var base = Math.min(count * 0.35, 1.0);
+    // Junior penalty: lone bloc in a large coalition gets +15% blame exposure
+    if (count === 1 && coalition_size_factor >= 3) base *= 1.15;
+    return Math.min(base, 1.0);
 }
-socialist_influence   = juniorBoost(band_party_count.radical_left + band_party_count.moderate_left, socialist_influence);
-nationalist_influence = juniorBoost(band_party_count.radical_right + band_party_count.moderate_right, nationalist_influence);
+
+var socialist_influence   = bloc_influence(socialist_party_count);
+var centrist_influence    = bloc_influence(centrist_party_count);
+var nationalist_influence = bloc_influence(nationalist_party_count);
+
+var socialist_in_power    = socialist_party_count > 0;
+var centrist_in_power     = centrist_party_count > 0;
+var nationalist_in_power  = nationalist_party_count > 0;
 
 // ============================================================
 // HONEYMOON / FATIGUE
+// New governments get a grace period where blame is muted.
+// Long-serving governments face credibility fatigue.
+// Stored as Q.govt_tenure_ticks — caller must increment this
+// each tick a government persists (or reset on change).
 // ============================================================
 
 if (Q.govt_tenure_ticks === undefined) Q.govt_tenure_ticks = 0;
 
+// Honeymoon: first ~12 ticks (6 months), blame absorption is 40% lower
 var honeymoon_factor = 1.0 - (0.40 * Math.max(0, 1 - Q.govt_tenure_ticks / 12));
+// Fatigue: after ~52 ticks (2 years), credit absorption starts dropping too
 var fatigue_factor   = 1.0 - (0.25 * scale(Q.govt_tenure_ticks, 52, 104));
 
 // ============================================================
@@ -3158,9 +2370,14 @@ var fatigue_factor   = 1.0 - (0.25 * scale(Q.govt_tenure_ticks, 52, 104));
 var pr_push = 0;
 var pr_pull = 0;
 
+// Positive economy feeds republic legitimacy — but slowly,
+// institutions earn trust over time more than via single events
 pr_push += (unemp_pos * 1.2 + infl_pos * 0.7 + growth_pos * 1.0) * econ_positive * fatigue_factor;
+
+// Negative economy bleeds republic — faster than recovery
 pr_pull += (unemp_neg * 2.2 + infl_neg * 1.0 + growth_neg * 1.8) * econ_negative * honeymoon_factor;
 
+// Blame attribution — only when economy is clearly bad
 if (econ_negative > 0.3) {
     if (!Q.spd_in_government && !Q.z_in_government) {
         pr_pull += 0.6 * econ_negative;
@@ -3170,56 +2387,53 @@ if (econ_negative > 0.3) {
     }
 }
 
+// TSE: multiplied into existing push/pull rather than additive
 if (tse) {
     if (econ_positive > 0.3) {
+        // Transformation + prosperity: "the republic can deliver"
         pr_push *= (1.0 + 0.4 * socialist_influence);
     } else if (econ_negative > 0.3) {
+        // Transformation + crisis: constitutional anxiety
         pr_pull *= (1.0 + 0.7 * socialist_influence);
     } else {
+        // Mixed: structural anxiety
         pr_pull += 0.25 * socialist_influence;
     }
 }
 
 var raw_pr_delta = (pr_push - pr_pull);
 
+// Republic legitimacy: asymmetric inertia.
+// Recovers at ~60% the speed it falls — institutions bleed faster than they heal.
 var pr_inertia = raw_pr_delta > 0 ? 0.60 : 1.0;
 raw_pr_delta *= pr_inertia;
 
+// Momentum
 var pr_mom = momentum_mult(Q.pr_vel, raw_pr_delta > 0 ? 1 : -1);
 raw_pr_delta *= pr_mom;
 
+// Wall damping
 raw_pr_delta *= wall_damp(Q.pro_republic, raw_pr_delta > 0 ? 90 : 10, 18, true);
 
 var pr_delta = raw_pr_delta * TICK;
-Q.pr_vel = lerp(Q.pr_vel, raw_pr_delta, 0.3);
+Q.pr_vel = lerp(Q.pr_vel, raw_pr_delta, 0.3); // velocity updates toward raw signal
 
 // ============================================================
 // NATIONALISM
-//
-// Two feed channels, per the new model:
-//   1. MODERATE-RIGHT baseline: constant push scaled by moderate_right
-//      influence, active regardless of economy. This is the floor that
-//      keeps nationalism alive in good times.
-//   2. RADICAL-RIGHT crisis term: push scaled by radical_right influence,
-//      but only active when econ_negative > 0 (crisis-gated).
+// Fast to spike, slow to bleed.
+// Explanatory simplicity (scapegoating, betrayal) makes it
+// the fastest absorber of economic anxiety.
 // ============================================================
 
 var nat_push = 0;
 var nat_pull = 0;
 
-// --- Channel 1: moderate-right baseline (crisis-independent floor) ---
-var NAT_MODERATE_BASELINE = 0.6; // magnitude constant for the floor push
-nat_push += NAT_MODERATE_BASELINE * band_influence.moderate_right;
-
-// --- Channel 2: radical-right crisis term (gated on econ_negative) ---
-if (econ_negative > 0) {
-    var NAT_RADICAL_CRISIS = 2.4; // magnitude constant for the crisis spike
-    nat_push += NAT_RADICAL_CRISIS * band_influence.radical_right * econ_negative *
-        (unemp_neg * 0.4 + infl_neg * 0.3 + growth_neg * 0.3);
-}
+// Crisis: nationalism absorbs anxiety fastest of the three
+nat_push += (unemp_neg * 2.8 + infl_neg * 1.0 + growth_neg * 2.0) * econ_negative;
 
 if (econ_negative > 0.25) {
     if (nationalist_in_power) {
+        // In power during bad times: takes blame, but less than left would
         nat_pull += 1.3 * nationalist_influence * econ_negative * honeymoon_factor;
     }
     if (socialist_in_power || centrist_in_power) {
@@ -3228,11 +2442,12 @@ if (econ_negative > 0.25) {
     }
 }
 
-// Prosperity: nationalism loses its core message (this still actively pulls it down)
+// Prosperity: nationalism loses its core message
 nat_pull += (unemp_pos * 1.0 + infl_pos * 0.7) * econ_positive;
 
 if (econ_positive > 0.25) {
     if (nationalist_in_power) {
+        // In power during good times: gets some credit but also scrutiny
         nat_push += 1.0 * nationalist_influence * econ_positive * fatigue_factor;
     }
     if (socialist_in_power) {
@@ -3240,18 +2455,22 @@ if (econ_positive > 0.25) {
     }
 }
 
-// TSE opposition effect — only makes sense when nationalism isn't already governing
+// TSE opposition effect: multiplied into the push/pull
 if (tse) {
     if (econ_negative > 0.25 && !nationalist_in_power) {
+        // "We told you so" — amplified by how badly transformation is failing
         nat_push *= (1.0 + 0.6 * (1 - socialist_influence) * econ_negative);
     }
     if (econ_positive > 0.25 && !nationalist_in_power) {
+        // Successful transformation: ideological defeat for nationalism
         nat_pull *= (1.0 + 0.35 * socialist_influence);
     }
 }
 
 var raw_nat_delta = (nat_push - nat_pull);
 
+// Nationalism: FAST spike, SLOW bleed.
+// Rising: 1.25x speed. Falling: 0.65x speed.
 var nat_inertia = raw_nat_delta > 0 ? 1.25 : 0.65;
 raw_nat_delta *= nat_inertia;
 
@@ -3265,28 +2484,19 @@ Q.nat_vel = lerp(Q.nat_vel, raw_nat_delta, 0.35);
 
 // ============================================================
 // SOCIALISM
-// Mirrors nationalism's two-channel model:
-//   1. MODERATE-LEFT baseline (crisis-independent floor)
-//   2. RADICAL-LEFT crisis term (crisis-gated)
+// Slower to move than nationalism, stickier once established.
+// Class consciousness builds gradually; it also dissolves gradually.
 // ============================================================
 
 var soc_push = 0;
 var soc_pull = 0;
 
-// --- Channel 1: moderate-left baseline (crisis-independent floor) ---
-var SOC_MODERATE_BASELINE = 0.6;
-soc_push += SOC_MODERATE_BASELINE * band_influence.moderate_left;
-
-// --- Channel 2: radical-left crisis term (gated on econ_negative) ---
-if (econ_negative > 0) {
-    var SOC_RADICAL_CRISIS = 2.4;
-    soc_push += SOC_RADICAL_CRISIS * band_influence.radical_left * econ_negative *
-        (unemp_neg * 0.4 + infl_neg * 0.27 + growth_neg * 0.27);
-}
+// Crisis: socialism gains, but more slowly than nationalism
+soc_push += (unemp_neg * 2.8 + infl_neg * 0.8 + growth_neg * 1.6) * econ_negative;
 
 if (econ_negative > 0.25) {
     if (socialist_in_power) {
-        var soc_blame_mult = tse ? 0.55 : 1.0;
+        var soc_blame_mult = tse ? 0.55 : 1.0; // TSE enables blame deflection
         soc_blame_mult *= honeymoon_factor;
         soc_pull += 1.3 * socialist_influence * econ_negative * soc_blame_mult;
     }
@@ -3295,6 +2505,7 @@ if (econ_negative > 0.25) {
     }
 }
 
+// Prosperity: socialism loses urgency narrative
 soc_pull += (unemp_pos * 1.0 + infl_pos * 0.7) * econ_positive;
 
 if (econ_positive > 0.25) {
@@ -3306,15 +2517,21 @@ if (econ_positive > 0.25) {
     }
 }
 
+// TSE structural legitimacy — multiplied into existing signals
 if (tse && socialist_in_power) {
+    // The transformation itself generates ongoing ideological momentum
     soc_push += 0.25 * socialist_influence;
+
     if (econ_positive > 0.3) {
+        // Vindication narrative amplifies what's already happening
         soc_push *= (1.0 + 0.5 * socialist_influence);
     }
 }
 
 var raw_soc_delta = (soc_push - soc_pull);
 
+// Socialism: moderate speed both ways, stickier than nationalism.
+// Rising: 0.95x. Falling: 0.75x (class loyalty persists under pressure).
 var soc_inertia = raw_soc_delta > 0 ? 0.95 : 0.75;
 raw_soc_delta *= soc_inertia;
 
@@ -3324,20 +2541,23 @@ raw_soc_delta *= soc_mom;
 raw_soc_delta *= wall_damp(Q.socialism, raw_soc_delta > 0 ? 90 : 10, 18, true);
 
 var soc_delta = raw_soc_delta * TICK;
-Q.soc_vel = lerp(Q.soc_vel, raw_soc_delta, 0.25);
+Q.soc_vel = lerp(Q.soc_vel, raw_soc_delta, 0.25); // slowest velocity update = stickiest
 
 // ============================================================
 // COMPETENCE COUNTERS
+// Now continuous rather than threshold-gated.
 // ============================================================
 
 if (Q.socialist_govt_success_counter  === undefined) Q.socialist_govt_success_counter  = 0;
 if (Q.nationalist_govt_success_counter === undefined) Q.nationalist_govt_success_counter = 0;
 
 if (socialist_in_power) {
+    // Counter drifts toward econ_signal — good times build it, bad times erode it
     var soc_counter_drift = econ_signal * socialist_influence * 0.3;
     Q.socialist_govt_success_counter = Math.max(0, Math.min(8,
         Q.socialist_govt_success_counter + soc_counter_drift));
 
+    // Sustained competence compounds socialism score (slowly)
     if (Q.socialist_govt_success_counter > 4) {
         soc_delta += 0.08 * socialist_influence *
             scale(Q.socialist_govt_success_counter, 4, 8) * TICK;
@@ -3357,6 +2577,10 @@ if (nationalist_in_power) {
 
 // ============================================================
 // CROSS-PRESSURE
+// Extremes rising bleeds the republic.
+// Polarization is bidirectional but asymmetric:
+// nationalism rising suppresses socialism more than vice versa
+// (fear displaces class solidarity faster than it's rebuilt).
 // ============================================================
 
 var cross_mult = tse ? 1.4 : 1.0;
@@ -3365,13 +2589,15 @@ if (Q.nationalism > 35 || Q.socialism > 35) {
 
     if (nat_delta > 0) {
         pr_delta  -= nat_delta * 0.20 * cross_mult;
-        soc_delta -= nat_delta * 0.12;
+        soc_delta -= nat_delta * 0.12; // fear displaces solidarity
     }
     if (soc_delta > 0) {
         pr_delta  -= soc_delta * 0.20 * cross_mult;
-        nat_delta -= soc_delta * 0.08;
+        nat_delta -= soc_delta * 0.08; // weaker displacement in this direction
     }
 
+    // If both rising simultaneously: they partially cancel each other
+    // rather than both compounding freely
     if (nat_delta > 0 && soc_delta > 0) {
         var smaller = Math.min(nat_delta, soc_delta);
         nat_delta -= smaller * 0.10;
@@ -3381,10 +2607,8 @@ if (Q.nationalism > 35 || Q.socialism > 35) {
 
 // ============================================================
 // BROKEN PROMISES
-// Uses the subtyped flags: betrayal from a radical-left government reads
-// differently than one from a moderate-left government, so we key the
-// stronger effects off the radical flag specifically where it matters,
-// falling back to the general flag for the parts that don't care.
+// TSE raises the unemployment betrayal threshold.
+// Now uses continuous signal rather than hard threshold.
 // ============================================================
 
 if (econ_negative > 0.35) {
@@ -3393,18 +2617,15 @@ if (econ_negative > 0.35) {
         var betrayal_signal  = scale(Q.unemployed, unemp_threshold, unemp_threshold + 8);
 
         if (betrayal_signal > 0) {
-            // Radical-left betrayal cuts deeper than moderate-left betrayal —
-            // the promise of structural transformation was bigger to begin with.
-            var betrayal_mag = tse ? 0.55 : (radical_left_in_power ? 0.30 : 0.20);
-            var rep_bleed    = tse ? 0.18 : (radical_left_in_power ? 0.09 : 0.05);
+            var betrayal_mag = tse ? 0.55 : 0.30;
+            var rep_bleed    = tse ? 0.18 : 0.09;
             soc_delta -= betrayal_mag * socialist_influence * betrayal_signal * TICK;
             pr_delta  -= rep_bleed   * socialist_influence * betrayal_signal * TICK;
         }
     }
 
     if (nationalist_in_power && (Q.inflation > 15 || Q.economic_growth < -5)) {
-        var nat_betrayal_mag = radical_right_in_power ? 0.30 : 0.20;
-        nat_delta -= nat_betrayal_mag * nationalist_influence * TICK;
+        nat_delta -= 0.30 * nationalist_influence * TICK;
         pr_delta  -= 0.09 * nationalist_influence * TICK;
     }
 
@@ -3417,6 +2638,9 @@ if (econ_negative > 0.35) {
 
 // ============================================================
 // TSE PHASE INTERACTIONS
+// Now multiplicative into the running deltas rather than flat additive.
+// Smaller base values reflect the fortnightly tick — these are
+// slow ideological tides, not overnight conversions.
 // ============================================================
 
 if (tse) {
@@ -3472,29 +2696,18 @@ Q.socialism    += soc_delta;
 // ============================================================
 
 if (!Q.math_broken) {
+    // NORMAL: Clamp to [0, 100] and round to 1 decimal
     Q.pro_republic = Math.round(Math.max(0, Math.min(100, Q.pro_republic)) * 10) / 10;
     Q.nationalism  = Math.round(Math.max(0, Math.min(100, Q.nationalism))  * 10) / 10;
     Q.socialism    = Math.round(Math.max(0, Math.min(100, Q.socialism))    * 10) / 10;
 } else {
+    // MATH BROKEN: Values can exceed 100, go negative, or become nonsense
     Q.pro_republic = Q.impossible_percentage(Q.pro_republic);
     Q.nationalism  = Q.impossible_percentage(Q.nationalism);
     Q.socialism    = Q.impossible_percentage(Q.socialism);
     console.log("OPINION CHAOS: PR=" + Q.pro_republic + " Nat=" + Q.nationalism + " Soc=" + Q.socialism + " Total=" + (Q.pro_republic + Q.nationalism + Q.socialism));
 }
 
-// ============================================================
-// DEBUG / DISPLAY EXPORTS
-// Exposes band composition so you can sanity-check the new system
-// against Q.[party]_ideo_score values in your test scenarios.
-// ============================================================
-
-Q.ideo_band_influence   = band_influence;
-Q.ideo_band_party_count = band_party_count;
-Q.ideo_flags = {
-    socialist_in_power, nationalist_in_power, centrist_in_power,
-    radical_left_in_power, moderate_left_in_power,
-    radical_right_in_power, moderate_right_in_power,
-};
 
 
 
@@ -6509,7 +5722,7 @@ if (Q.year >= 1928 && Q.year < 1929 && Q.geest_wildfire == 1 && (Q.state_buyer =
     Q.landvolk_fury = 0;
 }
 
-if (Q.month >= 11 && Q.year == 1929 && Q.dsbp_votes <= 0 && Q.jungdo_formed <= 0) {
+if (Q.month >= 11 && Q.year == 1929 && Q.dsbp_votes <= 0 && Q.jungdo_formed <= 0 && Q.dnvp_party_leader == "Alfred Hugenberg") {
       Q.jungdo_formed = 1;
       Q.parties.push('vnr');
       Q.jungdo_strength += 100;
@@ -6524,6 +5737,790 @@ if (Q.dvp_in_government && Q.spd_in_government && Q.dvp_ideology == "Authoritari
     Q.dvp_in_government = 0;
     Q.government_parties = Q.government_parties.filter(function(p) { return p !== 'DVP'; });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// DNVP GAMEPLAY
+
+if (Q.lambach_exile == 1) {
+    Q.hugenberg_momentum += 3.8;
+    Q.delegate_power_christsoc -= 1.4;   // DHV wing bleeds most
+    Q.delegate_power_yocon -= 0.6;
+    Q.delegate_power_b -= 1.0;
+} else if (Q.lambach_reinstated == 1) {
+    Q.hugenberg_momentum += 1.8;
+    Q.delegate_power_a += 1.0;
+    Q.delegate_power_christsoc += 0.4;
+    Q.delegate_power_yocon += 0.2;
+} else if (Q.lambach_exile == 0 && Q.month >= 8) {
+    Q.delegate_power_christsoc += 5.9; // DHV vindicated
+    Q.delegate_power_yocon += 2.3;
+} else {
+    Q.hugenberg_momentum += 1.9;
+}
+
+if (Q.cnbl_crisis == 1) {
+    Q.hugenberg_momentum += 3.2;
+} else {
+    Q.delegate_power_b += 1.7;
+    Q.delegate_power_yocon += 0.8;
+    Q.delegate_power_christsoc += 0.5;
+}
+
+if (Q.jungdo_formed == 0) {
+    Q.delegate_power_yocon += 0.5;    
+    Q.delegate_power_christsoc += 1.4;
+    Q.delegate_power_a += 0.5;
+} else {
+    Q.delegate_power_b += 2.0;
+    Q.hugenberg_momentum += 2.0;
+}
+
+if (Q.geest_wildfire == 0) {
+    Q.delegate_power_yocon += 1.3;
+    Q.delegate_power_christsoc += 1.2;
+    Q.delegate_power_a += 1.8;
+    Q.delegate_power_b += 1.1;
+    Q.hugenberg_momentum -= 1.2;
+} else {
+    Q.hugenberg_momentum += 5.0;
+    Q.delegate_power_yocon += 1.5;    // split the old +10 to c
+    Q.delegate_power_christsoc += 1.1;
+    Q.delegate_power_a += 0.3;
+    Q.delegate_power_b -= 1.0;
+}
+
+// 3b. Media Dominance Check
+if (Q.commercialized_media >= 1 || Q.radio >= 1) {
+    Q.hugenberg_momentum -= 2.0;
+}
+
+// Media beating
+
+if (Q.hugenberg_media_attack >= 1 ) {
+    Q.hugenberg_momentum -= 10.0;
+}
+
+// 3c. Land Reform Threat
+if (Q.land_reform > 0) {
+    Q.hugenberg_momentum += 4.0 * Q.land_reform;
+}
+
+// 3d. Government Participation Bonus
+if (Q.dnvp_in_government) {
+    Q.delegate_power_a += 4.4;
+    Q.delegate_power_b += 2.0;
+    Q.delegate_power_yocon += 2.2;
+    Q.delegate_power_christsoc += 1.8;
+}
+
+if (Q.ideology == "reformist") {
+    Q.delegate_power_a -= 0.3;
+    Q.delegate_power_b -= 0.3;
+    Q.delegate_power_yocon -= 0.1;
+    Q.delegate_power_christsoc += 0.8;
+    Q.hugenberg_momentum -= 0.1;
+}
+if (Q.ideology == "labor") {
+    Q.delegate_power_christsoc -= 0.5;
+    Q.delegate_power_a += 0.3;
+    Q.delegate_power_b += 0.3;
+    Q.delegate_power_yocon += 0.3;
+    Q.hugenberg_momentum += 0.1;
+}
+if (Q.ideology == "left") {
+    Q.hugenberg_momentum += 1;
+    Q.delegate_power_a += 0.5;
+    Q.delegate_power_b -= 1.2;
+    Q.delegate_power_yocon += 0.5;
+    Q.delegate_power_christsoc -= 0.5;
+}
+
+if (Q.welfare < 0) Q.delegate_power_christsoc += 2.5 * Math.abs(Q.welfare);
+
+if (Q.unions_independent) Q.delegate_power_christsoc *= 1.06;
+
+if (Q.lambach_stage >= 2) {
+    Q.delegate_power_christsoc += 30;
+}
+
+// 4. Class Influence
+Q.hugenberg_momentum += ((Q.old_middle_dnvp_pct || 0) * 0.27);
+Q.hugenberg_momentum += ((Q.rural_dnvp_pct || 0) * 0.17);
+
+Q.delegate_power_a += ((Q.new_middle_dnvp_pct || 0) * 0.32);
+Q.delegate_power_a += ((Q.old_middle_dnvp_pct || 0) * 0.11);
+
+Q.delegate_power_b += ((Q.rural_dnvp_pct || 0) * 0.20);
+Q.delegate_power_b += ((Q.old_middle_dnvp_pct || 0) * 0.08);
+
+// Young Conservatives: new middle class + small worker slice + some old middle
+Q.delegate_power_yocon += ((Q.workers_dnvp_pct || 0) * 0.16) + ((Q.new_middle_dnvp_pct || 0) * 0.25) + ((Q.old_middle_dnvp_pct || 0) * 0.06);
+// Christian Socials: worker-heavy + half of new middle
+Q.delegate_power_christsoc += ((Q.workers_dnvp_pct || 0) * 0.6) + ((Q.new_middle_dnvp_pct || 0) * 0.33);
+
+// 5. Ideological Reinforcements
+Q.hugenberg_momentum += Q.nationalism * 4.0;
+Q.delegate_power_b += Q.nationalism * 0.13 * Q.pro_republic * 0.1;
+Q.delegate_power_a += Q.pro_republic * 0.034 + Q.nationalism * 0.056;
+Q.delegate_power_yocon += Q.pro_republic * 0.25;
+Q.delegate_power_christsoc += Q.socialism * 0.28 + Q.pro_republic * 0.12;
+
+// 6. Failure Penalty
+if (Q.dnvp_votes_display < 13) {
+    Q.delegate_power_a -= 2.0;
+    Q.delegate_power_b -= 2.0;
+    Q.hugenberg_momentum += 3.0;
+} else if (Q.dnvp_votes_display < 14) {
+    Q.delegate_power_a -= 0.6;
+    Q.delegate_power_b -= 1.0;
+    Q.hugenberg_momentum += 1.0;
+    Q.delegate_power_yocon += 0.6;
+    Q.delegate_power_christsoc += 0.4;
+} else if (Q.dnvp_votes_display < 16) {
+    Q.delegate_power_a -= 0.2;
+    Q.delegate_power_b -= 0.4;
+    Q.hugenberg_momentum += 0.6;
+    Q.delegate_power_yocon += 1.0;
+    Q.delegate_power_christsoc += 0.6;
+} else if (Q.dnvp_votes_display < 18) {
+    Q.delegate_power_a += 1.2;
+    Q.delegate_power_b -= 0.5;
+    Q.hugenberg_momentum -= 1.0;
+    Q.delegate_power_yocon += 2.0;
+    Q.delegate_power_christsoc += 1.7;
+} else {
+    Q.delegate_power_a += 1.5;
+    Q.delegate_power_b -= 0.6;
+    Q.hugenberg_momentum -= 1.2;
+    Q.delegate_power_yocon += 2.3;
+    Q.delegate_power_christsoc += 2.0;
+}
+
+// 7. Global regulation: cap combined total of all 6 tracked vars at 1000
+{
+    const _dnvp_total_cap = 1000;
+    const _dnvp_tracked = [
+        'hugenberg_momentum',
+        'delegate_power_a',
+        'delegate_power_b',
+        'delegate_power_yocon',
+        'delegate_power_christsoc'
+    ];
+
+    const _dnvp_sum = _dnvp_tracked.reduce((sum, key) => sum + Q[key], 0);
+
+    if (_dnvp_sum > _dnvp_total_cap) {
+        const _dnvp_scale = _dnvp_total_cap / _dnvp_sum;
+        _dnvp_tracked.forEach(key => {
+            Q[key] *= _dnvp_scale;
+        });
+    }
+}
+
+
+
+
+
+// ==========================================
+// NSDAP GAMEPLAY
+// ==========================================
+
+Q.hitlerist_power = Q.hitlerist_power || 800;
+Q.strasserist_power = Q.strasserist_power || 50;
+Q.rohmite_power = Q.rohmite_power || 150;
+
+// 1. GEEST WILDFIRE & TIMING EVENTS
+if (Q.geest_wildfire == 1) {    
+    Q.hitlerist_power += 6.0;
+} else if (Q.month >= 2 && Q.geest_wildfire <= 0) {
+  
+    Q.strasserist_power += 2.0;
+}
+
+// 2. HITLER FUNDING
+if (Q.hitler_young_funded >= 1) {
+    Q.hitlerist_power *= 1.10;
+}
+
+// 3. IDEOLOGY
+if (Q.ideology == "reformist") {
+    Q.strasserist_power += 1.5;
+}
+
+if (Q.welfare <= 0) {
+    Q.strasserist_power += 1 * Q.welfare; 
+}
+
+if (Q.unions_independent) {
+    Q.strasserist_power += 2.8;
+}
+
+if (Q.workers_spd_pct + Q.workers_kpd_pct < 60) {
+    Q.strasserist_power += 2 + (Q.workers_nsdap_pct * 0.2);
+}
+
+if (Q.year >= 1928 && Q.month >= 10 && (Q.dnvp_party_leader == "Alfred Hugenberg" || Q.dnvp_ideology == "National Conservatism (Hugenbergite)")) {
+    Q.hitlerist_power += 5.5 * (Q.dnvp_pct * 0.2);
+} else {
+    Q.strasserist_power += 3 * (Q.nsdap_pct * 0.25);
+}
+
+if (Q.year >= 1929 && Q.month >= 2 && (Q.dvp_party_leader == "Ernst Scholz" || Q.dvp_ideology == "National Liberalism (Scholzite)" || Q.dvp_ideology == "Authoritarian National Liberalism")) {
+    Q.hitlerist_power += 3.5 * (Q.dvp_pct * 0.4);
+} else {
+    Q.strasserist_power += 2 * (Q.nsdap_pct * 0.2);
+}
+
+if (Q.workers_spd_pct < 40) {
+    Q.strasserist_power += 2 + (Q.workers_spd_pct * 0.05);
+}
+
+Q.hitlerist_power += (Q.nationalism || 0) * 0.5;
+Q.rohmite_power += (Q.nationalism || 0) * 0.5;
+
+{
+    const _ns_total = Q.hitlerist_power + Q.strasserist_power + Q.rohmite_power;
+    const _strasser_share = _ns_total > 0 ? (Q.strasserist_power / _ns_total) : 0.05;
+    Q.strasserist_power += (Q.socialism || 0) * _strasser_share;
+}
+
+// 5. DEMOGRAPHIC CLASS INFLUENCE
+// Old middle class & rural: fully Hitlerist
+Q.hitlerist_power += (Q.old_middle_nsdap_pct || 0);
+Q.hitlerist_power += (Q.rural_nsdap_pct || 0);
+
+// Unemployed: Röhm 40%, Hitler 40%, Strasser 20%
+Q.rohmite_power += (Q.unemployedc_nsdap_pct || 0) * 0.40;
+Q.hitlerist_power += (Q.unemployedc_nsdap_pct || 0) * 0.40;
+Q.strasserist_power += (Q.unemployedc_nsdap_pct || 0) * 0.20;
+
+// Workers: mostly Strasser 70%, Hitler 10%, Röhm 20%
+Q.strasserist_power += (Q.workers_nsdap_pct || 0) * 0.70;
+Q.hitlerist_power += (Q.workers_nsdap_pct || 0) * 0.10;
+Q.rohmite_power += (Q.workers_nsdap_pct || 0) * 0.20;
+
+// 6. GLOBAL REGULATION: cap combined total of all 3 tracked vars at 1000
+{
+    const _ns_total_cap = 1000;
+    const _ns_tracked = [
+        'hitlerist_power',
+        'strasserist_power',
+        'rohmite_power'
+    ];
+
+    const _ns_sum = _ns_tracked.reduce((sum, key) => sum + Q[key], 0);
+
+    if (_ns_sum > _ns_total_cap) {
+        const _ns_scale = _ns_total_cap / _ns_sum;
+        _ns_tracked.forEach(key => {
+            Q[key] *= _ns_scale;
+        });
+    }
+}
+
+
+
+
+
+
+
+
+
+// ==========================================
+// DVP GAMEPLAY
+// ==========================================
+
+Q.dvp_left = Q.dvp_left || 240;
+Q.dvp_right = Q.dvp_right || 260;
+
+if (Q.spd_r >= 30) {
+    Q.dvp_left -= 0.7;
+    Q.dvp_right += 0.7;
+} else if (Q.spd_r >= 27.5) {
+    Q.dvp_left += 0.35;
+    Q.dvp_right += 0.35;
+} else if (Q.spd_r <= 27.5 && Q.spd_r > 25) {
+    Q.dvp_left += 0.7;
+    Q.dvp_right -= 0.7;
+} else { 
+    Q.dvp_left += 1.28;
+    Q.dvp_right -= 1.28;
+}
+
+if (Q.foreign_minister_party == "DVP" || Q.kellogg_briand_signed_dvp == 1) {
+    Q.dvp_right += 2.64;
+    Q.dvp_left -= 0.7;
+}
+
+if (Q.congress_path != "capitulation") {
+    Q.dvp_left += 0.7;
+}
+if (Q.congress_path == "capitulation") {
+    Q.dvp_right += 2.8;
+}
+if (Q.congress_path == "social_nationalists" || Q.congress_path == "coalitionists") {
+    Q.dvp_left += 1.8;
+    if (Q.congress_path == "social_nationalists") {
+        Q.dvp_left += 0.7;
+    }
+}
+
+if (Q.upper_tax_rates > 0) {
+    Q.dvp_right += 0.88 * Q.upper_tax_rates;
+}
+if (Q.welfare > 1) {
+    Q.dvp_right += 0.6 * Q.welfare;
+}
+if (Q.working_hours > 0) {
+    Q.dvp_right += 0.6 * Q.working_hours;
+}
+if (Q.ruhr_labor > 0) {
+    Q.dvp_right += 1.28;
+}
+if (Q.works_councils > 0) {
+    Q.dvp_right += 1.12 * Q.works_councils;
+}
+if (Q.socialization > 0) {
+    Q.dvp_right += 2.4 * Q.socialization;
+}
+if (Q.cooperatives > 0) {
+    Q.dvp_right += 1.28 * Q.cooperatives;
+}
+
+if (Q.major_curriculum == "vocational") {
+    Q.dvp_left += 1.8;
+}
+if (Q.minor_curriculum == "vocational") {
+    Q.dvp_left += 0.7;
+}
+if (Q.secularized == 1) {
+    Q.dvp_left += 2.5;
+}
+
+Q.dvp_right += (Q.capital_strike_progress || 0) * 0.35;
+Q.dvp_right += (Q.workers_safety || 0) * 0.35;
+Q.dvp_left += (Q.judicial_reform || 0) * 1.28;
+Q.dvp_left += (Q.reparations_negotiation || 0) * 2.0;
+
+if (Q.enemies == "bourgeois parties" || Q.enemies == "DVP") {
+    Q.dvp_right += 2.64;
+}
+
+Q.dvp_left += (Q.radio || 0) * 1.8;
+Q.dvp_left += (Q.commercialized_media || 0) * 1.28;
+
+if (Q.unions_independent) {
+    Q.dvp_left += 4.0;
+}
+
+if (Q.ideology == "reformist") {
+    Q.dvp_left += 1.8;
+}
+if (Q.ideology == "labor") {
+    Q.dvp_left -= 1.28;
+    Q.dvp_right += 1.28;
+}
+if (Q.ideology == "left") {
+    Q.dvp_right += 2.24;
+    Q.dvp_left -= 1.8;
+}
+
+Q.dvp_right += (Q.peoples_party_support || 0) * 0.35;
+Q.dvp_left += (Q.peoples_party_support || 0) * 0.66;
+
+Q.dvp_left += ((Q.dvp_relation || 0) / 8) * 0.35;
+Q.dvp_right += ((100 - (Q.dvp_relation || 0)) * 0.5) * 0.28;
+
+if (Q.dvp_relation < 40) {
+    Q.dvp_right += 0.7;
+}
+
+Q.dvp_left += ((Q.pro_republic || 0) / 12) * 0.35;
+Q.dvp_right += (Q.nationalism || 0) * 0.6;
+
+// 4. DEMOGRAPHIC CLASS INFLUENCE
+Q.dvp_left += (((Q.new_middle_dvp_pct || 0) + (Q.workers_dvp_pct || 0) + (Q.unemployedc_dvp_pct || 0)) / 5) * 0.35;
+Q.dvp_right += ((Q.old_middle_dvp_pct || 0) * 0.8 + (Q.rural_dvp_pct || 0) * 0.6) * 0.32;
+
+// 5. SPD/ZENTRUM DEMOGRAPHIC WEAKNESS OVERTURE
+Q.dvp_left += (32 - (Q.new_middle_spd_pct || 0)) * 0.06;
+Q.dvp_left += (20 - (Q.new_middle_z_pct || 0)) * 0.06;
+Q.dvp_left += (38 - (Q.workers_spd_pct || 0)) * 0.06;
+Q.dvp_left += (15 - (Q.workers_z_pct || 0)) * 0.06;
+
+// 6. Global regulation / cap
+{
+    const _dvp_total_cap = 500;
+    const _dvp_tracked = ['dvp_left', 'dvp_right'];
+    const _dvp_sum = _dvp_tracked.reduce((sum, key) => sum + Q[key], 0);
+
+    if (_dvp_sum > _dvp_total_cap) {
+        const _dvp_scale = _dvp_total_cap / _dvp_sum;
+        Q.dvp_left *= _dvp_scale;
+        Q.dvp_right *= _dvp_scale;
+    }
+}
+
+
+// ==========================================
+// DDP GAMEPLAY
+// ==========================================
+
+Q.business_wing_ddp = Q.business_wing_ddp || 370;
+Q.social_republican_ddp = Q.social_republican_ddp || 130;
+
+if (Q.stolper_adopted == 1) {
+    Q.business_wing_ddp += 2.7;
+    Q.social_republican_ddp -= 1.8;
+} else if (Q.stolper_adopted == -1) {
+    Q.business_wing_ddp -= 2.0;
+    Q.social_republican_ddp += 2.5;
+}
+
+if (Q.congress_path == "social_nationalists") {
+    Q.social_republican_ddp += 0.3;
+}
+
+if (Q.ddp_in_government) {
+    if (Q.spd_in_government) {
+        Q.social_republican_ddp += 1.5;
+        Q.business_wing_ddp -= 0.5;
+    } else {
+        Q.business_wing_ddp += 1.2;
+        Q.social_republican_ddp -= 0.8;
+    }
+} else {
+    Q.business_wing_ddp += 1.8;
+    Q.social_republican_ddp -= 1.2;
+}
+
+Q.social_republican_ddp += ((Q.ddp_relation || 0) / 8) * 0.35;
+Q.business_wing_ddp += ((100 - (Q.ddp_relation || 0)) * 0.5) * 0.35;
+
+if (Q.welfare <= 0) {
+    Q.social_republican_ddp += Math.abs(Q.welfare || 0) * 0.85;
+}
+
+if (Q.workers_aid <= 0) {
+    Q.social_republican_ddp += Math.abs(Q.workers_aid || 0) * 0.50;
+}
+
+if (Q.ideology == "reformist") Q.social_republican_ddp += 1.8;
+if (Q.ideology == "labor") {
+    Q.social_republican_ddp -= 1.28;
+    Q.business_wing_ddp += 1.28;
+}
+if (Q.ideology == "left") {
+    Q.business_wing_ddp += 2.45; 
+    Q.social_republican_ddp -= 1.8;
+}
+
+if (Q.womens_rights > 0) Q.social_republican_ddp += 0.11 + Q.womens_rights;
+if (Q.kwg_research > 0) Q.social_republican_ddp += 0.51 + Q.kwg_research;
+if (Q.family_law > 0) Q.social_republican_ddp += 0.15 + Q.family_law;
+if (Q.womens_work > 0) Q.social_republican_ddp += 0.10 + Q.womens_work;
+
+if (Q.upper_tax_rates > 0) Q.business_wing_ddp += 0.57 * Q.upper_tax_rates;
+if (Q.middle_tax_rates > 0) Q.business_wing_ddp += 1.11 * Q.middle_tax_rates;
+if (Q.lower_tax_rates > 0) Q.social_republican_ddp += 0.38 * Q.lower_tax_rates;
+if (Q.works_councils > 0) Q.business_wing_ddp += 1.12 * Q.works_councils;
+if (Q.socialization > 0) Q.business_wing_ddp += 1.11 * Q.socialization;
+if (Q.cooperatives > 0) Q.business_wing_ddp += 0.49 * Q.cooperatives;
+
+if (Q.spd_r >= 30) {
+    Q.business_wing_ddp -= 0.7;
+    Q.social_republican_ddp += 0.7;
+} else if (Q.spd_r >= 27.5) {
+    Q.business_wing_ddp += 0.35;
+    Q.social_republican_ddp += 0.35;
+} else if (Q.spd_r <= 27.5 && Q.spd_r > 25) {
+    Q.business_wing_ddp += 0.7;
+    Q.social_republican_ddp -= 0.7;
+} else { 
+    Q.business_wing_ddp += 1.28;
+    Q.social_republican_ddp -= 1.28;
+}
+
+Q.ddp_new_mid = Q.new_middle_ddp_pct || 0;
+Q.ddp_old_mid = Q.old_middle_ddp_pct || 0;
+Q.ddp_rural   = Q.rural_ddp_pct || 0;
+Q.ddp_workers = Q.workers_ddp_pct || 0;
+Q.ddp_unemp   = Q.unemployedc_ddp_pct || 0;
+
+Q.business_wing_ddp += (Q.ddp_new_mid + Q.ddp_old_mid + Q.ddp_rural) * 0.11;
+Q.social_republican_ddp += (Q.ddp_workers + Q.ddp_unemp) * 0.33;
+
+// Global regulation: cap combined total at 500
+{
+    const _ddp_total_cap = 500; 
+    const _ddp_tracked = ['business_wing_ddp', 'social_republican_ddp'];
+    const _ddp_sum = _ddp_tracked.reduce((sum, key) => sum + Q[key], 0);
+
+    if (_ddp_sum > _ddp_total_cap) {
+        const _ddp_scale = _ddp_total_cap / _ddp_sum;
+        _ddp_tracked.forEach(key => {
+            Q[key] *= _ddp_scale;
+        });
+    }
+}
+
+
+
+
+// ==========================================
+// ZENTRUM (CENTER PARTY) INTERNAL DYNAMICS
+// ==========================================
+
+Q.z_clerical_power = Q.z_clerical_power || 250;
+Q.z_left_labor_power = Q.z_left_labor_power || 250;
+Q.z_right_labor_power = Q.z_right_labor_power || 200;
+Q.z_moderate_power = Q.z_moderate_power || 300;
+
+// 1. THE CONCORDAT & VATICAN INFLUENCE
+// Historically, Pacelli's push for Catholic Action and the Prussian Concordat 
+// sidelined lay labor leaders and favored clerical control under Kaas.
+if (Q.prussian_concordat >= 1) {
+    // With the Prussian Concordat signed, Kaas is historically vindicated but 
+    // focuses on Rome, leaving a vacuum that splits the labor wings.
+    Q.z_clerical_power -= 3.5;
+    Q.z_right_labor_power += 3.8; 
+    Q.z_moderate_power += 2.0;
+} else if (Q.prussian_concordat_progress == 0) {
+    // Ongoing negotiations and Vatican pressure boost clerical authority.
+    Q.z_clerical_power += 3.5;
+    Q.z_right_labor_power -= 1.8; 
+} else if (Q.prussian_concordat_progress >= 1) {
+    Q.z_clerical_power += 2.5;
+    Q.z_left_labor_power += 1.0;
+    Q.z_right_labor_power -= 0.8; // Vatican opposes Stegerwald's interconfessional plans
+
+    Q.z_clerical_power -= 0.5 * Q.prussian_concordat_progress;
+    Q.z_right_labor_power += 0.7 * Q.prussian_concordat_progress;
+    Q.z_left_labor_power += 0.1 * Q.prussian_concordat_progress;
+    Q.z_moderate_power += 0.1 * Q.prussian_concordat_progress;
+}
+
+
+if (Q.catholic_action_influence >= 1) {
+    Q.z_clerical_power += 4.5;
+    Q.z_left_labor_power -= 1.5;  // KAB is pressured to accept clerical supervision
+    Q.z_right_labor_power -= 3.0; // Christian Unions (DGB) hate clerical interference
+}
+
+if (Q.ideology == "reformist") {
+    Q.z_left_labor_power += 2.5;
+    Q.z_moderate_power += 0.5;
+    Q.z_right_labor_power += 1.0;
+} else if (Q.ideology == "labor") {
+    Q.z_left_labor_power -= 1.5;
+    Q.z_right_labor_power += 1.0;
+    Q.z_moderate_power += 1.5;
+    Q.z_clerical_power += 1.5;
+} else if (Q.ideology == "left") {
+    Q.z_left_labor_power -= 3.5;
+    Q.z_right_labor_power += 4.0;
+    Q.z_moderate_power += 0.5;
+    Q.z_clerical_power += 3.5;
+}
+
+if (Q.enemies == "bourgeois parties") {
+    Q.z_right_labor_power += 3.0;
+    Q.z_left_labor_power -= 3.0;
+    Q.z_clerical_power += 1.0;
+    Q.z_moderate_power += 1.2;
+}
+
+// 2. COALITION STATUS & SPD RELATIONS
+// Joos and Brauns rely on a stable, cooperative relationship with the SPD.
+// If relations sour or the SPD acts aggressively, the bourgeois base swings to Kaas/Stegerwald.
+
+if (Q.z_relation >= 70) {
+    let multiplier = Q.z_relation / 10; // e.g., 7.5 multiplier at 75 relation
+    
+    Q.z_left_labor_power += 3.0 * multiplier;
+    Q.z_moderate_power += 1.5 * multiplier;
+    Q.z_right_labor_power -= 2.0 * multiplier;
+
+} else if (Q.z_relation < 70 && Q.z_relation >= 60) {
+
+    let multiplier = (70 - Q.z_relation) / 10; // e.g., 0.5 multiplier at 65 relation
+    if (multiplier < 0.1) multiplier = 0.1;   // Safety floor so it always triggers at least a tiny bit
+    
+    Q.z_clerical_power += 1.5 * multiplier;
+    Q.z_right_labor_power += 1.5 * multiplier;
+    Q.z_left_labor_power -= 1.0 * multiplier;
+    Q.z_moderate_power += 1.0 * multiplier;
+
+} else {
+
+    let multiplier = (80 - Q.z_relation) / 10; // e.g., 6.0 multiplier at 20 relation
+    
+    Q.z_clerical_power += 1.5 * multiplier;
+    Q.z_right_labor_power += 2.9 * multiplier;
+    Q.z_left_labor_power -= 1.2 * multiplier;
+    Q.z_moderate_power -= 0.5 * multiplier;
+}
+
+
+if (Q.spd_in_government && Q.z_in_government) {
+    Q.z_moderate_power += 2.5;
+    Q.z_left_labor_power += 1.5;
+} else if (Q.z_in_government && !Q.spd_in_government) {
+    Q.z_clerical_power += 1.0;
+    Q.z_right_labor_power += 3.0;
+    Q.z_left_labor_power -= 0.6;
+    Q.z_moderate_power += 0.1;
+} else {
+    Q.z_clerical_power += 1.5;
+    Q.z_left_labor_power -= 1.0;
+    Q.z_moderate_power -= 1.5;
+    Q.z_right_labor_power += 3.5;
+}
+
+// 3. SOCIAL POLICY & LABOR CONFLICTS
+// The fight over Welfare defines the labor split.
+const welfare_val = Q.welfare || 0;
+if (welfare_val > 0) {
+    Q.z_left_labor_power += 1.5 * welfare_val;
+    Q.z_moderate_power += 2.0 * welfare_val; // Validates Brauns' welfare-state legacy
+} else if (welfare_val < 0) {
+    // Austerity triggers union militancy, but also a defensive bourgeois backlash
+    Q.z_right_labor_power += 3.5 * Math.abs(welfare_val);
+    Q.z_clerical_power += 1.5 * Math.abs(welfare_val);
+    Q.z_moderate_power -= 2.5 * Math.abs(welfare_val);
+}
+
+if (Q.unions_independent) {
+    // ADBG unions strengthen the lay DGB wing
+    Q.z_right_labor_power += 6.0;
+    Q.z_left_labor_power += 2.5;
+}
+
+if (Q.lambach_exile == 0 && (Q.year >= 1928 && Q.month >= 7) && Q.year < 1930) {
+    Q.z_left_labor_power += 1.0;
+    Q.z_right_labor_power += 5.7;
+    Q.z_moderate_power -= 1.5;
+    Q.z_clerical_power -= 2.7;
+}
+
+if (Q.congress_path == "social_nationalists" && Q.year < 1930) {
+    Q.z_left_labor_power += 2.5;
+    Q.z_right_labor_power += 12;
+    Q.z_moderate_power -= 1.5;
+    Q.z_clerical_power -= 3.5;
+}
+
+// 4. THE CULTURE WAR (Secularization Threat)
+// Nothing unites and radicalizes Zentrum like threats to religious schools.
+// High secularization efforts by the SPD trigger a massive clerical backlash.
+if (Q.secularized == 1 || Q.major_curriculum == "scientific") {
+    Q.z_clerical_power += 5.5;    // Defensive Catholic mobilization
+    Q.z_left_labor_power -= 4.0;  // Socialists' "allies" are blamed for cultural betrayal
+    Q.z_moderate_power -= 2.0;
+}
+
+// 5. DEMOGRAPHICS & CLASS TENSIONS
+// Center's internal delegate power is heavily swayed by voter class composition.
+const workers_z = Q.workers_z_pct || 0;
+const rural_z = Q.rural_z_pct || 0;
+const old_middle_z = Q.old_middle_z_pct || 0;
+const new_middle_z = Q.new_middle_z_pct || 0;
+
+Q.z_left_labor_power += (workers_z * 0.50) + (new_middle_z * 0.18);
+Q.z_right_labor_power += (workers_z * 0.48) + (new_middle_z * 0.05);
+
+Q.z_clerical_power += (rural_z * 0.35) + (old_middle_z * 0.25);
+Q.z_moderate_power += (new_middle_z * 0.40) + (old_middle_z * 0.15);
+
+// Bourgeois Backlash: Historically, civil servants and academics feared Stegerwald 
+// would turn Zentrum into a "workers' party." High middle-class representation suppresses him.
+if (new_middle_z > 20 || old_middle_z > 25) {
+    Q.z_right_labor_power -= 3.5;
+    Q.z_clerical_power += 2.0;
+} else {
+    Q.z_right_labor_power += workers_z * 0.15;
+    Q.z_left_labor_power += workers_z * 0.07;
+}
+
+// 6. GLOBAL REGULATION: Cap combined total of all 4 tracked variables at 1000
+{
+    const _z_total_cap = 1000;
+    const _z_tracked = [
+        'z_clerical_power',
+        'z_left_labor_power',
+        'z_right_labor_power',
+        'z_moderate_power'
+    ];
+
+    const _z_sum = _z_tracked.reduce((sum, key) => sum + Q[key], 0);
+
+    if (_z_sum > _z_total_cap) {
+        const _z_scale = _z_total_cap / _z_sum;
+        _z_tracked.forEach(key => {
+            Q[key] *= _z_scale;
+        });
+    }
+}
+
+
+if (Q.z_party_leader == "Joseph Joos") {
+
+    // Right labor always counts fully toward the anti-Joos bloc
+    let vonc_score = Q.z_right_labor_power;
+
+    const relation = Q.z_relation != null ? Q.z_relation : 50;
+    const relation_deficit = Math.max(0, 70 - relation) / 70; // 0 to 1
+    const clerical_weight = Math.pow(relation_deficit, 2);    // exponential curve
+
+    vonc_score += Q.z_clerical_power * clerical_weight;
+
+    const threshold_floor = 450;
+    const threshold_ceiling = 600;
+    const vonc_threshold = threshold_ceiling - (relation_deficit * (threshold_ceiling - threshold_floor));
+
+    if (vonc_score >= vonc_threshold) {
+        Q.z_vonc_triggered = 1;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }
