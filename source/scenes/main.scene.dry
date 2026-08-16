@@ -12,16 +12,12 @@ if (Q.advisor_action_timer <= 0) {
 window.disableFocusMode()
 
 !}
-on-display: {!
-document.getElementById('bill-queue-display').innerHTML = Q.bill_list_html || Q.bill_list_text;
-!}
 max-cards: 4
 
 - @party
 - @govt
 - @eco
 - @intel
-- @reichstag
 - #advisor
 - @shuffle_leadership_pinned
 - @partyaff
@@ -40,9 +36,6 @@ if (Q.advisor_action_timer <= 0) {
 window.disableFocusMode()
 
 !}
-on-display: {!
-document.getElementById('bill-queue-display').innerHTML = Q.bill_list_html || Q.bill_list_text;
-!}
 max-cards: 6
 
 #Here, the main deck will be displayed. Clicking on the deck draws a card into your hand. Clicking on a card activates that card.
@@ -50,7 +43,6 @@ max-cards: 6
 - @party
 - @govt
 - @eco
-- @reichstag
 - @intel
 - #advisor
 - @shuffle_leadership_pinned
@@ -70,16 +62,12 @@ if (Q.advisor_action_timer <= 0) {
 window.disableFocusMode()
 
 !}
-on-display: {!
-document.getElementById('bill-queue-display').innerHTML = Q.bill_list_html || Q.bill_list_text;
-!}
 max-cards: 3
 
 #Here, the main deck will be displayed. Clicking on the deck draws a card into your hand. Clicking on a card activates that card.
 
 - @party
 - @govt
-- @reichstag
 - @intel
 - #advisor
 - @shuffle_leadership_pinned
@@ -99,16 +87,12 @@ if (Q.advisor_action_timer <= 0) {
 window.disableFocusMode()
 
 !}
-on-display: {!
-document.getElementById('bill-queue-display').innerHTML = Q.bill_list_html || Q.bill_list_text;
-!}
 max-cards: 2
 
 #Here, the main deck will be displayed. Clicking on the deck draws a card into your hand. Clicking on a card activates that card.
 
 - @party
 - @govt
-- @reichstag
 - @intel
 - #advisor
 - @shuffle_leadership_pinned
@@ -130,16 +114,12 @@ if (Q.advisor_action_timer <= 0) {
 window.disableFocusMode()
 
 !}
-on-display: {!
-document.getElementById('bill-queue-display').innerHTML = Q.bill_list_html || Q.bill_list_text;
-!}
 max-cards: 1
 
 #Here, the main deck will be displayed. Clicking on the deck draws a card into your hand. Clicking on a card activates that card.
 
 - @party
 - @govt
-- @reichstag
 - @intel
 - #advisor
 - @shuffle_leadership_pinned
@@ -156,7 +136,7 @@ is-deck: true
 
 @govt
 title: Government Affairs
-view-if: time >= 12 and (spd_in_government = 1 or spd_toleration = 1)
+view-if: (spd_in_government = 1 or spd_toleration = 1)
 card-image: img/reichstag_2.jpg
 is-deck: true
 
@@ -169,13 +149,6 @@ card-image: img/reichstag_2.jpg
 is-deck: true
 
 - #intel_affairs
-
-@reichstag
-title: Reichstag Affairs
-view-if: spd_in_government = 1 and time >= 12 and developer_mode = 1
-is-deck: true
-
-- #reichstag_affairs
 
 @eco
 title: Economic Policy
