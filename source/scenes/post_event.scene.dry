@@ -3552,6 +3552,19 @@ function _classAdj(party, c) {
     return (typeof v === 'number' && !isNaN(v)) ? v : 1.0;
 }
 
+
+//   unrest_nat_hybrid — for NATIONALIST-EXTREMIST parties (nsdap, dvfp, dnf).
+//     Crisis alone gives only a mild lift; crisis is a real amplifier
+//     only when nationalism is already elevated. This is the
+//     "their unrest buff only works if nationalism/socialism is also
+//     strong, otherwise it's cut" behavior — extremists don't spike
+//     off a stable economy, they spike off unrest THAT IS ALREADY
+//     being read as nationalist or socialist anger.
+//
+//   unrest_soc_hybrid — for SOCIALIST-EXTREMIST parties (kpd, sapd).
+//     Same shape, gated by socialism instead of nationalism.
+// ─────────────────────────────────────────
+
 function computeTarget(party, c) {
     const nat  = Q.nationalism_factor;
     const rep  = Q.pro_republic_factor;
@@ -3560,26 +3573,49 @@ function computeTarget(party, c) {
     const im   = Q.identity_modifier;
     const eim  = Q.event_identity_modifier;
 
+    // nat/soc factors are centered near 1.0 (0.5–1.5 band). Above-baseline
+    // share (elevated) is what should unlock the crisis amplifier; below
+    // baseline should actively suppress it, not just fail to boost it.
+    const nat_elevated = Math.max(0, nat - 1.0);   // 0 at/below baseline, up to ~0.5 when hot
+    const soc_elevated = Math.max(0, soc - 1.0);
+
+    // Gate: 0.35 floor so unrest still matters a little even absent a
+    // strong ideological current (crisis parties aren't literally inert
+    // in a stable-but-chaotic economy), but the bulk of the effect
+    // requires the matching ideology to already be running hot.
+    const nat_gate = Math.min(1.0, 0.35 + nat_elevated * 1.6);
+    const soc_gate = Math.min(1.0, 0.35 + soc_elevated * 1.6);
+
+    // Cross-radicalization: nationalist unrest also partially feeds off
+    // socialist heat and vice versa (polarization spiral), at reduced
+    // weight — matches the cross-pressure section's bidirectional-but-
+    // asymmetric logic applied later to the bloc-level aggregates.
+    const unrest_nat_hybrid = unr * Math.min(1.0, nat_gate + soc_elevated * 0.5);
+    const unrest_soc_hybrid = unr * Math.min(1.0, soc_gate + nat_elevated * 0.35);
+
     let base = 0;
 
     switch (party) {
 
         case 'nsdap': {
             if (Q.nsdap_banned) return 0;
-            
-            // Misery Index: Unemployment + Deflation + Growth Collapse
-            let misery = (Q.unemployment_excess * 2.0) + (Q.inflation_excess * 1.5);
-            if (Q.economic_growth < 0) misery += Math.abs(Q.economic_growth) * 3.0;
 
-            let soft = 40, hard = 120; 
-            let raw = (nat * 8.559) + (misery * 1.1);
-            
+            let stable_baseline = nat_elevated * 6.0;
+
+            let crisis_contribution = unrest_nat_hybrid * 9.5;
+
+            let soft = 40, hard = 120;
+            let raw = (nat * 8.559) + stable_baseline + crisis_contribution;
+
+
+            let soft = 40, hard = 120;
+            let raw = (nat * 8.559) + stable_baseline + crisis_contribution;
+
             let final_raw = raw <= soft ? raw
                 : soft + (hard - soft) * (1 - Math.exp(-(raw - soft) / 45));
 
-
             let identity = im.nsdap;
-            if (misery > 15) identity = Math.max(identity, 1.0);
+            if (unrest_nat_hybrid > 1.2) identity = Math.max(identity, 1.0);
 
             base = final_raw * identity;
             base *= _partyAdj('nsdap');
@@ -3599,12 +3635,14 @@ function computeTarget(party, c) {
 
             const worker_urban_boost = urban_flavor ? 1.05 : 1.0;
 
+            const isStrasserist = Q.nsdap_ideology === "National Socialism (Strasserism)";
+
             const class_mods = {
-                workers:     0.90 * (Q.peoples_party === 1 ? 1.1 : 1) * young_boost.workers * worker_urban_boost * (rural_flavor ? 1 : 1.3),
-                old_middle:  2.10 * (1 + (Q.nationalism/100) * 0.5) * young_boost.old_middle,
-                new_middle:  1.80 * (1 + (Q.nationalism/100) * 0.4) * young_boost.new_middle,
-                rural:       2.20 * (1 + (Q.nationalism/100) * 0.6) * young_boost.rural * (rural_flavor ? 1.4 : 1), // Rural core
-                unemployedc: 2.10 * (1 + Math.min(Q.unemployed/10, 1.0)) * young_boost.unemployedc,
+                workers:     (isStrasserist ? 2.60 : 0.90) * (Q.peoples_party === 1 ? 1.1 : 1) * young_boost.workers * worker_urban_boost * (rural_flavor ? 1 : 1.3),
+                old_middle:  (isStrasserist ? 0.55 : 2.10) * (1 + (Q.nationalism/100) * (isStrasserist ? 0.15 : 0.5)) * young_boost.old_middle,
+                new_middle:  (isStrasserist ? 0.45 : 1.80) * (1 + (Q.nationalism/100) * (isStrasserist ? 0.10 : 0.4)) * young_boost.new_middle,
+                rural:       (isStrasserist ? 0.60 : 2.20) * (1 + (Q.nationalism/100) * (isStrasserist ? 0.15 : 0.6)) * young_boost.rural * (rural_flavor ? 1.4 : 1),
+                unemployedc: (isStrasserist ? 2.30 : 2.10) * (1 + Math.min(unr / 8, 1.0)) * young_boost.unemployedc,
             };
             return _applyQOL(base * (class_mods[c] || 1.0) * _classAdj('nsdap', c), party, c);
         }
@@ -3612,7 +3650,7 @@ function computeTarget(party, c) {
         case 'dvfp': {
             if (Q.dvfp_banned || !Q.dvfp_formed) return 0;
             let nat_floor   = nat * 25;
-            let u           = Math.max(0, unr - 0.6);
+            let u           = Math.max(0, unrest_nat_hybrid - 0.6);
             let crisis_ramp = 90 / (1 + Math.exp(-1.4 * (u - 1.8)));
             let buff = Q.april_challenge === 1 ? 1.28 : 0.85;
             base = (nat_floor + crisis_ramp) * buff * im.dvfp;
@@ -3636,14 +3674,13 @@ function computeTarget(party, c) {
 
            const nsdapAbsent = Q.nsdap_banned || !Q.parties.includes('nsdap');
 
-           let chaos_m = 1.0;
-           if (unr > 0.7) {
-               const excess  = unr - 0.7; // 0 to 0.3 range
-               const severity = nsdapAbsent ? 2.5 * 0.4 : 2.5; // weaken chaos impact when NSDAP absent
-               chaos_m = Math.max(0.1, 1 - excess * severity);
+           let competitive_m = 1.0;
+           if (!nsdapAbsent) {
+               const nsdap_edge = Math.max(0, unrest_nat_hybrid - 0.7);
+               competitive_m = Math.max(0.35, 1 - nsdap_edge * 1.0);
            }
 
-           base = ((nat * 85) + (isSocCorp ? rep * 30 : 20)) * im.dnvp * chaos_m;
+           base = ((nat * 85) + (isSocCorp ? rep * 30 : 20)) * im.dnvp * competitive_m;
 
            const isLambach    = Q.dnvp_party_leader === "Walther Lambach";
            const lambachEarly = Q.year < 1929;
@@ -3699,9 +3736,14 @@ function computeTarget(party, c) {
 
         case 'dnf': {
             if (Q.dnf_banned) return 0;
-    
-            let chaos_penalty = unr > 0.65 ? (unr * 25) : 0;
-            base = ((nat * 90) - chaos_penalty) * (im.dnf || im.dnvp);
+
+            const dnf_nsdapAbsent = Q.nsdap_banned || !Q.parties.includes('nsdap');
+            let dnf_competitive_m = 1.0;
+            if (!dnf_nsdapAbsent) {
+                const nsdap_edge = Math.max(0, unrest_nat_hybrid - 0.65);
+                dnf_competitive_m = Math.max(0.30, 1 - nsdap_edge * 1.1);
+            }
+            base = (nat * 90) * dnf_competitive_m * (im.dnf || im.dnvp);
             base *= _partyAdj('dnf');
 
             const isHarzburg   = Q.harzburg_front_seen === true;
@@ -3749,14 +3791,9 @@ function computeTarget(party, c) {
             else if (dvp_present)           presence_pen = 0.30;   // DVP alone: heavy nerf
             if (vnr_present)                presence_pen *= 0.85;  // VNR siphons liberal-national voters
 
-            // ── Base: 1.9× the combined DDP+DVP base rates ──────────────
-            // DDP base driver: rep * 53; DVP base driver: factor * 49 * scale
             let ddp_factor   = Q.dvp_right_shift ? nat * 0.95 : rep * 1.0;
-            let infl_pen     = Math.pow(Math.abs(Q.inflation - 1.5) / 12, 1.2);
-            let unemp_pen    = Math.pow(Math.max(0, Q.unemployed - 5) / 25, 1.1);
-            let econ_conf    = Math.max(0.35, 1 - (infl_pen * 0.7) - (unemp_pen * 0.7));
             let dvp_scale    = Q.dvp_right_shift ? 2.2 : 1.8;
-            let dvp_base_raw = ddp_factor * 49 * dvp_scale * econ_conf;
+            let dvp_base_raw = ddp_factor * 49 * dvp_scale;
 
             let sec_bonus  = (100 - Q.catholics) / 100 * 0.10;
             let nat_pen_d  = (Q.nationalism / 100) * 0.15;
@@ -3793,12 +3830,15 @@ function computeTarget(party, c) {
         case 'wp': {
             if (Q.wp_banned) return 0;
             let middle_norm  = (Q.old_middle + Q.new_middle) / 99;
-            let crisis       = 1 + (Q.inflation * 0.23) - (Q.unemployed * 0.15);
-            base = rep * 19 * nat * 17 * middle_norm * Math.max(0.3, crisis) * im.wp;
+
+            const old_mid_qol_low = Math.max(0, 100 - (Q.old_middle_qol || 100)) / 50; // 0 at baseline, 1 at QoL=50
+            const new_mid_qol_low = Math.max(0, 100 - (Q.new_middle_qol || 100)) / 50;
+            let qol_grievance_boost = 1 + Math.min(1.2, (old_mid_qol_low * 0.7 + new_mid_qol_low * 0.5));
+            base = rep * 19 * nat * 17 * middle_norm * qol_grievance_boost * im.wp;
             base *= _partyAdj('wp');
 
-            let old_middle_m = 1.70 * (1 + Math.max(0, Q.inflation * 0.008)) * (Q.peoples_party === 1 ? 0.96 : 1);
-            let new_middle_m = 1.60 * (Q.peoples_party === 1 ? 0.96 : 1);
+            let old_middle_m = 1.70 * (1 + old_mid_qol_low * 0.35) * (Q.peoples_party === 1 ? 0.96 : 1);
+            let new_middle_m = 1.60 * (1 + new_mid_qol_low * 0.30) * (Q.peoples_party === 1 ? 0.96 : 1);
 
             const class_mods = { workers: 0.12, old_middle: old_middle_m, new_middle: new_middle_m, rural: 0.12, unemployedc: 0.12 };
             return _applyQOL(base * (class_mods[c] || 1.0) * _classAdj('wp', c), party, c);
@@ -3817,7 +3857,8 @@ function computeTarget(party, c) {
         case 'kpd': {
             if (Q.kpd_banned) return 0;
             let buff = Q.april_challenge === 1 ? 1.30 : 1;
-            base = soc * 34 * 1.9 * (1 + unr * 0.13) * buff * im.kpd;
+    
+            base = soc * 34 * 1.9 * (1 + unrest_soc_hybrid * 0.13) * buff * im.kpd;
             base *= _partyAdj('kpd');
 
             let workers_m     = 1.45 * (Q.peoples_party === 1 ? 1.08 : 1);
@@ -3832,7 +3873,7 @@ function computeTarget(party, c) {
         case 'sapd': {
             if (Q.sapd_banned || !Q.sapd_formed) return 0;
             let buff = Q.april_challenge === 1 ? 1.15 : 0.90;
-            base = soc * 19 * 2.0 * (1 + unr * 0.12) * buff * im.sapd;
+            base = soc * 19 * 2.0 * (1 + unrest_soc_hybrid * 0.12) * buff * im.sapd;
             base *= _partyAdj('sapd');
 
             const class_mods = {
@@ -3917,7 +3958,11 @@ function computeTarget(party, c) {
         - ((Q.socialism * 1.5) <= Q.nationalism && Q.peoples_party === 0 ? 0.04 : 0)
         - (Q.upper_tax_rates > 0 ? Q.upper_tax_rates * 0.027 : 0);
 
-    base = (r * 99 + s * 58) * im.spd * (eim.spd || 1.0) * campaign_boost;
+    let left_extremism_bump = (Q.ideology === 'left')
+        ? 1 + (unrest_soc_hybrid * 0.045)
+        : 1.0;
+
+    base = (r * 99 + s * 58) * im.spd * (eim.spd || 1.0) * campaign_boost * left_extremism_bump;
     base *= _partyAdj('spd');
 
     let m;
@@ -4020,9 +4065,7 @@ function computeTarget(party, c) {
 
         case 'ddp': {
            if (Q.ddp_banned) return 0;
-           let infl_pen    = Math.pow(Math.abs(Q.inflation - 1.5) / 12, 1.2);
-           let unemp_pen   = Math.pow(Math.max(0, Q.unemployed - 5) / 25, 1.1);
-           let econ_conf   = Math.max(0.50, 1 - (infl_pen * 0.33) - (unemp_pen * 0.33));
+
            let edu_bonus = (Q.education_science || 0) * 0.03
                          + (Q.secularized       || 0) * 0.05
                          + (Q.science           || 0) * 0.10
@@ -4030,7 +4073,7 @@ function computeTarget(party, c) {
            if (!Q.ddp_name || Q.ddp_name === 'DDP') {
                let sec_bonus = (100 - Q.catholics) / 100 * 0.10;
                let nat_pen   = (Q.nationalism / 100) * 0.15;
-               base = (rep * 47 * (1.1 + sec_bonus - nat_pen + edu_bonus)) * econ_conf * im.ddp;
+               base = (rep * 47 * (1.1 + sec_bonus - nat_pen + edu_bonus)) * im.ddp;
                base *= _partyAdj('ddp');
 
                const class_mods = {
@@ -4047,7 +4090,7 @@ function computeTarget(party, c) {
                let edu_pen = (Q.education_science || 0) * 0.02
                            + (Q.secularized       || 0) * 0.03
                            + (Q.womens_rights     || 0) * 0.03;
-               base = (rep * 0.30 + wp_strength + mittelstand_bonus - edu_pen) * 52 * econ_conf * im.ddp;
+               base = (rep * 0.30 + wp_strength + mittelstand_bonus - edu_pen) * 52 * im.ddp;
                base *= _partyAdj('ddp');
 
                const class_mods = {
@@ -4065,7 +4108,7 @@ function computeTarget(party, c) {
                            + (Q.secularized       || 0) * 0.05
                            + (Q.science           || 0) * 0.10
                            + (Q.womens_rights     || 0) * 0.05;
-               base = (rep * 0.30 + nat * 0.29 + jungdo - edu_pen) * 59 * econ_conf * im.ddp;
+               base = (rep * 0.30 + nat * 0.29 + jungdo - edu_pen) * 59 * im.ddp;
                base *= _partyAdj('ddp');
 
                const class_mods = {
@@ -4081,12 +4124,10 @@ function computeTarget(party, c) {
 
         case 'dvp': {
             if (Q.dvp_banned) return 0;
+
             let factor      = Q.dvp_right_shift ? nat * 0.95 : rep * 1.0;
-            let infl_pen    = Math.pow(Math.abs(Q.inflation - 1.5) / 12, 1.2);
-            let unemp_pen   = Math.pow(Math.max(0, Q.unemployed - 5) / 25, 1.1);
-            let econ_conf   = Math.max(0.35, 1 - (infl_pen * 0.50) - (unemp_pen * 0.50));
             let scale       = Q.dvp_right_shift ? 2.2 : 1.8;
-            base = factor * 40 * scale * econ_conf * (im.dvp || 1);
+            base = factor * 40 * scale * (im.dvp || 1);
             base *= _partyAdj('dvp');
 
             const class_mods = {
@@ -4170,7 +4211,7 @@ function computeTarget(party, c) {
 
             let coalition_stability = 0;
 
-            let crisis_factor = Q.unemployed >= 20 ? 0.6 : Q.unemployed >= 12 ? 0.8 : Q.unemployed >= 8 ? 0.85 : 1.0;
+            let crisis_factor = Math.max(0.55, 1 - (unr / 12));
 
             base = (rep * 15 + (nat * 15) + dnvp_split_bonus + anti_nazi_appeal + coalition_stability) * crisis_factor * im.csvd;
             base *= _partyAdj('csvd');
@@ -4196,9 +4237,12 @@ function computeTarget(party, c) {
 
         case 'vrp': {
             if (Q.vrp_banned) return 0;
-            base = (rep * 12.5 + Math.max(0, Q.inflation) * 0.08) * im.vrp;
+
+            const vrp_old_mid_low = Math.max(0, 100 - (Q.old_middle_qol || 100)) / 50;
+            const vrp_new_mid_low = Math.max(0, 100 - (Q.new_middle_qol || 100)) / 50;
+            base = (rep * 12.5) * (1 + Math.min(0.9, vrp_old_mid_low * 0.5 + vrp_new_mid_low * 0.4)) * im.vrp;
             base *= _partyAdj('vrp');
-            const class_mods = { workers: 0.04, old_middle: 0.12, new_middle: 0.08, rural: 0.01, unemployedc: 0.67 };
+            const class_mods = { workers: 0.04, old_middle: 0.12 * (1 + vrp_old_mid_low * 0.3), new_middle: 0.08 * (1 + vrp_new_mid_low * 0.3), rural: 0.01, unemployedc: 0.67 };
             return _applyQOL(base * (class_mods[c] || 1.0) * _classAdj('vrp', c), party, c);
         }
 
@@ -4295,7 +4339,7 @@ function computeTarget(party, c) {
 
         case 'dtsp': {
             if (Q.dtsp_banned) return 0;
-            base = nat * 8 * (1 + unr * 0.10) * im.dtsp;
+            base = nat * 8 * (1 + unrest_nat_hybrid * 0.10) * im.dtsp;
             base *= _partyAdj('dtsp');
             const class_mods = { workers: 0.15, old_middle: 0.90, new_middle: 0.70, rural: 0.80, unemployedc: 0.20 };
             return _applyQOL(base * (class_mods[c] || 1.0) * _classAdj('dtsp', c), party, c);
@@ -4329,7 +4373,7 @@ function computeTarget(party, c) {
 
         case 'lb': {
             if (Q.lb_banned) return 0;
-            base = soc * 7 * (1 + unr * 0.08) * im.lb;
+            base = soc * 7 * (1 + unrest_soc_hybrid * 0.08) * im.lb;
             base *= _partyAdj('lb');
             const class_mods = { workers: 0.55, old_middle: 0.10, new_middle: 0.20, rural: 0.10, unemployedc: 0.45 };
             return _applyQOL(base * (class_mods[c] || 1.0) * _classAdj('lb', c), party, c);
@@ -4357,7 +4401,7 @@ function computeTarget(party, c) {
 
     case 'faud': {
         if (Q.faud_banned) return 0;
-        base = soc * 3 * (1 + unr * 0.25) * im.kpd;
+        base = soc * 3 * (1 + unrest_soc_hybrid * 0.25) * im.kpd;
         base *= _partyAdj('faud');
 
         const class_mods = {
@@ -4373,7 +4417,7 @@ function computeTarget(party, c) {
     case 'kapd': {
         if (Q.kapd_banned) return 0;
         let buff = Q.april_challenge === 1 ? 1.10 : 0.85;
-        base = soc * 8 * 1.4 * (1 + unr * 0.18) * buff * im.kpd;
+        base = soc * 8 * 1.4 * (1 + unrest_soc_hybrid * 0.18) * buff * im.kpd;
         base *= _partyAdj('kapd');
 
         const class_mods = {
