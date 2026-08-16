@@ -9,12 +9,14 @@ subtitle: The state government of Prussia is a bulwark of democracy...
 
 = Prussian Affairs
 
-Prussia, by far the largest and most important state in Germany, is governed by our party, in a coalition with the Center and Democratic parties. It is the most stable and democratic state government in Germany, led by the able Otto Braun.
+Prussia, by far the largest and most important state in Germany, is governed by our party, in a [+ coalition_name_prussia +] with [? if government_parties_prussia +] our coalition partners [? endif ?]. It is [? if in_grand_coalition_prussia or in_weimar_coalition_prussia : the most stable and democratic state government in Germany ?][? if not in_grand_coalition_prussia and not in_weimar_coalition_prussia : an uneasy but functioning state government ?], led by Minister-President [+ ministerpresident +].
 
 We can enact policies in Prussia.
 
 Current police loyalty: [+ prussian_police_loyalty : loyalty +]. <br>
 Current police strength: [+ prussian_police_strength +]. <br>
+
+Republican - Reactionary balance: [+ prussian_republicanization +]
 
 - @police_loyalty: Bolster the loyalty of the police.
 - @police_strength: Recruit additional police.
@@ -55,7 +57,7 @@ on-arrival: prussian_police_strength -= 50; prussian_police_loyalty -= 0.05; pro
 We have demobilized some of the Prussian police units. This has impacted police's loyalty and pro-republican tendencies negatively.
 
 @bureaucracy
-on-arrival: prussian_police_loyalty += 0.05; nationalism -= 5; pacifism += 1; democratization += 1; pro_republic += 3*(1-dissent); new_middle_spd += 2*(1-dissent) if democratization >= 3; new_middle_spd += 2*(1-dissent) if democratization >= 4; coup_progress += 0.5; prussian_police_strength *= 0.91
+on-arrival: prussian_police_loyalty += 0.05; nationalism -= 5; pacifism += 1; democratization += 1; pro_republic += 3*(1-dissent); new_middle_spd += 2*(1-dissent) if democratization >= 3; new_middle_spd += 2*(1-dissent) if democratization >= 4; coup_progress += 0.5; prussian_police_strength *= 0.90; prussian_republicanization += 5
 
 The bureaucracy is deeply reactionary, and many abuse their power to favor the political right. By removing the pro-monarchy and pro-dictatorship elements, we can democratize it. Some of our opponents claim that we are infringing on individual freedoms, but perhaps the security of the republic requires it.
 
