@@ -5799,10 +5799,12 @@ if (Q.lambach_exile == 1) {
     Q.hugenberg_momentum += 3.8;
     Q.delegate_power_christsoc -= 1.4;   // DHV wing bleeds most
     Q.delegate_power_yocon -= 0.6;
-    Q.delegate_power_b -= 1.0;
+    Q.delegate_power_moderates -= 0.7;
+    Q.delegate_power_nat_cons -= 0.3;
 } else if (Q.lambach_reinstated == 1) {
     Q.hugenberg_momentum += 1.8;
-    Q.delegate_power_a += 1.0;
+    Q.delegate_power_moderates += 0.7;
+    Q.delegate_power_nat_cons += 0.3;
     Q.delegate_power_christsoc += 0.4;
     Q.delegate_power_yocon += 0.2;
 } else if (Q.lambach_exile == 0 && Q.month >= 8) {
@@ -5815,7 +5817,8 @@ if (Q.lambach_exile == 1) {
 if (Q.cnbl_crisis == 1) {
     Q.hugenberg_momentum += 3.2;
 } else {
-    Q.delegate_power_b += 1.7;
+    Q.delegate_power_nat_cons += 1.2;
+    Q.delegate_power_agrarians += 0.5;
     Q.delegate_power_yocon += 0.8;
     Q.delegate_power_christsoc += 0.5;
 }
@@ -5823,24 +5826,26 @@ if (Q.cnbl_crisis == 1) {
 if (Q.jungdo_formed == 0) {
     Q.delegate_power_yocon += 0.5;    
     Q.delegate_power_christsoc += 1.4;
-    Q.delegate_power_a += 0.5;
+    Q.delegate_power_moderates += 0.5;
 } else {
-    Q.delegate_power_b += 2.0;
+    Q.delegate_power_nat_cons += 2.0;
     Q.hugenberg_momentum += 2.0;
 }
 
 if (Q.geest_wildfire == 0) {
     Q.delegate_power_yocon += 1.3;
     Q.delegate_power_christsoc += 1.2;
-    Q.delegate_power_a += 1.8;
-    Q.delegate_power_b += 1.1;
+    Q.delegate_power_moderates += 1.8;
+    Q.delegate_power_nat_cons += 0.6;
+    Q.delegate_power_agrarians += 0.5;
     Q.hugenberg_momentum -= 1.2;
 } else {
     Q.hugenberg_momentum += 5.0;
     Q.delegate_power_yocon += 1.5;    // split the old +10 to c
     Q.delegate_power_christsoc += 1.1;
-    Q.delegate_power_a += 0.3;
-    Q.delegate_power_b -= 1.0;
+    Q.delegate_power_moderates += 0.3;
+    Q.delegate_power_nat_cons -= 0.6;
+    Q.delegate_power_agrarians -= 0.4;
 }
 
 // 3b. Media Dominance Check
@@ -5857,34 +5862,35 @@ if (Q.hugenberg_media_attack >= 1 ) {
 // 3c. Land Reform Threat
 if (Q.land_reform > 0) {
     Q.hugenberg_momentum += 4.0 * Q.land_reform;
+    Q.delegate_power_agrarians += 3.0 * Q.land_reform; // hits agrarians hardest
 }
 
 // 3d. Government Participation Bonus
 if (Q.dnvp_in_government) {
-    Q.delegate_power_a += 4.4;
-    Q.delegate_power_b += 2.0;
+    Q.delegate_power_moderates += 4.4;
+    Q.delegate_power_nat_cons += 2.0;
     Q.delegate_power_yocon += 2.2;
     Q.delegate_power_christsoc += 1.8;
 }
 
 if (Q.ideology == "reformist") {
-    Q.delegate_power_a -= 0.3;
-    Q.delegate_power_b -= 0.3;
+    Q.delegate_power_moderates -= 0.3;
+    Q.delegate_power_nat_cons -= 0.3;
     Q.delegate_power_yocon -= 0.1;
     Q.delegate_power_christsoc += 0.8;
     Q.hugenberg_momentum -= 0.1;
 }
 if (Q.ideology == "labor") {
     Q.delegate_power_christsoc -= 0.5;
-    Q.delegate_power_a += 0.3;
-    Q.delegate_power_b += 0.3;
+    Q.delegate_power_moderates += 0.3;
+    Q.delegate_power_nat_cons += 0.3;
     Q.delegate_power_yocon += 0.3;
     Q.hugenberg_momentum += 0.1;
 }
 if (Q.ideology == "left") {
     Q.hugenberg_momentum += 1;
-    Q.delegate_power_a += 0.5;
-    Q.delegate_power_b -= 1.2;
+    Q.delegate_power_moderates += 0.5;
+    Q.delegate_power_nat_cons -= 1.2;
     Q.delegate_power_yocon += 0.5;
     Q.delegate_power_christsoc -= 0.5;
 }
@@ -5896,16 +5902,21 @@ if (Q.unions_independent) Q.delegate_power_christsoc *= 1.06;
 if (Q.lambach_stage >= 2) {
     Q.delegate_power_christsoc += 30;
 }
+// Tariffs 
+
+Q.delegate_power_agrarians -= 2.5 * Q.tariffs;
 
 // 4. Class Influence
 Q.hugenberg_momentum += ((Q.old_middle_dnvp_pct || 0) * 0.27);
 Q.hugenberg_momentum += ((Q.rural_dnvp_pct || 0) * 0.17);
 
-Q.delegate_power_a += ((Q.new_middle_dnvp_pct || 0) * 0.32);
-Q.delegate_power_a += ((Q.old_middle_dnvp_pct || 0) * 0.11);
+Q.delegate_power_moderates += ((Q.new_middle_dnvp_pct || 0) * 0.32);
+Q.delegate_power_moderates += ((Q.old_middle_dnvp_pct || 0) * 0.11);
 
-Q.delegate_power_b += ((Q.rural_dnvp_pct || 0) * 0.20);
-Q.delegate_power_b += ((Q.old_middle_dnvp_pct || 0) * 0.08);
+Q.delegate_power_nat_cons += ((Q.rural_dnvp_pct || 0) * 0.05);
+Q.delegate_power_nat_cons += ((Q.old_middle_dnvp_pct || 0) * 0.08);
+
+Q.delegate_power_agrarians += ((Q.rural_dnvp_pct || 0) * 0.25);
 
 // Young Conservatives: new middle class + small worker slice + some old middle
 Q.delegate_power_yocon += ((Q.workers_dnvp_pct || 0) * 0.16) + ((Q.new_middle_dnvp_pct || 0) * 0.25) + ((Q.old_middle_dnvp_pct || 0) * 0.06);
@@ -5914,49 +5925,54 @@ Q.delegate_power_christsoc += ((Q.workers_dnvp_pct || 0) * 0.6) + ((Q.new_middle
 
 // 5. Ideological Reinforcements
 Q.hugenberg_momentum += Q.nationalism * 4.0;
-Q.delegate_power_b += Q.nationalism * 0.13 * Q.pro_republic * 0.1;
-Q.delegate_power_a += Q.pro_republic * 0.034 + Q.nationalism * 0.056;
+Q.delegate_power_nat_cons += Q.nationalism * 0.13 * Q.pro_republic * 0.1;
+Q.delegate_power_moderates += Q.pro_republic * 0.034 + Q.nationalism * 0.056;
 Q.delegate_power_yocon += Q.pro_republic * 0.25;
 Q.delegate_power_christsoc += Q.socialism * 0.28 + Q.pro_republic * 0.12;
 
 // 6. Failure Penalty
 if (Q.dnvp_votes_display < 13) {
-    Q.delegate_power_a -= 2.0;
-    Q.delegate_power_b -= 2.0;
+    Q.delegate_power_moderates -= 2.0;
+    Q.delegate_power_nat_cons -= 2.0;
     Q.hugenberg_momentum += 3.0;
 } else if (Q.dnvp_votes_display < 14) {
-    Q.delegate_power_a -= 0.6;
-    Q.delegate_power_b -= 1.0;
+    Q.delegate_power_moderates -= 0.6;
+    Q.delegate_power_nat_cons -= 1.0;
     Q.hugenberg_momentum += 1.0;
     Q.delegate_power_yocon += 0.6;
     Q.delegate_power_christsoc += 0.4;
 } else if (Q.dnvp_votes_display < 16) {
-    Q.delegate_power_a -= 0.2;
-    Q.delegate_power_b -= 0.4;
+    Q.delegate_power_moderates -= 0.2;
+    Q.delegate_power_nat_cons -= 0.4;
     Q.hugenberg_momentum += 0.6;
     Q.delegate_power_yocon += 1.0;
     Q.delegate_power_christsoc += 0.6;
 } else if (Q.dnvp_votes_display < 18) {
-    Q.delegate_power_a += 1.2;
-    Q.delegate_power_b -= 0.5;
+    Q.delegate_power_moderates += 1.2;
+    Q.delegate_power_nat_cons -= 0.5;
     Q.hugenberg_momentum -= 1.0;
     Q.delegate_power_yocon += 2.0;
     Q.delegate_power_christsoc += 1.7;
 } else {
-    Q.delegate_power_a += 1.5;
-    Q.delegate_power_b -= 0.6;
+    Q.delegate_power_moderates += 1.5;
+    Q.delegate_power_nat_cons -= 0.6;
     Q.hugenberg_momentum -= 1.2;
     Q.delegate_power_yocon += 2.3;
     Q.delegate_power_christsoc += 2.0;
 }
 
-// 7. Global regulation: cap combined total of all 6 tracked vars at 1000
+// 6b. Traditionalist umbrella aggregation
+Q.delegate_power_traditionalists =
+    Q.delegate_power_moderates + Q.delegate_power_nat_cons + Q.delegate_power_agrarians;
+
+// 7. Global regulation: cap combined total of all tracked vars at 1000
 {
     const _dnvp_total_cap = 1000;
     const _dnvp_tracked = [
         'hugenberg_momentum',
-        'delegate_power_a',
-        'delegate_power_b',
+        'delegate_power_moderates',
+        'delegate_power_nat_cons',
+        'delegate_power_agrarians',
         'delegate_power_yocon',
         'delegate_power_christsoc'
     ];
@@ -5968,9 +5984,10 @@ if (Q.dnvp_votes_display < 13) {
         _dnvp_tracked.forEach(key => {
             Q[key] *= _dnvp_scale;
         });
+        Q.delegate_power_traditionalists =
+            Q.delegate_power_moderates + Q.delegate_power_nat_cons + Q.delegate_power_agrarians;
     }
 }
-
 
 
 
