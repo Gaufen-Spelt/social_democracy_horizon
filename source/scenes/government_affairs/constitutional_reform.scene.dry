@@ -8,7 +8,13 @@ card-image: img/portraits/RadbruchGustav.jpg
 go-to: reforms_menu
 tags: govt_affairs, cabinet
 
+# technically you could do some trickery to get a 2/3 quorum in the Reichstag by stopping some people from attending... if the NSDAP is boycotting the Reichstag, or if the NSDAP or DNVP are banned in the aftermath of a coup atempt...
+
+# alternatively, a constitutional referendum can be initiated, that requires a simple majority of voters to pass (as I understand article 76). This should depend on support for the republic and for democracy, and the relationships with the other parties (more similar to the presidential election).
+
 = Constitutional Reform
+
+# the ideas for constitutional reform here are based on the bundesrepublik basic law... I'm not sure if it's totally realistic to what someone like Mierendorff would've wanted.
 
 Many neorevisionists consider the Weimar Constitution to be inadequate. They believe that the clauses of the constitution are in part responsible for the instability of the country, and must change in order to build a more stable democratic republic. Ideas from both socialists and liberals
 
@@ -17,12 +23,131 @@ A constitutional reform requires either a two-thirds supermajority in the Reichs
 @reforms_menu
 
 - @vote_threshold: Change the vote threshold.
+- @alt_vote_threshold: Alterate the vote threshold.
+- @constructive_vonc: Ban non-constructive votes of no confidence.
 - @presidential_powers: Reduce presidential powers.
-- @party_bans: Allow banning of anti-constitutional parties.
-- @ban_party_menu: Initiate ban on anti-constititional parties.
-- @root: Do not pursue constitutional reform.
+- @as_is: Do not pursue constitutional reform.
 - @easy_discard
 - @cancel_advisor_action
+
+@alt_vote_threshold
+subtitle: Alterate the vote threshold.
+
+We have come to the thought that alteration of the vote threshold is for the best. But we need to establish what value it should take. [+ electoral_threshold +]% is the current threshold for a party to hold seats in the Reichstag.
+
+- @threshold_1: Propose a 1% threshold (minimal change).
+- @threshold_3: Propose a 3% threshold (regional parties like the BVP remain viable).
+- @threshold_5: Propose a 5% threshold (standard reform).
+- @threshold_10: Propose a 10% threshold (only major parties survive).
+- @reforms_menu: See other reform options.
+
+
+@threshold_1
+subtitle: Propose a 1% electoral threshold.
+on-arrival: {!
+Q.reform_support = Q.spd_normalized + Q.z_normalized + Q.kpd_normalized + Q.nsdap_normalized + Q.ddp_normalized + Q.dvp_normalized;
+!}
+view-if: electoral_threshold != 1
+
+# Nearly everyone tolerates a token 1% threshold since it costs almost no one their seats - basically free support.
+
+A 1% threshold is a token gesture, filtering out only the most marginal fringe lists. It is unlikely to face much organized opposition [? if electoral_threshold > 1 : , and would represent a significant loosening from the current [+ electoral_threshold +]% threshold ?].
+
+- @threshold_1_2: Call a constitutional referendum to pass the reform!
+- @alt_vote_threshold: Reconsider.
+
+
+@threshold_1_2
+choose-if: reform_support >= pass_threshold
+unavailable-subtitle: We do not have enough support for this policy. [? if pro_republic < 65 : We should have an additional margin for the referendum since we need a majority of voters, and many voters who do not support the republic will not participate. ?]
+on-arrival: constitutional_reform += 1; electoral_threshold = 1;
+
+We have passed a constitutional amendment setting the electoral threshold to 1%. Minor and fringe parties retain their ability to enter the Reichstag.
+
+
+@threshold_3
+subtitle: Propose a 3% electoral threshold.
+on-arrival: {!
+Q.reform_support = Q.spd_normalized;
+if (Q.z_relation > 20) {
+    Q.reform_support += Q.z_normalized;
+}
+if (Q.kpd_relation > 40) {
+    Q.reform_support += Q.kpd_normalized;
+}
+if (Q.nsdap_normalized >= 0.15) {
+    Q.reform_support += Q.nsdap_normalized;
+}
+!}
+view-if: electoral_threshold != 3
+
+A 3% threshold would still allow regional parties like the BVP to survive in their strongholds, softening opposition considerably compared to a harsher cutoff. [? if z_relation > 20 : The Center Party is comfortable with this level. ?] [? if kpd_relation > 40 : The KPD is willing to tolerate this threshold. ?] [? if nsdap_normalized >= 0.15 : The NSDAP sees some advantage in a moderate threshold and lends cautious support. ?]
+
+- @threshold_3_2: Call a constitutional referendum to pass the reform!
+- @alt_vote_threshold: Reconsider.
+
+
+@threshold_3_2
+choose-if: reform_support >= pass_threshold
+unavailable-subtitle: We do not have enough support for this policy. [? if pro_republic < 65 : We should have an additional margin for the referendum since we need a majority of voters, and many voters who do not support the republic will not participate. ?]
+on-arrival: constitutional_reform += 1; electoral_threshold = 3; left_dissent += 10;
+
+We have passed a constitutional amendment setting the electoral threshold to 3%. Regional parties are likely to survive this change intact.
+
+
+@threshold_5
+subtitle: Propose a 5% electoral threshold.
+on-arrival: {!
+Q.reform_support = Q.spd_normalized;
+if (Q.z_relation > 30) {
+    Q.reform_support += Q.z_normalized;
+}
+if (Q.kpd_relation > 50 && Q.kpd_normalized >= 0.1) {
+    Q.reform_support += Q.kpd_normalized;
+}
+if (Q.nsdap_normalized >= 0.2 ) {
+    Q.reform_support += Q.nsdap_normalized;
+}
+!}
+view-if: electoral_threshold != 5
+
+Some political thinkers believe that the proliferation of minor parties is responsible for the instability of the republic. They believe that a higher electoral threshold will reduce the influence of small radical parties. Parties that win a plurality in a constituency will maintain their representation, a gift to regional parties such as the BVP.
+
+The smaller parties will obviously oppose this reform. [? if z_relation > 30 : The Center Party supports this reform, while their BVP partners oppose it. ?] [? if kpd_relation > 50 and kpd_normalized >= 0.1 : Perhaps surprisingly, the KPD supports this reform. ?] [? if nsdap_normalized >= 0.2 : The NSDAP supports this reform, as they believe they have something to gain. ?]
+
+The SPD Left opposes this change, as they believe it to be anti-democratic.
+
+- @threshold_5_2: Call a constitutional referendum to pass the reform!
+- @alt_vote_threshold: Reconsider.
+
+
+@threshold_5_2
+choose-if: reform_support >= pass_threshold
+unavailable-subtitle: We do not have enough support for this policy. [? if pro_republic < 65 : We should have an additional margin for the referendum since we need a majority of voters, and many voters who do not support the republic will not participate. ?] [? if z_relation <= 30 : The Center Party does not trust us enough to support this policy. ?]
+on-arrival: constitutional_reform += 1; electoral_threshold = 5; ddp_relation -= 25; dvp_relation -= 25; left_dissent += 20; workers_dnvp += workers_other*0.4; workers_nsdap += workers_other*0.4; workers_other *= 0.1; new_middle_dvp += new_middle_other*0.3; new_middle_nsdap += new_middle_other*0.3; new_middle_other *= 0.1; old_middle_dvp += 0.3*old_middle_other; old_middle_nsdap += 0.3*old_middle_other; old_middle_dnvp += 0.3*old_middle_other; old_middle_other *= 0.1; rural_dnvp += 0.5*rural_other; rural_nsdap += 0.4*rural_other; rural_other *= 0.1; unemployed_nsdap += 0.3*unemployed_other; unemployed_kpd += 0.4*unemployed_other; unemployed_other *= 0.2; catholics_z += 0.6*catholics_other; catholics_other *= 0.1;
+
+We have passed a constitutional amendment to increase the electoral threshold to 5%. This is likely to benefit the larger parties and harm the smaller ones.
+
+
+@threshold_10
+subtitle: Propose a 10% electoral threshold.
+on-arrival: {!
+Q.reform_support = Q.spd_normalized * 0.5;
+!}
+view-if: electoral_threshold != 10
+
+A 10% threshold is an extreme measure that would wipe out nearly every minor party overnight. Almost no one supports this beyond the largest parties, and even they are wary of setting a precedent that could later be turned against them.
+
+- @threshold_10_2: Call a constitutional referendum to pass the reform!
+- @alt_vote_threshold: Reconsider.
+
+
+@threshold_10_2
+choose-if: reform_support >= pass_threshold
+unavailable-subtitle: We do not have enough support for this policy - a 10% threshold is broadly unpopular, even among our own coalition.
+on-arrival: constitutional_reform += 1; electoral_threshold = 10; ddp_relation -= 40; dvp_relation -= 40; left_dissent += 35; z_relation -= 15;
+
+We have passed a radical constitutional amendment setting the electoral threshold to 10%. Minor and regional parties are effectively eliminated from the Reichstag.
 
 @vote_threshold
 subtitle: Change the vote threshold to 5% for parties to be represented in the Reichstag.
@@ -42,7 +167,7 @@ view-if: electoral_threshold = 0
 
 # The left is opposed to this.
 
-Some political thinkers believe that the proliferation of minor parties is responsible for the instability of the republic. They believe that a higher electoral threshold will reduce the influence of small radical parties. Parties that win a plurality in a constituency will maintain their representation, a gift to regional parties such as the BVP. 
+Some political thinkers believe that the proliferation of minor parties is responsible for the instability of the republic. They believe that a higher electoral threshold will reduce the influence of small radical parties. Parties that win a plurality in a constituency will maintain their representation, a gift to regional parties such as the BVP.
 
 The smaller parties will obviously oppose this reform. [? if z_relation > 30 : The Center Party supports this reform, while their BVP partners oppose it. ?] [? if kpd_relation > 50 and kpd_normalized >= 0.1 : Perhaps surprisingly, the KPD supports this reform. ?] [? if nsdap_normalized >= 0.2 : The NSDAP supports this reform, as they believe they have something to gain. ?]
 
@@ -56,11 +181,36 @@ The SPD Left opposes this change, as they believe it to be anti-democratic.
 choose-if: reform_support >= pass_threshold
 unavailable-subtitle: We do not have enough support for this policy. [? if pro_republic < 65 : We should have an additional margin for the referendum since we need a majority of voters, and many voters who do not support the republic will not participate. ?] [? if z_relation <= 30 : The Center Party does not trust us enough to support this policy. ?]
 on-arrival: constitutional_reform += 1; electoral_threshold = 5; ddp_relation -= 25; dvp_relation -= 25; left_dissent += 20; workers_dnvp += workers_other*0.4; workers_nsdap += workers_other*0.4; workers_other *= 0.1; new_middle_dvp += new_middle_other*0.3; new_middle_nsdap += new_middle_other*0.3; new_middle_other *= 0.1; old_middle_dvp += 0.3*old_middle_other; old_middle_nsdap += 0.3*old_middle_other; old_middle_dnvp += 0.3*old_middle_other; old_middle_other *= 0.1; rural_dnvp += 0.5*rural_other; rural_nsdap += 0.4*rural_other; rural_other *= 0.1; unemployed_nsdap += 0.3*unemployed_other; unemployed_kpd += 0.4*unemployed_other; unemployed_other *= 0.2; catholics_z += 0.6*catholics_other; catholics_other *= 0.1;
-achievement: verfassungsreform
 
 # this should result in a redistribution of votes - other parties should not get so many votes anymore. maybe ddp and dvp get a recovery of middle-class votes? or maybe they flow to the others.
 
 We have passed a constitutional amendment to increase the electoral threshold to 5%. This is likely to benefit the larger parties and harm the smaller ones.
+
+
+@constructive_vonc
+subtitle: Votes of no confidence can only be called if an alternative plan for government formation can be passed, greatly reducing their incidence.
+on-arrival: {!
+Q.reform_support = Q.spd_normalized + Q.ddp_normalized;
+if (Q.z_relation >= 30) {
+    Q.reform_support += Q.z_normalized - 0.03;
+}
+if (Q.dvp_relation >= 50) {
+    Q.reform_support += Q.dvp_normalized;
+}
+!}
+view-if: constructive_vonc = 0
+
+[? if z_relation >= 30 : The Weimar Coalition parties, the [+ ddp_name +] and Center Party, support this reform, which will greatly improve the stability of the government. ?] [? if z_relation < 30 : The [+ ddp_name +] supports this reform, but the Center Party does not trust us enough to support the constitutional referendum. ?] The more conservative and radical right-wing parties and the KPD are in opposition, as they seem to relish in the republican system's instability.
+
+- @constructive_vonc_2: Call a constitutional referendum to pass the reform!
+- @reforms_menu: See other reform options.
+
+@constructive_vonc_2
+choose-if: reform_support >= pass_threshold
+unavailable-subtitle: We do not have enough support for this policy. [? if pro_republic < 65 : We should have an additional margin for the referendum since we need a majority of voters, and many voters who do not support the republic will not participate. ?] [? if z_relation <= 30 : The Center Party does not trust us enough to support this policy. ?]
+on-arrival: constitutional_reform += 1; constructive_vonc = 1
+
+We have successfully passed a constitutional amendment to ban votes of no confidence when a new government cannot be formed. Hopefully this increases the stability of our governments.
 
 @presidential_powers
 subtitle: The president can no longer dissolve the Reichstag at will, or call a *Reichsexekution* on state governments.
@@ -85,641 +235,8 @@ The KPD is in favor of this reform, having been victims of the *Reichsexekution*
 choose-if: reform_support >= pass_threshold
 unavailable-subtitle: We do not have enough support for this policy. [? if pro_republic < 65 : We should have an additional margin for the referendum since we need a majority of voters, and many voters who do not support the republic will not participate. ?] [? if z_relation <= 49 and president != "Braun" : The Center Party does not trust us enough to support this policy. ?]
 on-arrival: constitutional_reform += 1; presidential_powers = 1
-achievement: verfassungsreform
 
 We have successfully passed a constitutional amendment to limit presidential powers! Hopefully this results in a less authoritarian Germany.
 
-@party_bans
-subtitle: Create a constitutional court with power to ban anti-constitutional parties.
-on-arrival: {!
-Q.reform_support = Q.spd_normalized + Q.ddp_normalized;
-if (Q.z_relation >= 40) {
-    Q.reform_support += Q.z_normalized;
-}
-if (Q.dvp_relation >= 45) {
-    Q.reform_support += Q.dvp_normalized;
-}
-if (Q.kpd_relation >= 55) {
-    Q.reform_support += Q.kpd_normalized * 0.5; // KPD ambivalent
-}
-// NSDAP and DNVP oppose
-if (Q.nsdap_normalized >= 0.15 || Q.dnvp_normalized >= 0.10) {
-    Q.reform_support -= 0.05; // Active opposition campaign
-}
-!}
-view-if: constitutional_court = 0
-
-This reform would establish a Constitutional Court (*Verfassungsgericht*) with the power to ban parties that actively work to undermine the democratic order. This is inspired by the lessons of extremist threats to the Republic.
-
-**Support:**
-- The [+ ddp_name +] strongly supports this as a defense of democracy.
-[? if z_relation >= 40 : - The Center Party supports this reform. ?]
-[? if z_relation < 40 : - The Center Party is skeptical - they fear it could be used against Catholic organizations. ?]
-[? if not stresemann_dead and dvp_relation >= 45 : - The DVP cautiously supports this as a bulwark against extremism. ?]
-[? if kpd_relation >= 55 : - The KPD is ambivalent - they support banning fascists but worry about being targeted themselves. ?]
-[? if kpd_relation < 55 : - The KPD opposes this, seeing it as a tool to suppress the revolutionary left. ?]
-
-**Opposition:**
-- The NSDAP and DNVP vehemently oppose this, seeing it as an attack on their movements.
-- Some in our left wing worry this could be used against us.
-
-**Effect:** Once passed, parties can be banned through legal proceedings if they are proven to be anti-constitutional. The threshold for banning will depend on how democratic the government is.
-
-- @party_bans_2: Call a constitutional referendum to pass the reform!
-- @reforms_menu: See other reform options.
-
-@party_bans_2
-choose-if: reform_support >= pass_threshold
-unavailable-subtitle: We do not have enough support for this policy. [? if pro_republic < 65 : We need a larger margin since many anti-republican voters won't participate. ?] [? if z_relation < 40 : The Center Party doesn't trust us enough. ?]
-on-arrival: constitutional_reform += 1; constitutional_court = 1; left_dissent += 5; kpd_relation -= 8 if kpd_relation < 55; kpd_relation += 3 if kpd_relation >= 55; nsdap_relation -= 15; dnvp_relation -= 10; pro_republic += 2;
-achievement: verfassungsreform
-
-We have established a Constitutional Court with the power to ban anti-constitutional parties! This is a powerful tool for defending democracy, though it must be used carefully.
-
-
-
-@ban_party_menu
-title: Party Banning Powers
-subtitle: Use the Constitutional Court to ban anti-democratic parties
-new-page: true
-view-if: constitutional_court = 1
-on-arrival: constitutional_reform_timer = 12
-
-= Party Banning
-
-With the Constitutional Court now established, we have the legal power to initiate proceedings to ban parties that actively work against the democratic constitutional order.
-
-However, this is an **extremely serious** decision. Banning a party requires broad political support, risks violent backlash, and may be seen as authoritarian if used carelessly.
-
-Which party, if any, should we move to ban?
-
-- @ban_nsdap_menu: Consider banning the NSDAP
-- @ban_dnvp_menu: Consider banning the DNVP
-- @ban_kpd_menu: Consider banning the KPD
-- @ban_cnbl_menu: Consider banning the CNBL
-- @ban_dvfp_menu: Consider banning the DVFP
-- @ban_wp_menu: Consider banning the WP
-- @ban_sapd_menu: Consider banning the SAPD
-- @reforms_menu: Do not pursue any bans at this time
-- @easy_discard
-
-@ban_nsdap_menu
-on-arrival: {!
-    Q.ban_support = Q.spd_normalized;
-
-    if (Q.z_relation >= 55 && Q.nsdap_r < 15) {
-        Q.ban_support += Q.z_normalized;
-    } else if (Q.z_relation >= 45 && Q.nsdap_r < 10) {
-        Q.ban_support += Q.z_normalized * 0.7;
-    }
-
-    if (Q.ddp_relation >= 40) {
-        Q.ban_support += Q.ddp_normalized;
-    }
-
-    if (Q.dvp_relation >= 50 && !Q.stresemann_dead && Q.nsdap_r < 12) {
-        Q.ban_support += Q.dvp_normalized * 0.6;
-    }
-
-    if (Q.kpd_relation >= 50) {
-        Q.ban_support += Q.kpd_normalized * 0.8;
-    }
-
-    if (Q.sapd_formed && Q.sapd_relation >= 50) {
-        Q.ban_support += Q.sapd_normalized * 0.7;
-    }
-
-    if (Q.nsdap_r >= 25) {
-        Q.ban_support -= 0.15;
-    } else if (Q.nsdap_r >= 15) {
-        Q.ban_support -= 0.08;
-    }
-
-    Q.ban_threshold = 0.50;
-    if (Q.pro_republic < 65) Q.ban_threshold = 0.58;
-    if (Q.pro_republic < 55) Q.ban_threshold = 0.65;
-
-    Q.can_ban_nsdap = Q.ban_support >= Q.ban_threshold ? 1 : 0;
-!}
-
-**Banning the NSDAP:**
-
-**Political Support:** [+ ban_support +]
-Required: [+ ban_threshold +]
-
-**Coalition positions:**
-- SPD: Supporting
-[? if z_relation >= 55 and nsdap_r < 15: - Center: Supporting ?]
-[? if z_relation >= 45 and nsdap_r < 10: - Center: Cautiously supporting ?]
-[? if z_relation < 45 or nsdap_r >= 15: - Center: Opposed or abstaining ?]
-[? if ddp_relation >= 40: - [+ ddp_name +]: Supporting ?]
-[? if ddp_relation < 40: - [+ ddp_name +]: Hesitant ?]
-[? if dvp_relation >= 50 and not stresemann_dead and nsdap_r < 12: - DVP: Cautiously supporting ?]
-[? if kpd_relation >= 50: - KPD: Supporting ?]
-[? if kpd_relation < 50: - KPD: Will not coordinate with us ?]
-[? if sapd_formed and sapd_relation >= 50: - SAPD: Supporting ?]
-
-**Risks:**
-[? if nsdap_r >= 25: - NSDAP very popular — HIGH RISK OF CIVIL WAR ?]
-[? if nsdap_r >= 15 and nsdap_r < 25: - NSDAP popular — risk of major unrest ?]
-[? if sa_strength > 400: - SA is very strong — civil war likely ?]
-[? if sa_strength > 200 and sa_strength <= 400: - SA is strong — expect violent resistance ?]
-
-- @ban_nsdap_confirm: Proceed with banning the NSDAP
-- @ban_party_menu: Reconsider
-
-@ban_nsdap_confirm
-choose-if: can_ban_nsdap = 1
-unavailable-subtitle: Not enough political support. [? if z_relation < 45: The Center Party does not support this. ?] [? if ddp_relation < 40: The Democrats are hesitant. ?] [? if nsdap_r >= 25: The NSDAP is too popular — no coalition will risk it. ?]
-on-arrival: {!
-    Q.nsdap_banned = 1;
-    Q.ban_party_timer = 24;
-
-    if (Q.nsdap_r >= 25 || Q.sa_strength > 400) {
-        Q.nsdap_ban_violence = 3;
-        Q.sa_strength *= 0.3;
-        Q.sa_militancy += 0.5;
-    } else if (Q.nsdap_r >= 15 || Q.sa_strength > 200) {
-        Q.nsdap_ban_violence = 2;
-        Q.sa_strength *= 0.2;
-        Q.sa_militancy += 0.3;
-    } else {
-        Q.nsdap_ban_violence = 1;
-        Q.sa_strength *= 0.1;
-        Q.sa_militancy += 0.2;
-    }
-
-    Q.pro_republic += 5;
-    Q.nationalism -= 10;
-
-    if (Q.z_relation >= 45) Q.z_relation += 5;
-    else Q.z_relation -= 10;
-
-    Q.ddp_relation += 8;
-    Q.dvp_relation -= 5;
-    Q.kpd_relation += 10;
-
-    if (Q.dnvp_line === 3) Q.dnvp_relation -= 20;
-
-    Q.workers_dnvp += Q.workers_nsdap * 0.3;
-    Q.workers_other += Q.workers_nsdap * 0.2;
-    Q.workers_spd += Q.workers_nsdap * 0.1;
-    Q.workers_nsdap *= 0.4;
-
-    Q.old_middle_dnvp += Q.old_middle_nsdap * 0.4;
-    Q.old_middle_dvp += Q.old_middle_nsdap * 0.2;
-    Q.old_middle_other += Q.old_middle_nsdap * 0.1;
-    Q.old_middle_nsdap *= 0.3;
-
-    Q.new_middle_dnvp += Q.new_middle_nsdap * 0.3;
-    Q.new_middle_dvp += Q.new_middle_nsdap * 0.2;
-    Q.new_middle_ddp += Q.new_middle_nsdap * 0.15;
-    Q.new_middle_nsdap *= 0.35;
-
-    Q.rural_dnvp += Q.rural_nsdap * 0.4;
-    Q.rural_other += Q.rural_nsdap * 0.2;
-    Q.rural_nsdap *= 0.4;
-
-    Q.unemployed_kpd += Q.unemployed_nsdap * 0.2;
-    Q.unemployed_other += Q.unemployed_nsdap * 0.3;
-    Q.unemployed_nsdap *= 0.5;
-
-    Q.catholics_z += Q.catholics_nsdap * 0.3;
-    Q.catholics_other += Q.catholics_nsdap * 0.2;
-    Q.catholics_nsdap *= 0.5;
-!}
-go-to: nsdap_ban_civil_war if nsdap_ban_violence >= 3; nsdap_ban_unrest if nsdap_ban_violence = 2; nsdap_ban_resistance if nsdap_ban_violence = 1
-
-@nsdap_ban_civil_war
-on-arrival: civil_war_seen = 1; in_civil_war = 1
-
-**CIVIL WAR**
-
-The banning of the NSDAP has triggered a massive violent response. SA units across Germany have risen in armed rebellion. The Reichswehr is mobilizing, but street battles rage in multiple cities.
-
-- @civil_war: Continue...
-
-@nsdap_ban_unrest
-on-arrival: crisis_urgency += 2; sa_strength += 50; strife += 2
-
-**Major Unrest**
-
-The NSDAP ban has triggered widespread violence. SA paramilitaries have attacked government buildings, fought street battles with the Reichsbanner, and assassinated several prominent republicans. The SA has gone underground but remains dangerous.
-
-- @root: Continue...
-
-@nsdap_ban_resistance
-on-arrival: sa_strength += 20; strife += 1
-
-**Underground Resistance**
-
-The NSDAP ban has been implemented with relative success. While SA cells operate underground and isolated acts of terrorism occur, the Nazi movement has been largely suppressed.
-
-- @root: Continue...
-
-@ban_dnvp_menu
-on-arrival: {!
-    // Only Hugenberg DNVP can be banned
-    if (Q.dnvp_line === 1) {
-        Q.can_ban_dnvp = 0;
-    } else {
-        Q.ban_support = Q.spd_normalized;
-
-        if (Q.z_relation >= 50 && Q.dnvp_line === 3) {
-            Q.ban_support += Q.z_normalized * 0.5;
-        }
-        if (Q.ddp_relation >= 45) {
-            Q.ban_support += Q.ddp_normalized * 0.8;
-        }
-        if (Q.kpd_relation >= 50) {
-            Q.ban_support += Q.kpd_normalized;
-        }
-        if (Q.sapd_formed && Q.sapd_relation >= 45) {
-            Q.ban_support += Q.sapd_normalized * 0.6;
-        }
-        if (Q.csvd_flee && Q.kvp_relation >= 40) {
-            Q.ban_support += Q.kvp_normalized * 0.5;
-        }
-
-        // DNVP must be on Hugenberg line and have crossed into anti-constitutional territory
-        Q.ban_threshold = 0.52;
-        if (Q.pro_republic < 65) Q.ban_threshold = 0.60;
-        if (Q.dnvp_line !== 3) Q.ban_threshold += 0.15;
-
-        Q.can_ban_dnvp = Q.ban_support >= Q.ban_threshold ? 1 : 0;
-    }
-!}
-go-to: dnvp_cannot_ban if dnvp_line = 1; dnvp_ban_show if dnvp_line != 1
-
-@dnvp_cannot_ban
-
-**Banning the DNVP:**
-
-Kuno von Westarp's DNVP operates within the constitutional order. The Constitutional Court would reject this case immediately — banning them would be a flagrant abuse of power.
-
-- @ban_party_menu: Back
-
-@dnvp_ban_show
-
-**Banning the DNVP:**
-
-**Political Support:** [+ ban_support +]
-Required: [+ ban_threshold +]
-
-**Coalition positions:**
-- SPD: Supporting
-[? if z_relation >= 50 and dnvp_line = 3: - Center: Supporting (Hugenberg DNVP has alarmed them) ?]
-[? if z_relation < 50: - Center: Opposed or abstaining ?]
-[? if ddp_relation >= 45: - [+ ddp_name +]: Supporting ?]
-[? if kpd_relation >= 50: - KPD: Supporting ?]
-[? if csvd_flee and kvp_relation >= 40: - KVP: Supporting (they split from DNVP themselves) ?]
-
-**Risks:**
-- Banning a major established party sets a dangerous precedent
-- Will drive moderate conservatives toward NSDAP
-- Business and landowner backlash certain
-[? if dnvp_line = 2: - DNVP is not yet fully anti-constitutional — the court case is weak ?]
-
-- @ban_dnvp_confirm: Proceed with banning the DNVP
-- @ban_party_menu: Reconsider
-
-@ban_dnvp_confirm
-choose-if: can_ban_dnvp = 1
-unavailable-subtitle: [? if dnvp_line != 3: The DNVP has not yet crossed into full anti-constitutional territory. ?] [? if ban_support < ban_threshold: Not enough political support. ?]
-on-arrival: dnvp_banned = 1; sh_strength *= 0.1; constitutional_reform_timer = 24; pro_republic += 3; z_relation -= 8; dvp_relation -= 15; bvp_relation -= 12; presidential_patience -= 10 if president = "Hindenburg"; camarilla_strength += 15 if president = "Hindenburg"; workers_dvp += workers_dnvp * 0.3; workers_other += workers_dnvp * 0.3; workers_nsdap += workers_dnvp * 0.2 if nsdap_banned = 0; old_middle_dvp += old_middle_dnvp * 0.4; old_middle_other += old_middle_dnvp * 0.3; old_middle_nsdap += old_middle_dnvp * 0.2 if nsdap_banned = 0; rural_other += rural_dnvp * 0.4; rural_nsdap += rural_dnvp * 0.3 if nsdap_banned = 0; new_middle_dvp += new_middle_dnvp * 0.5; new_middle_other += new_middle_dnvp * 0.3; strife += 1;
-
-The DNVP has been banned. The conservative movement has been decapitated, but many warn this creates martyrs and drives their voters toward the NSDAP.
-
-[? if president = "Hindenburg": Hindenburg is furious. The camarilla's resolve to remove us hardens considerably. ?]
-
-- @ban_party_menu: Continue...
-
-@ban_kpd_menu
-on-arrival: {!
-    Q.ban_support = 0;
-
-    // SPD support depends heavily on internal balance
-    if (Q.reformist_strength >= 60 && Q.kpd_relation < 40) {
-        Q.ban_support += Q.spd_normalized * 0.8;
-    } else if (Q.reformist_strength >= 45 && Q.kpd_relation < 30) {
-        Q.ban_support += Q.spd_normalized * 0.5;
-    }
-    // Left wing or good KPD relations means SPD blocks this entirely
-
-    if (Q.z_relation >= 60) {
-        Q.ban_support += Q.z_normalized;
-    }
-    if (Q.ddp_relation >= 50 && Q.kpd_relation < 30) {
-        Q.ban_support += Q.ddp_normalized * 0.6;
-    }
-    if (Q.dvp_relation >= 55) {
-        Q.ban_support += Q.dvp_normalized;
-    }
-    if (Q.dnvp_line === 1 && Q.dnvp_relation >= 40) {
-        Q.ban_support += Q.dnvp_normalized * 0.7;
-    }
-    if (Q.srpd_formed && Q.srpd_relation >= 50) {
-        Q.ban_support += Q.srpd_normalized * 0.5;
-    }
-
-    Q.ban_threshold = 0.55;
-    if (Q.pro_republic < 65) Q.ban_threshold = 0.62;
-
-    // Left wing blocks regardless
-    Q.can_ban_kpd = (Q.ban_support >= Q.ban_threshold
-                     && Q.left_strength < 40
-                     && Q.kpd_relation < 50) ? 1 : 0;
-!}
-
-**Banning the KPD:**
-
-[? if left_strength >= 40 or kpd_relation >= 50: **WARNING.** Banning the KPD would destroy the united front strategy and alienate millions of workers. Our own left wing would revolt. This would be a catastrophic betrayal of working-class unity. ?]
-
-**Political Support:** [+ ban_support +]
-Required: [+ ban_threshold +]
-
-**Coalition positions:**
-- SPD: [? if reformist_strength >= 60 and kpd_relation < 40: Supporting ?][? if reformist_strength >= 45 and kpd_relation < 30 and reformist_strength < 60: Reluctantly supporting ?][? if left_strength >= 40 or kpd_relation >= 50: Blocking — our left wing will not allow this ?]
-[? if z_relation >= 60: - Center: Supporting ?]
-[? if z_relation < 60: - Center: Insufficiently committed ?]
-[? if dvp_relation >= 55: - DVP: Supporting ?]
-[? if dnvp_line = 1 and dnvp_relation >= 40: - DNVP (Westarp): Supporting ?]
-[? if srpd_formed and srpd_relation >= 50: - SRPD: Cautiously supporting ?]
-
-**Consequences:**
-- Massive internal party revolt
-- End of united front strategy
-- Loss of worker and unemployed support
-- Communist underground resistance
-[? if left_strength >= 35: - Possible split in the SPD ?]
-
-- @ban_kpd_confirm: Proceed with banning the KPD
-- @ban_party_menu: Reconsider
-
-@ban_kpd_confirm
-choose-if: can_ban_kpd = 1
-unavailable-subtitle: [? if ban_support < ban_threshold: Not enough political support. This requires a center-right coalition. ?] [? if left_strength >= 40: Our left wing will never allow this. ?] [? if kpd_relation >= 50: We have good relations with the KPD — this would be a betrayal. ?]
-on-arrival: kpd_banned = 1; rfb_strength *= 0.05; constitutional_reform_timer = 24; left_dissent += 40; labor_dissent += 30; center_dissent += 15; workers_spd -= 10; workers_kpd *= 0.4; workers_sapd += workers_kpd * 0.3 if sapd_formed; unemployed_spd -= 8; unemployed_kpd *= 0.5; z_relation += 10; dvp_relation += 12; dnvp_relation += 8 if dnvp_line = 1; reformist_strength += 10; left_strength -= 15; strife += 2; presidential_patience += 5 if president = "Hindenburg";
-
-**The KPD has been banned.**
-
-This decision will haunt us. Communist workers feel betrayed. Our left wing is in open revolt. The united front is dead.
-
-[? if left_strength >= 35: Some leftists are already threatening to split from the SPD... ?]
-
-- @ban_party_menu: Continue...
-
-@ban_cnbl_menu
-on-arrival: {!
-    Q.ban_support = Q.spd_normalized;
-
-    if (Q.z_relation >= 45) {
-        Q.ban_support += Q.z_normalized * 0.5;
-    }
-    if (Q.ddp_relation >= 45) {
-        Q.ban_support += Q.ddp_normalized * 0.7;
-    }
-    if (Q.kpd_relation >= 45) {
-        Q.ban_support += Q.kpd_normalized * 0.6;
-    }
-    if (Q.sapd_formed && Q.sapd_relation >= 45) {
-        Q.ban_support += Q.sapd_normalized * 0.5;
-    }
-    // CNBL is small — banning them only makes sense if they've drifted far right
-    // and are actively collaborating with NSDAP
-    if (Q.nsdap_r < 20) Q.ban_support -= 0.10; // No real case if Nazis are small
-
-    Q.ban_threshold = 0.55;
-    if (Q.pro_republic < 65) Q.ban_threshold = 0.62;
-    // CNBL must have drifted toward anti-constitutional collaboration
-    Q.can_ban_cnbl = (Q.ban_support >= Q.ban_threshold
-                      && Q.cnbl_relation < 25
-                      && Q.nsdap_r >= 20) ? 1 : 0;
-!}
-
-**Banning the CNBL:**
-
-The Reichs-Landbund is an agrarian nationalist organization whose leadership has increasingly collaborated with anti-republican forces. However, banning an agrarian interest party risks alienating rural voters further.
-
-**Political Support:** [+ ban_support +]
-Required: [+ ban_threshold +]
-
-**Coalition positions:**
-- SPD: Supporting
-[? if z_relation >= 45: - Center: Cautiously supporting (rural Catholic voters complicate this) ?]
-[? if z_relation < 45: - Center: Opposed ?]
-[? if ddp_relation >= 45: - [+ ddp_name +]: Supporting ?]
-[? if kpd_relation >= 45: - KPD: Supporting ?]
-
-**Conditions required:**
-[? if cnbl_relation >= 25: - Our relations with CNBL are not hostile enough to justify a ban ?]
-[? if nsdap_r < 20: - NSDAP must be significant before CNBL collaboration becomes a legal case ?]
-
-**Risks:**
-- Rural voter backlash — drives farmers further toward NSDAP
-- BVP and BB will be alarmed at agrarian party suppression
-- Sets precedent for banning interest-based parties
-
-- @ban_cnbl_confirm: Proceed with banning the CNBL
-- @ban_party_menu: Reconsider
-
-@ban_cnbl_confirm
-choose-if: can_ban_cnbl = 1
-unavailable-subtitle: [? if cnbl_relation >= 25: CNBL has not sufficiently collaborated with anti-constitutional forces. ?] [? if nsdap_r < 20: No compelling case without significant Nazi presence. ?] [? if ban_support < ban_threshold: Not enough political support. ?]
-on-arrival: cnbl_banned = 1; constitutional_reform_timer = 24; rural_dnvp += rural_cnbl * 0.4; rural_nsdap += rural_cnbl * 0.3 if nsdap_banned = 0; rural_other += rural_cnbl * 0.2; rural_spd += rural_cnbl * 0.05; bvp_relation -= 8; bb_relation -= 10; z_relation -= 5; dvp_relation -= 5; pro_republic += 1; strife += 1;
-
-The CNBL has been banned. Rural voters are alarmed and much of their support flows to the DNVP and NSDAP. This was a high-risk move with limited upside.
-
-- @ban_party_menu: Continue...
-
-@ban_dvfp_menu
-on-arrival: {!
-    Q.ban_support = Q.spd_normalized;
-
-    if (Q.ddp_relation >= 40) {
-        Q.ban_support += Q.ddp_normalized;
-    }
-    if (Q.z_relation >= 45) {
-        Q.ban_support += Q.z_normalized * 0.7;
-    }
-    if (Q.kpd_relation >= 45) {
-        Q.ban_support += Q.kpd_normalized * 0.7;
-    }
-    if (Q.dvp_relation >= 45 && !Q.stresemann_dead) {
-        Q.ban_support += Q.dvp_normalized * 0.5;
-    }
-    if (Q.sapd_formed && Q.sapd_relation >= 45) {
-        Q.ban_support += Q.sapd_normalized * 0.6;
-    }
-    // DVFP is explicitly völkisch — easier case than DNVP
-    // but only if they are still active (dvfp_formed)
-    Q.ban_threshold = 0.50;
-    if (Q.pro_republic < 65) Q.ban_threshold = 0.57;
-
-    Q.can_ban_dvfp = (Q.dvfp_formed
-                      && Q.ban_support >= Q.ban_threshold
-                      && Q.dvfp_relation < 20) ? 1 : 0;
-!}
-view-if: dvfp_formed = 1
-
-**Banning the DVFP:**
-
-The Deutschvölkische Freiheitspartei is an explicitly völkisch and antisemitic party that has collaborated openly with the NSDAP. Their ideology is inherently incompatible with the constitutional order. They are smaller than the NSDAP and the case against them is relatively straightforward.
-
-**Political Support:** [+ ban_support +]
-Required: [+ ban_threshold +]
-
-**Coalition positions:**
-- SPD: Supporting
-[? if ddp_relation >= 40: - [+ ddp_name +]: Supporting ?]
-[? if z_relation >= 45: - Center: Supporting ?]
-[? if kpd_relation >= 45: - KPD: Supporting ?]
-[? if dvp_relation >= 45 and not stresemann_dead: - DVP: Cautiously supporting ?]
-
-**Risks:**
-- Moderate — DVFP is small and their voters will flow to DNVP or NSDAP regardless
-- Sets useful precedent for banning NSDAP later
-[? if nsdap_banned = 0: - NSDAP will absorb most DVFP voters and activists ?]
-
-- @ban_dvfp_confirm: Proceed with banning the DVFP
-- @ban_party_menu: Reconsider
-
-@ban_dvfp_confirm
-choose-if: can_ban_dvfp = 1
-unavailable-subtitle: [? if dvfp_relation >= 20: DVFP relations are not hostile enough for a compelling case. ?] [? if ban_support < ban_threshold: Not enough political support. ?] [? if dvfp_formed = 0: DVFP does not exist. ?]
-on-arrival: dvfp_banned = 1; constitutional_reform_timer = 18; pro_republic += 2; nationalism -= 3; ddp_relation += 5; z_relation += 3; old_middle_nsdap += old_middle_dvfp * 0.5 if nsdap_banned = 0; old_middle_dnvp += old_middle_dvfp * 0.3; rural_nsdap += rural_dvfp * 0.5 if nsdap_banned = 0; rural_dnvp += rural_dvfp * 0.3; strife += 1; dnvp_relation -= 5;
-
-The DVFP has been banned. Their activists and voters largely flow toward the NSDAP, but the precedent established by this ban strengthens future legal cases against anti-constitutional parties.
-
-[? if nsdap_banned = 0: The NSDAP absorbs most of the DVFP's organizational strength. ?]
-
-- @ban_party_menu: Continue...
-
-@ban_wp_menu
-on-arrival: {!
-    Q.ban_support = 0;
-
-    // Banning WP requires right-leaning SPD and broad center support
-    // WP is a bourgeois interest party, not anti-constitutional — very hard case
-    if (Q.reformist_strength >= 55 && Q.wp_relation < 20) {
-        Q.ban_support += Q.spd_normalized * 0.6;
-    }
-    if (Q.z_relation >= 55) {
-        Q.ban_support += Q.z_normalized * 0.4;
-    }
-    if (Q.ddp_relation >= 50) {
-        Q.ban_support += Q.ddp_normalized * 0.5;
-    }
-    if (Q.dvp_relation >= 50) {
-        Q.ban_support += Q.dvp_normalized * 0.6; // DVP wants WP voters
-    }
-    if (Q.kpd_relation >= 50) {
-        Q.ban_support += Q.kpd_normalized * 0.5;
-    }
-
-    Q.ban_threshold = 0.60; // High threshold — very weak case
-    if (Q.pro_republic < 65) Q.ban_threshold = 0.68;
-
-    Q.can_ban_wp = (Q.ban_support >= Q.ban_threshold
-                    && Q.wp_relation < 20
-                    && Q.capital_strike_progress >= 3) ? 1 : 0;
-!}
-
-**Banning the WP:**
-
-The Wirtschaftspartei is a middle-class interest party, not a genuinely anti-constitutional one. Banning them would require demonstrating active collaboration with anti-republican forces, which is only plausible if they have been drawn into capital strike politics.
-
-**Political Support:** [+ ban_support +]
-Required: [+ ban_threshold +]
-
-**Conditions required:**
-[? if wp_relation >= 20: - Our relations with WP are not hostile enough — no compelling case ?]
-[? if capital_strike_progress < 3: - WP must be actively collaborating in capital strike politics ?]
-[? if reformist_strength < 55: - Requires a dominant reformist SPD to push this through internally ?]
-
-**Risks:**
-- Widely seen as politically motivated — will alarm all bourgeois parties
-- DVP, DDP, and Z will all reassess their relationship with us
-- Middle-class voters flee to DNVP and NSDAP
-- Very weak legal basis — Constitutional Court may reject
-
-- @ban_wp_confirm: Proceed with banning the WP
-- @ban_party_menu: Reconsider
-
-@ban_wp_confirm
-choose-if: can_ban_wp = 1
-unavailable-subtitle: [? if wp_relation >= 20: No compelling case against WP. ?] [? if capital_strike_progress < 3: WP has not sufficiently collaborated in anti-constitutional activity. ?] [? if ban_support < ban_threshold: Not enough political support — bourgeois parties will not back this. ?]
-on-arrival: wp_banned = 1; constitutional_reform_timer = 24; old_middle_dvp += old_middle_wp * 0.35; old_middle_dnvp += old_middle_wp * 0.25; old_middle_nsdap += old_middle_wp * 0.2 if nsdap_banned = 0; old_middle_other += old_middle_wp * 0.1; new_middle_dvp += new_middle_wp * 0.4; new_middle_nsdap += new_middle_wp * 0.2 if nsdap_banned = 0; ddp_relation -= 10; dvp_relation -= 8; z_relation -= 8; bvp_relation -= 8; pro_republic -= 1; capital_strike_progress += 1; strife += 1; coup_progress += 0.5;
-
-The WP has been banned. The reaction from the bourgeois parties is one of alarm — if we can ban the WP, what stops us from banning them? Capital flight accelerates and our relations with every non-socialist party suffer.
-
-- @ban_party_menu: Continue...
-
-@ban_sapd_menu
-on-arrival: {!
-    // Banning our own left split — only conceivable in a right-leaning SPD
-    Q.ban_support = 0;
-
-    if (Q.reformist_strength >= 65 && Q.sapd_relation < 25) {
-        Q.ban_support += Q.spd_normalized * 0.7;
-    }
-    if (Q.z_relation >= 55) {
-        Q.ban_support += Q.z_normalized * 0.5;
-    }
-    if (Q.dvp_relation >= 50) {
-        Q.ban_support += Q.dvp_normalized * 0.4;
-    }
-    if (Q.srpd_formed && Q.srpd_relation >= 50) {
-        Q.ban_support += Q.srpd_normalized * 0.5;
-    }
-    // KPD will never support banning SAPD
-    // DDP very reluctant — free speech concerns
-
-    Q.ban_threshold = 0.58;
-    if (Q.pro_republic < 65) Q.ban_threshold = 0.65;
-
-    Q.can_ban_sapd = (Q.sapd_formed
-                      && Q.ban_support >= Q.ban_threshold
-                      && Q.reformist_strength >= 65
-                      && Q.sapd_relation < 25) ? 1 : 0;
-!}
-view-if: sapd_formed = 1
-
-**Banning the SAPD:**
-
-The Socialist Workers' Party split from us and has drifted toward revolutionary rhetoric. Banning them would require demonstrating that they have crossed into actively anti-constitutional territory — a difficult case, and one that would damage our credibility with the left enormously.
-
-**Political Support:** [+ ban_support +]
-Required: [+ ban_threshold +]
-
-**Coalition positions:**
-- SPD: [? if reformist_strength >= 65 and sapd_relation < 25: Supporting (reformist wing dominant) ?][? if reformist_strength < 65 or sapd_relation >= 25: Blocking — too much sympathy for SAPD in our ranks ?]
-[? if z_relation >= 55: - Center: Supporting ?]
-[? if dvp_relation >= 50: - DVP: Supporting ?]
-[? if srpd_formed and srpd_relation >= 50: - SRPD: Supporting (they fear SAPD competition) ?]
-- KPD: Will never support banning SAPD
-
-**Conditions required:**
-[? if reformist_strength < 65: - Reformist wing must dominate our party completely ?]
-[? if sapd_relation >= 25: - Our relations with SAPD must be fully hostile ?]
-[? if not sapd_formed: - SAPD does not exist ?]
-
-**Risks:**
-- Enormous credibility damage on the left
-- Workers and left-wing unions furious
-- KPD gains from SAPD suppression
-- Widely seen as SPD protecting its monopoly on the left
-
-- @ban_sapd_confirm: Proceed with banning the SAPD
-- @ban_party_menu: Reconsider
-
-@ban_sapd_confirm
-choose-if: can_ban_sapd = 1
-unavailable-subtitle: [? if not sapd_formed: SAPD does not exist. ?] [? if reformist_strength < 65: Our own party would block this — reformists must dominate completely. ?] [? if sapd_relation >= 25: Relations with SAPD are not hostile enough to justify a ban. ?] [? if ban_support < ban_threshold: Not enough political support. ?]
-on-arrival: sapd_banned = 1; constitutional_reform_timer = 24; left_dissent += 25; labor_dissent += 15; kpd_relation -= 15; workers_kpd += workers_sapd * 0.4; workers_spd += workers_sapd * 0.15; workers_other += workers_sapd * 0.25; unemployedc_kpd += unemployedc_sapd * 0.5; unemployedc_spd += unemployedc_sapd * 0.1; reformist_strength += 5; left_strength -= 20; strife += 1; pro_republic -= 1;
-
-The SAPD has been banned. The left is furious — most of their voters and activists flow to the KPD, strengthening exactly the force we most needed to counter. Our credibility with working-class organizations is badly damaged.
-
-[? if left_strength >= 30: The left wing of our own party is threatening open revolt. ?]
-
-- @ban_party_menu: Continue...
+@as_is
+go-to: root
