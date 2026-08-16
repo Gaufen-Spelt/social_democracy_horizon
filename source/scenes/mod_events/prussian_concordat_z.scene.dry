@@ -9,4 +9,4 @@ Q.party_relations.DVP.Z -= 5;
 
 = Prussian Concordat is signed!
 
-As the result of co-operation between Zentrum's clerical representative Ludwig Kaas, Prussian Minister President [+ prussian_mp +] of [+ prussian_government +] and Vatican, Prussian Concordat treaty has been signed. This treaty has established legal status, rights, and obligations of the Roman Catholic Church within Prussian territory.  
+As the result of co-operation between Zentrum's clerical representative Ludwig Kaas, Prussian Minister President [+ ministerpresident +] of [+ mp_party_prussia +] and Vatican, Prussian Concordat treaty has been signed. This treaty has established legal status, rights, and obligations of the Roman Catholic Church within Prussian territory.  
