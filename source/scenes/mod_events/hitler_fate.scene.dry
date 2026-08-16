@@ -4,7 +4,7 @@ tags: event
 new-page: true
 max-visits: 1
 priority: 0
-view-if: urban_plan_flavor_1 >= 1 and geest_wildfire = 0 and hitler_young_funded = 0 and (strasserist_power + rohmite_power > hitlerist_power) and year >= 1929 and month >= 7 and (nsdap_party_leader == "Hitler" or nsdap_party_leader == "Adolf Hitler")
+view-if: urban_plan_flavor_1 >= 1 and geest_wildfire = 0 and hitler_young_funded = 0 and (strasserist_power + rohmite_power > hitlerist_power) and ((year >= 1929 and month >= 7) and year < 1930) and (nsdap_party_leader == "Hitler" or nsdap_party_leader == "Adolf Hitler") 
 
 = Hitler is facing the confidence crisis.
 
