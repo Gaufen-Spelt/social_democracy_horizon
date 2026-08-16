@@ -1,7 +1,7 @@
 Title: Schacht's Resignation
 subtitle: The Reichsbank President Departs
 new-page: true
-view-if: year = 1930 and month = 3
+view-if: year = 1930 and (month >= 3 and month <= 4)
 tags: event, economics
 max-visits: 1
 on-arrival: schacht_resigned = 1 if not secret_mode
