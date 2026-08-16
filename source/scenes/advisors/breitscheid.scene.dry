@@ -39,7 +39,7 @@ choose-if: advisor_action_timer = 0
 unavailable-subtitle: [? if advisor_action_timer > 0 : [+ advisor_action_timer +] months before next advisor action. ?]
 on-arrival: advisor_action_timer = 10; left_dissent *= 0.95; labor_dissent *= 0.90; center_dissent *= 0.85; reformist_dissent *= 0.95; neorevisionist_dissent *= 0.95
 
-We have slightly enforced party discipline to reduce dissent across all factions.
+We have enforced party discipline to reduce dissent across all factions.
 
 
 @snap_election
