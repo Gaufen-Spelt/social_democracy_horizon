@@ -5594,191 +5594,223 @@ if (!Q.math_broken) {
 
 
 // ============================================================
-// BILL SYSTEM — POST EVENT TICK (v3)
-//
-// Single flat bill pool ordered socialist → völkisch.
-// Parties select from it based on ideology window + affinity.
-// Bills are not owned by any party; any eligible party can
-// push any bill that falls within their ideological range.
+// BILL SYSTEM — POST EVENT TICK (v4)
 // ============================================================
 
 
 // ============================================================
 // SECTION A: GLOBAL BILL POOL
 //
-// base_ideo : 1 (communist) → 10 (völkisch)
-// affinity  : thematic tags for party affinity scoring
-// cooldown  : turns before bill can re-enter queue (25–60)
-// push_weight: base probability weight before modifiers
+// base_ideo   : 0 (communist) → 20 (völkisch/fascist)
+// affinity    : thematic tags for party affinity scoring
+// cooldown    : turns before bill can re-enter queue (25–60)
+//               (this is the ONLY repetition gate — bills are
+//               never permanently removed from the pool)
+// push_weight : base probability weight before modifiers
+// desc        : human-readable summary of on_pass effect,
+//               shown in the queue display
 // ============================================================
 
 var BILLS = [
 
-    // ── FAR LEFT (ideo 1) ────────────────────────────────────
+    // ── FAR LEFT (ideo 0–2, Marxism-Leninism / council communism) ──
     { id: 'socialisation',      name: 'Socialisation of Heavy Industry',
       type: 'economic', base_ideo: 1, affinity: ['labor','socialist'],
       timer: 35, push_weight: 0.18, ministry: 'economic',    cooldown: 40,
+      desc: 'Nationalizes heavy industry under state control (+Socialization)',
       on_pass: function() { Q.socialization=(Q.socialization||0)+1; } },
 
     { id: 'works_councils',     name: 'Revolutionary Works Councils Act',
       type: 'labor',    base_ideo: 1, affinity: ['labor','socialist'],
       timer: 30, push_weight: 0.14, ministry: 'labor',       cooldown: 40,
+      desc: 'Establishes revolutionary factory councils (+2 Works Councils)',
       on_pass: function() { Q.works_councils=(Q.works_councils||0)+2; } },
 
     { id: 'workers_relief',     name: 'Emergency Workers Relief Fund',
-      type: 'welfare',  base_ideo: 1, affinity: ['welfare','labor'],
+      type: 'welfare',  base_ideo: 2, affinity: ['welfare','labor'],
       timer: 28, push_weight: 0.15, ministry: 'labor',       cooldown: 35,
+      desc: 'Emergency relief payments for unemployed workers (+Workers Aid, +Welfare)',
       on_pass: function() { Q.workers_aid=(Q.workers_aid||0)+1; Q.welfare=(Q.welfare||0)+1; } },
 
-    // ── DEMOCRATIC LEFT (ideo 2–3) ───────────────────────────
+    // ── DEMOCRATIC LEFT (ideo 3–4, left-wing socialism) ──────
     { id: 'land_reform',        name: 'Agricultural Land Reform',
-      type: 'economic', base_ideo: 2, affinity: ['agrarian','socialist'],
+      type: 'economic', base_ideo: 3, affinity: ['agrarian','socialist'],
       timer: 35, push_weight: 0.12, ministry: 'agriculture', cooldown: 40,
+      desc: 'Redistributes large estates to smallholders (+Land Reform)',
       on_pass: function() { Q.land_reform=(Q.land_reform||0)+1; } },
 
     { id: 'cooperatives',       name: 'Worker Cooperative Promotion Act',
-      type: 'labor',    base_ideo: 2, affinity: ['labor','socialist'],
+      type: 'labor',    base_ideo: 3, affinity: ['labor','socialist'],
       timer: 30, push_weight: 0.12, ministry: 'economic',    cooldown: 40,
+      desc: 'State support for worker-owned cooperatives (+Cooperatives)',
       on_pass: function() { Q.cooperatives=(Q.cooperatives||0)+1; } },
 
     { id: 'unemployment_ins',   name: 'Unemployment Insurance Extension',
-      type: 'welfare',  base_ideo: 3, affinity: ['welfare','labor'],
+      type: 'welfare',  base_ideo: 4, affinity: ['welfare','labor'],
       timer: 30, push_weight: 0.20, ministry: 'labor',       cooldown: 35,
+      desc: 'Extends unemployment insurance coverage (+Workers Aid, +Welfare)',
       on_pass: function() { Q.workers_aid=(Q.workers_aid||0)+1; Q.welfare=(Q.welfare||0)+1; } },
 
+    // ── SOCIAL DEMOCRACY (reformist/mainstream, ideo 5–7) ────
     { id: 'public_works',       name: 'WTB Public Works Programme',
-      type: 'economic', base_ideo: 3, affinity: ['labor','reform'],
+      type: 'economic', base_ideo: 6, affinity: ['labor','reform'],
       timer: 45, push_weight: 0.16, ministry: 'economic',    cooldown: 50,
+      desc: 'Large public-works job-creation programme (+State Buyer)',
       on_pass: function() { Q.state_buyer=(Q.state_buyer||0)+1; } },
 
     { id: 'womens_workplace',   name: 'Women in the Workplace Act',
-      type: 'social',   base_ideo: 3, affinity: ['civil','reform'],
+      type: 'social',   base_ideo: 6, affinity: ['civil','reform'],
       timer: 35, push_weight: 0.12, ministry: 'labor',       cooldown: 40,
+      desc: "Expands women's workplace protections (+Women's Rights, +Women's Work)",
       on_pass: function() { Q.womens_rights=(Q.womens_rights||0)+1; Q.womens_work=(Q.womens_work||0)+1; } },
 
-    // ── LIBERAL CENTRE (ideo 4–5) ────────────────────────────
+    // ── LIBERAL CENTRE (ideo 9–10, social liberalism / centrist) ─
     { id: 'secular_schools',    name: 'Secular School Reform',
-      type: 'social',   base_ideo: 5, affinity: ['civil','secular'],
+      type: 'social',   base_ideo: 9, affinity: ['civil','secular'],
       timer: 40, push_weight: 0.12, ministry: 'interior',    cooldown: 40,
+      desc: 'Removes confessional control of public schools (+Secularized, +School Boards)',
       on_pass: function() { Q.secularized=(Q.secularized||0)+1; Q.school_boards=(Q.school_boards||0)+1; } },
 
     { id: 'consumer_protect',   name: 'Consumer Protection Reform',
-      type: 'economic', base_ideo: 5, affinity: ['reform','bourgeois'],
+      type: 'economic', base_ideo: 9, affinity: ['reform','bourgeois'],
       timer: 30, push_weight: 0.10, ministry: 'economic',    cooldown: 35,
+      desc: 'Strengthens consumer protection law (+Pro-Consumer)',
       on_pass: function() { Q.pro_consumer=(Q.pro_consumer||0)+1; } },
 
     { id: 'para_175_reform',    name: 'Reform of Paragraph 175',
-      type: 'civil',    base_ideo: 5, affinity: ['civil','secular'],
+      type: 'civil',    base_ideo: 9, affinity: ['civil','secular'],
       timer: 45, push_weight: 0.08, ministry: 'justice',     cooldown: 60,
+      desc: 'Liberalizes prosecution under Paragraph 175 (+Homosexual Rights, sets Reformed §183)',
       on_pass: function() { Q.homosexual_rights=(Q.homosexual_rights||0)+1; Q.reformed_183=1; } },
 
-    // ── CHRISTIAN CENTRE (ideo 5–6) ──────────────────────────
+    // ── CATHOLIC TENT / CHRISTIAN CENTRE (ideo 12–13) ────────
     { id: 'church_concordat',   name: 'Church-State Concordat',
-      type: 'social',   base_ideo: 5, affinity: ['catholic','conservative'],
+      type: 'social',   base_ideo: 12, affinity: ['catholic','conservative'],
       timer: 50, push_weight: 0.16, ministry: 'chancellor',  cooldown: 60,
+      desc: 'Formal concordat between Prussia and the Church (sets Prussian Concordat)',
       on_pass: function() { Q.prussian_concordate=1; } },
 
     { id: 'confessional_schools',name: 'Confessional Schools Protection',
-      type: 'social',   base_ideo: 5, affinity: ['catholic','conservative'],
+      type: 'social',   base_ideo: 12, affinity: ['catholic','conservative'],
       timer: 40, push_weight: 0.14, ministry: 'interior',    cooldown: 40,
+      desc: 'Protects church-run schools from secularization (−Secularized, −School Boards)',
       on_pass: function() { Q.secularized=Math.max(0,(Q.secularized||0)-1); Q.school_boards=Math.max(0,(Q.school_boards||0)-1); } },
 
     { id: 'family_law',         name: 'Family Law Preservation Act',
-      type: 'social',   base_ideo: 6, affinity: ['catholic','conservative'],
+      type: 'social',   base_ideo: 13, affinity: ['catholic','conservative'],
       timer: 35, push_weight: 0.12, ministry: 'justice',     cooldown: 40,
+      desc: 'Rolls back liberalized family law (−Family Law, −Abortion Rights)',
       on_pass: function() { Q.family_law=Math.max(0,(Q.family_law||0)-1); Q.abortion_rights=Math.max(0,(Q.abortion_rights||0)-1); } },
 
-    // ── AGRARIAN / BOURGEOIS RIGHT (ideo 6–7) ────────────────
+    // ── AGRARIAN / LIBERAL-AGRARIAN RIGHT (ideo 12–15) ───────
     { id: 'agri_tariff',        name: 'Agricultural Import Tariff',
-      type: 'economic', base_ideo: 6, affinity: ['agrarian','conservative'],
+      type: 'economic', base_ideo: 13, affinity: ['agrarian','conservative'],
       timer: 30, push_weight: 0.14, ministry: 'agriculture', cooldown: 40,
+      desc: 'Tariff wall protecting domestic agriculture (+Agricultural Finance)',
       on_pass: function() { Q.agricultural_finance=(Q.agricultural_finance||0)+1; } },
 
     { id: 'rural_settlement',   name: 'Rural Settlement Programme',
-      type: 'economic', base_ideo: 6, affinity: ['agrarian','conservative'],
+      type: 'economic', base_ideo: 13, affinity: ['agrarian','conservative'],
       timer: 35, push_weight: 0.10, ministry: 'agriculture', cooldown: 40,
+      desc: 'Settles farmers on new rural holdings (+Land Reform, +Agricultural Finance)',
       on_pass: function() { Q.land_reform=(Q.land_reform||0)+1; Q.agricultural_finance=(Q.agricultural_finance||0)+1; } },
 
     { id: 'business_tax',       name: 'Business Tax Reduction',
-      type: 'economic', base_ideo: 7, affinity: ['bourgeois','industry'],
+      type: 'economic', base_ideo: 14, affinity: ['bourgeois','industry'],
       timer: 35, push_weight: 0.16, ministry: 'finance',     cooldown: 40,
+      desc: 'Cuts business taxation (−Pro-Consumer)',
       on_pass: function() { Q.pro_consumer=Math.max(0,(Q.pro_consumer||0)-1); } },
 
     { id: 'trade_treaty',       name: 'Commercial Trade Treaty Act',
-      type: 'foreign',  base_ideo: 7, affinity: ['industry','bourgeois'],
+      type: 'foreign',  base_ideo: 14, affinity: ['industry','bourgeois'],
       timer: 45, push_weight: 0.14, ministry: 'foreign',     cooldown: 45,
+      desc: 'Opens trade treaty favoring industrial exporters (−Agricultural Finance)',
       on_pass: function() { Q.agricultural_finance=Math.max(0,(Q.agricultural_finance||0)-1); } },
 
     { id: 'deregulation',       name: 'Deregulation of Consumer Markets',
-      type: 'economic', base_ideo: 7, affinity: ['industry','bourgeois'],
+      type: 'economic', base_ideo: 14, affinity: ['industry','bourgeois'],
       timer: 30, push_weight: 0.12, ministry: 'economic',    cooldown: 35,
+      desc: 'Strips consumer-market regulation (−Pro-Consumer, −State Buyer)',
       on_pass: function() { Q.pro_consumer=Math.max(0,(Q.pro_consumer||0)-1); Q.state_buyer=Math.max(0,(Q.state_buyer||0)-1); } },
 
     { id: 'middle_class_credit',name: 'Middle Class Credit Relief',
-      type: 'economic', base_ideo: 7, affinity: ['bourgeois','reform'],
+      type: 'economic', base_ideo: 14, affinity: ['bourgeois','reform'],
       timer: 30, push_weight: 0.14, ministry: 'finance',     cooldown: 40,
+      desc: 'Extends credit relief to the middle class (+Pro-Consumer)',
       on_pass: function() { Q.pro_consumer=(Q.pro_consumer||0)+1; } },
 
     { id: 'grain_tariff',       name: 'Emergency Grain Tariff',
-      type: 'economic', base_ideo: 7, affinity: ['agrarian','conservative'],
+      type: 'economic', base_ideo: 15, affinity: ['agrarian','conservative'],
       timer: 25, push_weight: 0.16, ministry: 'agriculture', cooldown: 30,
+      desc: 'Emergency tariff on imported grain (+Agricultural Finance)',
       on_pass: function() { Q.agricultural_finance=(Q.agricultural_finance||0)+1; } },
 
     { id: 'rural_debt',         name: 'Rural Debt Moratorium',
-      type: 'economic', base_ideo: 7, affinity: ['agrarian','conservative'],
+      type: 'economic', base_ideo: 15, affinity: ['agrarian','conservative'],
       timer: 35, push_weight: 0.14, ministry: 'agriculture', cooldown: 40,
+      desc: 'Suspends collection of rural debt (+Land Reform, +Agricultural Finance)',
       on_pass: function() { Q.land_reform=(Q.land_reform||0)+1; Q.agricultural_finance=(Q.agricultural_finance||0)+1; } },
 
-    // ── NATIONALIST RIGHT (ideo 8–9) ─────────────────────────
+    // ── NATIONAL CONSERVATIVE / AGRARIAN-CONSERVATIVE RIGHT (ideo 16–18) ─
     { id: 'eastern_settlement',  name: 'Eastern Settlement Programme',
-      type: 'economic', base_ideo: 8, affinity: ['agrarian','nationalist'],
+      type: 'economic', base_ideo: 16, affinity: ['agrarian','nationalist'],
       timer: 40, push_weight: 0.10, ministry: 'agriculture', cooldown: 40,
+      desc: 'Settles ethnic-German farmers in the eastern provinces (+Land Reform)',
       on_pass: function() { Q.land_reform=(Q.land_reform||0)+1; } },
 
     { id: 'anti_marxist_law',   name: 'Anti-Marxist Emergency Law',
-      type: 'civil',    base_ideo: 9, affinity: ['nationalist','conservative'],
+      type: 'civil',    base_ideo: 18, affinity: ['nationalist','conservative'],
       timer: 30, push_weight: 0.16, ministry: 'interior',    cooldown: 40,
+      desc: 'Emergency powers targeting Marxist organizations (bans RFB, −Workers Aid)',
       on_pass: function() { Q.rfb_banned=1; Q.workers_aid=Math.max(0,(Q.workers_aid||0)-1); } },
 
     { id: 'industry_tariff',    name: 'Heavy Industry Tariff Wall',
-      type: 'economic', base_ideo: 9, affinity: ['industry','nationalist'],
+      type: 'economic', base_ideo: 17, affinity: ['industry','nationalist'],
       timer: 30, push_weight: 0.14, ministry: 'economic',    cooldown: 40,
+      desc: 'Protective tariff wall for heavy industry (−Pro-Consumer, +Agricultural Finance)',
       on_pass: function() { Q.pro_consumer=Math.max(0,(Q.pro_consumer||0)-1); Q.agricultural_finance=(Q.agricultural_finance||0)+1; } },
 
     { id: 'welfare_austerity',  name: 'Welfare Austerity Measure',
-      type: 'welfare',  base_ideo: 9, affinity: ['conservative','nationalist'],
+      type: 'welfare',  base_ideo: 18, affinity: ['conservative','nationalist'],
       timer: 25, push_weight: 0.14, ministry: 'finance',     cooldown: 35,
+      desc: 'Cuts welfare spending (−Welfare, −Workers Aid)',
       on_pass: function() { Q.welfare=Math.max(-2,(Q.welfare||0)-1); Q.workers_aid=Math.max(0,(Q.workers_aid||0)-1); } },
 
     { id: 'treaty_rejection',   name: 'Treaty Obligations Rejection Motion',
-      type: 'foreign',  base_ideo: 9, affinity: ['nationalist','volkisch'],
+      type: 'foreign',  base_ideo: 18, affinity: ['nationalist','volkisch'],
       timer: 25, push_weight: 0.12, ministry: 'foreign',     cooldown: 40,
+      desc: 'Repudiates postwar treaty obligations (−West Relations)',
       on_pass: function() { Q.west_relation=Math.max(-100,(Q.west_relation||0)-3); } },
 
-    // ── VÖLKISCH FAR RIGHT (ideo 10) ─────────────────────────
+    // ── VÖLKISCH / FASCIST FAR RIGHT (ideo 20) ───────────────
     { id: 'civil_liberties_ban',name: 'Suppression of Civil Liberties Act',
-      type: 'civil',    base_ideo: 10, affinity: ['nationalist','volkisch'],
+      type: 'civil',    base_ideo: 20, affinity: ['nationalist','volkisch'],
       timer: 30, push_weight: 0.20, ministry: 'interior',    cooldown: 40,
+      desc: "Suspends civil liberties (−2 Homosexual Rights, −Women's Rights)",
       on_pass: function() { Q.homosexual_rights=Math.max(0,(Q.homosexual_rights||0)-2); Q.womens_rights=Math.max(0,(Q.womens_rights||0)-1); } },
 
     { id: 'labour_front',       name: 'National Labour Front Act',
-      type: 'labor',    base_ideo: 10, affinity: ['nationalist','volkisch'],
+      type: 'labor',    base_ideo: 20, affinity: ['nationalist','volkisch'],
       timer: 25, push_weight: 0.18, ministry: 'labor',       cooldown: 40,
+      desc: 'Replaces trade unions with a state labour front (−2 Works Councils, −Cooperatives)',
       on_pass: function() { Q.works_councils=Math.max(0,(Q.works_councils||0)-2); Q.cooperatives=Math.max(0,(Q.cooperatives||0)-1); } },
 
     { id: 'hereditary_farm',    name: 'Hereditary Farm Law',
-      type: 'economic', base_ideo: 10, affinity: ['agrarian','volkisch'],
+      type: 'economic', base_ideo: 20, affinity: ['agrarian','volkisch'],
       timer: 30, push_weight: 0.16, ministry: 'agriculture', cooldown: 40,
+      desc: 'Locks farms into hereditary, inalienable tenure (−Land Reform, +Agricultural Finance)',
       on_pass: function() { Q.land_reform=Math.max(0,(Q.land_reform||0)-1); Q.agricultural_finance=(Q.agricultural_finance||0)+1; } },
 
     { id: 'volkisch_protection',name: 'Völkisch Community Protection Act',
-      type: 'civil',    base_ideo: 10, affinity: ['volkisch','nationalist'],
+      type: 'civil',    base_ideo: 20, affinity: ['volkisch','nationalist'],
       timer: 30, push_weight: 0.14, ministry: 'interior',    cooldown: 40,
+      desc: "Racial-community protection statute (−Homosexual Rights, −Women's Rights)",
       on_pass: function() { Q.homosexual_rights=Math.max(0,(Q.homosexual_rights||0)-1); Q.womens_rights=Math.max(0,(Q.womens_rights||0)-1); } },
 
     { id: 'racial_welfare_cut', name: 'Racial Welfare Restriction Act',
-      type: 'welfare',  base_ideo: 10, affinity: ['volkisch','nationalist'],
+      type: 'welfare',  base_ideo: 20, affinity: ['volkisch','nationalist'],
       timer: 28, push_weight: 0.13, ministry: 'interior',    cooldown: 40,
+      desc: 'Restricts welfare eligibility on racial grounds (−Welfare, −Workers Aid)',
       on_pass: function() { Q.welfare=Math.max(-2,(Q.welfare||0)-1); Q.workers_aid=Math.max(0,(Q.workers_aid||0)-1); } },
 ];
 
@@ -5794,28 +5826,32 @@ window.BILL_MAP = BILL_MAP;
 // ============================================================
 // SECTION B: PARTY IDEOLOGY & AFFINITY
 //
-// Each party has:
-//   base_ideo : their natural ideological position (1–10)
-//   affinities: tag weights (0–1) for bill scoring
+// base_ideo now on the 0–20 scale, matching ideoScore().
+// Static PARTIES.base_ideo is a fallback default; if a live
+// Q.<party>_ideo_score exists (from the ideoScore() pass) it
+// takes precedence — see get_effective_ideo() in Section C.
+//
+// affinities: tag weights (0–1) for bill scoring — unchanged,
+// these are not on the ideo scale.
 //
 // Both are overridable at runtime via Q vars:
-//   Q.<party>_ideo_drift   — float offset from base_ideo
+//   Q.<party>_ideo_drift   — float offset from effective base
 //   Q.<party>_aff_<tag>    — override affinity weight for tag
 // ============================================================
 
 var PARTIES = {
     KPD:   { base_ideo: 1,  affinities: { labor:1.0, socialist:1.0, welfare:0.8, civil:0.3, agrarian:0.1, bourgeois:0,   industry:0,   conservative:0,   nationalist:0,   volkisch:0,   catholic:0,   secular:0.4, reform:0.3 } },
-    SAPD:  { base_ideo: 2,  affinities: { labor:0.9, socialist:1.0, welfare:0.7, civil:0.3, agrarian:0.5, bourgeois:0,   industry:0,   conservative:0,   nationalist:0,   volkisch:0,   catholic:0,   secular:0.3, reform:0.4 } },
-    SPD:   { base_ideo: 3,  affinities: { labor:0.8, socialist:0.5, welfare:0.9, civil:0.6, agrarian:0.2, bourgeois:0.2, industry:0,   conservative:0,   nationalist:0,   volkisch:0,   catholic:0,   secular:0.5, reform:0.7 } },
-    DDP:   { base_ideo: 5,  affinities: { labor:0.3, socialist:0,   welfare:0.3, civil:0.9, agrarian:0.1, bourgeois:0.6, industry:0.3, conservative:0.2, nationalist:0,   volkisch:0,   catholic:0,   secular:0.9, reform:0.8 } },
-    Z:     { base_ideo: 5,  affinities: { labor:0.4, socialist:0,   welfare:0.5, civil:0.3, agrarian:0.4, bourgeois:0.4, industry:0.2, conservative:0.8, nationalist:0.2, volkisch:0,   catholic:1.0, secular:0,   reform:0.2 } },
-    BVP:   { base_ideo: 6,  affinities: { labor:0.3, socialist:0,   welfare:0.4, civil:0.2, agrarian:0.7, bourgeois:0.3, industry:0.1, conservative:0.9, nationalist:0.1, volkisch:0,   catholic:1.0, secular:0,   reform:0.1 } },
-    DVP:   { base_ideo: 7,  affinities: { labor:0.1, socialist:0,   welfare:0.2, civil:0.3, agrarian:0.2, bourgeois:0.9, industry:1.0, conservative:0.6, nationalist:0.3, volkisch:0,   catholic:0,   secular:0.3, reform:0.3 } },
-    WP:    { base_ideo: 7,  affinities: { labor:0.2, socialist:0,   welfare:0.3, civil:0.2, agrarian:0.4, bourgeois:1.0, industry:0.4, conservative:0.4, nationalist:0.2, volkisch:0,   catholic:0,   secular:0.2, reform:0.5 } },
-    CNBL:  { base_ideo: 7,  affinities: { labor:0.2, socialist:0,   welfare:0.3, civil:0.1, agrarian:1.0, bourgeois:0.3, industry:0.1, conservative:0.7, nationalist:0.3, volkisch:0,   catholic:0.2, secular:0.1, reform:0.2 } },
-    DNVP:  { base_ideo: 9,  affinities: { labor:0.1, socialist:0,   welfare:0.1, civil:0,   agrarian:0.5, bourgeois:0.5, industry:0.6, conservative:1.0, nationalist:0.8, volkisch:0.3, catholic:0.2, secular:0.1, reform:0   } },
-    NSDAP: { base_ideo: 10, affinities: { labor:0.2, socialist:0,   welfare:0,   civil:0,   agrarian:0.5, bourgeois:0.2, industry:0.3, conservative:0.4, nationalist:1.0, volkisch:1.0, catholic:0,   secular:0,   reform:0   } },
-    DVFP:  { base_ideo: 10, affinities: { labor:0,   socialist:0,   welfare:0,   civil:0,   agrarian:0.3, bourgeois:0.2, industry:0.3, conservative:0.5, nationalist:1.0, volkisch:1.0, catholic:0,   secular:0,   reform:0   } },
+    SAPD:  { base_ideo: 3,  affinities: { labor:0.9, socialist:1.0, welfare:0.7, civil:0.3, agrarian:0.5, bourgeois:0,   industry:0,   conservative:0,   nationalist:0,   volkisch:0,   catholic:0,   secular:0.3, reform:0.4 } },
+    SPD:   { base_ideo: 6,  affinities: { labor:0.8, socialist:0.5, welfare:0.9, civil:0.6, agrarian:0.2, bourgeois:0.2, industry:0,   conservative:0,   nationalist:0,   volkisch:0,   catholic:0,   secular:0.5, reform:0.7 } },
+    DDP:   { base_ideo: 9,  affinities: { labor:0.3, socialist:0,   welfare:0.3, civil:0.9, agrarian:0.1, bourgeois:0.6, industry:0.3, conservative:0.2, nationalist:0,   volkisch:0,   catholic:0,   secular:0.9, reform:0.8 } },
+    Z:     { base_ideo: 12, affinities: { labor:0.4, socialist:0,   welfare:0.5, civil:0.3, agrarian:0.4, bourgeois:0.4, industry:0.2, conservative:0.8, nationalist:0.2, volkisch:0,   catholic:1.0, secular:0,   reform:0.2 } },
+    BVP:   { base_ideo: 13, affinities: { labor:0.3, socialist:0,   welfare:0.4, civil:0.2, agrarian:0.7, bourgeois:0.3, industry:0.1, conservative:0.9, nationalist:0.1, volkisch:0,   catholic:1.0, secular:0,   reform:0.1 } },
+    DVP:   { base_ideo: 14, affinities: { labor:0.1, socialist:0,   welfare:0.2, civil:0.3, agrarian:0.2, bourgeois:0.9, industry:1.0, conservative:0.6, nationalist:0.3, volkisch:0,   catholic:0,   secular:0.3, reform:0.3 } },
+    WP:    { base_ideo: 14, affinities: { labor:0.2, socialist:0,   welfare:0.3, civil:0.2, agrarian:0.4, bourgeois:1.0, industry:0.4, conservative:0.4, nationalist:0.2, volkisch:0,   catholic:0,   secular:0.2, reform:0.5 } },
+    CNBL:  { base_ideo: 15, affinities: { labor:0.2, socialist:0,   welfare:0.3, civil:0.1, agrarian:1.0, bourgeois:0.3, industry:0.1, conservative:0.7, nationalist:0.3, volkisch:0,   catholic:0.2, secular:0.1, reform:0.2 } },
+    DNVP:  { base_ideo: 18, affinities: { labor:0.1, socialist:0,   welfare:0.1, civil:0,   agrarian:0.5, bourgeois:0.5, industry:0.6, conservative:1.0, nationalist:0.8, volkisch:0.3, catholic:0.2, secular:0.1, reform:0   } },
+    NSDAP: { base_ideo: 20, affinities: { labor:0.2, socialist:0,   welfare:0,   civil:0,   agrarian:0.5, bourgeois:0.2, industry:0.3, conservative:0.4, nationalist:1.0, volkisch:1.0, catholic:0,   secular:0,   reform:0   } },
+    DVFP:  { base_ideo: 20, affinities: { labor:0,   socialist:0,   welfare:0,   civil:0,   agrarian:0.3, bourgeois:0.2, industry:0.3, conservative:0.5, nationalist:1.0, volkisch:1.0, catholic:0,   secular:0,   reform:0   } },
 };
 
 
@@ -5823,16 +5859,24 @@ var PARTIES = {
 // SECTION C: PARTY STATE HELPERS
 // ============================================================
 
+// Effective ideology, 0–20 scale.
+// Prefers the live ideoScore() output (Q.<party>_ideo_score),
+// set from Q.<party>_ideology by the auto-scorer pass, so a
+// party's position tracks any ideology drift/relabeling that
+// happens over the course of the game. Falls back to the
+// static PARTIES table default if no live score is present.
 function get_effective_ideo(party) {
-    var base  = (PARTIES[party] || {}).base_ideo || 5;
+    var live  = Q[party.toLowerCase() + '_ideo_score'];
+    var base  = (live !== undefined && live !== null) ? live : ((PARTIES[party] || {}).base_ideo || 10);
     var drift = Q[party.toLowerCase() + '_ideo_drift'] || 0;
-    return Math.min(10, Math.max(1, base + drift));
+    return Math.min(20, Math.max(0, base + drift));
 }
 
-// Tolerance: base ±2, widens by 1 per 3 points of drift
+// Tolerance: base ±4 (on 0–20 scale, double the old ±2 on 0–10),
+// widens by 2 per 3 points of drift (also doubled)
 function get_ideo_tolerance(party) {
     var drift = Math.abs(Q[party.toLowerCase() + '_ideo_drift'] || 0);
-    return 2 + Math.floor(drift / 3);
+    return 4 + Math.floor(drift / 3) * 2;
 }
 
 function get_affinity(party, tag) {
@@ -5850,7 +5894,15 @@ function affinity_score(party, bill) {
     return total / bill.affinity.length;
 }
 
-// Pick-count fatigue and block pressure
+// Pick-count fatigue and block pressure.
+// This is the repetition-limiting mechanism: a bill that keeps
+// getting picked cools off in appeal (fatigue), while one that
+// keeps getting blocked becomes more urgently pushed (pressure).
+// Neither ever drives a bill out of the pool permanently — it's
+// a soft curve, not exhaustion. bill_picks_<id> is haircut by
+// 50% on every resolution (see bill_resolve/ratify_resolve_auto)
+// specifically so bills stay repeatable indefinitely rather than
+// decaying to zero relevance after a few passes.
 function pick_count_multiplier(bill_id) {
     var picks  = Q['bill_picks_'  + bill_id] || 0;
     var blocks = Q['bill_blocks_' + bill_id] || 0;
@@ -5982,11 +6034,20 @@ if (!Q.bill_crisis_in_progress) {
 //
 // Each party independently scores all eligible bills from
 // the shared pool. Eligible = not on cooldown, not in queue,
-// within ideology window, affinity > 0.
+// within ideology window (0–20 scale), affinity > 0.
 //
 // Composite score: push_weight × party_mult × affinity × pick_curve
 // Party with highest per-bill score wins that bill's slot.
 // One bill pushed per party per tick (queue cap: 10).
+//
+// NOTE ON REPEATABILITY: the only thing that keeps a bill out
+// of this loop is bill_cd_<id> > 0 (cooldown) or it already
+// being in the active queue. Once cooldown clears, a bill is
+// exactly as eligible as it was the first time — there is no
+// "already passed, remove permanently" branch anywhere in this
+// system. Games should expect to see marquee bills (e.g.
+// welfare_austerity, anti_marxist_law) resurface many times
+// over a long campaign.
 // ============================================================
 
 var _party_list = Object.keys(PARTIES);
@@ -6023,7 +6084,7 @@ for (var pi = 0; pi < _party_list.length; pi++) {
         }
         if (_in_queue) continue;
 
-        // Ideology window
+        // Ideology window (0–20 scale)
         if (Math.abs(_eff_ideo - _bill.base_ideo) > _tolerance) continue;
 
         // Affinity
@@ -6055,6 +6116,7 @@ for (var pi = 0; pi < _party_list.length; pi++) {
         Q['bill_' + _slot + '_party']    = _party;
         Q['bill_' + _slot + '_type']     = _winner.type;
         Q['bill_' + _slot + '_ideo']     = _winner.base_ideo;
+        Q['bill_' + _slot + '_desc']     = _winner.desc || '';
         Q['bill_' + _slot + '_timer']    = _winner.timer;
         Q['bill_' + _slot + '_frozen']   = 0;
         Q['bill_' + _slot + '_ministry'] = _winner.ministry;
@@ -6129,6 +6191,12 @@ if (Q.bill_stall_timer > 0) {
 // ============================================================
 // SECTION I: ON_PASS HOOK
 // Usage: bill_resolve(Q.crisis_id)
+//
+// The 50% haircut on bill_picks_ (rather than a hard reset to
+// zero or removal from BILLS[]) is what keeps a bill available
+// for future rounds instead of exhausting it: fatigue decays
+// gradually across repeated passes rather than the bill being
+// retired.
 // ============================================================
 
 function bill_resolve(bill_id) {
@@ -6145,11 +6213,12 @@ function bill_resolve(bill_id) {
 // SECTION J: DRIFT & AFFINITY HELPERS
 // ============================================================
 
+// Drift is now bounded on the 0–20 scale.
 function shift_party_ideo(party, delta) {
     var key  = party.toLowerCase() + '_ideo_drift';
-    var base = (PARTIES[party] || {}).base_ideo || 5;
+    var base = get_effective_ideo(party) - (Q[key] || 0); // effective base before drift
     var d    = (Q[key] || 0) + delta;
-    Q[key]   = Math.min(10 - base, Math.max(1 - base, d));
+    Q[key]   = Math.min(20 - base, Math.max(0 - base, d));
 }
 
 function shift_party_affinity(party, tag, value) {
@@ -6161,6 +6230,9 @@ function shift_party_affinity(party, tag, value) {
 
 // ============================================================
 // SECTION K: BUILD DISPLAY VARS
+//
+// Now includes each bill's effect (desc) in both the plaintext
+// and HTML queue listings.
 // ============================================================
 
 var _text = '';
@@ -6189,6 +6261,7 @@ for (var i = 0; i < 10; i++) {
     var _type   = Q['bill_' + i + '_type'];
     var _timer  = Q['bill_' + i + '_timer'];
     var _frozen = Q['bill_' + i + '_frozen'];
+    var _desc   = Q['bill_' + i + '_desc'] || (BILL_MAP[_bid] ? (BILL_MAP[_bid].desc || '') : '');
     var _status = _frozen     ? '⚠ Crisis' :
                   _timer <= 1 ? '🔴 Urgent' :
                   _timer <= 5 ? '🟡 Soon'   : '🟢 Active';
@@ -6196,9 +6269,12 @@ for (var i = 0; i < 10; i++) {
 
     _text += (i+1) + '. ' + _name + ' (' + _party + ') — '
            + _type + ' — ' + (_frozen ? 'CRISIS' : 'T-' + _timer) + '\n';
+    if (_desc) _text += '     Effect: ' + _desc + '\n';
 
     _html += '<tr style="border-bottom:1px solid #333;">'
-           + '<td style="padding:3px 6px;">' + _name + '</td>'
+           + '<td style="padding:3px 6px;">' + _name
+           + (_desc ? '<div style="font-size:0.8em;color:#999;margin-top:2px;">' + _desc + '</div>' : '')
+           + '</td>'
            + '<td style="padding:3px 6px;text-align:center;">' + _party + '</td>'
            + '<td style="padding:3px 6px;text-align:center;">'
            + '<span style="background:' + _color + ';color:#111;border-radius:3px;padding:1px 5px;font-size:0.85em;">' + _type + '</span>'
