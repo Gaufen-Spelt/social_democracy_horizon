@@ -21,26 +21,35 @@ on-arrival: {!
 
 // === CANDIDATE SELECTION ===
 
-// Faction A Leader (Coalitionists)
+// Moderates Leader (Coalitionists)
 if ((Q.rural_dnvp_display + Q.old_middle_dnvp_display / 3) > 36 || Q.cnbl_crisis == 0) {
-    Q.leader_a = "Friedrich Winckler";
-    Q.leader_a_title = "Leader of the Prussian Landtag Delegation";
+    Q.leader_moderates = "Friedrich Winckler";
+    Q.leader_moderates_title = "Leader of the Prussian Landtag Delegation";
 } else {
-    Q.leader_a = "Oskar Hergt";
-    Q.leader_a_title = "Former Party Chairman";
+    Q.leader_moderates = "Oskar Hergt";
+    Q.leader_moderates_title = "Former Party Chairman";
 }
 
-// Faction B Leader (Aristocrats)
+// National Conservatives Leader (Aristocrats)
 if (Q.lambach_reinstated == 1 || Q.dnvp_votes_display > 16.4) {
-    Q.leader_b = "Kuno von Westarp";
-    Q.leader_b_title = "Incumbent Party Chairman";
+    Q.leader_nat_cons = "Kuno von Westarp";
+    Q.leader_nat_cons_title = "Incumbent Party Chairman";
 } else {
-    Q.leader_b = "Walter von Keudell";
-    Q.leader_b_title = "Former Reich Interior Minister";
+    Q.leader_nat_cons = "Walter von Keudell";
+    Q.leader_nat_cons_title = "Former Reich Interior Minister";
 }
 
-// Faction C Candidates (Popular Conservatives) — banner-bearers of each internal
-// wing. Which one actually leads the bloc is decided further below, once the
+// Agrarians Leader (new sub-group of the traditionalist umbrella)
+if ((Q.tariffs || 0) < 0) {
+    Q.leader_agrarians = "Karl Hepp";
+    Q.leader_agrarians_title = "Reichslandbund Delegate — Free Trade Dissenter";
+} else {
+    Q.leader_agrarians = "Gustav von Kalckreuth";
+    Q.leader_agrarians_title = "Reichslandbund President";
+}
+
+// Popular Conservative Candidates (banner-bearers of each internal wing) —
+// which one actually leads the bloc is decided further below, once the
 // relative strength of each wing on the floor is known.
 Q.leader_c_yocon = "Gottfried Treviranus";
 Q.leader_c_yocon_title = "Young Conservative Faction Leader";
@@ -56,15 +65,41 @@ if (Q.lambach_exile == 0 || Q.lambach_momentum == 1) {
 // === DELEGATE CALCULATIONS ===
 
 // 1. Base scores
-Q.delegate_power_a = Q.delegate_power_a || 20;
-Q.delegate_power_b = Q.delegate_power_b || 40;
+Q.delegate_power_moderates = Q.delegate_power_moderates || 20;
+Q.delegate_power_nat_cons = Q.delegate_power_nat_cons || 32;
+Q.delegate_power_agrarians = Q.delegate_power_agrarians || 8;
 Q.hugenberg_momentum = Q.hugenberg_momentum || 25;
 Q.delegate_power_yocon = Q.delegate_power_yocon || 9;      
 Q.delegate_power_christsoc = Q.delegate_power_christsoc || 8;  
 
+// Rural backlash against Hugenberg — free trade tariffs (negative) rally
+// agrarians and the broader countryside against the radical bloc.
+if ((Q.tariffs || 0) < 0) {
+    Q.hugenberg_momentum -= 2.5 * Math.abs(Q.tariffs);
+}
+
+// === TRADITIONALIST UMBRELLA (Moderates + National Conservatives + Agrarians) ===
+Q.delegate_power_traditionalists = Q.delegate_power_moderates + Q.delegate_power_nat_cons + Q.delegate_power_agrarians;
+
+// Which sub-group leads the traditionalist umbrella on the floor
+if (Q.delegate_power_moderates >= Q.delegate_power_nat_cons && Q.delegate_power_moderates >= Q.delegate_power_agrarians) {
+    Q.leader_traditionalists = Q.leader_moderates;
+    Q.leader_traditionalists_title = Q.leader_moderates_title;
+    Q.trad_wing = "moderates";
+    Q.trad_wing_name = "Moderate";
+} else if (Q.delegate_power_nat_cons >= Q.delegate_power_moderates && Q.delegate_power_nat_cons >= Q.delegate_power_agrarians) {
+    Q.leader_traditionalists = Q.leader_nat_cons;
+    Q.leader_traditionalists_title = Q.leader_nat_cons_title;
+    Q.trad_wing = "nat_cons";
+    Q.trad_wing_name = "National Conservative";
+} else {
+    Q.leader_traditionalists = Q.leader_agrarians;
+    Q.leader_traditionalists_title = Q.leader_agrarians_title;
+    Q.trad_wing = "agrarians";
+    Q.trad_wing_name = "Agrarian";
+}
 
 // === POPULAR CONSERVATIVE INTERNAL LEADERSHIP ===
-// Now resolved from independently-built totals — no ratio needed
 if (Q.delegate_power_yocon >= Q.delegate_power_christsoc) {
     Q.leader_c = Q.leader_c_yocon;
     Q.leader_c_title = Q.leader_c_yocon_title;
@@ -84,11 +119,12 @@ Q.delegate_power_c = Q.delegate_power_yocon + Q.delegate_power_christsoc;
 
 // 7. Finalize vote totals — Largest Remainder Method across 100 seats
 var seatBuckets = [
-    { key: "hugenberg_final_votes",  raw: Math.max(Q.hugenberg_momentum, 0) },
-    { key: "moderate_a_final_votes", raw: Math.max(Q.delegate_power_a, 0) },
-    { key: "moderate_b_final_votes", raw: Math.max(Q.delegate_power_b, 0) },
-    { key: "yocon_final_votes",      raw: Math.max(Q.delegate_power_yocon, 0) },
-    { key: "christsoc_final_votes",  raw: Math.max(Q.delegate_power_christsoc, 0) }
+    { key: "hugenberg_final_votes",   raw: Math.max(Q.hugenberg_momentum, 0) },
+    { key: "moderates_final_votes",   raw: Math.max(Q.delegate_power_moderates, 0) },
+    { key: "nat_cons_final_votes",    raw: Math.max(Q.delegate_power_nat_cons, 0) },
+    { key: "agrarians_final_votes",   raw: Math.max(Q.delegate_power_agrarians, 0) },
+    { key: "yocon_final_votes",       raw: Math.max(Q.delegate_power_yocon, 0) },
+    { key: "christsoc_final_votes",   raw: Math.max(Q.delegate_power_christsoc, 0) }
 ];
 
 var seatTotalRaw = 0;
@@ -112,35 +148,35 @@ for (var s4 = 0; s4 < seatBuckets.length; s4++) {
 }
 
 Q.moderate_c_final_votes = Q.yocon_final_votes + Q.christsoc_final_votes;
-Q.total_moderate_final_votes = Q.moderate_a_final_votes + Q.moderate_b_final_votes + Q.moderate_c_final_votes;
+Q.total_traditionalist_final_votes = Q.moderates_final_votes + Q.nat_cons_final_votes + Q.agrarians_final_votes;
 
-// 8. Congress path — determined by leading individual faction
-Q.top_moderate_score = Math.max(Q.delegate_power_a, Q.delegate_power_b, Q.delegate_power_c);
-Q.hugenberg_margin = Q.hugenberg_final_votes - Math.round(Q.top_moderate_score);
+// 8. Congress path — determined by leading bloc: Hugenberg / Traditionalists (umbrella) / Popular Conservatives
+Q.top_traditionalist_score = Math.max(Q.delegate_power_moderates, Q.delegate_power_nat_cons, Q.delegate_power_agrarians);
+Q.hugenberg_margin = Q.hugenberg_final_votes - Math.round(Q.delegate_power_traditionalists);
 
-if (Q.delegate_power_a >= Q.delegate_power_b && Q.delegate_power_a >= Q.delegate_power_c) {
-    Q.leading_challenger = Q.leader_a;
-    Q.dnvp_party_leader = Q.leader_a;
-    Q.congress_path = "coalitionists";
-} else if (Q.delegate_power_b >= Q.delegate_power_a && Q.delegate_power_b >= Q.delegate_power_c) {
-    Q.leading_challenger = Q.leader_b;
-    Q.dnvp_party_leader = Q.leader_b;
+if (Q.delegate_power_traditionalists >= Q.delegate_power_c && Q.delegate_power_traditionalists >= Q.hugenberg_momentum) {
+    Q.leading_challenger = Q.leader_traditionalists;
+    Q.dnvp_party_leader = Q.leader_traditionalists;
     Q.congress_path = "traditionalists";
-} else {
+} else if (Q.delegate_power_c >= Q.delegate_power_traditionalists && Q.delegate_power_c >= Q.hugenberg_momentum) {
     Q.leading_challenger = Q.leader_c;
     Q.dnvp_party_leader = Q.leader_c;
     Q.congress_path = "social_nationalists";
+} else {
+    Q.leading_challenger = "Alfred Hugenberg";
+    Q.dnvp_party_leader = "Alfred Hugenberg";
+    Q.congress_path = "hugenberg";
 }
 
 // Capitulation override
-if (Q.hugenberg_momentum * 1.2 > Q.delegate_power_c + Q.delegate_power_a + (Q.delegate_power_b / 2)) {
+if (Q.hugenberg_momentum * 1.2 > Q.delegate_power_c + Q.delegate_power_traditionalists) {
     Q.congress_path = "capitulation";
     Q.leading_challenger = "";
     Q.dnvp_party_leader = "Alfred Hugenberg";
 }
 
 // 9. Triumvirate check — AFTER congress_path is set
-Q.total_moderate_power = (Q.delegate_power_a / 1.5) + (Q.delegate_power_b / 2) + Q.delegate_power_c;
+Q.total_moderate_power = (Q.delegate_power_traditionalists / 1.7) + Q.delegate_power_c;
 Q.can_push_triumvirate = 0;
 if (Q.total_moderate_power > Q.hugenberg_momentum && Q.congress_path != "capitulation") {
     Q.can_push_triumvirate = 1;
@@ -158,12 +194,15 @@ var factionData = [
     { id: "yocon", name: Q.leader_c_yocon, subtitle: Q.leader_c_yocon_title,
       votes: Q.yocon_final_votes, color: "#595BFF", outline: "#00cc44",
       label: "Young Conservatives", side: "moderate" },
-    { id: "faction_a", name: Q.leader_a, subtitle: Q.leader_a_title,
-      votes: Q.moderate_a_final_votes, color: "#4a7c59", outline: "#00cc44",
-      label: "Coalitionists", side: "moderate" },
-    { id: "faction_b", name: Q.leader_b, subtitle: Q.leader_b_title,
-      votes: Q.moderate_b_final_votes, color: "#5c4a1e", outline: "#00cc44",
-      label: "Traditionalists", side: "moderate" },
+    { id: "moderates", name: Q.leader_moderates, subtitle: Q.leader_moderates_title,
+      votes: Q.moderates_final_votes, color: "#4a7c59", outline: "#00cc44",
+      label: "Moderates", side: "traditionalist" },
+    { id: "nat_cons", name: Q.leader_nat_cons, subtitle: Q.leader_nat_cons_title,
+      votes: Q.nat_cons_final_votes, color: "#5c4a1e", outline: "#00cc44",
+      label: "National Conservatives", side: "traditionalist" },
+    { id: "agrarians", name: Q.leader_agrarians, subtitle: Q.leader_agrarians_title,
+      votes: Q.agrarians_final_votes, color: "#8a9a3b", outline: "#00cc44",
+      label: "Agrarians", side: "traditionalist" },
     { id: "hugenberg", name: "Alfred Hugenberg",
       subtitle: "Radical Bloc / Dissident Associations",
       votes: Q.hugenberg_final_votes, color: "#3d0000", outline: "#cc0000",
@@ -278,9 +317,11 @@ if (container) {
 
 *Hugenberg (Radical Bloc): [+ hugenberg_final_votes +]*
 
-*[+ leader_a +] (Coalitionists): [+ moderate_a_final_votes +]*
+*[+ leader_moderates +] (Moderates): [+ moderates_final_votes +]*
 
-*[+ leader_b +] (Traditionalists): [+ moderate_b_final_votes +]*
+*[+ leader_nat_cons +] (National Conservatives): [+ nat_cons_final_votes +]*
+
+*[+ leader_agrarians +] (Agrarians): [+ agrarians_final_votes +]*
 
 *[+ leader_c_yocon +] (Young Conservatives): [+ yocon_final_votes +]*
 
@@ -289,11 +330,8 @@ if (container) {
 [? if congress_path = "capitulation": The announcement of the secret ballot results is met with a roar from the dissident associations that drowns out the deathly silence of the front benches. Alfred Hugenberg has secured the chairmanship, marking the total triumph of the Pan-German axis and the radical industrialist wing. The delegates have chosen the "Block of Stone," rejecting the tactical flexibility of the past decade in favor of a crusade against the "System" of Weimar.
 In his acceptance speech, Hugenberg does not offer an olive branch; he demands total submission. He makes it clear that the party is no longer a collection of interests, but a unified movement of opinion where dissent is synonymous with betrayal. The "Hugenberg-maxxing" of the party begins immediately, as he moves to consolidate power over the Reichstag delegation and the party press. ?]
 
-[? if congress_path = "coalitionists": [+ leader_a +]'s victory has secured the victory for moderates, who are more than keen on forming next iteration of Marx cabinet, only to keep SPD out - whatever are the means.
-While this preserves the DNVP's status as a party of government, the victory is fragile. Hugenberg's press empire remains a hostile power outside the official leadership, and the dissident associations are already whispering of a "betrayal of the national cause." [+ leader_a +] must now navigate a party that is half-convinced its own leader is too soft for the coming storm. ?]
-
-[? if congress_path = "traditionalists": Traditional wing of Junkers and Owners' representative majority seized victory once again, keeping the status-quo intact.
-However, the win exposes a deep generational and class rift. The urban radicals and the nationalist youth view this as a victory for a "dying caste." While [+ leader_b +] has saved the party's soul from the "Block of Stone," he now leads a movement that increasingly grows irrelevant in the current realities of Weimar. ?]
+[? if congress_path = "traditionalists": The broad traditionalist umbrella — moderates, National Conservatives, and the agrarian bloc alike — has carried the day under [+ leader_traditionalists +], drawn from its [+ trad_wing_name +] wing. [? if trad_wing = "agrarians": The Reichslandbund's smallholders and estate-owners rallied hardest of all, incensed by the government's trade policy and unwilling to see their interests subordinated to Hugenberg's industrialist axis. ?][? if trad_wing = "moderates": The party's pragmatic, coalition-minded wing has prevailed, eager to keep the DNVP inside the tent of government whatever the cost. ?][? if trad_wing = "nat_cons": The old guard of Junkers and landed notables has reasserted itself, preserving the party's establishment character against both the radicals and the reformers. ?]
+The victory papers over a fractious coalition, however: the moderates, the National Conservatives, and the agrarians agree on little beyond opposing Hugenberg's "Block of Stone," and the urban radicals and nationalist youth already dismiss this as a triumph of a "dying caste." ?]
 
 [? if congress_path = "social_nationalists": In an unexpected electoral run, the Popular Conservatives have secured the win against all the odds — the furthermost-left current within the DNVP, though this extends no further than a paternalist, corporatist creed. Ardently anti-Marxist, the bloc nonetheless champions an active social policy and looks uneasily on any cooperation with parties to the left of the DDP.
 The floor belongs to the [+ popcon_wing_name +] wing: [+ popcon_wing_desc +]. [+ leader_c +] - leader of the Popular Conservatives, will lead the DNVP from now on. ?]
