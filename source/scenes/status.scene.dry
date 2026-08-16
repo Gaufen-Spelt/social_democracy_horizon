@@ -40,7 +40,7 @@ President: [+ president +] ([+ president_party +])
 
 Chancellor: [+ chancellor +] ([+ chancellor_party +])
 
-Prussian Minister-President: [+ prussian_mp +] ([+ prussian_government +])
+Prussian Minister-President: [+ ministerpresident +] ([+ ministerpresident_party +]) ([+ coalition_name_prussia +])
 
 Coalition in government: [+ coalition_name +] ([+ parties_in_government_display +])
 
