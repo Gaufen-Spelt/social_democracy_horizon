@@ -1,6 +1,6 @@
-title: Italy funds Fatherland Front in Austria!
+title: Italy backs the Fatherland Front in Austria!
 new-page: true
-subtitle: Our southern neighbor is sliding into dictatorship with the assistance of Italian Fasci.
+subtitle: Our southern neighbor is sliding into dictatorship with the assistance of the Italian government.
 view-if: year = 1933 and (month = 3 or month = 4) and tyrole_signed = 0 and (spd_in_government and foreign_minister_party = "SPD")
 max-visits: 1
 priority: 0
@@ -10,4 +10,4 @@ tags: event
 
 = Italy is intervening in Austrian Conflict!
 
-Italy begins funding the opposing side of the conflict, Fatherland Front, so we should involve in even further to keep ourselves victory or stall the Austrofascist victory!
+As the conflict in Austria continues, we have started receiving reports that Italy has begun openly backing the Fatherland Front in Austria, strengthening them and their allies. If we desire the SDAPÖ to triumph, we will need to invest more resources in their struggle against the Austrofascists! 
