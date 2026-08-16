@@ -37,15 +37,20 @@ var yocon_pro = Q.yocon_final_votes / 2;
 Q.pro_lambach += yocon_pro;
 Q.abstain_lambach += (Q.yocon_final_votes - yocon_pro);
 
-// --- Coalitionists (moderate_a): 35% pro, 65% remainder -> abstain ---
-var moda_pro = Q.moderate_a_final_votes * 0.35;
-Q.pro_lambach += moda_pro;
-Q.abstain_lambach += (Q.moderate_a_final_votes - moda_pro);
+// --- Moderates: 35% pro, 65% remainder -> abstain ---
+var mod_pro = Q.moderates_final_votes * 0.35;
+Q.pro_lambach += mod_pro;
+Q.abstain_lambach += (Q.moderates_final_votes - mod_pro);
 
-// --- Traditionalists (moderate_b): 33% anti, 66% remainder -> abstain ---
-var modb_anti = Q.moderate_b_final_votes / 2.5;
-Q.anti_lambach += modb_anti;
-Q.abstain_lambach += (Q.moderate_b_final_votes - modb_anti);
+// --- National Conservatives: 33% anti, 66% remainder -> abstain ---
+var natcons_anti = Q.nat_cons_final_votes / 2.5;
+Q.anti_lambach += natcons_anti;
+Q.abstain_lambach += (Q.nat_cons_final_votes - natcons_anti);
+
+// --- Agrarians: 45% anti, 55% remainder -> abstain (rural bloc most hostile to Lambach's urban-labor course) ---
+var agr_anti = Q.agrarians_final_votes * 0.45;
+Q.anti_lambach += agr_anti;
+Q.abstain_lambach += (Q.agrarians_final_votes - agr_anti);
 
 // --- Nationalism: targets the abstain pool, pulling a % of it into anti ---
 // (not its own seat bloc — it reallocates seats already parked in abstain)
@@ -119,7 +124,7 @@ var voncData = [
     {
         id: "abstain",
         label: "Abstaining",
-        sublabel: "Majority of Young Conservatives · uncommitted Moderates · passive Traditionalists",
+        sublabel: "Majority of Young Conservatives · uncommitted Moderates · passive National Conservatives",
         votes: Q.vonc_abstain,
         color: "#a8a8a8",
         outline: "#666666",
