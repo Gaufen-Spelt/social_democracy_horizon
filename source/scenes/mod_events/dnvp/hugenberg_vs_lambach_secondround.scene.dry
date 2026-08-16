@@ -10,9 +10,9 @@ face-image: img/portraits/HugenbergAlfred.jpg
 
 PLACEHOLDER: intro paragraph explaining Lambach has regrouped People's Conservatives + sympathetic Moderates against Hugenberg.
 
-PLACEHOLDER: paragraph listing who has joined the anti-Hugenberg coalition (Lambach, People's Conservatives, disaffected Moderates/Traditionalists, possibly Westarp/Schiele/Keudell/Hergt group referenced earlier).
+PLACEHOLDER: paragraph listing who has joined the anti-Hugenberg coalition (Lambach, People's Conservatives, disaffected Moderates/National Conservatives, possibly Westarp/Schiele/Keudell/Hergt group referenced earlier).
 
-PLACEHOLDER: paragraph on who remains loyal to Hugenberg (radicals, volkists, Junkers, Industrialists) and why.
+PLACEHOLDER: paragraph on who remains loyal to Hugenberg (radicals, volkists, Junkers, Industrialists, and the Agrarian bloc's more nationalist wing) and why.
 
 **PLACEHOLDER: closing hook line**
 
@@ -37,15 +37,20 @@ var yocon_pro = Q.yocon_final_votes / 2;
 Q.pro_hugenberg += yocon_pro;
 Q.abstain_hugenberg += (Q.yocon_final_votes - yocon_pro);
 
-// --- Coalitionists (moderate_a): PLACEHOLDER split ratio (currently 30% anti) ---
-var moda_anti = Q.moderate_a_final_votes * 0.30;
-Q.anti_hugenberg += moda_anti;
-Q.abstain_hugenberg += (Q.moderate_a_final_votes - moda_anti);
+// --- Moderates: PLACEHOLDER split ratio (currently 30% anti) ---
+var mod_anti = Q.moderates_final_votes * 0.30;
+Q.anti_hugenberg += mod_anti;
+Q.abstain_hugenberg += (Q.moderates_final_votes - mod_anti);
 
-// --- Traditionalists (moderate_b): PLACEHOLDER split ratio (currently 40% anti) ---
-var modb_anti = Q.moderate_b_final_votes * 0.40;
-Q.anti_hugenberg += modb_anti;
-Q.abstain_hugenberg += (Q.moderate_b_final_votes - modb_anti);
+// --- National Conservatives: PLACEHOLDER split ratio (currently 40% anti) ---
+var natcons_anti = Q.nat_cons_final_votes * 0.40;
+Q.anti_hugenberg += natcons_anti;
+Q.abstain_hugenberg += (Q.nat_cons_final_votes - natcons_anti);
+
+// --- Agrarians: PLACEHOLDER split ratio (currently 20% anti — nationalist sympathies keep most of the bloc leaning pro or abstaining) ---
+var agr_anti = Q.agrarians_final_votes * 0.20;
+Q.anti_hugenberg += agr_anti;
+Q.abstain_hugenberg += (Q.agrarians_final_votes - agr_anti);
 
 // --- Nationalism: pulls a % of abstain pool into pro (Hugenberg benefits from nationalist sentiment) ---
 var nationalism_pull = Q.abstain_hugenberg * (Q.nationalism / 100);
