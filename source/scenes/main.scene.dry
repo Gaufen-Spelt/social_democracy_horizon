@@ -16,6 +16,7 @@ max-cards: 4
 
 - @party
 - @govt
+- @reg
 - @eco
 - @intel
 - #advisor
@@ -42,6 +43,7 @@ max-cards: 6
 
 - @party
 - @govt
+- @reg
 - @eco
 - @intel
 - #advisor
@@ -68,6 +70,7 @@ max-cards: 3
 
 - @party
 - @govt
+- @reg
 - @intel
 - #advisor
 - @shuffle_leadership_pinned
@@ -93,6 +96,7 @@ max-cards: 2
 
 - @party
 - @govt
+- @reg
 - @intel
 - #advisor
 - @shuffle_leadership_pinned
@@ -120,6 +124,7 @@ max-cards: 1
 
 - @party
 - @govt
+- @reg
 - @intel
 - #advisor
 - @shuffle_leadership_pinned
@@ -141,6 +146,14 @@ card-image: img/reichstag_2.jpg
 is-deck: true
 
 - #govt_affairs
+
+@reg
+title: Regional Affairs
+view-if: (spd_in_government_prussia = 1 or spd_toleration_prussia = 1)
+card-image: img/braun.jpg
+is-deck: true
+
+- #regional_affairs
 
 @intel
 title: Intelligence Network
