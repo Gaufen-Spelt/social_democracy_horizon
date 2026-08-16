@@ -26,8 +26,9 @@ subtitle: The internal situation of DNVP is much more complicated...
 on-arrival: {!
 
 Q.hugenberg_momentum = Q.hugenberg_momentum || 0;
-Q.delegate_power_a = Q.delegate_power_a || 0;
-Q.delegate_power_b = Q.delegate_power_b || 0;
+Q.delegate_power_moderates = Q.delegate_power_moderates || 0;
+Q.delegate_power_nat_cons = Q.delegate_power_nat_cons || 0;
+Q.delegate_power_agrarians = Q.delegate_power_agrarians || 0;
 Q.delegate_power_yocon = Q.delegate_power_yocon || 0;
 Q.delegate_power_christsoc = Q.delegate_power_christsoc || 0;
 
@@ -35,8 +36,9 @@ Q.delegate_power_christsoc = Q.delegate_power_christsoc || 0;
 var seatBuckets_dnvp = [
     { key: "christsoc_final_votes", raw: Math.max(Q.delegate_power_christsoc, 0) },
     { key: "yocon_final_votes", raw: Math.max(Q.delegate_power_yocon, 0) },
-    { key: "moderate_a_final_votes", raw: Math.max(Q.delegate_power_a, 0) },
-    { key: "moderate_b_final_votes", raw: Math.max(Q.delegate_power_b, 0) },
+    { key: "moderates_final_votes", raw: Math.max(Q.delegate_power_moderates, 0) },
+    { key: "nat_cons_final_votes", raw: Math.max(Q.delegate_power_nat_cons, 0) },
+    { key: "agrarians_final_votes", raw: Math.max(Q.delegate_power_agrarians, 0) },
     { key: "hugenberg_final_votes", raw: Math.max(Q.hugenberg_momentum, 0) }
 ];
 
@@ -64,8 +66,9 @@ for (var s4 = 0; s4 < seatBuckets_dnvp.length; s4++) {
 var factionData_calc = [
     { id: "christsoc", votes: Q.christsoc_final_votes, label: "Christian Socials" },
     { id: "yocon", votes: Q.yocon_final_votes, label: "Young Conservatives" },
-    { id: "faction_a", votes: Q.moderate_a_final_votes, label: "Coalitionists" },
-    { id: "faction_b", votes: Q.moderate_b_final_votes, label: "Traditionalists" },
+    { id: "moderates", votes: Q.moderates_final_votes, label: "Moderates" },
+    { id: "nat_cons", votes: Q.nat_cons_final_votes, label: "National Conservatives" },
+    { id: "agrarians", votes: Q.agrarians_final_votes, label: "Agrarians" },
     { id: "hugenberg", votes: Q.hugenberg_final_votes, label: "Hugenberg Bloc" }
 ];
 var topFaction = null;
@@ -89,12 +92,15 @@ var factionData = [
     { id: "yocon", name: Q.leader_c_yocon, subtitle: Q.leader_c_yocon_title,
       votes: Q.yocon_final_votes, color: "#595BFF", outline: "#00cc44",
       label: "Young Conservatives", side: "moderate" },
-    { id: "faction_a", name: Q.leader_a, subtitle: Q.leader_a_title,
-      votes: Q.moderate_a_final_votes, color: "#4a7c59", outline: "#00cc44",
-      label: "Coalitionists", side: "moderate" },
-    { id: "faction_b", name: Q.leader_b, subtitle: Q.leader_b_title,
-      votes: Q.moderate_b_final_votes, color: "#5c4a1e", outline: "#00cc44",
-      label: "Traditionalists", side: "moderate" },
+    { id: "moderates", name: Q.leader_moderates, subtitle: Q.leader_moderates_title,
+      votes: Q.moderates_final_votes, color: "#4a7c59", outline: "#00cc44",
+      label: "Moderates", side: "traditionalist" },
+    { id: "nat_cons", name: Q.leader_nat_cons, subtitle: Q.leader_nat_cons_title,
+      votes: Q.nat_cons_final_votes, color: "#5c4a1e", outline: "#00cc44",
+      label: "National Conservatives", side: "traditionalist" },
+    { id: "agrarians", name: Q.leader_agrarians, subtitle: Q.leader_agrarians_title,
+      votes: Q.agrarians_final_votes, color: "#8a9a3b", outline: "#00cc44",
+      label: "Agrarians", side: "traditionalist" },
     { id: "hugenberg", name: "Alfred Hugenberg",
       subtitle: "Radical Bloc / Dissident Associations",
       votes: Q.hugenberg_final_votes, color: "#3d0000", outline: "#cc0000",
@@ -148,12 +154,13 @@ go-to: party_spy
 
 *[+ leader_c_yocon +] ([+ leader_c_yocon_title +]) — Young Conservatives: [+ yocon_final_votes +]*
 
-*[+ leader_a +] ([+ leader_a_title +]) — Coalitionists: [+ moderate_a_final_votes +]*
+*[+ leader_moderates +] ([+ leader_moderates_title +]) — Moderates: [+ moderates_final_votes +]*
 
-*[+ leader_b +] ([+ leader_b_title +]) — Traditionalists: [+ moderate_b_final_votes +]*
+*[+ leader_nat_cons +] ([+ leader_nat_cons_title +]) — National Conservatives: [+ nat_cons_final_votes +]*
+
+*[+ leader_agrarians +] ([+ leader_agrarians_title +]) — Agrarians: [+ agrarians_final_votes +]*
 
 *Alfred Hugenberg (Radical Bloc / Dissident Associations) — Hugenberg Bloc: [+ hugenberg_final_votes +]*
-
 
 
 
