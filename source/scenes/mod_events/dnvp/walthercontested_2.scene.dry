@@ -32,13 +32,16 @@ var yocon2_anti = Q.yocon_final_votes * 0.33;
 Q.anti_lambach2 += yocon2_anti;
 Q.pro_lambach2  += (Q.yocon_final_votes - yocon2_anti);
 
-// --- Traditionalists (moderate_b): entirely anti ---
-Q.anti_lambach2 += Q.moderate_b_final_votes;
+// --- National Conservatives: entirely anti ---
+Q.anti_lambach2 += Q.nat_cons_final_votes;
 
-// --- Coalitionists (moderate_a): 0.95x anti, remainder pro ---
-var moda2_anti = Q.moderate_a_final_votes * 0.95;
-Q.anti_lambach2 += moda2_anti;
-Q.pro_lambach2  += (Q.moderate_a_final_votes - moda2_anti);
+// --- Agrarians: entirely anti (rural bloc has no remaining sympathy for Lambach) ---
+Q.anti_lambach2 += Q.agrarians_final_votes;
+
+// --- Moderates: 0.95x anti, remainder pro ---
+var mod2_anti = Q.moderates_final_votes * 0.95;
+Q.anti_lambach2 += mod2_anti;
+Q.pro_lambach2  += (Q.moderates_final_votes - mod2_anti);
 
 // --- Hugenberg remnants (10% stayed, did not follow DNF): entirely anti ---
 var hugenberg2_anti = Q.hugenberg_final_votes * 0.10;
@@ -96,7 +99,7 @@ var voncData2 = [
     {
         id: "anti2",
         label: "For the VoNC",
-        sublabel: "Traditionalists · majority of Moderates · quarter of Young Conservatives · Hugenberg remnants",
+        sublabel: "National Conservatives · Agrarians · majority of Moderates · quarter of Young Conservatives · Hugenberg remnants",
         votes: Q.vonc2_anti,
         color: "#3d0000",
         outline: "#cc0000",
@@ -240,7 +243,7 @@ go-to: cooked2 if lambach_ousting2 = 1; survives2 if lambach_ousting2 = 0
 
 *The final tally of delegate votes (100 congress seats):*
 
-*For the VoNC (Traditionalists & remaining opposition): [+ vonc2_anti +]*
+*For the VoNC (National Conservatives, Agrarians & remaining opposition): [+ vonc2_anti +]*
 
 *Against the VoNC (Christian Socials & loyalists): [+ vonc2_pro +]*
 
@@ -287,7 +290,7 @@ Q.rural_dnvp *= 0.3;
 Q.old_middle_dnvp *= 0.1;
 Q.old_middle_kvp += 20;
 Q.rural_kvp += 20;
-Q.dnvp_r_share_left = (Q.delegate_power_a * 0.01 + Q.delegate_power_b * 0.01 + Q.delegate_power_yocon * 0.10) / 2.2;
+Q.dnvp_r_share_left = (Q.delegate_power_moderates * 0.01 + Q.delegate_power_nat_cons * 0.01 + Q.delegate_power_agrarians * 0.01 + Q.delegate_power_yocon * 0.10) / 3.2;
 Q.kvp_r += Q.dnvp_r_share_left;
 Q.dnvp_r -= Q.dnvp_r_share_left;
 
