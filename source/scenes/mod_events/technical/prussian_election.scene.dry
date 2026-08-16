@@ -23,7 +23,7 @@ view-if: in_emergency_government_prussia == 1 and ministerpresident == "Braun" a
 Since the Prussian state government is currently ruling under emergency conditions, we may use quasi-constitutional trickery to significantly delay these Landtag elections.
 
 - @cancel_elections_prussia_2: Yes, do it.
-- @election_algorithm_prussia: No, let's hold the elections.
+- @post_election_prussia_1928: No, let's hold the elections.
 
 @cancel_elections_prussia_2
 on-arrival: next_election_year_prussia = next_election_year_prussia + 1; next_election_time_prussia = time + 12; pro_republic -= 8; dvp_relation -= 6; z_relation -= 6; ddp_relation -= 8; kpd_relation -= 6; coup_progress += 1; workers_spd -= 3; new_middle_spd -= 4; old_middle_spd -= 4; rural_spd -= 4; catholics_spd -= 4; unemployed_spd -= 4; coup_progress += 1 if nsdap_normalized >= 0.3; coup_progress += 1 if nsdap_normalized + dnvp_normalized >= 0.5
