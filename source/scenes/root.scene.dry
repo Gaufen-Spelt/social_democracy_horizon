@@ -121,6 +121,8 @@ Q.next_presidential_election_month = 5;
 Q.next_austria_election = 1930;
 Q.spd_congress_next_year = 1928;
 Q.spd_congress_next_month = 5;
+Q.next_election_month_prussia = 5;
+Q.next_election_year_prussia = 1928;
 
 Q.dues_workers = 1; 
 Q.dues_unemployed = 0.5; 
