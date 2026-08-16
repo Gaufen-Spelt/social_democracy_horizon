@@ -7,6 +7,8 @@ go-to: startermenu
 on-display: {!
     var el = document.getElementById('bill-queue-display');
     if (el) el.innerHTML = Q.bill_list_html || Q.bill_list_text || '';
+    document.getElementById('bill-queue-display').innerHTML = Q.bill_list_html || Q.bill_list_text;
+
 !}
 on-arrival: {!
 
@@ -86,6 +88,8 @@ Q.spd_holds_rt_presidency = (Q.reichstag_president_party === 'SPD') ? 1 : 0;
 The Reichstag is in session. Bills move through the chamber on their own schedule — but the SPD can force the issue.
 
 {!<div id="bill-queue-display"></div>!}
+
+[+ bill_list_text +]
 
 [? if bill_queue_count = 0 : No bills are currently in the queue. ?]
 
