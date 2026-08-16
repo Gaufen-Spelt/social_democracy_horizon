@@ -253,17 +253,17 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
 {!<div class="ach-section">!}
 
 [? if achievement_ruhrland :
-{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><img class="ach-icon" src="img/achievements/ruhrland.png"></div><div class="ach-body"><strong>Rheinland in Fire</strong> - French reoccupy the Rheinland following catastrophe of Young Plan.!}[? if game_achievement_ruhrland : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><img class="ach-icon" src="img/achievements/ruhrland.png"></div><div class="ach-body"><strong>Rheinland in Fire</strong> - The French reoccupy the Rheinland following catastrophe of Young Plan.!}[? if game_achievement_ruhrland : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_ruhrland :
-{!<div class="ach ach-locked"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/ruhrland.png"></div><div class="ach-body"><strong>Rheinland in Fire</strong> - French reoccupy the Rheinland following catastrophe of Young Plan.</div></div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/ruhrland.png"></div><div class="ach-body"><strong>Rheinland in Fire</strong> - The French reoccupy the Rheinland following catastrophe of the Young Plan.</div></div>!}
 ?]
 
 [? if achievement_tyrole_danubia :
-{!<div class="ach" style="background:rgba(0,146,70,0.1)"><div class="ach-icon-box" style="background:rgba(0,146,70,0.25)"><img class="ach-icon" src="img/achievements/tyrole_danubia.png"></div><div class="ach-body"><strong>Tyrol - Danubian Pact</strong> - Italy and Germany has signed non aggression treaty.!}[? if game_achievement_tyrole_danubia : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
+{!<div class="ach" style="background:rgba(0,146,70,0.1)"><div class="ach-icon-box" style="background:rgba(0,146,70,0.25)"><img class="ach-icon" src="img/achievements/tyrole_danubia.png"></div><div class="ach-body"><strong>Tyrol - Danubian Pact</strong> - Italy and Germany has signed a non aggression treaty.!}[? if game_achievement_tyrole_danubia : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_tyrole_danubia :
-{!<div class="ach ach-locked"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/tyrole_danubia.png"></div><div class="ach-body"><strong>Tyrol - Danubian Pact</strong> - Italy and Germany has signed non aggression treaty.</div></div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/tyrole_danubia.png"></div><div class="ach-body"><strong>Tyrol - Danubian Pact</strong> - Italy and Germany has signed a non aggression treaty.</div></div>!}
 ?]
 
 [? if achievement_revolution_own :
@@ -274,10 +274,10 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
 ?]
 
 [? if achievement_popular_frontier :
-{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><img class="ach-icon" src="img/achievements/popular_frontier.png"></div><div class="ach-body"><strong>Popular Front</strong> - Popular Front theses has been established.!}[? if game_achievement_popular_frontier : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
+{!<div class="ach" style="background:rgba(227,0,15,0.1)"><div class="ach-icon-box" style="background:rgba(227,0,15,0.25)"><img class="ach-icon" src="img/achievements/popular_frontier.png"></div><div class="ach-body"><strong>Popular Front</strong> - The Popular Front theses has been established.!}[? if game_achievement_popular_frontier : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_popular_frontier :
-{!<div class="ach ach-locked"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/popular_frontier.png"></div><div class="ach-body"><strong>Popular Front</strong> - Popular Front theses has been established.</div></div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/popular_frontier.png"></div><div class="ach-body"><strong>Popular Front</strong> - The Popular Front theses has been established.</div></div>!}
 ?]
 
 [? if achievement_winterschwelen :	
@@ -291,21 +291,21 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
 {!<div class="ach" style="background:rgba(46,79,46,0.15)"><div class="ach-icon-box" style="background:rgba(20,20,20,0.35)"><img class="ach-icon" src="img/achievements/landlicher_zorn.png"></div><div class="ach-body"><strong>Ländlicher Zorn</strong> - Rural wrath engulfes the Germany...!}[? if game_achievement_landlicher_zorn : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}	
 ?]
 [? if not achievement_landlicher_zorn :	
-{!<div class="ach ach-locked"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/landlicher_zorn.png"></div><div class="ach-body"><strong>Ländlicher Zorn</strong> - Rural wrath engulfes the Germany...</div></div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/landlicher_zorn.png"></div><div class="ach-body"><strong>Ländlicher Zorn</strong> - Rural wrath engulfes Germany...</div></div>!}
 ?]
 
 [? if achievement_karl_hepp_rlb :	
-{!<div class="ach" style="background:rgba(88, 112, 48, 0.20)"><div class="ach-icon-box" style="background:rgba(88, 112, 48, 0.45)"><img class="ach-icon" src="img/achievements/karlhepprlb.png"></div><div class="ach-body"><strong>Landpopulistenurteil</strong> - Karl Hepp has been elected as the Reichslandbund (RLB) president.!}[? if game_achievement_karl_hepp_rlb : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}	
+{!<div class="ach" style="background:rgba(88, 112, 48, 0.20)"><div class="ach-icon-box" style="background:rgba(88, 112, 48, 0.45)"><img class="ach-icon" src="img/achievements/karlhepprlb.png"></div><div class="ach-body"><strong>Landpopulistenurteil</strong> - Karl Hepp has been elected as president of the Reichslandbund (RLB).!}[? if game_achievement_karl_hepp_rlb : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}	
 ?]
 [? if not achievement_karl_hepp_rlb :	
-{!<div class="ach ach-locked"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/karlhepprlb.png"></div><div class="ach-body"><strong>Landpopulistenurteil</strong> - Karl Hepp has been elected as the Reichslandbund (RLB) president. </div></div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/karlhepprlb.png"></div><div class="ach-body"><strong>Landpopulistenurteil</strong> - Karl Hepp has been elected as president of the Reichslandbund (RLB). </div></div>!}
 ?]
 
 [? if achievement_gesamtlandliche_vertretung :	
-{!<div class="ach" style="background:linear-gradient(90deg,rgba(20,20,20,0.15) 0%,rgba(120,180,120,0.15) 33%,rgba(30,90,30,0.15) 66%,rgba(10,40,10,0.15) 100%)"><div class="ach-icon-box" style="background:rgba(90,90,90,0.3)"><img class="ach-icon" src="img/achievements/gesamtlandliche_vertretung.png"></div><div class="ach-body"><strong>Gesamtlandliche Vertretung</strong> - Green Front encompasses maximal amount of members possible.!}[? if game_achievement_gesamtlandliche_vertretung : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}	
+{!<div class="ach" style="background:linear-gradient(90deg,rgba(20,20,20,0.15) 0%,rgba(120,180,120,0.15) 33%,rgba(30,90,30,0.15) 66%,rgba(10,40,10,0.15) 100%)"><div class="ach-icon-box" style="background:rgba(90,90,90,0.3)"><img class="ach-icon" src="img/achievements/gesamtlandliche_vertretung.png"></div><div class="ach-body"><strong>Gesamtlandliche Vertretung</strong> - The Green Front encompasses maximal amount of members possible.!}[? if game_achievement_gesamtlandliche_vertretung : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}	
 ?]
 [? if not achievement_gesamtlandliche_vertretung :	
-{!<div class="ach ach-locked"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/gesamtlandliche_vertretung.png"></div><div class="ach-body"><strong>Gesamtlandliche Vertretung</strong> - Green Front encompasses maximal amount of members possible.</div></div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/gesamtlandliche_vertretung.png"></div><div class="ach-body"><strong>Gesamtlandliche Vertretung</strong> - The Green Front encompasses the maximum amount of members possible.</div></div>!}
 ?]
 
 [? if achievement_annahmeerklarung :	
@@ -337,10 +337,10 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
 ?]
 
 [? if achievement_lambachreich :
-{!<div class="ach" style="background:rgba(40,40,40,0.15)"><div class="ach-icon-box" style="background:rgba(40,40,40,0.3)"><img class="ach-icon" src="img/achievements/lambachreich.png"></div><div class="ach-body"><strong>Großer Korporatismus</strong> - Walther Lambach consolidates all power under himself.!}[? if game_achievement_lambachreich : {!<span class="ach-new">Neu!</span>!}?]{!</div></div>!}
+{!<div class="ach" style="background:rgba(40,40,40,0.15)"><div class="ach-icon-box" style="background:rgba(40,40,40,0.3)"><img class="ach-icon" src="img/achievements/lambachreich.png"></div><div class="ach-body"><strong>Großer Korporatismus</strong> - Walther Lambach has managed to consolidate power under himself.!}[? if game_achievement_lambachreich : {!<span class="ach-new">Neu!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_lambachreich :
-{!<div class="ach ach-locked"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/lambachreich.png"></div><div class="ach-body"><strong>Großer Korporatismus</strong> - Walther Lambach consolidates all power under himself.</div></div>!}
+{!<div class="ach ach-locked"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/lambachreich.png"></div><div class="ach-body"><strong>Großer Korporatismus</strong> - Walther Lambach has managed to consolidated power under himself.</div></div>!}
 ?]
 
 = Unfinished / Unobtainable achievements
