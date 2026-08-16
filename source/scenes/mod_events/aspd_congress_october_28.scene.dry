@@ -22,7 +22,7 @@ Q.aspd_nb_survival_points = Q.aspd_nb_survival_points || 0;
 if ((Q.nationalism * 1.1) + Q.aspd_votes_pct > 15) Q.aspd_nb_survival_points += 1;
 if (Q.ideology == "Left") Q.aspd_nb_survival_points += 1;
 if (Q.ideology == "reformist") Q.aspd_nb_survival_points -= 1;
-if (Q.spd_r < 29 || Q.spd_votes < 25.4) Q.aspd_nb_survival_points += 1
+if (Q.spd_r < 29 || Q.spd_votes < 26.4) Q.aspd_nb_survival_points += 1
 if (Q.z_relation + Q.dvp_relation + Q.ddp_relation > 170) {
     Q.aspd_nb_survival_points -= 1;
 } else {
@@ -35,9 +35,9 @@ if (Q.spd_in_government <= 0) Q.aspd_nb_survival_points += 1
 if (Q.peoples_party) Q.aspd_nb_survival_points -= 10;
 if (Q.peoples_party_support > 1) Q.aspd_nb_survival_points -= Q.peoples_party_support;
 
-if (Q.aspd_votes_pct > 0.4) Q.aspd_nb_survival_points += 1;
+if (Q.aspd_pct > 0.4) Q.aspd_nb_survival_points += 1;
 if (Q.jungdo_formed > 0) Q.aspd_nb_survival_points += 1;
-if (Q.nsdap_votes_pct < 3) Q.aspd_nb_survival_points += 1;
+if (Q.nsdap_pct < 3) Q.aspd_nb_survival_points += 1;
 if (Q.reformists_resign) Q.aspd_nb_survival_points -= 1;
 if (Q.unions_independent) Q.aspd_nb_survival_points += 2;
 if (Q.labor_dissent > 30 && !Q.unions_independent) Q.aspd_nb_survival_points += 1;
@@ -59,15 +59,15 @@ go-to: aspd_natbol_died if aspd_nb_survival_points < 6; aspd_natbol_survival if 
 
 @aspd_natbol_died
 
-In the unsurprising turn of the events, [+ aspd_party_leader +] has successfully pushed through this change.
+In the unsurprising turn of the events, [+ aspd_party_leader +] has successfully pushed through this change, forcing Ernst Niekisch and his "national socialists" to leave the party forever.
 
 @aspd_natbol_survival
 achievement: herbstingwer
 
-Natbol survival.
+With the stalemate ensuing, Ernst Niekisch has survived this attempt of removal and has managed to push back on this change of program.
 
 @aspd_nb_assumes
 achievement: herbstingwer
 on-arrival: aspd_ideology = "National Bolshevism"; aspd_party_leader = "Ernst Niekisch"
 
-Natbol wins.
+In the unexpected turn of events, Ernst Niekisch assumes the power.
