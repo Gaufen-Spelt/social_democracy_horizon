@@ -9,7 +9,7 @@ subtitle: The state government of Prussia is a bulwark of democracy...
 
 = Prussian Affairs
 
-Prussia, by far the largest and most important state in Germany, is governed by our party, in a [+ coalition_name_prussia +] with [? government_parties_prussia +] our coalition partners. It is [? if in_grand_coalition_prussia or in_weimar_coalition_prussia : the most stable and democratic state government in Germany ?][? if not in_grand_coalition_prussia and not in_weimar_coalition_prussia : an uneasy but functioning state government ?], led by Minister-President [+ ministerpresident +].
+Prussia, by far the largest and most important state in Germany, is governed by our party, in a [+ coalition_name_prussia +] with [+ government_parties_prussia +] our coalition partners. It is [? if in_grand_coalition_prussia or in_weimar_coalition_prussia : the most stable and democratic state government in Germany ?][? if not in_grand_coalition_prussia and not in_weimar_coalition_prussia : an uneasy but functioning state government ?], led by Minister-President [+ ministerpresident +].
 
 We can enact policies in Prussia.
 
