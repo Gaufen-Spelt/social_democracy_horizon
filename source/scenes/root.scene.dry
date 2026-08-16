@@ -58,6 +58,11 @@ Q.delegate_power_a = 120;
 Q.delegate_power_b = 300;
 Q.delegate_power_yocon = 50;
 Q.delegate_power_christsoc = 65;
+Q.spd_in_government_prussia = 1;
+Q.z_in_government_prussia = 1;
+Q.ddp_in_government_prussia = 1;
+Q.coalition_name_prussia = "Weimar Coalition";
+Q.coalition_name = "Bürgerblock";
 
 
 
