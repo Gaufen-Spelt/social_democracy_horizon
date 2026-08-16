@@ -96,3 +96,11 @@ Otto Braun buff and new ability:
 Buff:
 
 - "Negotiate with the coalition" advisor timer cooldown is decreased: 12 -> 10.
+
+---
+
+16.08.26.
+
+Breitscheid buff:
+
+- Foreign polic action no longer depends on it's own timer, basically reverted this nerf.
