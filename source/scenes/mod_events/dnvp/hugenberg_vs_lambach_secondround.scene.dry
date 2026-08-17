@@ -2,7 +2,7 @@ title: Alfred Hugenberg faces organized opposition...
 subtitle: PLACEHOLDER SUBTITLE
 tags: event
 new-page: true
-view-if: year = 1929 and month >= 3 and dnvp_party_leader = "Alfred Hugenberg" and lmabach_stage = -1
+view-if: lambach_stage_minus1_timer <= 0 and lambach_stage_minus1_trigger >= 1
 max-visits: 1
 face-image: img/portraits/HugenbergAlfred.jpg
 
