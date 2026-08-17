@@ -1,7 +1,7 @@
 Title: D.N.V.P Extraordinary Congress
 Subtitle: The Oberfohren Congress
 tags: event
-view-if: dnvp_party_leader = "Alfred Hugenberg" and ((young_opposition <= 15 and hugenberg_final_votes < 45) or (young_opposition < 10 and hugenberg_final_votes < 50)) and hugenberg_momentum <= 300 and month >= 8 and year >= 1929 and year <= 1930
+view-if: hugenberg_weakness_trigger >= 1 and hugenberg_weakness_timer <= 0
 max-visits: 1
 new-page: true
 face-image: img/dnvp.png
