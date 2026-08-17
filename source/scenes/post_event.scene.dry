@@ -6575,13 +6575,13 @@ if (Q.z_party_leader == "Joseph Joos") {
 if (Q.year == 1928 && Q.month >= 6 && Q.flavor_1_dnvp != 1) {
     if ((Q.dnvp_r < Q.old_dnvp_r - 2.5) || Q.cnbl_crisis == 1) {
         Q.flavor_1_dnvp = 1;
-        Q.dnvp_party_0_congress_timer = 8;
+        Q.dnvp_party_0_congress_timer = 6;
         if (!Q.timers.includes('dnvp_party_0_congress')) {
             Q.timers.push('dnvp_party_0_congress');
         }
     } else {
         Q.flavor_1_dnvp = 1;
-        Q.dnvp_party_0_congress_timer = 12;
+        Q.dnvp_party_0_congress_timer = 10;
         if (!Q.timers.includes('dnvp_party_0_congress')) {
             Q.timers.push('dnvp_party_0_congress');
         }
@@ -6607,13 +6607,29 @@ if (Q.lambach_stage == 1 && Q.flavor_lambach_1_dnvp != 1) {
 }
 
 // 4. Lambach Article Trigger
-if (Q.year >= 1928 && Q.year <= 1929 && Q.month >= 6 && Q.dnvp_pct < (Q.old_dnvp_r - 2.33) && Q.lambach_flavor_0_trigger != 1 && Q.lambach_article_timer == 0) {
-    Q.lambach_article_timer = 4;
+if (((Q.year == 1928 && Q.month >= 6) || (Q.year == 1929 && Q.month <= 1)) && (Q.dnvp_pct < (Q.old_dnvp_r - 2.33) || Q.dnvp_pct < (Q.dnvp_r - 5)) && Q.lambach_flavor_0_trigger != 1 && Q.lambach_article_timer == 0) {
+    Q.lambach_article_timer = 2;
     if (!Q.timers.includes('lambach_article')) {
         Q.timers.push('lambach_article');
     }
     Q.lambach_flavor_0_trigger = 1;
 }
+
+// Lambach momentum
+
+// 5. Lambach Fallback / Christian Social Trigger
+if (Q.lambach_flavor_2_trigger != 1 && (
+    (((Q.year == 1929 && Q.month > 1) || Q.year > 1929) && Q.lambach_flavor_0_trigger != 1) ||
+    (Q.delegate_power_christsoc > 350)
+)) {
+    Q.lambach_flavor_2_trigger = 1;
+    Q.lambach_momentum_timer = 2;
+    if (!Q.timers.includes('lambach_momentum')) {
+        Q.timers.push('lambach_momentum');
+    }
+}
+
+
 
 
 
