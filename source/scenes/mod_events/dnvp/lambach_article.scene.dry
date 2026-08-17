@@ -2,7 +2,7 @@ Title: Walther Lambach's Article...
 subtitle: Monarchismus, People's Conservatism and Hindenburg's tower.
 tags: event
 new-page: true
-view-if: year >= 1928 and year < 1929 and month >= 6 and weeks >= 2 and month <= 7 and dnvp_votes < 15.33 and lambach_article_seen = 0
+view-if: lambach_flavor_0_trigger = 1 and lambach_article_timer <= 0
 on-arrival: lambach_article_seen = 1
 face-image: img/portraits/LambachWalther.jpg
 
