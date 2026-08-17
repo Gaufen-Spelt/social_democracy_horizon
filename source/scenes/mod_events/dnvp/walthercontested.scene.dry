@@ -271,7 +271,7 @@ go-to: cooked if lambach_ousting = 1; survives if lambach_ousting = 0
 
 
 @cooked
-on-arrival: dnvp_party_leader = "Alfred Hugenberg"; dnvp_ideology = "National Conservatism (Hugenbergite)"; old_middle_dnvp += 5; rural_dnvp += 3; workers_dnvp -= 3; new_middle_dnvp -= 5; pro_republic -= 5; nationalism += 5; dnvp_relation -= 20; lmabach_stage = -1
+on-arrival: dnvp_party_leader = "Alfred Hugenberg"; dnvp_ideology = "National Conservatism (Hugenbergite)"; old_middle_dnvp += 5; rural_dnvp += 3; workers_dnvp -= 3; new_middle_dnvp -= 5; pro_republic -= 5; nationalism += 5; dnvp_relation -= 20; lambach_stage = -1
 
 = Lambach has been defeated in the vote of no confidence!
 
