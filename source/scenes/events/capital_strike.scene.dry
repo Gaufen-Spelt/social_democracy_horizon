@@ -1,6 +1,6 @@
 Title: Capital Strike
 subtitle: Germany's industries are idling...
-view-if: (capital_strike_progress >= 12 or budget <= -6) and spd_in_government and capital_strike_timer <= 0 and transformed_socialist_economy = 0
+view-if: (capital_strike_progress >= 12 or budget <= -12) and spd_in_government and capital_strike_timer <= 0 and transformed_socialist_economy = 0
 new-page: true
 on-arrival: unemployed += 6 - (nationalization_progress + socialization / 5); workers_spd *= 0.8 + (nationalization_progress + socialization / 10); new_middle_spd /= 2 + (nationalization_progress + socialization / 15); old_middle_spd /= 1.5 + (nationalization_progress + socialization / 15); unemployed_spd *= 0.8 + (nationalization_progress + socialization / 10); rural_spd /= 2.2 + (nationalization_progress + socialization / 15); pro_republic -= (nationalism / 2) - (nationalization_progress + socialization / 10); capital_strike_seen = 1; z_relation -= 8 - (nationalization_progress + socialization / 10); dvp_relation -= 13 + (nationalization_progress + socialization / 5); economic_growth -= 4 - (nationalization_progress + socialization / 5); capital_strike_progress = 0; nationalism += ((old_middle + new_middle) / 2) - (nationalization_progress + socialization / 5); budget += 1 if budget <= -6; capital_strike_timer += 18 * (1 + nationalization_progress + socialization)
 tags: event
