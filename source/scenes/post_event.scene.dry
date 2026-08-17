@@ -150,7 +150,6 @@ Q.government_total_votes = Math.round(Q.government_total_votes * 10) / 10;
 Q.has_supermajority = (Q.government_effective_pct >= 66.7) ? 1 : 0;
 
 
-
 // ============================================
 // GOVERNMENT COLLAPSE CHECK
 // ============================================
@@ -172,9 +171,7 @@ if (gov_count > 0) {
         }
     }
 
-    Q.government_effective_pct = Math.round(effective_votes * 10) / 10;
-
-    if (effective_votes < 50) {
+    if (effective_votes < 50 && !(Q.in_emergency_government >= 1)) {
         Q.government_collapsed = 1;
         Q.next_election_year = Q.year;
         Q.next_election_month = Q.month + 2;
@@ -191,6 +188,11 @@ if (gov_count > 0) {
         Q.is_minority_government = 0;
     }
 }
+
+
+
+
+
 
 
 // QOL. REMOVES PHANTON PARTIES.
