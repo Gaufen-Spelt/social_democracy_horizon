@@ -6671,6 +6671,15 @@ if (Q.year >= 1929 && Q.year <= 1930 && Q.dnvp_party_leader == "Alfred Hugenberg
     Q.hugenberg_weakness_trigger = 1;
 }
 
+// Lambach vs Hugenberg
+if (Q.dnvp_party_leader == "Alfred Hugenberg" && Q.lambach_stage == -1 && Q.lambach_stage_minus1_trigger != 1) {
+    Q.lambach_stage_minus1_timer = 4;
+    if (!Q.timers.includes('lambach_stage_minus1')) {
+        Q.timers.push('lambach_stage_minus1');
+    }
+    Q.lambach_stage_minus1_trigger = 1;
+}
+
 
 
 
