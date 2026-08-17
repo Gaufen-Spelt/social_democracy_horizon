@@ -2,7 +2,7 @@ title: Walther Lambach is contested!
 subtitle: Christian Social overthrow is met with fierce resistance!
 tags: event
 new-page: true
-view-if: year = 1929 and month >= 1 and dnvp_party_leader = "Walther Lambach"
+view-if: dnvp_lambach_hugenberg_attack_timer = 0 and flavor_2_dnvp >= 1
 max-visits: 1
 face-image: img/portraits/LambachWalther.jpg
 
