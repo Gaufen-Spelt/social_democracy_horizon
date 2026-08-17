@@ -2,7 +2,7 @@ title: Walther Lambach's gambit.
 subtitle: DHV went on the offensive.
 tags: event
 new-page: true
-view-if: year == 1928 and month >= 8 and month <= 9 and weeks >= 1 and lambach_flavor_trigger = 0 and (lambach_exile = 0 and lambach_momentum = 0)
+view-if: lambach_flavor_2_trigger = 1 and lambach_momentum_timer <= 0
 on-arrival: {!  
     Q.lambach_momentum = 1;
     Q.workers_dnvp += 10;
