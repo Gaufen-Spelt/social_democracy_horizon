@@ -17,66 +17,12 @@ The stock market in America has had its biggest crash in history. It is too earl
 
 @cap
 set-bg: img/bt.jpg
-on-departure: {!
-
-SuperEvent.trigger({
-  imageSrc:     'img/blth.jpg',
-  imageCaption: 'October 29, 1929 — Black Tuesday',
-
-  title:        'THE MARKET HAS COLLAPSED',
-  quote:        'Stock prices slump $14,000,000,000 in nation-wide stampede to unload.',
-  quoteCite:    'Front page, New York — Oct. 29, 1929',
-
-  size:         'xl',
-  layout:       'centered',
-  effect:       'static',     
-  scanlines:    true,
-  vignette:     true,
-  ambientColor: '#3a2a1a',    
-
-  audioSrc:     'music/haunt.mp3',
-  audioVolume:  0.6,
-
-  duration:     50000,          // hold for 50s then auto-close
-  showSkip:     true,
-  showTitle:    true,
-  showQuote:    true,
-});
-
-!}
 
 Perhaps this is simply one of the periodic crises of capitalism. Perhaps this moment will simply pass.
 
 @do_something
 on-arrival: crisis_urgency += 1
 set-bg: img/bt.jpg
-on-departure: {!
-
-SuperEvent.trigger({
-  imageSrc:     'img/blth.jpg',
-  imageCaption: 'October 29, 1929 — Black Tuesday',
-
-  title:        'THE MARKET HAS COLLAPSED',
-  quote:        'Stock prices slump $14,000,000,000 in nation-wide stampede to unload.',
-  quoteCite:    'Front page, New York — Oct. 29, 1929',
-
-  size:         'xl',
-  layout:       'centered',
-  effect:       'static',     
-  scanlines:    true,
-  vignette:     true,
-  ambientColor: '#3a2a1a',    
-
-  audioSrc:     'music/haunt.mp3',
-  audioVolume:  0.6,
-
-  duration:     50000,          // hold for 50s then auto-close
-  showSkip:     true,
-  showTitle:    true,
-  showQuote:    true,
-});
-
-!}
 
 What can we do to staunch the workers' suffering? It is becoming a hotly debated question.
 
@@ -103,14 +49,3 @@ Now I know how it feels to sense entropy decaying.
 Those thoughts encircled me.
 
 However it may be, happening has ended.
-
-@economic_set
-on-arrival: {!
-Q.capital_pressure += 0.30;
-Q.trade_pressure += 0.24;
-Q.demand_impulse -= 0.20;
-Q.investment_chill += 0.40;
-Q.price_pressure -= 0.20;
-Q.supply_impulse -= 0.15;
-Q.shock_residual += 0.40;
-!}
