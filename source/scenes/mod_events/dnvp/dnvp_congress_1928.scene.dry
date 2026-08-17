@@ -1,20 +1,16 @@
-Title: D.N.V.P Party Congress
+Title: DNVP Party Congress
 Subtitle: 20th October of 1928
 tags: event
-view-if: year >= 1928 and month >= 10 and weeks >= 2
+view-if: dnvp_party_0_congress_timer = 0
 max-visits: 1
 new-page: true
 face-image: img/dnvp.png
 
-= Party Congress of D.N.V.P
+= Party Congress of DNVP
 
-Following the May election losses, the German National People's Party (DNVP) has entered a period of profound internal reckoning. The "Lambach Case", sparked by Walther Lambach's public questioning of the monarchist principle in favor of a Hindenburg-centric "People's Conservatism"—has become the catalyst for a battle over the party's very soul.
+Following the 
 
-​While a majority of the Reichstag delegation initially favored a moderate censure of Lambach's tactics rather than his expulsion, Alfred Hugenberg and his radical allies remained unsatisfied. By July, the rift became structural: fifteen of the forty-five regional associations, organized under General von Dommes, openly revolted against Count Westarp's leadership. These "recalcitrant" associations demand that the party cease being a "community of interests" (a parliamentary "mishmash" of workers, farmers, and aristocrats) and transform into a "community of opinion"—a rigid "Block of Stone" dedicated to uncompromising nationalist ideology.
-
-As the delegates prepare to meet in Berlin, the question expands far beyond the Lambach: Will DNVP move to the Radical Far Right or keep the Parliamentarist Course?
-
-- @check: Who will win this one...?
+- @check: And the congress results in...
 
 @check
 on-arrival: {!
