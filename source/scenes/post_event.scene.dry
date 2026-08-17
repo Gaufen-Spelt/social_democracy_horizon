@@ -1480,22 +1480,10 @@ for (const name of CABINET_CHANCELLORS) {
 
 
     
-// ECONOMIC SIMULATION — v7 (CORE REBUILD)
-//
-// Design principles, in order of priority:
-//   1. Phases are NON-OVERLAPPING REGIONS of (inflation, growth, unemployment) space,
-//      checked in fixed priority order. Two phases can never both claim to be "true"
-//      for the same state — that ambiguity was the root cause of the v6 flapping and
-//      hyperinflation/depression overlap.
-//   2. Hysteresis is done with plain tick counters (integers), not decayed/smoothed
-//      floats. "Qualified for N consecutive ticks" is auditable; an EMA score is not.
-//   3. Inflation has a genuine two-sided feedback: whatever mechanism can make it
-//      run away must be matched by a mechanism that can pull it back, scaled by the
-//      SAME multiplier — no one-way valves.
-//   4. Only inflation, unemployed, economic_growth are required. Everything else
-//      (debt, velocity, FX) is a separate optional module that reads/writes these
-//      three but does not change how the state machine works.
-//
+// ECONOMIC SIMULATION — v7
+
+
+
 // ============================================================
 // SECTION 0 — TIME CONSTANTS
 // ============================================================
@@ -1656,8 +1644,11 @@ function currentZone() {
 
 // NAIRU hysteresis: prolonged depression raises structural unemployment slowly;
 // recovery brings it back down slowly. This is deliberately slow-moving.
+//
+// PATCH #3: creep rate reduced (0.01 -> 0.006) so depression doesn't dig its
+// own exit threshold deeper the longer it lasts.
 if (Q.phase === "depression" && Q.phase_duration > 8) {
-    Q.NAIRU += (9.0 - Q.NAIRU) * 0.01 * dt;
+    Q.NAIRU += (9.0 - Q.NAIRU) * 0.006 * dt;
 } else {
     Q.NAIRU += (BASE_NAIRU - Q.NAIRU) * 0.008 * dt;
 }
@@ -1711,10 +1702,11 @@ const uGap      = Q.unemployed - Q.NAIRU;
 
 let dInflation = 0;
 
-// Phillips-curve-ish core: tight labor market + strong output push inflation up
-dInflation += 0.05 * -uGap;
+const tightnessMult = Q.unemployed < 3 ? (1 + (3 - Q.unemployed) * 0.25) : 1;
+dInflation += 0.05 * -uGap * tightnessMult;
+
 dInflation += 0.03 * outputGap;
-dInflation += Q.price_pressure * 0.10;
+dInflation += Q.price_pressure * 0.08; // PATCH #4: was 0.10 — slightly less double-counting with Phillips term during recovery
 
 // Expectations pull: if actual inflation is below expectations, it gets pulled up;
 // if above, pulled down. This term runs BOTH directions symmetrically.
@@ -1729,8 +1721,9 @@ if (!Q.expectations_anchored) {
 // RESTORING FORCE: grows with how far inflation has drifted from target,
 // and — critically — grows faster than the runaway terms can as drift increases,
 // so extreme inflation is always self-limiting rather than a one-way valve.
+
 const drift = Q.inflation - BASE_INFLATION_TARGET;
-const restoringForce = Math.sign(drift) * 0.02 * Math.pow(Math.abs(drift) / 10, 1.6);
+const restoringForce = Math.sign(drift) * 0.03 * Math.pow(Math.abs(drift) / 8, 1.4);
 dInflation -= restoringForce;
 
 // Small noise
@@ -1750,8 +1743,9 @@ dUnemployment -= okunsCoeff * outputGap / (1 + Math.abs(outputGap) * 0.2);
 // Demand pressure (policy) directly affects jobs
 dUnemployment -= Q.demand_pressure * 0.4;
 
-// Mean reversion toward NAIRU when far off, prevents permanent runaway either direction
-dUnemployment -= 0.03 * uGap / (1 + Math.abs(uGap) * 0.1);
+// PATCH #3: faster mean reversion toward NAIRU (0.03 -> 0.05) so unemployment
+// doesn't linger at extreme depression-era levels as long once conditions ease.
+dUnemployment -= 0.05 * uGap / (1 + Math.abs(uGap) * 0.1);
 
 dUnemployment += (Math.random() - 0.5) * 0.015;
 dUnemployment = Math.max(-2.0, Math.min(2.0, dUnemployment));
@@ -1760,9 +1754,10 @@ dUnemployment = Math.max(-2.0, Math.min(2.0, dUnemployment));
 // ---- dGROWTH ----
 let dGrowth = 0;
 
-// Mean reversion toward potential growth (economies don't grow or shrink forever
-// at extreme rates without a force pushing back)
-dGrowth += 0.05 * (POTENTIAL_GROWTH - Q.economic_growth) / (1 + Math.abs(outputGap) * 0.15);
+// PATCH #3: faster mean reversion toward potential growth (0.05 -> 0.08) so
+// growth climbs out of deep negative territory faster, easing the depression
+// stall.
+dGrowth += 0.08 * (POTENTIAL_GROWTH - Q.economic_growth) / (1 + Math.abs(outputGap) * 0.15);
 
 // Demand and supply pressures move growth directly
 dGrowth += Q.demand_pressure * 0.6;
@@ -1804,9 +1799,6 @@ Q.supply_pressure *= Math.exp(-0.20 * dt);
 Q.price_pressure  *= Math.exp(-0.25 * dt);
 
 
-
-
-
 Q.inflation              = Math.max(-15, Math.min(1000, Q.inflation));
 Q.unemployed             = Math.max(0,   Math.min(50,   Q.unemployed));
 Q.economic_growth        = Math.max(-20, Math.min(20,   Q.economic_growth));
@@ -1815,13 +1807,7 @@ Q.budget = Math.max(-50, Math.min(50, Q.budget));
 Q.budget = Math.round(Q.budget * 100) / 100;
 
 
-
-
-
-
 // =========================== CABINET ECONOMICAL EFFECTS ====================
-
-
 
 
 // ============================================================
@@ -1834,7 +1820,6 @@ if (Q.bruning_cabinet === 1 && Q.lautenbach_plan_active !== 1 && Q.lautenbach_pl
     Q.budget += 0.07;
 
     // Deflation pressure — wage cuts, price controls, tight money
-    // (was Q.dInflation -= 0.03; that variable doesn't exist in v5)
     Q.price_pressure    -= 0.05;   // stronger signal to compensate
 
     // Demand collapses — less public spending, lower wages
@@ -1842,7 +1827,6 @@ if (Q.bruning_cabinet === 1 && Q.lautenbach_plan_active !== 1 && Q.lautenbach_pl
     Q.fiscal_stance     -= 0.06;
 
     // Unemployment creeps up — layoffs from public sector cuts
-    // (was Q.dUnemployment += 0.07; routed through demand instead)
     Q.demand_impulse    -= 0.03;   // indirect unemployment channel
 
     // Capital pressure eases slightly — creditor confidence
@@ -1874,11 +1858,9 @@ if (Q.bruning_cabinet === 1 && Q.lautenbach_plan_active !== 1 && Q.lautenbach_pl
     Q.supply_impulse    += 0.05;
 
     // Unemployment falls — job creation programs
-    // Routed through demand (demandUCoeff handles unemployment in v5)
     Q.demand_impulse    += 0.03;
 
     // Growth nudge routed through demand + supply forces
-    // (was Q.dGrowth += 0.05; that variable doesn't exist in v5)
     Q.supply_impulse    += 0.02;
 
     // Inflation creeps back — more money chasing goods
@@ -1906,8 +1888,6 @@ if (Q.wagemann_plan_active === 1 && Q.year >= 1932 && Q.year < 1933) {
     // --------------------------------------------------------
 
     // Core: directly inject monetization pressure
-    // Wagemann's plan was essentially deficit monetization —
-    // the exact mechanism the v5 engine models with this variable.
     Q.monetization_pressure = Math.min(2.0, (Q.monetization_pressure || 0) + 0.12);
 
     // Price and demand effects of monetary expansion
@@ -1916,17 +1896,13 @@ if (Q.wagemann_plan_active === 1 && Q.year >= 1932 && Q.year < 1933) {
     Q.credit_expansion           = Math.min(0.8, (Q.credit_expansion || 0) + 0.06);
 
     // If expectations already unanchored, spiral risk kicks in
-    // Wagemann's plan was terrifying to anyone who remembered 1923
     if (!Q.expectations_anchored) {
         Q.monetization_pressure  = Math.min(2.0, Q.monetization_pressure + 0.10);
         Q.price_pressure        += 0.06;
-        // Drive high_inflation_streak rather than directly editing expectations
-        // — this respects the anchoring state machine in v5
         Q.high_inflation_streak  = (Q.high_inflation_streak || 0) + 1.5;
     }
 
     // Growth benefits modestly — reflation puts money into circulation
-    // Routed through demand force (was Q.dGrowth += 0.06)
     Q.supply_impulse            += 0.03;
 
     // Budget neutral-to-positive — monetary not fiscal
@@ -1937,7 +1913,6 @@ if (Q.wagemann_plan_active === 1 && Q.year >= 1932 && Q.year < 1933) {
     Q.trade_pressure            += 0.05;
 
     // If inflation already above 4, compounding risk
-    // The 1923 memory makes markets overreact
     if (Q.inflation > 4) {
         Q.capital_pressure      += 0.06;
         Q.monetization_pressure  = Math.min(2.0, Q.monetization_pressure + 0.05);
@@ -1958,9 +1933,10 @@ if ((Q.wtb_timer || 0) > 0) {
     Q.price_pressure   = (Q.price_pressure  || 0) + 0.02 * diminish;
     Q.supply_impulse   = (Q.supply_impulse  || 0) + 0.02 * diminish;
     Q.capital_pressure = Math.max(0, (Q.capital_pressure || 0) - 0.01 * diminish);
+
+    // NEW — direct budget boost from WTB activity
+    Q.budget += 0.35 * diminish;
 }
-
-
 
 
 
