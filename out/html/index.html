@@ -147,353 +147,363 @@
 
     <!-- Save/Load overlay -->
     <div id="save" class="overlay saves" style="display: none;">
-      <div class="overlay_top save_overlay_top">
+      <table id="saves_table" class="overlay_top save_overlay_top">
+            <tr>
+                <td>Auto-0</td>
+                <td>
+                    <button class="b save_button" id="save_button_a0">Save</button>
+                </td>
+                <td>
+                    <button class="b delete_button" id="delete_button_a0">Delete</button>
+                </td>
+                <td class="save_info" id="save_info_a0"></td>
+                <td>
+                    <button class="b export_button" id="export_button_a0">Export</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Auto-1</td>
+                <td>
+                    <button class="b save_button" id="save_button_a1">Save</button>
+                </td>
+                <td>
+                    <button class="b delete_button" id="delete_button_a1">Delete</button>
+                </td>
+                <td class="save_info" id="save_info_a1"></td>
+                <td>
+                    <button class="b export_button" id="export_button_a1">Export</button>
+                </td>
+            </tr>
 
-        <div class="save_tab_container">
-          <button class="save_tab_button active" id="save_tab_1_btn" onclick="window.switchSaveTab(1);">Slots 0–19</button>
-          <button class="save_tab_button" id="save_tab_2_btn" onclick="window.switchSaveTab(2);">Slots 20–39</button>
-        </div>
+            <tr>
+                <td colspan="5">
+                    <div class="save_tab_container">
+                        <button class="save_tab_button active" id="save_tab_1_btn" onclick="window.switchSaveTab(1);">Slots 0–19</button>
+                        <button class="save_tab_button" id="save_tab_2_btn" onclick="window.switchSaveTab(2);">Slots 20–39</button>
+                    </div>
+                </td>
+            </tr>
 
-        <table id="saves_table_auto">
-        <tr>
-          <td>Auto-0</td>
-          <td><button class="b save_button" id="save_button_a0">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_a0">Delete</button></td>
-          <td class="save_info" id="save_info_a0"></td>
-          <td><button class="b export_button" id="export_button_a0">Export</button></td>
-        </tr>
-        <tr>
-          <td>Auto-1</td>
-          <td><button class="b save_button" id="save_button_a1">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_a1">Delete</button></td>
-          <td class="save_info" id="save_info_a1"></td>
-          <td><button class="b export_button" id="export_button_a1">Export</button></td>
-        </tr>
-        </table>
+            <!-- Slots 0-19: visible by default (tab 1) -->
+            <tr class="save_slot_row save_tab_page_1">
+                <td>0</td>
+                <td><button class="b save_button" id="save_button_0">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_0">Delete</button></td>
+                <td class="save_info" id="save_info_0"></td>
+                <td><button class="b export_button" id="export_button_0">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_1">
+                <td>1</td>
+                <td><button class="b save_button" id="save_button_1">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_1">Delete</button></td>
+                <td class="save_info" id="save_info_1"></td>
+                <td><button class="b export_button" id="export_button_1">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_1">
+                <td>2</td>
+                <td><button class="b save_button" id="save_button_2">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_2">Delete</button></td>
+                <td class="save_info" id="save_info_2"></td>
+                <td><button class="b export_button" id="export_button_2">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_1">
+                <td>3</td>
+                <td><button class="b save_button" id="save_button_3">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_3">Delete</button></td>
+                <td class="save_info" id="save_info_3"></td>
+                <td><button class="b export_button" id="export_button_3">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_1">
+                <td>4</td>
+                <td><button class="b save_button" id="save_button_4">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_4">Delete</button></td>
+                <td class="save_info" id="save_info_4"></td>
+                <td><button class="b export_button" id="export_button_4">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_1">
+                <td>5</td>
+                <td><button class="b save_button" id="save_button_5">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_5">Delete</button></td>
+                <td class="save_info" id="save_info_5"></td>
+                <td><button class="b export_button" id="export_button_5">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_1">
+                <td>6</td>
+                <td><button class="b save_button" id="save_button_6">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_6">Delete</button></td>
+                <td class="save_info" id="save_info_6"></td>
+                <td><button class="b export_button" id="export_button_6">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_1">
+                <td>7</td>
+                <td><button class="b save_button" id="save_button_7">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_7">Delete</button></td>
+                <td class="save_info" id="save_info_7"></td>
+                <td><button class="b export_button" id="export_button_7">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_1">
+                <td>8</td>
+                <td><button class="b save_button" id="save_button_8">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_8">Delete</button></td>
+                <td class="save_info" id="save_info_8"></td>
+                <td><button class="b export_button" id="export_button_8">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_1">
+                <td>9</td>
+                <td><button class="b save_button" id="save_button_9">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_9">Delete</button></td>
+                <td class="save_info" id="save_info_9"></td>
+                <td><button class="b export_button" id="export_button_9">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_1">
+                <td>10</td>
+                <td><button class="b save_button" id="save_button_10">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_10">Delete</button></td>
+                <td class="save_info" id="save_info_10"></td>
+                <td><button class="b export_button" id="export_button_10">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_1">
+                <td>11</td>
+                <td><button class="b save_button" id="save_button_11">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_11">Delete</button></td>
+                <td class="save_info" id="save_info_11"></td>
+                <td><button class="b export_button" id="export_button_11">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_1">
+                <td>12</td>
+                <td><button class="b save_button" id="save_button_12">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_12">Delete</button></td>
+                <td class="save_info" id="save_info_12"></td>
+                <td><button class="b export_button" id="export_button_12">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_1">
+                <td>13</td>
+                <td><button class="b save_button" id="save_button_13">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_13">Delete</button></td>
+                <td class="save_info" id="save_info_13"></td>
+                <td><button class="b export_button" id="export_button_13">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_1">
+                <td>14</td>
+                <td><button class="b save_button" id="save_button_14">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_14">Delete</button></td>
+                <td class="save_info" id="save_info_14"></td>
+                <td><button class="b export_button" id="export_button_14">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_1">
+                <td>15</td>
+                <td><button class="b save_button" id="save_button_15">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_15">Delete</button></td>
+                <td class="save_info" id="save_info_15"></td>
+                <td><button class="b export_button" id="export_button_15">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_1">
+                <td>16</td>
+                <td><button class="b save_button" id="save_button_16">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_16">Delete</button></td>
+                <td class="save_info" id="save_info_16"></td>
+                <td><button class="b export_button" id="export_button_16">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_1">
+                <td>17</td>
+                <td><button class="b save_button" id="save_button_17">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_17">Delete</button></td>
+                <td class="save_info" id="save_info_17"></td>
+                <td><button class="b export_button" id="export_button_17">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_1">
+                <td>18</td>
+                <td><button class="b save_button" id="save_button_18">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_18">Delete</button></td>
+                <td class="save_info" id="save_info_18"></td>
+                <td><button class="b export_button" id="export_button_18">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_1">
+                <td>19</td>
+                <td><button class="b save_button" id="save_button_19">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_19">Delete</button></td>
+                <td class="save_info" id="save_info_19"></td>
+                <td><button class="b export_button" id="export_button_19">Export</button></td>
+            </tr>
 
-        <table id="saves_table_tab1" class="save_tab_page active">
-        <tr>
-          <td>0</td>
-          <td><button class="b save_button" id="save_button_0">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_0">Delete</button></td>
-          <td class="save_info" id="save_info_0"></td>
-          <td><button class="b export_button" id="export_button_0">Export</button></td>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td><button class="b save_button" id="save_button_1">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_1">Delete</button></td>
-          <td class="save_info" id="save_info_1"></td>
-          <td><button class="b export_button" id="export_button_1">Export</button></td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td><button class="b save_button" id="save_button_2">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_2">Delete</button></td>
-          <td class="save_info" id="save_info_2"></td>
-          <td><button class="b export_button" id="export_button_2">Export</button></td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td><button class="b save_button" id="save_button_3">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_3">Delete</button></td>
-          <td class="save_info" id="save_info_3"></td>
-          <td><button class="b export_button" id="export_button_3">Export</button></td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td><button class="b save_button" id="save_button_4">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_4">Delete</button></td>
-          <td class="save_info" id="save_info_4"></td>
-          <td><button class="b export_button" id="export_button_4">Export</button></td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td><button class="b save_button" id="save_button_5">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_5">Delete</button></td>
-          <td class="save_info" id="save_info_5"></td>
-          <td><button class="b export_button" id="export_button_5">Export</button></td>
-        </tr>
-        <tr>
-          <td>6</td>
-          <td><button class="b save_button" id="save_button_6">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_6">Delete</button></td>
-          <td class="save_info" id="save_info_6"></td>
-          <td><button class="b export_button" id="export_button_6">Export</button></td>
-        </tr>
-        <tr>
-          <td>7</td>
-          <td><button class="b save_button" id="save_button_7">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_7">Delete</button></td>
-          <td class="save_info" id="save_info_7"></td>
-          <td><button class="b export_button" id="export_button_7">Export</button></td>
-        </tr>
-        <tr>
-          <td>8</td>
-          <td><button class="b save_button" id="save_button_8">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_8">Delete</button></td>
-          <td class="save_info" id="save_info_8"></td>
-          <td><button class="b export_button" id="export_button_8">Export</button></td>
-        </tr>
-        <tr>
-          <td>9</td>
-          <td><button class="b save_button" id="save_button_9">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_9">Delete</button></td>
-          <td class="save_info" id="save_info_9"></td>
-          <td><button class="b export_button" id="export_button_9">Export</button></td>
-        </tr>
-        <tr>
-          <td>10</td>
-          <td><button class="b save_button" id="save_button_10">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_10">Delete</button></td>
-          <td class="save_info" id="save_info_10"></td>
-          <td><button class="b export_button" id="export_button_10">Export</button></td>
-        </tr>
-        <tr>
-          <td>11</td>
-          <td><button class="b save_button" id="save_button_11">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_11">Delete</button></td>
-          <td class="save_info" id="save_info_11"></td>
-          <td><button class="b export_button" id="export_button_11">Export</button></td>
-        </tr>
-        <tr>
-          <td>12</td>
-          <td><button class="b save_button" id="save_button_12">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_12">Delete</button></td>
-          <td class="save_info" id="save_info_12"></td>
-          <td><button class="b export_button" id="export_button_12">Export</button></td>
-        </tr>
-        <tr>
-          <td>13</td>
-          <td><button class="b save_button" id="save_button_13">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_13">Delete</button></td>
-          <td class="save_info" id="save_info_13"></td>
-          <td><button class="b export_button" id="export_button_13">Export</button></td>
-        </tr>
-        <tr>
-          <td>14</td>
-          <td><button class="b save_button" id="save_button_14">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_14">Delete</button></td>
-          <td class="save_info" id="save_info_14"></td>
-          <td><button class="b export_button" id="export_button_14">Export</button></td>
-        </tr>
-        <tr>
-          <td>15</td>
-          <td><button class="b save_button" id="save_button_15">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_15">Delete</button></td>
-          <td class="save_info" id="save_info_15"></td>
-          <td><button class="b export_button" id="export_button_15">Export</button></td>
-        </tr>
-        <tr>
-          <td>16</td>
-          <td><button class="b save_button" id="save_button_16">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_16">Delete</button></td>
-          <td class="save_info" id="save_info_16"></td>
-          <td><button class="b export_button" id="export_button_16">Export</button></td>
-        </tr>
-        <tr>
-          <td>17</td>
-          <td><button class="b save_button" id="save_button_17">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_17">Delete</button></td>
-          <td class="save_info" id="save_info_17"></td>
-          <td><button class="b export_button" id="export_button_17">Export</button></td>
-        </tr>
-        <tr>
-          <td>18</td>
-          <td><button class="b save_button" id="save_button_18">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_18">Delete</button></td>
-          <td class="save_info" id="save_info_18"></td>
-          <td><button class="b export_button" id="export_button_18">Export</button></td>
-        </tr>
-        <tr>
-          <td>19</td>
-          <td><button class="b save_button" id="save_button_19">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_19">Delete</button></td>
-          <td class="save_info" id="save_info_19"></td>
-          <td><button class="b export_button" id="export_button_19">Export</button></td>
-        </tr>
-        </table>
+            <!-- Slots 20-39: hidden by default (tab 2) -->
+            <tr class="save_slot_row save_tab_page_2" style="display:none;">
+                <td>20</td>
+                <td><button class="b save_button" id="save_button_20">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_20">Delete</button></td>
+                <td class="save_info" id="save_info_20"></td>
+                <td><button class="b export_button" id="export_button_20">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_2" style="display:none;">
+                <td>21</td>
+                <td><button class="b save_button" id="save_button_21">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_21">Delete</button></td>
+                <td class="save_info" id="save_info_21"></td>
+                <td><button class="b export_button" id="export_button_21">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_2" style="display:none;">
+                <td>22</td>
+                <td><button class="b save_button" id="save_button_22">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_22">Delete</button></td>
+                <td class="save_info" id="save_info_22"></td>
+                <td><button class="b export_button" id="export_button_22">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_2" style="display:none;">
+                <td>23</td>
+                <td><button class="b save_button" id="save_button_23">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_23">Delete</button></td>
+                <td class="save_info" id="save_info_23"></td>
+                <td><button class="b export_button" id="export_button_23">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_2" style="display:none;">
+                <td>24</td>
+                <td><button class="b save_button" id="save_button_24">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_24">Delete</button></td>
+                <td class="save_info" id="save_info_24"></td>
+                <td><button class="b export_button" id="export_button_24">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_2" style="display:none;">
+                <td>25</td>
+                <td><button class="b save_button" id="save_button_25">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_25">Delete</button></td>
+                <td class="save_info" id="save_info_25"></td>
+                <td><button class="b export_button" id="export_button_25">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_2" style="display:none;">
+                <td>26</td>
+                <td><button class="b save_button" id="save_button_26">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_26">Delete</button></td>
+                <td class="save_info" id="save_info_26"></td>
+                <td><button class="b export_button" id="export_button_26">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_2" style="display:none;">
+                <td>27</td>
+                <td><button class="b save_button" id="save_button_27">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_27">Delete</button></td>
+                <td class="save_info" id="save_info_27"></td>
+                <td><button class="b export_button" id="export_button_27">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_2" style="display:none;">
+                <td>28</td>
+                <td><button class="b save_button" id="save_button_28">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_28">Delete</button></td>
+                <td class="save_info" id="save_info_28"></td>
+                <td><button class="b export_button" id="export_button_28">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_2" style="display:none;">
+                <td>29</td>
+                <td><button class="b save_button" id="save_button_29">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_29">Delete</button></td>
+                <td class="save_info" id="save_info_29"></td>
+                <td><button class="b export_button" id="export_button_29">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_2" style="display:none;">
+                <td>30</td>
+                <td><button class="b save_button" id="save_button_30">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_30">Delete</button></td>
+                <td class="save_info" id="save_info_30"></td>
+                <td><button class="b export_button" id="export_button_30">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_2" style="display:none;">
+                <td>31</td>
+                <td><button class="b save_button" id="save_button_31">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_31">Delete</button></td>
+                <td class="save_info" id="save_info_31"></td>
+                <td><button class="b export_button" id="export_button_31">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_2" style="display:none;">
+                <td>32</td>
+                <td><button class="b save_button" id="save_button_32">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_32">Delete</button></td>
+                <td class="save_info" id="save_info_32"></td>
+                <td><button class="b export_button" id="export_button_32">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_2" style="display:none;">
+                <td>33</td>
+                <td><button class="b save_button" id="save_button_33">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_33">Delete</button></td>
+                <td class="save_info" id="save_info_33"></td>
+                <td><button class="b export_button" id="export_button_33">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_2" style="display:none;">
+                <td>34</td>
+                <td><button class="b save_button" id="save_button_34">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_34">Delete</button></td>
+                <td class="save_info" id="save_info_34"></td>
+                <td><button class="b export_button" id="export_button_34">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_2" style="display:none;">
+                <td>35</td>
+                <td><button class="b save_button" id="save_button_35">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_35">Delete</button></td>
+                <td class="save_info" id="save_info_35"></td>
+                <td><button class="b export_button" id="export_button_35">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_2" style="display:none;">
+                <td>36</td>
+                <td><button class="b save_button" id="save_button_36">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_36">Delete</button></td>
+                <td class="save_info" id="save_info_36"></td>
+                <td><button class="b export_button" id="export_button_36">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_2" style="display:none;">
+                <td>37</td>
+                <td><button class="b save_button" id="save_button_37">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_37">Delete</button></td>
+                <td class="save_info" id="save_info_37"></td>
+                <td><button class="b export_button" id="export_button_37">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_2" style="display:none;">
+                <td>38</td>
+                <td><button class="b save_button" id="save_button_38">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_38">Delete</button></td>
+                <td class="save_info" id="save_info_38"></td>
+                <td><button class="b export_button" id="export_button_38">Export</button></td>
+            </tr>
+            <tr class="save_slot_row save_tab_page_2" style="display:none;">
+                <td>39</td>
+                <td><button class="b save_button" id="save_button_39">Save</button></td>
+                <td><button class="b delete_button" id="delete_button_39">Delete</button></td>
+                <td class="save_info" id="save_info_39"></td>
+                <td><button class="b export_button" id="export_button_39">Export</button></td>
+            </tr>
 
-        <table id="saves_table_tab2" class="save_tab_page">
-        <tr>
-          <td>20</td>
-          <td><button class="b save_button" id="save_button_20">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_20">Delete</button></td>
-          <td class="save_info" id="save_info_20"></td>
-          <td><button class="b export_button" id="export_button_20">Export</button></td>
-        </tr>
-        <tr>
-          <td>21</td>
-          <td><button class="b save_button" id="save_button_21">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_21">Delete</button></td>
-          <td class="save_info" id="save_info_21"></td>
-          <td><button class="b export_button" id="export_button_21">Export</button></td>
-        </tr>
-        <tr>
-          <td>22</td>
-          <td><button class="b save_button" id="save_button_22">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_22">Delete</button></td>
-          <td class="save_info" id="save_info_22"></td>
-          <td><button class="b export_button" id="export_button_22">Export</button></td>
-        </tr>
-        <tr>
-          <td>23</td>
-          <td><button class="b save_button" id="save_button_23">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_23">Delete</button></td>
-          <td class="save_info" id="save_info_23"></td>
-          <td><button class="b export_button" id="export_button_23">Export</button></td>
-        </tr>
-        <tr>
-          <td>24</td>
-          <td><button class="b save_button" id="save_button_24">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_24">Delete</button></td>
-          <td class="save_info" id="save_info_24"></td>
-          <td><button class="b export_button" id="export_button_24">Export</button></td>
-        </tr>
-        <tr>
-          <td>25</td>
-          <td><button class="b save_button" id="save_button_25">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_25">Delete</button></td>
-          <td class="save_info" id="save_info_25"></td>
-          <td><button class="b export_button" id="export_button_25">Export</button></td>
-        </tr>
-        <tr>
-          <td>26</td>
-          <td><button class="b save_button" id="save_button_26">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_26">Delete</button></td>
-          <td class="save_info" id="save_info_26"></td>
-          <td><button class="b export_button" id="export_button_26">Export</button></td>
-        </tr>
-        <tr>
-          <td>27</td>
-          <td><button class="b save_button" id="save_button_27">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_27">Delete</button></td>
-          <td class="save_info" id="save_info_27"></td>
-          <td><button class="b export_button" id="export_button_27">Export</button></td>
-        </tr>
-        <tr>
-          <td>28</td>
-          <td><button class="b save_button" id="save_button_28">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_28">Delete</button></td>
-          <td class="save_info" id="save_info_28"></td>
-          <td><button class="b export_button" id="export_button_28">Export</button></td>
-        </tr>
-        <tr>
-          <td>29</td>
-          <td><button class="b save_button" id="save_button_29">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_29">Delete</button></td>
-          <td class="save_info" id="save_info_29"></td>
-          <td><button class="b export_button" id="export_button_29">Export</button></td>
-        </tr>
-        <tr>
-          <td>30</td>
-          <td><button class="b save_button" id="save_button_30">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_30">Delete</button></td>
-          <td class="save_info" id="save_info_30"></td>
-          <td><button class="b export_button" id="export_button_30">Export</button></td>
-        </tr>
-        <tr>
-          <td>31</td>
-          <td><button class="b save_button" id="save_button_31">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_31">Delete</button></td>
-          <td class="save_info" id="save_info_31"></td>
-          <td><button class="b export_button" id="export_button_31">Export</button></td>
-        </tr>
-        <tr>
-          <td>32</td>
-          <td><button class="b save_button" id="save_button_32">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_32">Delete</button></td>
-          <td class="save_info" id="save_info_32"></td>
-          <td><button class="b export_button" id="export_button_32">Export</button></td>
-        </tr>
-        <tr>
-          <td>33</td>
-          <td><button class="b save_button" id="save_button_33">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_33">Delete</button></td>
-          <td class="save_info" id="save_info_33"></td>
-          <td><button class="b export_button" id="export_button_33">Export</button></td>
-        </tr>
-        <tr>
-          <td>34</td>
-          <td><button class="b save_button" id="save_button_34">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_34">Delete</button></td>
-          <td class="save_info" id="save_info_34"></td>
-          <td><button class="b export_button" id="export_button_34">Export</button></td>
-        </tr>
-        <tr>
-          <td>35</td>
-          <td><button class="b save_button" id="save_button_35">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_35">Delete</button></td>
-          <td class="save_info" id="save_info_35"></td>
-          <td><button class="b export_button" id="export_button_35">Export</button></td>
-        </tr>
-        <tr>
-          <td>36</td>
-          <td><button class="b save_button" id="save_button_36">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_36">Delete</button></td>
-          <td class="save_info" id="save_info_36"></td>
-          <td><button class="b export_button" id="export_button_36">Export</button></td>
-        </tr>
-        <tr>
-          <td>37</td>
-          <td><button class="b save_button" id="save_button_37">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_37">Delete</button></td>
-          <td class="save_info" id="save_info_37"></td>
-          <td><button class="b export_button" id="export_button_37">Export</button></td>
-        </tr>
-        <tr>
-          <td>38</td>
-          <td><button class="b save_button" id="save_button_38">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_38">Delete</button></td>
-          <td class="save_info" id="save_info_38"></td>
-          <td><button class="b export_button" id="export_button_38">Export</button></td>
-        </tr>
-        <tr>
-          <td>39</td>
-          <td><button class="b save_button" id="save_button_39">Save</button></td>
-          <td><button class="b delete_button" id="delete_button_39">Delete</button></td>
-          <td class="save_info" id="save_info_39"></td>
-          <td><button class="b export_button" id="export_button_39">Export</button></td>
-        </tr>
-        </table>
-
-        <table id="saves_table_footer">
-          <tr>
-            <td colspan="5">
-              <label for="import_save">Import save file:</label>
-              <input type="file" id="import_save" onchange="dendryUI.importSave('import_save');">
-            </td>
-          </tr>
-          <tr>
-            <td><button onclick="dendryUI.hideSaveSlots();">Close</button></td>
-          </tr>
-        </table>
-
-      </div>
+            <tr>
+                <td colspan="5">
+                    <label for="import_save">Import save file:</label> <input type="file" id="import_save" onchange="dendryUI.importSave('import_save');"></input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button onclick="dendryUI.hideSaveSlots();">Close</button>
+                </td>
+            </tr>
+      </table>
     </div>
     <!-- END save/load overlay -->
 
     <script>
       // ── Save overlay tab switcher (40 slots, 2 tabs of 20) ──
-      // Self-contained: does not modify game.js or core.js.
+      // Single #saves_table preserved (matches old-file structure that
+      // core.js/game.js expect); tabs just toggle row visibility via
+      // inline style, no separate <table> elements are introduced.
       window.switchSaveTab = function(tabNum) {
-        var t1 = document.getElementById('saves_table_tab1');
-        var t2 = document.getElementById('saves_table_tab2');
+        var page1Rows = document.getElementsByClassName('save_tab_page_1');
+        var page2Rows = document.getElementsByClassName('save_tab_page_2');
         var b1 = document.getElementById('save_tab_1_btn');
         var b2 = document.getElementById('save_tab_2_btn');
-        if (tabNum === 1) {
-          t1.classList.add('active');
-          t2.classList.remove('active');
-          b1.classList.add('active');
-          b2.classList.remove('active');
-        } else {
-          t2.classList.add('active');
-          t1.classList.remove('active');
-          b2.classList.add('active');
-          b1.classList.remove('active');
+        var showPage1 = (tabNum === 1);
+        for (var i = 0; i < page1Rows.length; i++) {
+          page1Rows[i].style.display = showPage1 ? 'table-row' : 'none';
         }
+        for (var j = 0; j < page2Rows.length; j++) {
+          page2Rows[j].style.display = showPage1 ? 'none' : 'table-row';
+        }
+        b1.className = 'save_tab_button' + (showPage1 ? ' active' : '');
+        b2.className = 'save_tab_button' + (showPage1 ? '' : ' active');
       };
     </script>
+
 
     <!-- Sprites -->
     <div id="contentSpriteContainer">
@@ -680,3 +690,4 @@
 
   </body>
 </html>
+
