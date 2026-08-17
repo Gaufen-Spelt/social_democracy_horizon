@@ -169,6 +169,7 @@ if (Q.hugenberg_momentum * 1.2 > Q.delegate_power_c + Q.delegate_power_tradition
     Q.congress_path = "capitulation";
     Q.leading_challenger = "";
     Q.dnvp_party_leader = "Alfred Hugenberg";
+    Q.dnvp_ideology = "National Conservatism (Hugenbergite)";
 }
 
 // 9. Triumvirate check — AFTER congress_path is set
