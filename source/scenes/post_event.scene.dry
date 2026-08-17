@@ -306,9 +306,6 @@ Q.coalition_tension = Math.round(Q.coalition_tension * 10) / 10;
 
 
 // === VARIABLE RANGE CAPPING ===
-// Clamps each listed Q.<var> to its defined [min, max] range after any
-// mechanic that might push it out of bounds (e.g. relation dynamics,
-// event effects, etc). Missing/undefined vars are skipped safely.
 
 Q.capped_var_ranges = {
     // 0 to 10
@@ -5829,6 +5826,7 @@ if (Q.lambach_exile == 1) {
     Q.hugenberg_momentum += 1.9;
 }
 
+if (Q.year >= 1928 && Q.month >= 3) {
 if (Q.cnbl_crisis == 1) {
     Q.hugenberg_momentum += 3.2;
 } else {
@@ -5836,8 +5834,10 @@ if (Q.cnbl_crisis == 1) {
     Q.delegate_power_agrarians += 0.5;
     Q.delegate_power_yocon += 0.8;
     Q.delegate_power_christsoc += 0.5;
+  }
 }
 
+if (Q.year >= 1928 && Q.month >= 3) {
 if (Q.jungdo_formed == 0) {
     Q.delegate_power_yocon += 0.5;    
     Q.delegate_power_christsoc += 1.4;
@@ -5845,8 +5845,10 @@ if (Q.jungdo_formed == 0) {
 } else {
     Q.delegate_power_nat_cons += 2.0;
     Q.hugenberg_momentum += 2.0;
+  }
 }
 
+if (Q.year >= 1928 && Q.month >= 1) {
 if (Q.geest_wildfire == 0) {
     Q.delegate_power_yocon += 1.3;
     Q.delegate_power_christsoc += 1.2;
@@ -5856,11 +5858,12 @@ if (Q.geest_wildfire == 0) {
     Q.hugenberg_momentum -= 1.2;
 } else {
     Q.hugenberg_momentum += 5.0;
-    Q.delegate_power_yocon += 1.5;    // split the old +10 to c
+    Q.delegate_power_yocon += 1.5;    
     Q.delegate_power_christsoc += 1.1;
     Q.delegate_power_moderates += 0.3;
     Q.delegate_power_nat_cons -= 0.6;
     Q.delegate_power_agrarians -= 0.4;
+  }
 }
 
 // 3b. Media Dominance Check
@@ -5915,7 +5918,8 @@ if (Q.welfare < 0) Q.delegate_power_christsoc += 2.5 * Math.abs(Q.welfare);
 if (Q.unions_independent) Q.delegate_power_christsoc *= 1.06;
 
 if (Q.lambach_stage >= 2) {
-    Q.delegate_power_christsoc += 30;
+    Q.delegate_power_christsoc += 80;
+    Q.hugenberg_momentum *= 0.1;
 }
 // Tariffs 
 
