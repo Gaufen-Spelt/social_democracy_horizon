@@ -28,11 +28,9 @@ Q.hindenburg_dead = 1;
 Q.president = "Groener";
 Q.president_party = "I";
 
-// Set initial baseline
 Q.next_presidential_election_month = Q.month + 5;
 Q.next_presidential_election_year = Q.year;
 
-// Handle year overflow safely without integer division symbols
 if (Q.next_presidential_election_month > 12) {
     Q.next_presidential_election_month -= 12;
     Q.next_presidential_election_year += 1;
