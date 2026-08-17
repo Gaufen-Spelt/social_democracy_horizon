@@ -104,3 +104,21 @@ Buff:
 Breitscheid buff:
 
 - Foreign polic action no longer depends on it's own timer, basically reverted this nerf.
+
+19.08.26
+
+Rudolf Wissell:
+
+Union_unity rework:
+
+Buffs:
+
+Labor strength: 5 > 8
+
+Labor dissent decrease: 5 > 8
+
+Nerfs: 
+
+Action advisor timer cooldown: 4 -> 6
+
+Wtb_support +1 only if keynes seen or year is above or equal 1931.
