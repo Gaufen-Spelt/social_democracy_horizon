@@ -6607,6 +6607,18 @@ if (Q.lambach_stage == 1 && Q.flavor_lambach_1_dnvp != 1) {
 
 
 
+// Lambach Article trigger
+
+if (Q.year >= 1928 && Q.year <= 1929 && Q.month >= 6 && Q.dnvp_pct < (Q.old_dnvp_r - 4.33) && Q.lambach_flavor_0_trigger == 1 && Q.lambach_article_timer == 0) {
+    Q.lambach_article_timer = 4;
+    if (!Q.timers.includes('lambach_article_timer')) {
+        Q.timers.push('lambach_article_timer');
+    }
+    Q.lambach_flavor_0_trigger = 1;
+}
+
+
+
 
 
 
