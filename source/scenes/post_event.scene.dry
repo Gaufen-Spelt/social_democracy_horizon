@@ -6571,23 +6571,40 @@ if (Q.z_party_leader == "Joseph Joos") {
 ////// GAME EVENTS TRIGGER VALUES FLAVOR
 
 
-if (Q.year == 1928 && Q.month >= 6 && Q.flavor_1_dnvp != 1 && (Q.dnvp_r < Q.old_dnvp_r - 2.5) || Q.cnbl_crisis == 1) {
-    Q.flavor_1_dnvp = 1;
-    Q.dnvp_party_0_congress_timer = 8;
-    Q.timers.push('dnvp_party_0_congress_timer');
+if (Q.year == 1928 && Q.month >= 6 && Q.flavor_1_dnvp != 1) {
+    if ((Q.dnvp_r < Q.old_dnvp_r - 2.5) || Q.cnbl_crisis == 1) {
+        Q.flavor_1_dnvp = 1;
+        Q.dnvp_party_0_congress_timer = 8;
+        if (!Q.timers.includes('dnvp_party_0_congress_timer')) {
+            Q.timers.push('dnvp_party_0_congress_timer');
+        }
+    } else {
+        Q.flavor_1_dnvp = 1;
+        Q.dnvp_party_0_congress_timer = 12;
+        if (!Q.timers.includes('dnvp_party_0_congress_timer')) {
+            Q.timers.push('dnvp_party_0_congress_timer');
+        }
+    }
 }
 
-if (Q.year == 1928 && Q.month >= 6 && Q.flavor_1_dnvp != 1 && (Q.dnvp_r >= Q.old_dnvp_r - 2.5) || Q.cnbl_crisis != 1) {
-    Q.flavor_1_dnvp = 1;
-    Q.dnvp_party_0_congress_timer = 12;
-    Q.timers.push('dnvp_party_0_congress_timer');
-}
 
 if (Q.dnvp_party_leader == "Walther Lambach" && Q.flavor_2_dnvp != 1) {
     Q.dnvp_lambach_hugenberg_attack_timer = 6;
-    Q.timers.push('dnvp_lambach_hugenberg_attack_timer');
+    if (!Q.timers.includes('dnvp_lambach_hugenberg_attack_timer')) {
+        Q.timers.push('dnvp_lambach_hugenberg_attack_timer');
+    }
     Q.flavor_2_dnvp = 1;
 }
+
+
+if (Q.lambach_stage == 1 && Q.flavor_lambach_1_dnvp != 1) {
+    Q.dnvp_lambach_traditionals_attack_timer = 8;
+    if (!Q.timers.includes('dnvp_lambach_traditionals_attack_timer')) {
+        Q.timers.push('dnvp_lambach_traditionals_attack_timer');
+    }
+    Q.flavor_lambach_1_dnvp = 1;
+}
+
 
 
 
