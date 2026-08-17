@@ -1,7 +1,7 @@
 Title: DNVP Party Congress
 Subtitle: 20th October of 1928
 tags: event
-view-if: dnvp_party_0_congress_timer = 0
+view-if: dnvp_party_0_congress_timer = 0 and flavor_1_dnvp = 1
 max-visits: 1
 new-page: true
 face-image: img/dnvp.png
