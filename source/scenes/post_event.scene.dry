@@ -5656,7 +5656,9 @@ if (Q.year == 1928 && Q.month == 8 && Q.rlb_election_flavor_1 != 1) {
         Q.karl_hepp_votes += 2;
     } else if (Q.rural_other_pct > 10) {
         Q.karl_hepp_votes += 1;
-    }
+    } else {
+        Q.karl_hepp_votes -= 1
+    } 
 
     if (Q.dnvp_in_government) {
         Q.martin_schiele_votes += 2;
@@ -5715,13 +5717,26 @@ if (Q.year == 1928 && Q.month >= 9 && Q.lambach_exile == 1 && Q.weeks >= 0) {
 
 if (Q.year == 1928 && Q.month == 9 && Q.stahlhelm_furstenwalde != 1) {
     Q.stahlhelm_furstenwalde = 1;
-    if (Q.sh_bans < 1 || Q.sh_bans_p < 1 || Q.nationalism < 10 || Q.hugenberg_momentum < 450 || Q.ideology != "Left" || !Q.cnbl_crisis || !Q.geest_wildfire || (Q.spd_r || 0) + (Q.kpd_r || 0) + (Q.sapd_r || 0) + (Q.lb_r || 0) + (Q.ddp_r || 0) + (Q.srpd_r || 0) < 40 ) {
-        Q.furstenwalde_message = 2;
-        this.achieve('annahmeerklarung')
-    } else {
+    
+    let total_left = (Q.spd_r || 0) + (Q.kpd_r || 0) + (Q.sapd_r || 0) + 
+                     (Q.lb_r || 0) + (Q.ddp_r || 0) + (Q.srpd_r || 0);
+
+    if (Q.sh_bans >= 1 && 
+        Q.sh_bans_p >= 1 && 
+        Q.nationalism >= 10 && 
+        Q.hugenberg_momentum >= 450 && 
+        Q.ideology == "Left" && 
+        Q.cnbl_crisis == 1 && 
+        Q.geest_wildfire == 1 && 
+        total_left >= 40) {
+        
         Q.furstenwalde_message = 1;
-  } 
+    } else {
+        Q.furstenwalde_message = 2;
+        this.achieve('annahmeerklarung');
+    } 
 }
+
 
 if (Q.year == 1929 && Q.month == 10 && Q.ddp_mannheim_congress != 1) {
     Q.ddp_mannheim_congress = 1;
