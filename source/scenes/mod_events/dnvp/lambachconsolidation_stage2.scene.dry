@@ -2,7 +2,7 @@ title: Walther Lambach takes over the DNVP!
 tags: event
 new-page: true
 subtitle: Demise of aristocracy is set. Christian Socials of the DNVP assume full power!
-view-if: lambach_stage = 2 and month >= 6 and year >= 1929
+view-if: lambach_flavor_3_trigger >= 1 and lambach_consolidation_stage_2_timer <= 0
 on-arrival: lambach_stage = 3; dnvp_ideology = "Social Corporatism"; dnvp_relation -= 5; workers += 1; new_middle += 1; pro_republic += 5 {!
 if (Q.dvp_reform_outcome == "stresemann_success") Q.party_relations.DNVP.DVP += 20;
 Q.party_relations.DNVP.VNR += 20;
@@ -16,6 +16,7 @@ Q.pro_republic += 10;
 Q.dnvp_status = "republican";
 !}
 achievement: lambachreich
+max-visits: 1
 
 = Radical transformation of the nationalist party!
 
