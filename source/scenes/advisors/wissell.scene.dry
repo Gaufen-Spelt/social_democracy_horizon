@@ -23,11 +23,11 @@ go-to: labor_rights
 
 
 @union_unity
-title: Union-party coordination
-subtitle: Reduce dissent among the unions.
+title: Strengthen the unions' influence within the party.
+subtitle: Strengthen the labor faction. [? if (keynes_seen or year >= 1931) and year <= 1935: This also boosts the support for the WTB plan. ?]
 choose-if: advisor_action_timer <= 0
 unavailable-subtitle: [? if advisor_action_timer > 0 : [+ advisor_action_timer +] months before next advisor action. ?]
-on-arrival: advisor_action_timer = 4; labor_dissent -= 5; labor_strength += 5; workers_spd += 2; wtb_support += 1
+on-arrival: advisor_action_timer = 6; labor_dissent -= 8; labor_strength += 8; workers_spd += 2; wtb_support += 1 if year >= 1931 or keynes_seen
 
 We have reduced tensions with the Labor faction, and increased its strength in the party.
 
