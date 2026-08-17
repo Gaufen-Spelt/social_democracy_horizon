@@ -6659,6 +6659,17 @@ if (Q.lambach_stage == 2 && Q.lambach_flavor_3_trigger != 1 && Q.lambach_consoli
 }
 
 
+// Hugenberg VONC Trigger
+if (Q.year >= 1929 && Q.year <= 1930 && Q.dnvp_party_leader == "Alfred Hugenberg" && 
+    ((Q.young_opposition <= 15 && Q.hugenberg_final_votes < 45) || (Q.young_opposition < 10 && Q.hugenberg_final_votes < 50)) && 
+    Q.hugenberg_momentum <= 300 && Q.hugenberg_weakness_trigger != 1) {
+    
+    Q.hugenberg_weakness_timer = 4;
+    if (!Q.timers.includes('hugenberg_weakness')) {
+        Q.timers.push('hugenberg_weakness');
+    }
+    Q.hugenberg_weakness_trigger = 1;
+}
 
 
 
