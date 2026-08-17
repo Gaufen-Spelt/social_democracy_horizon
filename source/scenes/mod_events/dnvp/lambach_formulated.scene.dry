@@ -11,7 +11,6 @@ on-arrival: {!
     Q.rural_dnvp -= 10;
     Q.hugenberg_momentum -= 50;
     Q.hugenberg_momentum *= 0.90;
-    Q.lambach_flavor_trigger_1 = 1;
     Q.delegate_power_yocon += 10;
     Q.delegate_power_christsoc += 50;
     Q.delegate_power_christsoc *= 1.05;
@@ -23,6 +22,7 @@ on-arrival: {!
     Q.socialism -= 5;
     Q.pro_republic += 5;
 !}
+max-visits: 1
 
 = Walther Lambach's new work.
 
