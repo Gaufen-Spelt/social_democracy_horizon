@@ -49,32 +49,4 @@ In Berlin, the news reached the Wilhelmstraße via a panicked telegram from the 
 
 Perhaps, it is over?...
 
-- @end_3: What's next?
-
-@end_3
-on-arrival: {!
-SuperEvent.trigger({
-  imageSrc: 'img/newera.jpg',
-  title: 'Chapter 2 — New End',
-  duration: 65000,
-  size: 'xl',
-  layout: 'video-only',
-  videoRatio: '16:9',
-  audioSrc: 'enddust.mp3',
-  audioVolume: 0.6,
-  audioLoop: true,
-  effect: 'glitch',
-  vignette: true,
-  ambientColor: 'rgba(255, 80, 0, 0.4)',
-  quote: "I very much knew what I were signing for when working with them...",
-  quoteCite: 'Gustav Noske',
-  showSkip: true,
-  muted: false,
-  autoClose: true,
-  startAt: 0,
-  onOpen:  () => console.log('opened'),
-  onClose: () => console.log('closed'),
-  onSkip:  () => console.log('skipped'),
-});
-!}
-go-to: root
+- @root: What's next?
