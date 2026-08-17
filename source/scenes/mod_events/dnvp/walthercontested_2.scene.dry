@@ -2,7 +2,7 @@ title: Second vote of no confidence launched on Walther Lambach!
 subtitle: Last attack of the remnants...
 tags: event
 new-page: true
-view-if: year = 1929 and lambach_stage = 1 and month >= 5
+view-if: flavor_lambach_1_dnvp >= 1 and dnvp_lambach_traditionals_attack_timer == 0
 max-visits: 1
 face-image: img/portraits/LambachWalther.jpg
 
