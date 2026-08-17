@@ -6630,6 +6630,17 @@ if (Q.lambach_flavor_2_trigger != 1 && (
 }
 
 
+// Lambach Consolidation Stage 2 Trigger
+if (Q.lambach_stage == 2 && Q.lambach_flavor_3_trigger != 1 && Q.lambach_consolidation_stage_2_timer == 0) {
+    Q.lambach_consolidation_stage_2_timer = 4;
+    if (!Q.timers.includes('lambach_consolidation_stage_2')) {
+        Q.timers.push('lambach_consolidation_stage_2'); // Base name without _timer
+    }
+    Q.lambach_flavor_3_trigger = 1;
+}
+
+
+
 
 
 
