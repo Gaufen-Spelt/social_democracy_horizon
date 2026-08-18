@@ -6677,7 +6677,7 @@ if (Q.lambach_stage == 1 && Q.flavor_lambach_1_dnvp != 1) {
 }
 
 // 4. Lambach Article Trigger
-if (((Q.year == 1928 && Q.month >= 6) || (Q.year == 1929 && Q.month <= 1)) && (Q.dnvp_pct < (Q.old_dnvp_r - 2.33) || Q.dnvp_pct < (Q.dnvp_r - 5)) && Q.lambach_flavor_0_trigger != 1 && Q.lambach_article_timer == 0) {
+if (((Q.year == 1928 && Q.month >= 6) || (Q.year == 1929 && Q.month <= 1)) && (Q.dnvp_pct < (Q.old_dnvp_r - 2.33) || Q.dnvp_pct < (Q.dnvp_r - 5) || Q.dnvp_pct < 16.3) && Q.lambach_flavor_0_trigger != 1 && Q.lambach_article_timer == 0) {
     Q.lambach_article_timer = 2;
     if (!Q.timers.includes('lambach_article')) {
         Q.timers.push('lambach_article');
