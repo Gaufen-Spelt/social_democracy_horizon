@@ -1,7 +1,7 @@
 title: Second Ruhr Strike...
 subtitle: Indomitable spirit of the Red Ruhr is still sparking...
 tags: event
-view-if: general_strike_progress >= 1111111 and (year == 1929 and month == 2 and weeks == 2)
+view-if: general_strike_progress >= 6 and (year == 1929 and month == 2 and weeks == 2) and developer_mode
 priority: -2
 new-page: true
 on-arrival: rfb_strength += 120; rfb_militancy += 0.1; rb_strength -= 120; rb_militancy -= 0.02; sh_militancy -= 0.01; sa_militancy -= 0.02; reichswehr_strength -= 5; rfb_strength += 200 if unions_independent; rfb_militancy += 0.05 if unions_independent
