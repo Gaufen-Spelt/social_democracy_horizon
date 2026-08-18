@@ -31,7 +31,7 @@ A constitutional reform requires either a two-thirds supermajority in the Reichs
 - @cancel_advisor_action
 
 @alt_vote_threshold
-view-if: electoral_threshold >= 0
+view-if: electoral_threshold > 0
 subtitle: Alterate the vote threshold.
 
 We have come to the thought that alteration of the vote threshold is for the best. But we need to establish what value it should take. [+ electoral_threshold +]% is the current threshold for a party to hold seats in the Reichstag.
