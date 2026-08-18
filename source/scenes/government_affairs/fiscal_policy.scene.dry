@@ -201,7 +201,7 @@ Current civil servant salaries: [+ cv_salaries: taxation +]
 subtitle: Middle class and aligned with them parties will be grateful. (-1.5 budget)
 choose-if: cv_salaries < 5 and budget >= 1.5
 unavailable-subtitle: [? if cv_salaries >= 5: Civil servants are overpaid already. ?] [? if budget < 1.5: Not enough budget. ?]
-on-arrival: cv_salaries += 1; budget -= 1.5; new_middle_spd += 5; new_middle_spd += 5 if peoples_party >= 1; new_middle_spd -= 2 if dnvp_ideology = "Social Corporatism"; economic_growth += 0.2; ddp_relation += 2 * cv_salaries; dvp_relation += 1 * cv_salaries; peoples_party_support += 1; socialism += 3 if dnvp_ideology != "Social Corporatism" and socialism < 50; socialism += 3 if peoples_party >= 1; new_middle_dnvp += 5 if cv_salaries < 0; {!
+on-arrival: cv_salaries += 1; budget -= 1.5; new_middle_spd += 5; new_middle_spd += 5 if peoples_party >= 1; new_middle_spd -= 2 if dnvp_ideology = "Social Corporatism"; economic_growth += 0.2; ddp_relation += 2 * cv_salaries; dvp_relation += 1 * cv_salaries; peoples_party_support += 1; socialism += 3 if dnvp_ideology != "Social Corporatism" and socialism < 50; socialism += 3 if peoples_party >= 1; new_middle_dnvp += 5 if cv_salaries < 0
 
 We have increased the salaries of civil servants, relieving financial stress on white-collar workers. This move was welcomed by the liberal parties and the middle class, reassuring them of our commitment to public stability.
 
