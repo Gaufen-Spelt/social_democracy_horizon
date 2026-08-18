@@ -209,7 +209,7 @@ We have increased the salaries of civil servants, relieving financial stress on 
 subtitle: Middle class will be enraged. (+1.5 budget)
 choose-if: cv_salaries > -5
 unavailable-subtitle: [? if cv_salaries > -5: Civil servants are starved already. ?]
-on-arrival: cv_salaries -= 1; budget += 1.5; new_middle_spd -= 5; new_middle_spd -= 3 if peoples_party >= 1; new_middle_spd -= 3 if dnvp_ideology = "Social Corporatism"; economic_growth -= 0.1; ddp_relation += 2 * cv_salaries; dvp_relation += 1 * cv_salaries; peoples_party_support -= 1; socialism -= 2; socialism -= 2 if peoples_party >= 1; socialism -= 2 if dnvp_ideology = "Social Corporatism"; nationalism += 5 if dnvp_ideology = "Social Corporatism"; {!
+on-arrival: cv_salaries -= 1; budget += 1.5; new_middle_spd -= 5; new_middle_spd -= 3 if peoples_party >= 1; new_middle_spd -= 3 if dnvp_ideology = "Social Corporatism"; economic_growth -= 0.1; ddp_relation += 2 * cv_salaries; dvp_relation += 1 * cv_salaries; peoples_party_support -= 1; socialism -= 2; socialism -= 2 if peoples_party >= 1; socialism -= 2 if dnvp_ideology = "Social Corporatism"; nationalism += 5 if dnvp_ideology = "Social Corporatism" {!
 Q.new_middle_dnvp += 5 * Math.abs(Q.cv_salaries);
 !}
 
