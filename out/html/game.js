@@ -13,6 +13,317 @@
     ui = dendryUI;
     game = ui.game;
 
+    // ================================================================
+    // INDEXEDDB SAVE SYSTEM
+    // Replaces all localStorage-based save/settings persistence with
+    // IndexedDB, without changing any method signatures or call sites.
+    // Existing localStorage saves are migrated in automatically once.
+    // ================================================================
+    (function() {
+      var DB_NAME = ui.save_prefix + '_idb';
+      var DB_VERSION = 1;
+      var STORE = 'kv';
+      var dbPromise = null;
+      var cache = {};       // in-memory mirror, hydrated before UI is usable
+
+      function openDb() {
+        if (dbPromise) return dbPromise;
+        dbPromise = new Promise(function(resolve, reject) {
+          if (typeof indexedDB === 'undefined') {
+            reject(new Error('IndexedDB unavailable'));
+            return;
+          }
+          var req = indexedDB.open(DB_NAME, DB_VERSION);
+          req.onupgradeneeded = function(e) {
+            var db = e.target.result;
+            if (!db.objectStoreNames.contains(STORE)) {
+              db.createObjectStore(STORE);
+            }
+          };
+          req.onsuccess = function(e) { resolve(e.target.result); };
+          req.onerror = function(e) { reject(e.target.error); };
+        });
+        return dbPromise;
+      }
+
+      function idbGetAll() {
+        return openDb().then(function(db) {
+          return new Promise(function(resolve, reject) {
+            var tx = db.transaction(STORE, 'readonly');
+            var store = tx.objectStore(STORE);
+            var result = {};
+            var cursorReq = store.openCursor();
+            cursorReq.onsuccess = function(e) {
+              var cursor = e.target.result;
+              if (cursor) {
+                result[cursor.key] = cursor.value;
+                cursor.continue();
+              } else {
+                resolve(result);
+              }
+            };
+            cursorReq.onerror = function(e) { reject(e.target.error); };
+          });
+        });
+      }
+
+      function idbSet(key, value) {
+        return openDb().then(function(db) {
+          return new Promise(function(resolve, reject) {
+            var tx = db.transaction(STORE, 'readwrite');
+            tx.objectStore(STORE).put(value, key);
+            tx.oncomplete = function() { resolve(); };
+            tx.onerror = function(e) { reject(e.target.error); };
+          });
+        });
+      }
+
+      function idbDelete(key) {
+        return openDb().then(function(db) {
+          return new Promise(function(resolve, reject) {
+            var tx = db.transaction(STORE, 'readwrite');
+            tx.objectStore(STORE)['delete'](key);
+            tx.oncomplete = function() { resolve(); };
+            tx.onerror = function(e) { reject(e.target.error); };
+          });
+        });
+      }
+
+      function cacheSet(key, value) {
+        cache[key] = value;
+        idbSet(key, value)['catch'](function(err) {
+          console.error('IDB save write failed for', key, err);
+        });
+      }
+
+      // One-time migration: pull any existing localStorage save/settings
+      // keys for this game into IndexedDB, then hydrate the in-memory cache.
+      function migrateAndHydrate() {
+        return idbGetAll().then(function(existing) {
+          var migrationDoneKey = '__migrated_from_localstorage';
+          var writes = [];
+
+          if (!existing[migrationDoneKey] && typeof localStorage !== 'undefined') {
+            var prefix = ui.save_prefix;
+            var settingsPrefix = ui.game.title;
+            for (var lsKey in localStorage) {
+              if (!Object.prototype.hasOwnProperty.call(localStorage, lsKey)) {
+                continue;
+              }
+              if (lsKey.indexOf(prefix) === 0 || lsKey.indexOf(settingsPrefix) === 0) {
+                var val = localStorage[lsKey];
+                if (val === undefined || val === null || val === '') continue;
+                existing[lsKey] = val;
+                writes.push(idbSet(lsKey, val));
+              }
+            }
+            writes.push(idbSet(migrationDoneKey, true));
+            existing[migrationDoneKey] = true;
+          }
+
+          cache = existing;
+          return Promise.all(writes);
+        })['catch'](function(err) {
+          console.error('IDB save migration/hydration failed, falling back to empty cache', err);
+          cache = {};
+        });
+      }
+
+      // ---- Settings ----
+
+      ui.saveSettings = function() {
+        var t = this.game.title;
+        cacheSet(t + '_animate', this.animate);
+        cacheSet(t + '_disable_bg', this.disable_bg);
+        cacheSet(t + '_animate_bg', this.animate_bg);
+        cacheSet(t + '_show_portraits', this.show_portraits);
+        cacheSet(t + '_disable_audio', this.disable_audio);
+        cacheSet(t + '_dark_mode', this.dark_mode);
+      };
+
+      ui.loadSettings = function(defaultSettings) {
+        var defaults = {animate: false, disable_bg: false, animate_bg: true,
+                        show_portraits: true, disable_audio: false, dark_mode: false};
+        for (var prop in defaults) {
+          if (defaults.hasOwnProperty(prop)) {
+            var key = this.game.title + '_' + prop;
+            if (cache.hasOwnProperty(key) && cache[key] !== '' && cache[key] !== undefined) {
+              var v = cache[key];
+              this[prop] = (typeof v === 'boolean') ? v : (v != 'false');
+            } else if (defaultSettings && defaultSettings.hasOwnProperty(prop)) {
+              this[prop] = defaultSettings[prop];
+            } else {
+              this[prop] = defaults[prop];
+            }
+          }
+        }
+      };
+
+      // ---- Saves ----
+
+      ui.autosave = function() {
+        var prefix = this.save_prefix;
+        var oldData = cache[prefix + '_a0'];
+        if (oldData) {
+          cache[prefix + '_a1'] = oldData;
+          cache[prefix + '_timestamp_a1'] = cache[prefix + '_timestamp_a0'];
+          idbSet(prefix + '_a1', oldData)['catch'](function(e) { console.error(e); });
+          idbSet(prefix + '_timestamp_a1', cache[prefix + '_timestamp_a0'])['catch'](function(e) { console.error(e); });
+        }
+        var slot = 'a0';
+        var saveString = JSON.stringify(this.dendryEngine.getExportableState());
+        cacheSet(prefix + '_' + slot, saveString);
+        var scene = this.dendryEngine.state.sceneId;
+        var date = new Date(Date.now());
+        date = scene + '\n(' + date.toLocaleString(undefined, this.DateOptions) + ')';
+        cacheSet(prefix + '_timestamp_' + slot, date);
+        this.populateSaveSlots(slot + 1, 2);
+      };
+
+      ui.quickSave = function() {
+        var saveString = JSON.stringify(this.dendryEngine.getExportableState());
+        cacheSet(this.save_prefix + '_q', saveString);
+        window.alert('Saved.');
+      };
+
+      ui.saveSlot = function(slot) {
+        var saveString = JSON.stringify(this.dendryEngine.getExportableState());
+        cacheSet(this.save_prefix + '_' + slot, saveString);
+        var scene = this.dendryEngine.state.sceneId;
+        var date = new Date(Date.now());
+        date = scene + '\n(' + date.toLocaleString(undefined, this.DateOptions) + ')';
+        cacheSet(this.save_prefix + '_timestamp_' + slot, date);
+        this.populateSaveSlots(slot + 1, 2);
+      };
+
+      ui.quickLoad = function() {
+        var data = cache[this.save_prefix + '_q'];
+        if (data) {
+          this.dendryEngine.setState(JSON.parse(data));
+          window.alert('Loaded.');
+        } else {
+          window.alert('No save available.');
+        }
+      };
+
+      ui.loadSlot = function(slot) {
+        var data = cache[this.save_prefix + '_' + slot];
+        if (data) {
+          this.dendryEngine.setState(JSON.parse(data));
+          if (window && window.onLoad) {
+            window.onLoad();
+          }
+          this.hideSaveSlots();
+          window.alert('Loaded.');
+        } else {
+          window.alert('No save available.');
+        }
+      };
+
+      ui.deleteSlot = function(slot) {
+        var key = this.save_prefix + '_' + slot;
+        if (cache[key]) {
+          delete cache[key];
+          delete cache[this.save_prefix + '_timestamp_' + slot];
+          idbDelete(key)['catch'](function(e) { console.error(e); });
+          idbDelete(this.save_prefix + '_timestamp_' + slot)['catch'](function(e) { console.error(e); });
+          this.populateSaveSlots(slot + 1, 2);
+        } else {
+          window.alert('No save available.');
+        }
+      };
+
+      ui.exportSlot = function(slot) {
+        var data = cache[this.save_prefix + '_' + slot];
+        if (data) {
+          var a = document.createElement("a");
+          var file = new Blob([data], {type: 'text/plain'});
+          a.href = URL.createObjectURL(file);
+          a.download = 'save.txt';
+          a.click();
+        } else {
+          window.alert('No save available.');
+        }
+      };
+
+      ui.importSave = function(doc_id) {
+        var that = this;
+        function onFileLoad(e) {
+          var data = e.target.result;
+          that.dendryEngine.setState(JSON.parse(data));
+          that.hideSaveSlots();
+          window.alert('Loaded.');
+        }
+        var uploader = document.getElementById(doc_id);
+        var reader = new FileReader();
+        var file = uploader.files[0];
+        reader.onload = onFileLoad;
+        reader.readAsText(file);
+      };
+
+      ui.populateSaveSlots = function(max_slots, max_auto_slots) {
+        var that = this;
+        function createLoadListener(i) {
+          return function(evt) { that.loadSlot(i); };
+        }
+        function createSaveListener(i) {
+          return function(evt) { that.saveSlot(i); };
+        }
+        function createDeleteListener(i) {
+          return function(evt) { that.deleteSlot(i); };
+        }
+        function createExportListener(i) {
+          return function(evt) { that.exportSlot(i); };
+        }
+        function populateSlot(id) {
+          var save_element = document.getElementById('save_info_' + id);
+          var save_button = document.getElementById('save_button_' + id);
+          var delete_button = document.getElementById('delete_button_' + id);
+          if (!save_element || !save_button) return;
+          var key = that.save_prefix + '_' + id;
+          if (cache[key]) {
+            var timestamp = cache[that.save_prefix + '_timestamp_' + id];
+            save_element.textContent = timestamp;
+            save_button.textContent = "Load";
+            save_button.onclick = createLoadListener(id);
+            if (delete_button) delete_button.onclick = createDeleteListener(id);
+          } else {
+            save_button.textContent = "Save";
+            save_element.textContent = "Empty";
+            save_button.onclick = createSaveListener(id);
+          }
+          try {
+            var export_button = document.getElementById('export_button_' + id);
+            if (cache[key] && export_button) {
+              export_button.onclick = createExportListener(id);
+            }
+          } catch (error) {}
+        }
+        for (var i = 0; i < max_slots; i++) {
+          populateSlot(i);
+        }
+        for (i = 0; i < max_auto_slots; i++) {
+          populateSlot('a' + i);
+        }
+      };
+
+      // Kick off hydration immediately. Anything that touches saves/settings
+      // before this resolves runs against an empty cache and self-corrects
+      // once hydration finishes (see below).
+      window._saveSystemReady = migrateAndHydrate().then(function() {
+        ui.loadSettings();
+        ui.populateSaveSlots(ui.max_slots || 2, 2);
+        if (ui.disable_bg) {
+          document.body.style.backgroundImage = 'none';
+        } else if (typeof ui.setBg === 'function' && ui.dendryEngine && ui.dendryEngine.state) {
+          ui.setBg(ui.dendryEngine.state.bg);
+        }
+        if (ui.dark_mode) {
+          document.body.classList.add('dark-mode');
+        }
+      });
+    })();
+
     // ORIGINAL BG SET FOR CUSTOM MFS
 
     var _originalSetBg = window.dendryUI.setBg.bind(window.dendryUI);
