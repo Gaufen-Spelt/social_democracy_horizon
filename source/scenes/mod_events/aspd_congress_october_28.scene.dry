@@ -8,11 +8,11 @@ priority: -1
 
 = ASPD Congress
 
-On the [+ month +] of 12th, the party's head, [+ aspd_party_leader +], has pushed for the change in the party program to shift away from the **National Socialist** direction of the party in order to please disillusioned right wing social democrats and their bourgeouisie partners in the Saxony. This would only be possible with direct confrontation with their "National Bolshevik" wing, which was led by the Ernst Niekisch and August Winnig (their presence and their rhetoric gained their party 'social fascist' name, due to their attempt to reconcile nationalist patriotism and socialism). If the [+ aspd_party_leader +] is to be successful, ASPD will drift away from the nationalist camp and in theory turn into the party for **social republicans** and **right wing socialists**.
+On the 12th of [+ month +], the party leader of the ASPD, [+ aspd_party_leader +], has pushed for a change in the party program to shift away from the **National Bolshevik** direction of the party in order to please disillusioned right wing social democrats and bourgeouisie parties in Saxony. This would only be possible with direct confrontation with their "National Bolshevik" wing, which is led by Ernst Niekisch and August Winnig (their presence and their rhetoric contributed to the party gaining the 'social fascist' label, due to their attempts to reconcile nationalist patriotism and socialism). If [+ aspd_party_leader +] is successful in his changes, the ASPD will drift away from the nationalist camp and in theory turn make more appealing to **social republicans** and **right wing socialists**.
 
-In the retaliation, Ernst Niekisch has pushed for the removal of [+ aspd_party_leader +], which, despite the chance of the current leader being truly ousted, would have **National Bolsheviks** be prepared for the second attempt of assault and prepare to mobilize all their resources. 
+In retaliation, Ernst Niekisch has pushed for the removal of [+ aspd_party_leader +], which if succesful, would have the **National Bolsheviks** take over the party. 
 
-- @resultant_aspd: Ernst Niekisch faces the gravely danger...
+- @resultant_aspd: Ernst Niekisch faces grave danger to his political aspirations...
 
 @resultant_aspd
 on-arrival: {!
@@ -59,15 +59,15 @@ go-to: aspd_natbol_died if aspd_nb_survival_points < 6; aspd_natbol_survival if 
 
 @aspd_natbol_died
 
-In the unsurprising turn of the events, [+ aspd_party_leader +] has successfully pushed through this change, forcing Ernst Niekisch and his "national socialists" to leave the party forever.
+In an unsurprising turn of events, [+ aspd_party_leader +] has successfully pushed through his proposed changes, which has caused Ernst Niekisch and the "National Bolsheviks" to split from the party.
 
 @aspd_natbol_survival
 achievement: herbstingwer
 
-With the stalemate ensuing, Ernst Niekisch has survived this attempt of removal and has managed to push back on this change of program.
+With a stalemate ensuing, [+ aspd_party_leader +] has survived this attempt of being removed but at the same time the party program of the ASPD remains unchanged.
 
 @aspd_nb_assumes
 achievement: herbstingwer
 on-arrival: aspd_ideology = "National Bolshevism"; aspd_party_leader = "Ernst Niekisch"
 
-In the unexpected turn of events, Ernst Niekisch assumes the power.
+In an unexpected turn of events, Ernst Niekisch has sucesfully managed to get current leader removed and in a follow up party chair election, is elected to become the new party leader.
