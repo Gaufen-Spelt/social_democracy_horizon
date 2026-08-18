@@ -1,4 +1,4 @@
-title: Italy loses patience and breaches Tyrole - Danubian Pact
+title: The Italian government has lost its patience and breaches Tyrole - Danubian Pact
 new-page: true
 subtitle: Italy is now involved in Austrian civil war!
 view-if: year = 1933 and (month > 2 and month < 12) and tyrole_signed = 1 and italy_relation = -3 and austrian_parliament_seen = 1
@@ -9,4 +9,4 @@ tags: event
 
 = Italy intervenes in the Conflict
 
-Italy arrives to the conclusion that our treaty is no longer worthy the case and begins funding the Heimwehr/Fatherland Front against the SDAPO to secure their victory in Austria!
+The Fascist government in Italy arrived to the conclusion that our treaty with them is no longer worth being honored and has begun openly backing the Heimwehr/Fatherland Front against the SDAPO to secure their victory in Austria!
