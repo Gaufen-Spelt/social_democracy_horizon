@@ -8,17 +8,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Gaufen-Spelt/social_democracy_horizon.git"
+    "url": "git+https://github.com/KesselFarben-Noncorp/social_democracy_horizon.git"
   },
   "keywords": [],
   "author": "Autumn Chen",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Gaufen-Spelt/social_democracy_horizon/issues"
+    "url": "https://github.com/KesselFarben-Noncorp/social_democracy_horizon/issues"
   },
-  "homepage": "https://github.com/Gaufen-Spelt/social_democracy_horizon",
+  "homepage": "https://github.com/KesselFarben-Noncorp/social_democracy_horizon",
   "dependencies": {
-    "dendrynexus": "github:Gaufen-Spelt/dendrynexus-experimentados",
+    "dendrynexus": "github:KesselFarben-Noncorp/dendrynexus-experimentados",
     "parliament-svg": "^3.0.0"
   }
 }
