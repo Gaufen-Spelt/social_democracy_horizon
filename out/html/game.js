@@ -21,7 +21,7 @@
     // ================================================================
     (function() {
       var DB_NAME = ui.save_prefix + '_idb';
-      var DB_VERSION = 1;
+      var DB_VERSION = 2; // bumped: v1 could be created without the 'kv' store on some browsers/races
       var STORE = 'kv';
       var dbPromise = null;
       var cache = {};       // in-memory mirror, hydrated before UI is usable
@@ -40,7 +40,32 @@
               db.createObjectStore(STORE);
             }
           };
-          req.onsuccess = function(e) { resolve(e.target.result); };
+          req.onsuccess = function(e) {
+            var db = e.target.result;
+            // Self-heal: if we somehow got a handle to a DB missing the
+            // store (e.g. it was created by a stale/older script version),
+            // close it, blow it away, and recreate from scratch rather
+            // than silently failing every read/write forever.
+            if (!db.objectStoreNames.contains(STORE)) {
+              console.warn('IDB save store missing on open, recreating database');
+              db.close();
+              var delReq = indexedDB.deleteDatabase(DB_NAME);
+              delReq.onsuccess = delReq.onerror = function() {
+                dbPromise = null; // allow a fresh openDb() call to run
+                var retryReq = indexedDB.open(DB_NAME, DB_VERSION);
+                retryReq.onupgradeneeded = function(e2) {
+                  var db2 = e2.target.result;
+                  if (!db2.objectStoreNames.contains(STORE)) {
+                    db2.createObjectStore(STORE);
+                  }
+                };
+                retryReq.onsuccess = function(e2) { resolve(e2.target.result); };
+                retryReq.onerror = function(e2) { reject(e2.target.error); };
+              };
+              return;
+            }
+            resolve(db);
+          };
           req.onerror = function(e) { reject(e.target.error); };
         });
         return dbPromise;
