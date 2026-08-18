@@ -26,6 +26,7 @@ Lower-income tax rates: [+ lower_tax_rates : taxation +]
 - @raise_progressive: Make the tax system more progressive by raising taxes on the rich and cutting them for the poor.
 - @regressive
 - @tariffs
+- @miscellanious: Miscellanious
 - @root: Do not change the tax system.
 - @easy_discard
 - @cancel_advisor_action
@@ -183,6 +184,36 @@ choose-if: lower_tax_rates <= 5 and upper_tax_rates >= -5
 on-arrival: workers_spd -= 6; new_middle_spd += 5*(1-dissent); old_middle_spd += 5*(1-dissent); dvp_relation += 5; z_relation += 4; coalition_dissent -= 1 if in_grand_coalition and coalition_dissent > 0; kpd_coalition_dissent += 1; labor_dissent += 5; left_dissent += 5; upper_tax_rates -= 1; lower_tax_rates += 1; workers_spd -= 5 if lower_tax_rates >= 2; capital_strike_progress -= 1 if upper_tax_rates < 0; demand_impulse -= 0.1; supply_impulse += 0.08; general_strike_progress += lower_tax_rates
 
 Our regressive taxation policy benefits the rich while hurting the poor and working-class. Middle-income rates are left unchanged, positioned between the two extremes of this reform. Our bourgeois coalition partners approve of this orthodox economic course.
+
+@miscellanious
+
+Miscellanious finances, which includes government workers / civil servant salaries.
+
+Current civil servant salaries: [+ cv_salaries: taxation +]
+
+- @raise_salaries: Raise the salaries of civil servants.
+- @slash_salaries: Slash the salaries of civil servants.
+- @fiscal_menu: Change domestic taxes instead.
+- @root: Do not change anything.
+- @easy_discard
+
+@raise_salaries
+subtitle: Middle class and aligned with them parties will be grateful. (-1.5 budget)
+choose-if: cv_salaries < 5 and budget >= 1.5
+unavailable-subtitle: [? if cv_salaries >= 5: Civil servants are overpaid already. ?] [? if budget < 1.5: Not enough budget. ?]
+on-arrival: cv_salaries += 1; budget -= 1.5; new_middle_spd += 5; new_middle_spd += 5 if peoples_party >= 1; new_middle_spd -= 2 if dnvp_ideology = "Social Corporatism"; economic_growth += 0.2; ddp_relation += 2 * cv_salaries; dvp_relation += 1 * cv_salaries; peoples_party_support += 1; socialism += 3 if dnvp_ideology != "Social Corporatism" and socialism < 50; socialism += 3 if peoples_party >= 1; new_middle_dnvp += 5 if cv_salaries < 0; {!
+
+We have increased the salaries of civil servants, relieving financial stress on white-collar workers. This move was welcomed by the liberal parties and the middle class, reassuring them of our commitment to public stability.
+
+@slash_salaries
+subtitle: Middle class will be enraged. (+1.5 budget)
+choose-if: cv_salaries > -5
+unavailable-subtitle: [? if cv_salaries > -5: Civil servants are starved already. ?]
+on-arrival: cv_salaries -= 1; budget += 1.5; new_middle_spd -= 5; new_middle_spd -= 3 if peoples_party >= 1; new_middle_spd -= 3 if dnvp_ideology = "Social Corporatism"; economic_growth -= 0.1; ddp_relation += 2 * cv_salaries; dvp_relation += 1 * cv_salaries; peoples_party_support -= 1; socialism -= 2; socialism -= 2 if peoples_party >= 1; socialism -= 2 if dnvp_ideology = "Social Corporatism"; nationalism += 5 if dnvp_ideology = "Social Corporatism"; {!
+Q.new_middle_dnvp += 5 * Math.abs(Q.cv_salaries);
+!}
+
+We have slashed salaries of the civil servants in attempt to balance the budget. This was obviously perceived negatively by the liberal parties and the new middle class, accusing us of sacrificing them to [? if unemployment > 8 or inflation > 7 : prioritize some mystical "well-being of the nation in times of crisis", ?][? if budget < 0 : adhere inconsistently to our own principles of austerity, ?][? if peoples_party < 1 : protect our primary base at the expense of white-collar workers, ?][? if peoples_party >= 1 : act hypocritically, betraying our pledge to be a true "people's party", ?][? if not (unemployment > 8 or inflation > 7) and budget >= 0 : satisfy arbitrary fiscal demands, ?], which had led to the criticism from white collar unions. [? if dnvp_ideology = "Social Corporatism": Using this situation, DHV has integrated them quickly to their base, turning them towards the nationalism. ?]
 
 @tariffs
 title: Change tariffs instead.
