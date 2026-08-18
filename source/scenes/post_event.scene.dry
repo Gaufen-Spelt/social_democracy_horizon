@@ -5901,7 +5901,9 @@ if (Q.lambach_stage >= 2) {
 }
 // Tariffs 
 
+if (Q.tariffs < 0) {
 Q.delegate_power_agrarians -= 2.5 * Q.tariffs;
+}
 
 // 4. Class Influence
 Q.hugenberg_momentum += ((Q.old_middle_dnvp_pct || 0) * 0.27);
@@ -5927,36 +5929,23 @@ Q.delegate_power_moderates += Q.pro_republic * 0.034 + Q.nationalism * 0.056;
 Q.delegate_power_yocon += Q.pro_republic * 0.25;
 Q.delegate_power_christsoc += Q.socialism * 0.28 + Q.pro_republic * 0.12;
 
-// 6. Failure Penalty
-if (Q.dnvp_votes_display < 13) {
-    Q.delegate_power_moderates -= 2.0;
-    Q.delegate_power_nat_cons -= 2.0;
-    Q.hugenberg_momentum += 3.0;
-} else if (Q.dnvp_votes_display < 14) {
-    Q.delegate_power_moderates -= 0.6;
-    Q.delegate_power_nat_cons -= 1.0;
-    Q.hugenberg_momentum += 1.0;
-    Q.delegate_power_yocon += 0.6;
-    Q.delegate_power_christsoc += 0.4;
-} else if (Q.dnvp_votes_display < 16) {
-    Q.delegate_power_moderates -= 0.2;
-    Q.delegate_power_nat_cons -= 0.4;
-    Q.hugenberg_momentum += 0.6;
-    Q.delegate_power_yocon += 1.0;
-    Q.delegate_power_christsoc += 0.6;
-} else if (Q.dnvp_votes_display < 18) {
-    Q.delegate_power_moderates += 1.2;
-    Q.delegate_power_nat_cons -= 0.5;
-    Q.hugenberg_momentum -= 1.0;
-    Q.delegate_power_yocon += 2.0;
-    Q.delegate_power_christsoc += 1.7;
-} else {
-    Q.delegate_power_moderates += 1.5;
-    Q.delegate_power_nat_cons -= 0.6;
-    Q.hugenberg_momentum -= 1.2;
-    Q.delegate_power_yocon += 2.3;
-    Q.delegate_power_christsoc += 2.0;
-}
+// 6. Failure Penalty (Gradual)
+let votes = Math.max(10, Math.min(20, Q.dnvp_pct || 12));
+
+// Moderates: scales from -2.0 (at 12%) to +1.5 (at 18%+)
+Q.delegate_power_moderates += Math.max(-2.0, Math.min(1.5, -2.0 + (votes - 12) * 0.58));
+
+// National Conservatives: scales from -2.0 (at 12%) to -0.6 (at 18%+)
+Q.delegate_power_nat_cons += Math.max(-2.0, Math.min(-0.4, -2.0 + (votes - 12) * 0.23));
+
+// Hugenberg Momentum: decreases from +3.0 (at 12%) to -1.2 (at 18%+)
+Q.hugenberg_momentum += Math.max(-1.2, Math.min(3.0, 3.0 - (votes - 12) * 0.70));
+
+// Young Conservatives: scales from 0.0 (at 12%) to +2.3 (at 18%+)
+Q.delegate_power_yocon += Math.max(0.0, Math.min(2.3, (votes - 12) * 0.38));
+
+// Christian Socials: scales from 0.0 (at 12%) to +2.0 (at 18%+)
+Q.delegate_power_christsoc += Math.max(0.0, Math.min(2.0, (votes - 12) * 0.33));
 
 // 6b. Traditionalist umbrella aggregation
 Q.delegate_power_traditionalists =
