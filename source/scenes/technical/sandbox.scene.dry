@@ -260,6 +260,211 @@ Insert any code.
 - @getvar: Get variable
 - @checkcond: Check condition
 - @null: Null variables?
+- @sanity_check: Sanity_check
+
+@sanity_check
+title: Save Sanity Check
+go-to: technical
+on-arrival: {!
+
+var sc_errors = [];
+var sc_warnings = [];
+var sc_ok = [];
+
+function scErr(msg)  { sc_errors.push(msg); }
+function scWarn(msg) { sc_warnings.push(msg); }
+function scOk(msg)   { sc_ok.push(msg); }
+
+// ── 1. STRUCTURAL EXISTENCE ──────────────────────────────
+if (!Array.isArray(Q.parties)) {
+    scErr('Q.parties is missing or not an array (got: ' + typeof Q.parties + ')');
+} else if (Q.parties.length === 0) {
+    scErr('Q.parties is an empty array');
+} else {
+    scOk('Q.parties present, ' + Q.parties.length + ' entries');
+}
+
+if (!Q.party_relations || typeof Q.party_relations !== 'object') {
+    scErr('Q.party_relations is missing or not an object');
+} else {
+    scOk('Q.party_relations present');
+}
+
+if (!Q.coalition_blocks || typeof Q.coalition_blocks !== 'object') {
+    scWarn('Q.coalition_blocks is missing or not an object');
+} else {
+    scOk('Q.coalition_blocks present');
+}
+
+// ── 2. NUMERIC INTEGRITY (NaN / null / undefined sweep) ──
+var q_keys = Object.keys(Q);
+var nan_keys = [];
+var null_keys = [];
+for (var qi = 0; qi < q_keys.length; qi++) {
+    var kv = Q[q_keys[qi]];
+    if (typeof kv === 'number' && isNaN(kv)) nan_keys.push(q_keys[qi]);
+    if (kv === null) null_keys.push(q_keys[qi]);
+}
+if (nan_keys.length) {
+    scErr(nan_keys.length + ' NaN quality(ies): ' + nan_keys.slice(0, 15).join(', ') +
+          (nan_keys.length > 15 ? ' …(+' + (nan_keys.length - 15) + ' more)' : ''));
+} else {
+    scOk('No NaN qualities found');
+}
+if (null_keys.length) {
+    scWarn(null_keys.length + ' null quality(ies): ' + null_keys.slice(0, 15).join(', ') +
+           (null_keys.length > 15 ? ' …(+' + (null_keys.length - 15) + ' more)' : ''));
+}
+
+// ── 3. RANGE CHECKS ───────────────────────────────────────
+// Party Reichstag support (_r) should be 0–100.
+if (Array.isArray(Q.parties)) {
+    var sc_parties = Q.parties.filter(function(p){ return p !== 'other'; });
+    var r_sum = 0;
+    var r_bad = [];
+    for (var ri = 0; ri < sc_parties.length; ri++) {
+        var rk = sc_parties[ri] + '_r';
+        var rv = Q[rk];
+        if (rv === undefined) { scWarn('Missing ' + rk); continue; }
+        if (typeof rv !== 'number' || isNaN(rv)) continue; // already caught above
+        if (rv < 0 || rv > 100) r_bad.push(rk + '=' + rv.toFixed(1));
+        r_sum += rv;
+    }
+    if (r_bad.length) {
+        scErr('Out-of-range _r values (expect 0–100): ' + r_bad.join(', '));
+    } else {
+        scOk('All _r values within 0–100');
+    }
+    // Total support should sum to roughly 100 (allow drift for rounding / "other").
+    if (r_sum > 0) {
+        if (r_sum < 90 || r_sum > 110) {
+            scWarn('Total party _r support sums to ' + r_sum.toFixed(1) + '% (expected ~100%, other party excluded)');
+        } else {
+            scOk('Total party _r support sums to ' + r_sum.toFixed(1) + '%');
+        }
+    }
+}
+
+// party_relations values should be 0–100.
+if (Q.party_relations && typeof Q.party_relations === 'object') {
+    var pr_bad = [];
+    var pr_keys2 = Object.keys(Q.party_relations);
+    for (var pk2 = 0; pk2 < pr_keys2.length; pk2++) {
+        var p1x = pr_keys2[pk2];
+        if (!Q.party_relations[p1x] || typeof Q.party_relations[p1x] !== 'object') {
+            scWarn('party_relations.' + p1x + ' is not an object');
+            continue;
+        }
+        var p2_keys2 = Object.keys(Q.party_relations[p1x]);
+        for (var pl2 = 0; pl2 < p2_keys2.length; pl2++) {
+            var p2x = p2_keys2[pl2];
+            var pv = Q.party_relations[p1x][p2x];
+            if (typeof pv === 'number' && !isNaN(pv) && (pv < 0 || pv > 100)) {
+                pr_bad.push(p1x + '->' + p2x + '=' + pv);
+            }
+        }
+    }
+    if (pr_bad.length) {
+        scErr('Out-of-range party_relations (expect 0–100): ' + pr_bad.slice(0, 10).join(', ') +
+              (pr_bad.length > 10 ? ' …(+' + (pr_bad.length - 10) + ' more)' : ''));
+    } else {
+        scOk('All party_relations values within 0–100');
+    }
+}
+
+// Class proportions should sum to roughly 100.
+var class_vars = ['workers', 'old_middle', 'new_middle', 'rural', 'unemployedc'];
+var class_sum = 0;
+var class_missing = [];
+for (var ci2 = 0; ci2 < class_vars.length; ci2++) {
+    var cv = Q[class_vars[ci2]];
+    if (cv === undefined || cv === null) { class_missing.push(class_vars[ci2]); continue; }
+    if (typeof cv === 'number' && !isNaN(cv)) class_sum += cv;
+}
+if (class_missing.length) {
+    scWarn('Missing class proportion vars: ' + class_missing.join(', '));
+} else if (class_sum < 90 || class_sum > 110) {
+    scWarn('Class proportions sum to ' + class_sum.toFixed(1) + '% (expected ~100%)');
+} else {
+    scOk('Class proportions sum to ' + class_sum.toFixed(1) + '%');
+}
+
+// ── 4. CROSS-CONSISTENCY: every party has an _r AND appears in party_relations ──
+if (Array.isArray(Q.parties) && Q.party_relations) {
+    var cross_missing_r = [];
+    var cross_missing_pr = [];
+    var sc_parties2 = Q.parties.filter(function(p){ return p !== 'other'; });
+    for (var xi = 0; xi < sc_parties2.length; xi++) {
+        var pname = sc_parties2[xi];
+        if (Q[pname + '_r'] === undefined) cross_missing_r.push(pname);
+        // party_relations is typically keyed by uppercase party code; check loosely
+        var found_pr = false;
+        for (var prk in Q.party_relations) {
+            if (prk.toLowerCase() === pname.toLowerCase()) { found_pr = true; break; }
+        }
+        if (!found_pr) cross_missing_pr.push(pname);
+    }
+    if (cross_missing_r.length) {
+        scErr('Parties in Q.parties with no matching _r var: ' + cross_missing_r.join(', '));
+    }
+    if (cross_missing_pr.length) {
+        scWarn('Parties in Q.parties with no row in party_relations: ' + cross_missing_pr.join(', '));
+    }
+    if (!cross_missing_r.length && !cross_missing_pr.length) {
+        scOk('Every party has a matching _r var and party_relations row');
+    }
+}
+
+// ── 5. SCENE POINTER SANITY (only meaningful right after a load) ──
+var engine = window.dendryUI && window.dendryUI.dendryEngine;
+if (engine && engine.game && engine.state) {
+    if (!engine.game.scenes[engine.state.sceneId]) {
+        scErr('state.sceneId ("' + engine.state.sceneId + '") does not exist in game.scenes');
+    } else {
+        scOk('Current sceneId resolves to a real scene');
+    }
+}
+
+// ── BUILD REPORT ──────────────────────────────────────────
+Q.sc_error_count   = sc_errors.length;
+Q.sc_warning_count = sc_warnings.length;
+Q.sc_ok_count      = sc_ok.length;
+
+Q.sc_errors_str   = sc_errors.length   ? sc_errors.join('\n')   : '(none)';
+Q.sc_warnings_str = sc_warnings.length ? sc_warnings.join('\n') : '(none)';
+Q.sc_ok_str       = sc_ok.join('\n');
+
+Q.sc_verdict = sc_errors.length ? 'FAIL' : (sc_warnings.length ? 'PASS WITH WARNINGS' : 'PASS');
+
+console.log('=== SANITY CHECK: ' + Q.sc_verdict + ' ===');
+console.log('Errors:', sc_errors);
+console.log('Warnings:', sc_warnings);
+
+!}
+
+== Save Sanity Check
+
+**Verdict: [+ sc_verdict +]**
+
+Errors: [+ sc_error_count +] · Warnings: [+ sc_warning_count +] · Passed checks: [+ sc_ok_count +]
+
+**═══ ERRORS ═══**
+
+[+ sc_errors_str +]
+
+**═══ WARNINGS ═══**
+
+[+ sc_warnings_str +]
+
+**═══ PASSED CHECKS ═══**
+
+[+ sc_ok_str +]
+
+- @sanity_check: Run again.
+- @technical: Back
+
+
+
 
 @null
 on-arrival: {!
