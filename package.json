@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/KesselFarben-Noncorp/social_democracy_horizon",
   "dependencies": {
-    "dendrynexus": "github:KesselFarben-Noncorp/dendrynexus-experimentados",
+    "dendrynexus": "github:Gaufen-Spelt/dendrynexus-experimentados",
     "parliament-svg": "^3.0.0"
   }
 }
