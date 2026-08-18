@@ -483,7 +483,7 @@ function updatePartyRelations() {
     Q.party_relations.SPD.DHP   = Q.dhp_relation;
     Q.party_relations.SPD.BB    = Q.bb_relation;
     Q.party_relations.SPD.DVFP  = Q.dvfp_relation;
-    Q.party_relations.SPD.BVP  =  Q.bvp_relation;
+    Q.party_relations.SPD.BVP   = Q.bvp_relation;
     Q.party_relations.SRPD.KPD  = Q.kpd_relation - 10;
     Q.party_relations.SRPD.DDP  = Q.ddp_relation + 10;
     Q.party_relations.SRPD.Z    = Q.z_relation + 5;
@@ -501,6 +501,54 @@ function updatePartyRelations() {
     Q.party_relations.ASPD.DDP  = Q.ddp_relation + 5;
     Q.party_relations.ASPD.Z    = Q.z_relation;
     Q.party_relations.ASPD.DVP  = Q.dvp_relation + 10;
+
+    // --- newly added: remaining tracked-relation parties, mirrored both ways ---
+    Q.party_relations.SAPD.SPD  = 50 + (Q.left_strength >= 50 ? 15 : 0);
+    Q.party_relations.SPD.SAPD  = 50 + (Q.left_strength >= 50 ? 15 : 0);
+
+    Q.party_relations.BVP.SPD   = Q.bvp_relation;
+    Q.party_relations.BVP.SRPD  = Q.bvp_relation + 5;
+
+    Q.party_relations.DVP.SPD   = Q.dvp_relation;
+    Q.party_relations.DVP.SRPD  = Q.dvp_relation - 5;
+    Q.party_relations.DVP.DDP   = 65 - (Q.dvp_right_shift ?? 0) * 10;
+    Q.party_relations.DVP.Z     = 60 + (Q.z_party_leader === "Kaas" ? 10 : 0);
+    Q.party_relations.DVP.DNVP  = 50 + (Q.dvp_right_shift ?? 0) * 15;
+    Q.party_relations.DVP.NSDAP = 20 + (Q.capital_strike_progress * 6) + (Q.dvp_right_shift ?? 0) * 12;
+
+    Q.party_relations.WP.SPD    = Q.wp_relation;
+    Q.party_relations.WP.SRPD   = Q.wp_relation - 5;
+    Q.party_relations.WP.NSDAP  = 30 + (Q.capital_strike_progress * 3);
+
+    Q.party_relations.CNBL.SPD  = Q.cnbl_relation;
+    Q.party_relations.CNBL.SRPD = Q.cnbl_relation + 5;
+    Q.party_relations.CNBL.NSDAP = 30 + (Q.capital_strike_progress * 4) + (Q.year >= 1930 ? 10 : 0);
+
+    Q.party_relations.CSVD.SPD  = Q.csvd_relation;
+    Q.party_relations.CSVD.SRPD = Q.csvd_relation + 5;
+    Q.party_relations.CSVD.DNVP = Q.dnvp_line === 3 ? 5 : 55;
+
+    Q.party_relations.KVP.DNVP  = Q.dnvp_line === 3 ? 5 : 60;
+
+    Q.party_relations.DHP.DNVP  = Q.dnvp_line === 3 ? 15 : 55;
+
+    Q.party_relations.BB.SPD    = Q.bb_relation;
+
+    Q.party_relations.DBP.SPD   = Q.dbp_relation;
+    Q.party_relations.DBP.SRPD  = Q.dbp_relation + 5;
+
+    Q.party_relations.DSBP.SPD  = Q.dsbp_relation;
+    Q.party_relations.DSBP.SRPD = Q.dsbp_relation + 3;
+
+    Q.party_relations.DNVP.Z    = (Q.dnvp_line === 3 ? 20 : 50) + (Q.z_party_leader === "Kaas" ? 15 : -10);
+    Q.party_relations.Z.DNVP    = (Q.dnvp_line === 3 ? 20 : 50) + (Q.z_party_leader === "Kaas" ? 15 : -10);
+    Q.party_relations.Z.NSDAP   = Q.nazi_urgency >= 7 ? 0 : Math.max(0, 25 - Q.nazi_urgency * 5);
+    Q.party_relations.NSDAP.Z   = Q.nazi_urgency >= 7 ? 0 : Math.max(0, 20 - Q.nazi_urgency * 4);
+    Q.party_relations.NSDAP.BVP = Math.max(0, 15 - Q.nazi_urgency * 3);
+    Q.party_relations.BVP.NSDAP = Math.max(0, 15 - Q.nazi_urgency * 3);
+    Q.party_relations.NSDAP.VRP = 25 + (Q.capital_strike_progress * 3);
+    Q.party_relations.NSDAP.DVP = 25 + (Q.capital_strike_progress * 5) + (Q.dvp_right_shift ?? 0) * 10;
+    Q.party_relations.NSDAP.WP  = 30 + (Q.capital_strike_progress * 3);
 
     // 2. Re-evaluate Booleans for Coalition Blocks based on the live numbers
     Q.coalition_blocks = {
@@ -662,7 +710,43 @@ updatePartyRelations();
 
 
 
+// ── ENSURE EVERY Q.parties MEMBER HAS A FULL RELATIONS ROW/COLUMN ──
+function ensurePartyRelationsComplete() {
+    if (!Array.isArray(Q.parties) || !Q.party_relations) return;
 
+    var allParties = Q.parties
+        .filter(function(p){ return p !== 'other'; })
+        .map(function(p){ return p.toUpperCase(); });
+
+    // SPD is the player party and always implicitly present.
+    if (allParties.indexOf('SPD') === -1) allParties.push('SPD');
+
+    for (var i = 0; i < allParties.length; i++) {
+        var p1 = allParties[i];
+
+        // Ensure the row exists.
+        if (!Q.party_relations[p1] || typeof Q.party_relations[p1] !== 'object') {
+            Q.party_relations[p1] = {};
+        }
+
+        // Ensure every OTHER party has an entry in this row, and that this
+        // party has an entry in every OTHER row (both directions).
+        for (var j = 0; j < allParties.length; j++) {
+            var p2 = allParties[j];
+            if (p1 === p2) continue;
+
+            if (Q.party_relations[p1][p2] === undefined || Q.party_relations[p1][p2] === null) {
+                Q.party_relations[p1][p2] = 0;
+            }
+            if (!Q.party_relations[p2] || typeof Q.party_relations[p2] !== 'object') {
+                Q.party_relations[p2] = {};
+            }
+            if (Q.party_relations[p2][p1] === undefined || Q.party_relations[p2][p1] === null) {
+                Q.party_relations[p2][p1] = 0;
+            }
+        }
+    }
+}
 
 
 
