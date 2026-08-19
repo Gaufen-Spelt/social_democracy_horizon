@@ -1516,4 +1516,24 @@ body.dark-mode tr.row-neutral   { background-color: rgba(120, 120, 120, 0.10); }
   .save_tab_button { font-size: 0.75em; padding: 0.5em 0.2em; }
 }
 
+.save_section_label {
+  font-family: "Playfair Display", Georgia, serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.8em;
+  color: var(--link-color);
+  padding-bottom: 0.4em;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.save_row td {
+  padding: 0.3em 0.4em;
+  vertical-align: middle;
+}
+
+.save_action_button {
+  font-size: 0.8em;
+  padding: 0.3em 0.6em;
+}
+
 
