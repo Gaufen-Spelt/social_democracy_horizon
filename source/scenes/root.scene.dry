@@ -2346,7 +2346,6 @@ Choose your challenges!
 - @last_stand: Last Stand
 - @dice: Dice Gamemode
 - @fptp: First Past the Hell
-- @street_law: Street is the Law
 - @modern: 5% threshold. Alr
 - @april: Vanilla Superesque Normal Gamemode of First of Fourth.
 - @separator: -----------------------------
@@ -2984,30 +2983,6 @@ go-to: last_stand
 
 Turned off!
 
-@street_law
-
-= Street Law
-
-Reichstag? You mean paramilitary meeting?
-
-- @sl_2: True
-- @sl_3: False
-- @challenge: Back.
-
-@sl_2
-view-if: street_law_challenge = 0
-on-arrival: street_law_challenge = 1
-go-to: street_law
-
-Turned on!
-
-@sl_3
-view-if: street_law_challenge = 1
-on-arrival: street_law_challenge = 0
-go-to: street_law
-
-Turned off!
-
 
 
 
@@ -3283,19 +3258,6 @@ if (Q.hindenburg_challenge === 1) {
     Q.chancellor_party = "Z";
 }
 
-if (Q.street_law_challenge === 1) {
-    Q.sa_strength = 2000;
-    Q.rfb_strength = 2000;
-    Q.sa_militancy = 1.0;
-    Q.rfb_militancy = 1.0;
-    Q.reichswehr_loyalty = 0.0;
-    Q.electoral_threshold = 100;
-    Q.sh_strength = 1000;
-    Q.sh_militancy = 0.5;
-    Q.rb_strength = 5000;
-    Q.rb_militancy = 0.20;
-}
-
 
 if (Q.april_challenge === 1) {
     Q.parties.push('dvfp');
@@ -3522,10 +3484,10 @@ Q.parties.push('faud');
 Q.parties.push('kapd');
 }
 if (Q.peasant_revolution === 1) {
-    Q.rural = 60; // Massively inflated rural population
+    Q.rural = 60;
     Q.old_middle = 5;
     Q.new_middle = 0;
-    Q.workers = 20; // Industry collapsed
+    Q.workers = 20;
     Q.unemployedc = 10;
     // Rural parties (CNBL, DNVP, BVP) start strong
     Q.rural_cnbl = 25;
