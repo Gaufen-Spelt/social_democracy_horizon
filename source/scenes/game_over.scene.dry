@@ -401,6 +401,13 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
 {!<div class="ach ach-locked" style="background:rgba(245,245,245,0.5)"><div class="ach-icon-box" style="background:rgba(255,255,255,0.7)"><img class="ach-icon" src="img/achievements/sanctuary.png"></div><div class="ach-body"><strong>Zuflucht</strong> - Come back, when you find the true meaning behind this...</div></div>!}
 ?]
 
+[? if achievement_fatamorgana :
+{!<div class="ach" style="background:rgba(20,20,20,0.12)"><div class="ach-icon-box" style="background:linear-gradient(135deg,rgba(255,0,80,0.12),rgba(0,200,255,0.12))"><img class="ach-icon" src="img/achievements/fatamorgana.png"></div><div class="ach-body"><strong>Fata Morgana</strong> - Far away somewhere, you might wanna ask your questions.!}[? if game_achievement_fatamorgana : {!<span class="ach-new">Neu!</span>!}?]{!</div></div>!}
+?]
+[? if not achievement_fatamorgana :
+{!<div class="ach ach-locked" style="background:rgba(245,245,245,0.5)"><div class="ach-icon-box" style="background:rgba(255,255,255,0.7)"><img class="ach-icon" src="img/achievements/fatamorgana.png"></div><div class="ach-body"><strong>Fata Morgana</strong> - Insidiousness.</div></div>!}
+?]
+
 
 {!</div>!}
 
