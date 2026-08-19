@@ -32,7 +32,7 @@ Q.landvolk_fury -= Q.agricultural_assist || 0;
 console.log("fury after subtract:", Q.landvolk_fury);
 !}
 
-​= Agrarian Revolts in Schleswig-Holstein
+​<h1> Agrarian Revolts in Schleswig-Holstein </h1>
 
 ​Years of mistreatment and the collapse of their social standing have driven the rural population to despair, with [+ agricultural_minister +] failing to deliver on promises to enact tariffs. Tested further by harsh winter conditions, over 14,000 protesters have filled the streets, marching under the black flags of historical peasant rebellions.
 
