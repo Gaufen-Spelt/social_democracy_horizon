@@ -3,7 +3,6 @@ subtitle: North has been enveloped in unrest...
 new-page: true
 tags: event
 view-if: year = 1928 and month = 1 and weeks >= 2
-max-visits: 1 
 on-arrival: {!
   const conditions = [
     Q.tariffs <= 0,
@@ -28,8 +27,9 @@ console.log("agricultural_assist:", Q.agricultural_assist, typeof Q.agricultural
 Q.landvolk_fury -= Q.agricultural_assist || 0;
 console.log("fury after subtract:", Q.landvolk_fury);
 !}
+max-visits: 1 
 
-​= Agrarian Revolts in Schleswig-Holstein
+= The Geest Radicalizes Completely
 
 ​Years of mistreatment and the collapse of their social standing have driven the rural population to despair, with [+ agricultural_minister +] failing to deliver on promises to enact tariffs. Tested further by harsh winter conditions, over 14,000 protesters have filled the streets, marching under the black flags of historical peasant rebellions.
 
