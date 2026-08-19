@@ -363,6 +363,10 @@ Q.party_relations = {
         DTSP: 0,
         DBP:  4,
         DSBP: 5,
+        RLB:  0,
+        DNF:  0,
+        FAUD: 20,
+        KAPD: 15,
     },
 
     // === SAPD ===
@@ -392,6 +396,10 @@ Q.party_relations = {
         DTSP: 0,
         DBP:  12,
         DSBP: 13,
+        RLB:  0,
+        DNF:  0,
+        FAUD: 35,
+        KAPD: 30,
     },
 
     // === SPD ===
@@ -421,6 +429,10 @@ Q.party_relations = {
         DTSP: 0,
         DBP:  Q.dbp_relation ?? 35,
         DSBP: Q.dsbp_relation ?? 38,
+        RLB:  5,
+        DNF:  0,
+        FAUD: 10,
+        KAPD: 5,
     },
 
     // === SRPD ===
@@ -436,7 +448,7 @@ Q.party_relations = {
         WP:    (Q.wp_relation ?? 25) - 5,
         CNBL:  (Q.cnbl_relation ?? 20) + 5,
         CSVD:  (Q.csvd_relation ?? 35) + 5,
-        DNVP:  Q.dnvp_line === 3 ? 0 : Q.dnvp_relation - 10,
+        DNVP:  Q.dnvp_relation - 10,
         VRP:   20,
         NSDAP: 0,
         KVP:  30,
@@ -450,6 +462,10 @@ Q.party_relations = {
         DTSP: 0,
         DBP:  (Q.dbp_relation ?? 35) + 5,
         DSBP: (Q.dsbp_relation ?? 38) + 3,
+        RLB:  5,
+        DNF:  0,
+        FAUD: 15,
+        KAPD: 10,
     },
 
     // === DDP ===
@@ -465,7 +481,7 @@ Q.party_relations = {
         WP:    50,
         CNBL:  35,
         CSVD:  60,
-        DNVP:  Q.dnvp_line === 3 ? 5 : 35,
+        DNVP:  35,
         VRP:   55,
         NSDAP: 0,
         KVP:  55,
@@ -479,6 +495,10 @@ Q.party_relations = {
         DTSP: 0,
         DBP:  60,
         DSBP: 72,
+        RLB:  10,
+        DNF:  5,
+        FAUD: 0,
+        KAPD: 0,
     },
 
     // === Z ===
@@ -494,9 +514,9 @@ Q.party_relations = {
         WP:    50,
         CNBL:  35,
         CSVD:  50,
-        DNVP:  (Q.dnvp_line === 3 ? 20 : 50) + (Q.z_party_leader === "Kaas" ? 15 : -10),
+        DNVP:  50 + (Q.z_party_leader === "Kaas" ? 15 : -10),
         VRP:   35,
-        NSDAP: Q.nazi_urgency >= 7 ? 0 : Math.max(0, 25 - Q.nazi_urgency * 5),
+        NSDAP: Math.max(0, 25 - Q.nazi_urgency * 5),
         KVP:  45,
         DHP:  30,
         BB:   45,
@@ -508,6 +528,10 @@ Q.party_relations = {
         DTSP: 0,
         DBP:  40,
         DSBP: 58,
+        RLB:  20,
+        DNF:  10,
+        FAUD: 0,
+        KAPD: 0,
     },
 
     // === CSRP ===
@@ -537,6 +561,10 @@ Q.party_relations = {
         DTSP: 0,
         DBP:  30,
         DSBP: 42,
+        RLB:  10,
+        DNF:  5,
+        FAUD: 0,
+        KAPD: 0,
     },
 
     // === BVP ===
@@ -566,6 +594,10 @@ Q.party_relations = {
         DTSP: 0,
         DBP:  55,
         DSBP: 55,
+        RLB:  25,
+        DNF:  10,
+        FAUD: 0,
+        KAPD: 0,
     },
 
     // === DVP ===
@@ -595,6 +627,10 @@ Q.party_relations = {
         DTSP: 5,
         DBP:  35,
         DSBP: 62,
+        RLB:  30,
+        DNF:  20,
+        FAUD: 0,
+        KAPD: 0,
     },
 
     // === WP ===
@@ -624,6 +660,10 @@ Q.party_relations = {
         DTSP: 5,
         DBP:  30,
         DSBP: 55,
+        RLB:  30,
+        DNF:  20,
+        FAUD: 0,
+        KAPD: 0,
     },
 
     // === CNBL ===
@@ -653,6 +693,10 @@ Q.party_relations = {
         DTSP: 20,
         DBP:  45,
         DSBP: 32,
+        RLB:  55,
+        DNF:  35,
+        FAUD: 0,
+        KAPD: 0,
     },
 
     // === CSVD ===
@@ -668,7 +712,7 @@ Q.party_relations = {
         DVP:   55,
         WP:    45,
         CNBL:  40,
-        DNVP:  Q.dnvp_line === 3 ? 5 : 55,
+        DNVP:  55,
         VRP:   45,
         NSDAP: 8,
         KVP:  65,
@@ -682,6 +726,10 @@ Q.party_relations = {
         DTSP: 0,
         DBP:  35,
         DSBP: 58,
+        RLB:  30,
+        DNF:  15,
+        FAUD: 0,
+        KAPD: 0,
     },
 
     // === DNVP ===
@@ -690,27 +738,31 @@ Q.party_relations = {
         SAPD:  3,
         SPD:   Q.dnvp_relation,
         SRPD:  Q.dnvp_relation - 5,
-        DDP:   Q.dnvp_line === 3 ? 5 : 30,
-        Z:     (Q.dnvp_line === 3 ? 20 : 50) + (Q.z_party_leader === "Kaas" ? 15 : -10),
+        DDP:   30,
+        Z:     50 + (Q.z_party_leader === "Kaas" ? 15 : -10),
         BVP:   50,
         CSRP:  20,
         DVP:   50 + (Q.dvp_right_shift ?? 0) * 15,
         WP:    45,
         CNBL:  45,
-        CSVD:  Q.dnvp_line === 3 ? 5 : 55,
+        CSVD:  55,
         VRP:   30,
-        NSDAP: Q.dnvp_line === 3 ? 70 : 40,
-        KVP:  Q.dnvp_line === 3 ? 5 : 60,
-        DHP:  Q.dnvp_line === 3 ? 15 : 55,
+        NSDAP: 40,
+        KVP:  60,
+        DHP:  55,
         BB:   35,
         DVFP: 30,
         LB:   0,
-        RDP:  Q.dnvp_line === 3 ? 0 : 10,
-        CVP:  Q.dnvp_line === 3 ? 5 : 35,
-        SLS:  Q.dnvp_line === 3 ? 0 : 20,
-        DTSP: Q.dnvp_line === 3 ? 45 : 20,
+        RDP:  10,
+        CVP:  35,
+        SLS:  20,
+        DTSP: 20,
         DBP:  40,
-        DSBP: Q.dnvp_line === 3 ? 5 : 32,
+        DSBP: 32,
+        RLB:  65,
+        DNF:  55,
+        FAUD: 0,
+        KAPD: 0,
     },
 
     // === NSDAP ===
@@ -721,13 +773,13 @@ Q.party_relations = {
         SRPD:  0,
         DDP:   0,
         CSRP:  0,
-        Z:     Q.nazi_urgency >= 7 ? 0 : Math.max(0, 20 - Q.nazi_urgency * 4),
+        Z:     Math.max(0, 20 - Q.nazi_urgency * 4),
         BVP:   Math.max(0, 15 - Q.nazi_urgency * 3),
         DVP:   25 + (Q.capital_strike_progress * 5) + (Q.dvp_right_shift ?? 0) * 10,
         WP:    30 + (Q.capital_strike_progress * 3),
         CNBL:  30,
         CSVD:  8,
-        DNVP:  Q.dnvp_line === 3 ? 70 : 40,
+        DNVP:  40,
         VRP:   25 + (Q.capital_strike_progress * 3),
         KVP:  5,
         DHP:  15,
@@ -740,6 +792,10 @@ Q.party_relations = {
         DTSP: 55,
         DBP:  0,
         DSBP: 0,
+        RLB:  35,
+        DNF:  55,
+        FAUD: 0,
+        KAPD: 0,
     },
 
     // === DVFP ===
@@ -769,6 +825,10 @@ Q.party_relations = {
         DTSP: 40,
         DBP:  8,
         DSBP: 5,
+        RLB:  25,
+        DNF:  40,
+        FAUD: 0,
+        KAPD: 0,
     },
 
     // === VRP ===
@@ -785,7 +845,7 @@ Q.party_relations = {
         WP:    15,
         CNBL:  25,
         CSVD:  45,
-        DNVP:  Q.dnvp_line === 3 ? 10 : 35,
+        DNVP:  35,
         NSDAP: 0,
         KVP:  35,
         DHP:  30,
@@ -798,6 +858,10 @@ Q.party_relations = {
         DTSP: 0,
         DBP:  30,
         DSBP: 38,
+        RLB:  20,
+        DNF:  20,
+        FAUD: 0,
+        KAPD: 0,
     },
 
     // === KVP ===
@@ -814,7 +878,7 @@ Q.party_relations = {
         WP:    40,
         CNBL:  45,
         CSVD:  65,
-        DNVP:  Q.dnvp_line === 3 ? 5 : 60,
+        DNVP:  60,
         VRP:   35,
         NSDAP: 5,
         DHP:   50,
@@ -827,6 +891,10 @@ Q.party_relations = {
         DTSP: 0,
         DBP:  35,
         DSBP: 48,
+        RLB:  30,
+        DNF:  20,
+        FAUD: 0,
+        KAPD: 0,
     },
 
     // === DHP ===
@@ -843,7 +911,7 @@ Q.party_relations = {
         WP:    35,
         CNBL:  55,
         CSVD:  45,
-        DNVP:  Q.dnvp_line === 3 ? 15 : 55,
+        DNVP:  55,
         VRP:   30,
         NSDAP: 15,
         KVP:   50,
@@ -856,6 +924,10 @@ Q.party_relations = {
         DTSP: 10,
         DBP:  50,
         DSBP: 42,
+        RLB:  35,
+        DNF:  25,
+        FAUD: 0,
+        KAPD: 0,
     },
 
     // === BB ===
@@ -885,6 +957,10 @@ Q.party_relations = {
         DTSP: 15,
         DBP:  65,
         DSBP: 27,
+        RLB:  60,
+        DNF:  30,
+        FAUD: 0,
+        KAPD: 0,
     },
 
     // === KPO ===
@@ -919,6 +995,10 @@ Q.party_relations = {
         DTSP: 0,
         DBP:  5,
         DSBP: 3,
+        RLB:  0,
+        DNF:  0,
+        FAUD: 45,
+        KAPD: 50,
     },
 
     // === SL ===
@@ -953,6 +1033,10 @@ Q.party_relations = {
         DTSP: 0,
         DBP:  20,
         DSBP: 18,
+        RLB:  5,
+        DNF:  0,
+        FAUD: 30,
+        KAPD: 25,
     },
 
     // === ASPD ===
@@ -987,6 +1071,10 @@ Q.party_relations = {
         DTSP: 0,
         DBP:  25,
         DSBP: 35,
+        RLB:  10,
+        DNF:  5,
+        FAUD: 25,
+        KAPD: 20,
     },
 
     // === VNR ===
@@ -1021,6 +1109,10 @@ Q.party_relations = {
         DTSP: 10,
         DBP:  35,
         DSBP: 68,
+        RLB:  30,
+        DNF:  20,
+        FAUD: 0,
+        KAPD: 0,
     },
 
     // === HL ===
@@ -1037,7 +1129,7 @@ Q.party_relations = {
         WP:    35,
         CNBL:  55,
         CSVD:  45,
-        DNVP:  Q.dnvp_line === 3 ? 15 : 55,
+        DNVP:  55,
         VRP:   30,
         NSDAP: 15,
         KVP:   50,
@@ -1054,6 +1146,10 @@ Q.party_relations = {
         DTSP: 0,
         DBP:  50,
         DSBP: 42,
+        RLB:  35,
+        DNF:  30,
+        FAUD: 0,
+        KAPD: 0,
     },
 
     // === LB ===
@@ -1088,6 +1184,10 @@ Q.party_relations = {
         DTSP:  0,
         DBP:   0,
         DSBP:  0,
+        RLB:  0,
+        DNF:  0,
+        FAUD: 45,
+        KAPD: 50,
     },
 
     // === RDP ===
@@ -1105,7 +1205,7 @@ Q.party_relations = {
         WP:    30,
         CNBL:  15,
         CSVD:  35,
-        DNVP:  Q.dnvp_line === 3 ? 0 : 10,
+        DNVP:  10,
         VRP:   30,
         NSDAP: 0,
         DVFP:  0,
@@ -1122,6 +1222,10 @@ Q.party_relations = {
         DTSP:  0,
         DBP:   35,
         DSBP:  58,
+        RLB:  5,
+        DNF:  0,
+        FAUD: 5,
+        KAPD: 3,
     },
 
     // === CVP ===
@@ -1138,7 +1242,7 @@ Q.party_relations = {
         WP:    30,
         CNBL:  40,
         CSVD:  40,
-        DNVP:  Q.dnvp_line === 3 ? 5 : 35,
+        DNVP:  35,
         VRP:   25,
         NSDAP: 0,
         DVFP:  0,
@@ -1156,6 +1260,10 @@ Q.party_relations = {
         KPO:   0,
         DBP:   45,
         DSBP:  32,
+        RLB:  30,
+        DNF:  15,
+        FAUD: 0,
+        KAPD: 0,
     },
 
     // === SLS ===
@@ -1172,7 +1280,7 @@ Q.party_relations = {
         WP:    25,
         CNBL:  20,
         CSVD:  30,
-        DNVP:  Q.dnvp_line === 3 ? 0 : 20,
+        DNVP:  20,
         VRP:   20,
         NSDAP: 0,
         DVFP:  0,
@@ -1190,6 +1298,10 @@ Q.party_relations = {
         KPO:   8,
         DBP:   25,
         DSBP:  48,
+        RLB:  10,
+        DNF:  5,
+        FAUD: 5,
+        KAPD: 3,
     },
 
     // === DTSP ===
@@ -1206,7 +1318,7 @@ Q.party_relations = {
         WP:    5,
         CNBL:  20,
         CSVD:  0,
-        DNVP:  Q.dnvp_line === 3 ? 45 : 20,
+        DNVP:  20,
         VRP:   10,
         NSDAP: 55,
         DVFP:  40,
@@ -1224,6 +1336,10 @@ Q.party_relations = {
         KPO:   0,
         DBP:   0,
         DSBP:  0,
+        RLB:  20,
+        DNF:  35,
+        FAUD: 0,
+        KAPD: 0,
     },
 
     // === DBP ===
@@ -1258,9 +1374,13 @@ Q.party_relations = {
         VNR:   35,
         HL:    50,
         DSBP:  55,
+        RLB:  40,
+        DNF:  10,
+        FAUD: 0,
+        KAPD: 0,
     },
 
-    // === DBSP ===
+    // === DSBP ===
     // German Citizens' Party — median of DDP and DVP, center to center-right lean
     DSBP: {
         KPD:   5,
@@ -1275,7 +1395,7 @@ Q.party_relations = {
         WP:    58,
         CNBL:  32,
         CSVD:  58,
-        DNVP:  Q.dnvp_line === 3 ? 5 : 32,
+        DNVP:  32,
         VRP:   38,
         NSDAP: 0,
         KVP:   48,
@@ -1293,18 +1413,183 @@ Q.party_relations = {
         ASPD:  35,
         VNR:   68,
         HL:    42,
+        RLB:  30,
+        DNF:  15,
+        FAUD: 0,
+        KAPD: 0,
+    },
+
+    // === RLB (Reich Landbund) ===
+    // Hardline agrarian-right pressure group. Close to DNVP/CNBL/BB,
+    // hostile to the left and to Catholic/liberal urban parties.
+    RLB: {
+        KPD:   0,
+        SAPD:  0,
+        SPD:   10,
+        SRPD:  5,
+        DDP:   15,
+        Z:     25,
+        BVP:   30,
+        CSRP:  15,
+        DVP:   35,
+        WP:    35,
+        CNBL:  60,
+        CSVD:  35,
+        DNVP:  65,
+        VRP:   20,
+        NSDAP: 40,
+        KVP:   35,
+        DHP:   40,
+        BB:    65,
+        DVFP:  30,
+        LB:    0,
+        RDP:   5,
+        CVP:   30,
+        SLS:   10,
+        DTSP:  20,
+        DBP:   40,
+        DSBP:  30,
+        KPO:   0,
+        SL:    5,
+        ASPD:  10,
+        VNR:   30,
+        HL:    35,
+        DNF:   50,
+        FAUD:  0,
+        KAPD:  0,
+    },
+
+    // === DNF (nationalist electoral front) ===
+    // Far-right bloc, adjacent to DNVP hardliners and NSDAP; treats
+    // bourgeois center and left as uniformly hostile.
+    DNF: {
+        KPD:   0,
+        SAPD:  0,
+        SPD:   5,
+        SRPD:  5,
+        DDP:   10,
+        Z:     15,
+        BVP:   15,
+        CSRP:  10,
+        DVP:   25,
+        WP:    25,
+        CNBL:  40,
+        CSVD:  20,
+        DNVP:  55,
+        VRP:   20,
+        NSDAP: 55,
+        KVP:   20,
+        DHP:   30,
+        BB:    35,
+        DVFP:  45,
+        LB:    0,
+        RDP:   0,
+        CVP:   15,
+        SLS:   5,
+        DTSP:  35,
+        DBP:   10,
+        DSBP:  15,
+        KPO:   0,
+        SL:    0,
+        ASPD:  5,
+        VNR:   20,
+        HL:    30,
+        RLB:   50,
+        FAUD:  0,
+        KAPD:  0,
+    },
+
+    // === FAUD (Free Workers' Union — anarcho-syndicalist) ===
+    // Far-left, anti-authoritarian; sympathetic to KPD's base but
+    // rivalrous with KPD's party discipline, closer to KAPD/SAPD milieu.
+    FAUD: {
+        KPD:   20,
+        SAPD:  35,
+        SPD:   15,
+        SRPD:  20,
+        DDP:   0,
+        Z:     0,
+        BVP:   0,
+        CSRP:  0,
+        DVP:   0,
+        WP:    0,
+        CNBL:  0,
+        CSVD:  0,
+        DNVP:  0,
+        VRP:   0,
+        NSDAP: 0,
+        KVP:   0,
+        DHP:   0,
+        BB:    0,
+        DVFP:  0,
+        LB:    45,
+        RDP:   5,
+        CVP:   0,
+        SLS:   5,
+        DTSP:  0,
+        DBP:   0,
+        DSBP:  0,
+        KPO:   45,
+        SL:    30,
+        ASPD:  25,
+        VNR:   0,
+        HL:    0,
+        RLB:   0,
+        DNF:   0,
+        KAPD:  55,
+    },
+
+    // === KAPD (Communist Workers' Party — council-communist) ===
+    // Far-left splinter to KPD's left; ideologically nearest FAUD,
+    // but historically bitter rivalry with KPD over party-line orthodoxy.
+    KAPD: {
+        KPD:   15,
+        SAPD:  30,
+        SPD:   10,
+        SRPD:  15,
+        DDP:   0,
+        Z:     0,
+        BVP:   0,
+        CSRP:  0,
+        DVP:   0,
+        WP:    0,
+        CNBL:  0,
+        CSVD:  0,
+        DNVP:  0,
+        VRP:   0,
+        NSDAP: 0,
+        KVP:   0,
+        DHP:   0,
+        BB:    0,
+        DVFP:  0,
+        LB:    50,
+        RDP:   3,
+        CVP:   0,
+        SLS:   3,
+        DTSP:  0,
+        DBP:   0,
+        DSBP:  0,
+        KPO:   50,
+        SL:    25,
+        ASPD:  20,
+        VNR:   0,
+        HL:    0,
+        RLB:   0,
+        DNF:   0,
+        FAUD:  55,
     },
 };
 
 Q.coalition_blocks = {
     // --- DBP ---
     DBP_KPD:   true,
-DBP_SAPD:  true,
-DBP_NSDAP: true,
-DBP_DVFP:  true,
-DBP_DTSP:  true,
-DBP_CNBL:  false,
-DBP_BB:    false,
+    DBP_SAPD:  true,
+    DBP_NSDAP: true,
+    DBP_DVFP:  true,
+    DBP_DTSP:  true,
+    DBP_CNBL:  false,
+    DBP_BB:    false,
+
     // --- KPD ---
     KPD_Z:     Q.z_relation    < 65 || Q.kpd_relation < 65,
     KPD_BVP:   true,
@@ -1314,7 +1599,7 @@ DBP_BB:    false,
     KPD_DNVP:  true,
     KPD_NSDAP: true,
     KPD_DVFP: true,
-    KPD_VRP:   true,  // VRP is a bourgeois savers' party; anathema to KPD
+    KPD_VRP:   true,
     KPD_DDP:   Q.kpd_relation < 65,
     KPD_SPD:   Q.communist_coalition < 3,
 
@@ -1324,66 +1609,60 @@ DBP_BB:    false,
     SAPD_CNBL:  true,
     SAPD_DNVP:  true,
     SAPD_NSDAP: true,
-    SAPD_VRP:   true, // VRP is a single-issue bourgeois grievance party; SAPD won't touch them
+    SAPD_VRP:   true,
 
     // --- SPD ---
     SPD_NSDAP: true,
-    SPD_DNVP:  Q.dnvp_relation < 60 || Q.dnvp_line === 3,
+    SPD_DNVP:  Q.dnvp_relation < 60,
     SPD_KPD:   Q.communist_coalition < 3,
-    SPD_VRP:   Q.vrp_relation < 35, // VRP blames SPD for inflation; workable only if relations repaired
+    SPD_VRP:   Q.vrp_relation < 35,
 
     // --- SRPD ---
     SRPD_KPD:   Q.kpd_relation < 40,
     SRPD_NSDAP: true,
-    SRPD_DNVP:  Q.dnvp_line === 3,
+    SRPD_DNVP:  false,
     SRPD_VRP:   Q.vrp_relation < 30,
 
     // --- DDP ---
     DDP_KPD:   true,
     DDP_NSDAP: true,
-    DDP_DNVP:  Q.dnvp_line === 3,
+    DDP_DNVP:  false,
     // DDP-VRP: no block — natural coalition partners
 
     // --- Z ---
     Z_KPD:    Q.kpd_relation < 65 || Q.z_relation < 45,
-    Z_NSDAP:  Q.nazi_urgency >= 6,
-    Z_DNVP:   Q.dnvp_line === 3 && Q.z_party_leader !== "Kaas",
-    // Z-VRP: no hard block but coolness over revaluation issue
+    Z_NSDAP:  false,
+    Z_DNVP:   false,
 
     // --- BVP ---
     BVP_KPD:   true,
     BVP_SAPD:  true,
-    BVP_NSDAP: Q.nazi_urgency >= 6,
+    BVP_NSDAP: false,
 
     // --- DVP ---
     DVP_KPD:   true,
     DVP_SAPD:  true,
-    DVP_NSDAP: Q.nazi_urgency >= 7 && Q.capital_strike_progress < 4,
-    DVP_VRP:   Q.dvp_right_shift >= 2, // As DVP drifts right, VRP (its nemesis on inflation)
-                                        // becomes an impossible partner
-
+    DVP_NSDAP: false,
+    DVP_VRP:   Q.dvp_right_shift >= 2,
     // --- WP ---
     WP_KPD:   true,
     WP_SAPD:  true,
     WP_NSDAP: Q.capital_strike_progress < 5,
-    WP_VRP:   true, // Hard block — WP and VRP are direct rivals with opposing
-                    // memories of and interests in the 1923 inflation
+    WP_VRP:   true,
+                    
 
     // --- CNBL ---
     CNBL_KPD:  true,
     CNBL_SAPD: true,
     CNBL_SPD:  Q.cnbl_relation < 30,
 
-    // --- CSVD ---
-    // No hard blocks with VRP — they share a base
-
     // --- DNVP ---
     DNVP_KPD:  true,
     DNVP_SAPD: true,
-    DNVP_SPD:  Q.dnvp_line === 3 || Q.dnvp_relation < 40,
-    DNVP_DDP:  Q.dnvp_line === 3,
-    DNVP_Z:    Q.dnvp_line === 3 && Q.z_party_leader !== "Kaas",
-    DNVP_VRP:  Q.dnvp_line === 3, // Hugenberg-era DNVP too radical for rule-of-law savers
+    DNVP_SPD:  Q.dnvp_relation < 40,
+    DNVP_DDP:  false,
+    DNVP_Z:    false,
+    DNVP_VRP:  false, 
 
     // --- NSDAP ---
     NSDAP_KPD:  true,
@@ -1393,90 +1672,151 @@ DBP_BB:    false,
     NSDAP_SRPD: true,
     NSDAP_DDP:  true,
     NSDAP_CSRP: true,
-    NSDAP_VRP:  true, // NSDAP wants VRP's voters, not their parliamentary cooperation
-    NSDAP_BVP:  Q.nazi_urgency >= 6,
-    NSDAP_Z:    Q.nazi_urgency >= 6,
+    NSDAP_VRP:  true,
+    NSDAP_BVP:  false,
+    NSDAP_Z:    false,
     NSDAP_COALITIONS_GENERALLY: Q.nsdap_r < 35 || Q.year < 1932,
 
     // --- VRP ---
     VRP_KPD:   true,
     VRP_SAPD:  true,
-    VRP_WP:    true,  // Hard block — direct rivals, opposing inflation memories
+    VRP_WP:    true,  
     VRP_NSDAP: true,
-    VRP_DNVP:  Q.dnvp_line === 3,
-    VRP_DVP:   Q.dvp_right_shift >= 1,  // DVP drift makes them intolerable to VRP
-    VRP_SPD:   Q.vrp_relation < 35,      // Only workable if SPD makes amends on revaluation
+    VRP_DNVP:  false,
+    VRP_SPD:   Q.vrp_relation < 35,      
 
     // --- KVP ---
     KVP_KPD:   true,
     KVP_SAPD:  true,
     KVP_NSDAP: true,
-    KVP_DNVP:  Q.dnvp_line === 3,
-    KVP_SPD:   false,  // Workable in emergency
+    KVP_DNVP:  false,
+    KVP_SPD:   false, 
 
     // --- DHP ---
     DHP_KPD:   true,
     DHP_SAPD:  true,
-    DHP_NSDAP: Q.nazi_urgency >= 5,  // Weaker resistance than most
+    DHP_NSDAP: false,  
 
     // --- BB ---
     BB_KPD:   true,
     BB_SAPD:  true,
-    BB_NSDAP: Q.nazi_urgency >= 7,   // Agrarian grievance makes them soft on NSDAP longest
-    BB_WP:    false,  // No hard block — both small, both grievance parties
-    BB_DVP:   true,   // Big industry vs peasants
+    BB_NSDAP: false,  
+    BB_WP:    false,  
+    BB_DVP:   true,  
 
-// --- LB ---
-LB_KPD:    false,  // Ideological kin despite tensions
-LB_SPD:    Q.lb_relation < 30,
-LB_NSDAP:  true,
-LB_DNVP:   true,
-LB_DVP:    true,
-LB_WP:     true,
-LB_CNBL:   true,
-LB_DVFP:   true,
-LB_DTSP:   true,
+    // --- LB ---
+    LB_KPD:    false, 
+    LB_SPD:    Q.lb_relation < 30,
+    LB_NSDAP:  true,
+    LB_DNVP:   true,
+    LB_DVP:    true,
+    LB_WP:     true,
+    LB_CNBL:   true,
+    LB_DVFP:   true,
+    LB_DTSP:   true,
 
-// --- RDP ---
-RDP_KPD:   true,
-RDP_NSDAP: true,
-RDP_DVFP:  true,
-RDP_DTSP:  true,
-RDP_DNVP:  Q.dnvp_line === 3,
+    // --- RDP ---
+    RDP_KPD:   true,
+    RDP_NSDAP: true,
+    RDP_DVFP:  true,
+    RDP_DTSP:  true,
+    RDP_DNVP:  false,
 
-// --- CVP ---
-CVP_KPD:   true,
-CVP_SAPD:  true,
-CVP_NSDAP: true,
-CVP_DVFP:  true,
-CVP_DTSP:  true,
-CVP_SPD:   Q.z_in_government && Q.spd_in_government,  // Their founding grievance
+    // --- CVP ---
+    CVP_KPD:   true,
+    CVP_SAPD:  true,
+    CVP_NSDAP: true,
+    CVP_DVFP:  true,
+    CVP_DTSP:  true,
+    CVP_SPD:   Q.z_in_government && Q.spd_in_government,
+    // --- SLS ---
+    SLS_KPD:   true,
+    SLS_NSDAP: true,
+    SLS_DVFP:  true,
+    SLS_DTSP:  true,
+    SLS_DNVP:  false,
 
-// --- SLS ---
-SLS_KPD:   true,
-SLS_NSDAP: true,
-SLS_DVFP:  true,
-SLS_DTSP:  true,
-SLS_DNVP:  Q.dnvp_line === 3,
+    // --- DTSP ---
+    DTSP_KPD:   true,
+    DTSP_SAPD:  true,
+    DTSP_SPD:   true,
+    DTSP_SRPD:  true,
+    DTSP_DDP:   true,
+    DTSP_Z:     true,
+    DTSP_BVP:   true,
+    DTSP_CSRP:  true,
+    DTSP_LB:    true,
+    DTSP_RDP:   true,
+    DTSP_SLS:   true,
+    DTSP_CVP:   true,
+    DTSP_DBP:   true,
 
-// --- DTSP ---
-DTSP_KPD:   true,
-DTSP_SAPD:  true,
-DTSP_SPD:   true,
-DTSP_SRPD:  true,
-DTSP_DDP:   true,
-DTSP_Z:     true,
-DTSP_BVP:   true,
-DTSP_CSRP:  true,
-DTSP_LB:    true,
-DTSP_RDP:   true,
-DTSP_SLS:   true,
-DTSP_CVP:   true,
-DTSP_DBP: true,
+    DVFP_DBP: true,
 
+    // --- RLB ---
+    RLB_KPD:   true,
+    RLB_SAPD:  true,
+    RLB_SPD:   true,
+    RLB_SRPD:  true,
+    RLB_DDP:   true,
+    RLB_FAUD:  true,
+    RLB_KAPD:  true,
+    RLB_NSDAP: false,
 
-DVFP_DBP: true,
-    };
+    // --- DNF ---
+    DNF_KPD:   true,
+    DNF_SAPD:  true,
+    DNF_SPD:   true,
+    DNF_SRPD:  true,
+    DNF_DDP:   true,
+    DNF_Z:     true,
+    DNF_FAUD:  true,
+    DNF_KAPD:  true,
+    DNF_NSDAP: false,
+
+    // --- FAUD ---
+    FAUD_DDP:   true,
+    FAUD_Z:     true,
+    FAUD_BVP:   true,
+    FAUD_CSRP:  true,
+    FAUD_DVP:   true,
+    FAUD_WP:    true,
+    FAUD_CNBL:  true,
+    FAUD_CSVD:  true,
+    FAUD_DNVP:  true,
+    FAUD_NSDAP: true,
+    FAUD_RLB:   true,
+    FAUD_DNF:   true,
+    FAUD_VRP:   true,
+    FAUD_KVP:   true,
+    FAUD_DHP:   true,
+    FAUD_BB:    true,
+    FAUD_DVFP:  true,
+    FAUD_SPD:   true,
+    FAUD_KPD:   false,
+
+    // --- KAPD ---
+    KAPD_DDP:   true,
+    KAPD_Z:     true,
+    KAPD_BVP:   true,
+    KAPD_CSRP:  true,
+    KAPD_DVP:   true,
+    KAPD_WP:    true,
+    KAPD_CNBL:  true,
+    KAPD_CSVD:  true,
+    KAPD_DNVP:  true,
+    KAPD_NSDAP: true,
+    KAPD_RLB:   true,
+    KAPD_DNF:   true,
+    KAPD_VRP:   true,
+    KAPD_KVP:   true,
+    KAPD_DHP:   true,
+    KAPD_BB:    true,
+    KAPD_DVFP:  true,
+    KAPD_SPD:   true,
+    KAPD_KPD:   false,
+};
+
 
 // alternative is the Conciliators as party leader
 // party leader - can be Ludwig Kaas, Joseph Joos, or Adam Stegerwald after the 1928 December conference. Joos will be most friendly to the SPD.
@@ -1490,7 +1830,7 @@ Q.dnvp_party_leader = "Kuno von Westarp"; // Kuno von Westarp (moderate, until 1
 Q.nsdap_party_leader = "Hitler"; // Adolf Hitler
 Q.kpd_party_leader = "Thälmann"; // Ernst Thälmann (or "Conciliators" if they take over)
 Q.wp_party_leader = "Drewitz"; // Hermann Drewitz
-Q.csrp_party_leader = "Heller"; // Vitus Heller. Chrisliche Soziale Reichspartei
+Q.csrp_party_leader = "Vitus Heller"; // Vitus Heller. Chrisliche Soziale Reichspartei
 Q.vrp_party_leader = "Bauser"; // Adolf Bauser, chairman of Reichspartei für Volksrecht und Aufwertung, also known as the People's Justice Party Volksrechtpartei, VRP
 Q.cnbl_party_leader = "Hepp";        // Georg Hepp, Reichs-Landbund chairman
 Q.srpd_party_leader = "Horsing";     // Otto Hörsing, Reichsbanner founder
@@ -1521,7 +1861,6 @@ Q.wp_leader = Q.wp_party_leader;
 
 
 
-Q.hindenburg_relation = 25;
 Q.presidential_patience = 50;
 // whether or not the president can dismiss the government via presidential_patience reaching 0.
 Q.presidential_enabled = 0;
