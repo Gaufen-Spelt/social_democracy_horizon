@@ -38,9 +38,9 @@ console.log("fury after subtract:", Q.landvolk_fury);
 
 ​This is the birth of the Landvolkbewegung (Rural People's Movement). Led by Claus Heim and Wilhelm Hamkens and fiercely defensive of their regional identity, the crowd openly chants for a "Green Democracy" rooted in the ethnic community, flatly rejecting the cosmopolitan "Golden Democracy" of the capital.
 
-- ​@evaluate_regional_echoes: The black flags fly high, but will their struggles be heard?
+- ​@regional: The black flags fly high, but will their struggles be heard?
 
-@evaluate_regional_echoes
+@regional
 go-to: geest_ignited if landvolk_fury >= 6; geest_simmers if landvolk_fury < 6
 
 @geest_ignited
@@ -120,9 +120,9 @@ I had no answer for him then. We were not angry enough, not desperate enough. Mo
 
 I took one long, careful look at my son's frozen face. ​I thought I still had a son to fight for...
 
-- @end: ...
+- @despair: ...
 
-@end
+@despair
 on-arrival: tariffs += 1; agricultural_assist -= 1; rural -= 0.45; landvolk_fury = 0
 
 Not anymore.
