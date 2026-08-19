@@ -15,9 +15,6 @@
 
     // ================================================================
     // INDEXEDDB SAVE SYSTEM
-    // Replaces all localStorage-based save/settings persistence with
-    // IndexedDB, without changing any method signatures or call sites.
-    // Existing localStorage saves are migrated in automatically once.
     // ================================================================
     (function() {
       var DB_NAME = ui.save_prefix + '_idb';
@@ -42,10 +39,6 @@
           };
           req.onsuccess = function(e) {
             var db = e.target.result;
-            // Self-heal: if we somehow got a handle to a DB missing the
-            // store (e.g. it was created by a stale/older script version),
-            // close it, blow it away, and recreate from scratch rather
-            // than silently failing every read/write forever.
             if (!db.objectStoreNames.contains(STORE)) {
               console.warn('IDB save store missing on open, recreating database');
               db.close();
@@ -286,17 +279,6 @@
         reader.readAsText(file);
       };
 
-      // ----------------------------------------------------------------
-      // generateSaveRows: builds the save-overlay DOM once. The overlay's
-      // static HTML only provides empty containers (#saves_table_auto,
-      // .save_tab_container, and the footer table) — this fills them in:
-      // - 2 autosave rows (a0, a1) in #saves_table_auto
-      // - 5 tabs of 20 manual slots each (slots 0-99) as .save_tab_page
-      //   tables, with matching .save_tab_button tabs, using the same
-      //   IDs (save_button_N / save_info_N / delete_button_N /
-      //   export_button_N) that populateSaveSlots already looks for.
-      // Safe to call more than once; it clears and rebuilds each time.
-      // ----------------------------------------------------------------
       var SLOTS_PER_TAB = 20;
       var NUM_TABS = 5; // covers slots 0-99 (ui.max_slots)
 
