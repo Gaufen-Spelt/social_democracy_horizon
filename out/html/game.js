@@ -286,6 +286,103 @@
         reader.readAsText(file);
       };
 
+      // ----------------------------------------------------------------
+      // generateSaveRows: builds the save-overlay DOM once. The overlay's
+      // static HTML only provides empty containers (#saves_table_auto,
+      // .save_tab_container, and the footer table) — this fills them in:
+      // - 2 autosave rows (a0, a1) in #saves_table_auto
+      // - 5 tabs of 20 manual slots each (slots 0-99) as .save_tab_page
+      //   tables, with matching .save_tab_button tabs, using the same
+      //   IDs (save_button_N / save_info_N / delete_button_N /
+      //   export_button_N) that populateSaveSlots already looks for.
+      // Safe to call more than once; it clears and rebuilds each time.
+      // ----------------------------------------------------------------
+      var SLOTS_PER_TAB = 20;
+      var NUM_TABS = 5; // covers slots 0-99 (ui.max_slots)
+
+      function buildSlotRow(id) {
+        var tr = document.createElement('tr');
+        tr.className = 'save_row';
+
+        var infoTd = document.createElement('td');
+        infoTd.id = 'save_info_' + id;
+        infoTd.className = 'save_info';
+        tr.appendChild(infoTd);
+
+        var saveTd = document.createElement('td');
+        var saveBtn = document.createElement('button');
+        saveBtn.id = 'save_button_' + id;
+        saveBtn.className = 'save_action_button';
+        saveTd.appendChild(saveBtn);
+        tr.appendChild(saveTd);
+
+        var deleteTd = document.createElement('td');
+        var deleteBtn = document.createElement('button');
+        deleteBtn.id = 'delete_button_' + id;
+        deleteBtn.className = 'save_action_button';
+        deleteBtn.textContent = 'Delete';
+        deleteTd.appendChild(deleteBtn);
+        tr.appendChild(deleteTd);
+
+        var exportTd = document.createElement('td');
+        var exportBtn = document.createElement('button');
+        exportBtn.id = 'export_button_' + id;
+        exportBtn.className = 'save_action_button';
+        exportBtn.textContent = 'Export';
+        exportTd.appendChild(exportBtn);
+        tr.appendChild(exportTd);
+
+        return tr;
+      }
+
+      ui.generateSaveRows = function() {
+        var autoTable = document.getElementById('saves_table_auto');
+        var tabContainer = document.querySelector('.save_tab_container');
+        var footerTable = document.getElementById('saves_table_footer');
+        if (!autoTable || !tabContainer || !footerTable) return;
+
+        // --- autosave rows (a0, a1) ---
+        autoTable.innerHTML = '';
+        var autoHeader = document.createElement('tr');
+        var autoHeaderTd = document.createElement('td');
+        autoHeaderTd.colSpan = 4;
+        autoHeaderTd.className = 'save_section_label';
+        autoHeaderTd.textContent = 'Autosaves';
+        autoHeader.appendChild(autoHeaderTd);
+        autoTable.appendChild(autoHeader);
+        autoTable.appendChild(buildSlotRow('a0'));
+        autoTable.appendChild(buildSlotRow('a1'));
+
+        // --- tab buttons ---
+        tabContainer.innerHTML = '';
+        for (var t = 1; t <= NUM_TABS; t++) {
+          var btn = document.createElement('button');
+          btn.id = 'save_tab_' + t + '_btn';
+          btn.className = 'save_tab_button' + (t === 1 ? ' active' : '');
+          btn.textContent = 'Slots ' + ((t - 1) * SLOTS_PER_TAB) + '-' + (t * SLOTS_PER_TAB - 1);
+          btn.onclick = (function(tabNum) {
+            return function() { window.switchSaveTab(tabNum); };
+          })(t);
+          tabContainer.appendChild(btn);
+        }
+
+        // --- remove any previously generated tab pages, then rebuild ---
+        var existingPages = document.querySelectorAll('.save_tab_page');
+        existingPages.forEach(function(p) { p.parentNode.removeChild(p); });
+
+        for (var tab = 1; tab <= NUM_TABS; tab++) {
+          var table = document.createElement('table');
+          table.id = 'saves_table_tab' + tab;
+          table.className = 'save_tab_page' + (tab === 1 ? ' active' : '');
+          var startSlot = (tab - 1) * SLOTS_PER_TAB;
+          var endSlot = startSlot + SLOTS_PER_TAB;
+          for (var slot = startSlot; slot < endSlot; slot++) {
+            table.appendChild(buildSlotRow(slot));
+          }
+          footerTable.parentNode.insertBefore(table, footerTable);
+        }
+      };
+
       ui.populateSaveSlots = function(max_slots, max_auto_slots) {
         var that = this;
         function createLoadListener(i) {
@@ -329,6 +426,31 @@
         }
         for (i = 0; i < max_auto_slots; i++) {
           populateSlot('a' + i);
+        }
+      };
+
+      var _rowsGenerated = false;
+      ui.showSaveSlots = function() {
+        if (this.dendryEngine.state.disableSaves) {
+          window.alert('Saving and loading is currently disabled.');
+          return;
+        }
+        var save_element = document.getElementById('save');
+        save_element.style.display = 'block';
+        if (!_rowsGenerated) {
+          this.generateSaveRows();
+          _rowsGenerated = true;
+        }
+        this.populateSaveSlots(this.max_slots, 2);
+        var that = this;
+        if (!save_element.onclick) {
+          save_element.onclick = function(evt) {
+            var target = evt.target;
+            var save_element = document.getElementById('save');
+            if (target == save_element) {
+              that.hideSaveSlots();
+            }
+          };
         }
       };
 
