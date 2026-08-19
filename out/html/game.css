@@ -1514,26 +1514,44 @@ body.dark-mode tr.row-neutral   { background-color: rgba(120, 120, 120, 0.10); }
 
 @media screen and (max-width: 560px) {
   .save_tab_button { font-size: 0.75em; padding: 0.5em 0.2em; }
+
+  /* Save/Load overlay: stop the wide table from spilling off-screen */
+  .save_overlay_top {
+    max-width: 96vw;
+    padding: 0.75em;
+  }
+
+  #saves_table_auto,
+  .save_tab_page,
+  #saves_table_footer {
+    width: 100%;
+    display: block;
+  }
+
+  .save_row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4em;
+    padding: 0.5em 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .save_row td {
+    padding: 0.15em 0.3em;
+    display: inline-block;
+  }
+
+  /* Slot label/date takes full width on its own line, buttons wrap below it */
+  .save_row td:first-child {
+    flex-basis: 100%;
+    font-size: 0.85em;
+  }
+
+  .save_action_button {
+    font-size: 0.78em;
+    padding: 0.3em 0.5em;
+    flex: 1 1 auto;
+    min-width: 4.5em;
+  }
 }
-
-.save_section_label {
-  font-family: "Playfair Display", Georgia, serif;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-size: 0.8em;
-  color: var(--link-color);
-  padding-bottom: 0.4em;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.save_row td {
-  padding: 0.3em 0.4em;
-  vertical-align: middle;
-}
-
-.save_action_button {
-  font-size: 0.8em;
-  padding: 0.3em 0.6em;
-}
-
-
