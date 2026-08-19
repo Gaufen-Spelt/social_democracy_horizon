@@ -5,9 +5,6 @@ tags: event
 view-if: year = 1928 and month = 1 and weeks >= 2
 max-visits: 1 
 on-arrival: {!
-  console.log("=== INDIVIDUAL LANDVOLK VARIABLE CHECK ===");
-
-  // Recalculating to keep game logic running
   const conditions = [
     Q.tariffs <= 0,
     Q.agricultural_policy <= 0,
@@ -24,15 +21,15 @@ on-arrival: {!
     Q.ideology == "reformist",
     Q.rural > 21.30,
   ];
-  
-  Q.landvolk_fury = conditions.filter(Boolean).length;
+ 
+Q.landvolk_fury = conditions.filter(Boolean).length;
 console.log("fury before subtract:", Q.landvolk_fury, typeof Q.landvolk_fury);
 console.log("agricultural_assist:", Q.agricultural_assist, typeof Q.agricultural_assist);
 Q.landvolk_fury -= Q.agricultural_assist || 0;
 console.log("fury after subtract:", Q.landvolk_fury);
 !}
 
-​<h1> Agrarian Revolts in Schleswig-Holstein </h1>
+​= Agrarian Revolts in Schleswig-Holstein
 
 ​Years of mistreatment and the collapse of their social standing have driven the rural population to despair, with [+ agricultural_minister +] failing to deliver on promises to enact tariffs. Tested further by harsh winter conditions, over 14,000 protesters have filled the streets, marching under the black flags of historical peasant rebellions.
 
@@ -99,9 +96,6 @@ on-arrival: {!
   Q.rural_qol -= 20;
 window.enableFocusMode()
 !}
-on-departure: {!
-  window.disableFocusMode()
-!}
 achievement: winterschwelen 
 
 = A Simmering, Bitter Provincial Winter
@@ -123,6 +117,9 @@ I took one long, careful look at my son's frozen face. ​I thought I still had 
 - @despair: ...
 
 @despair
+on-departure: {!
+  window.disableFocusMode()
+!}
 on-arrival: tariffs += 1; agricultural_assist -= 1; rural -= 0.45; landvolk_fury = 0
 
 Not anymore.
