@@ -1,4 +1,4 @@
-title: Signal from the North.
+title: Signal from the northern Landvolk.
 subtitle: North has been enveloped in unrest...
 new-page: true
 tags: event
@@ -29,9 +29,9 @@ console.log("fury after subtract:", Q.landvolk_fury);
 !}
 max-visits: 1 
 
-= The Geest Radicalizes Completely
+= Schleswig - Holstein faces the crisis.
 
-​Years of mistreatment and the collapse of their social standing have driven the rural population to despair, with [+ agricultural_minister +] failing to deliver on promises to enact tariffs. Tested further by harsh winter conditions, over 14,000 protesters have filled the streets, marching under the black flags of historical peasant rebellions.
+​Years of mistreatment and the collapse of their social standing have driven the rural population to despair, with [+ agriculture_minister +] failing to deliver on promises to enact tariffs. Tested further by harsh winter conditions, over 14,000 protesters have filled the streets, marching under the black flags of historical peasant rebellions.
 
 ​This is the birth of the Landvolkbewegung (Rural People's Movement). Led by Claus Heim and Wilhelm Hamkens and fiercely defensive of their regional identity, the crowd openly chants for a "Green Democracy" rooted in the ethnic community, flatly rejecting the cosmopolitan "Golden Democracy" of the capital.
 
