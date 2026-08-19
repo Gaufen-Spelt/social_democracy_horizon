@@ -1,5 +1,5 @@
-title: The Black Flags Unleashed!
-subtitle: Agrarian radicalism fills the vacuum of the North...
+title: Signal from the North.
+subtitle: North has been enveloped in unrest...
 new-page: true
 tags: event
 view-if: year = 1928 and month = 1 and weeks >= 2
@@ -32,14 +32,13 @@ Q.landvolk_fury -= Q.agricultural_assist || 0;
 console.log("fury after subtract:", Q.landvolk_fury);
 !}
 
+​= Agrarian Revolts in Schleswig-Holstein
 
-= The Eruption in Neumünster
+​Years of mistreatment and the collapse of their social standing have driven the rural population to despair, with [+ agricultural_minister +] failing to deliver on promises to enact tariffs. Tested further by harsh winter conditions, over 14,000 protesters have filled the streets, marching under the black flags of historical peasant rebellions.
 
-The quiet currents of the countryside have turned into a violent squall. Decades of deep-seated friction against the centralized, bureaucratic administration in Berlin, originally intensified by the hated Prussian regulations of the old war economy - have finally boiled over. In the regional hub of Neumünster, the traditional agrarian leadership has completely lost control of the rural population.
+​This is the birth of the Landvolkbewegung (Rural People's Movement). Led by Claus Heim and Wilhelm Hamkens and fiercely defensive of their regional identity, the crowd openly chants for a "Green Democracy" rooted in the ethnic community, flatly rejecting the cosmopolitan "Golden Democracy" of the capital.
 
-Over 14,000 rural protesters have filled the streets. They march under the black flags of historical peasant rebellions. This is the birth of the *Landvolkbewegung* (Rural People's Movement). Driven by an aggressive defense of their regional identity, the crowd openly chants for a "Green Democracy" rooted in the ethnic community, fiercely rejecting the cosmopolitan "Golden Democracy" of the capital, lead by their leaders Claus Heim and Wilhelm Hamkens.
-
-- @evaluate_regional_echoes: The black flags are flying high. How far does the fire spread?
+- ​@evaluate_regional_echoes: The black flags fly high, but will their struggles be heard?
 
 @evaluate_regional_echoes
 go-to: geest_ignited if landvolk_fury >= 6; geest_simmers if landvolk_fury < 6
@@ -85,13 +84,12 @@ on-arrival: {!
 </div>
 
 = The Geest Radicalizes Completely
+​
+Unrest on the Geest is spreading like wildfire. In these tight-knit peasant villages, where family members work side-by-side in the fields, no rigid class barriers exist to stop radical ideas from catching on. Backed by local Stahlhelm networks, smallholders have completely turned their backs on the National Rural League, condemning its aristocratic leadership as out-of-touch Junkers.
 
-The fire raging on the Geest is thoroughly contagious. In the egalitarian peasant villages where family members labor side-by-side in the fields, class distinctions do not exist to block the spread of extremism. Backed by local *Stahlhelm* logistics, the smallholders have completely rejected the National Rural League, viewing its aristocratic leaders as lazy junkers who look down on them.
+​Organizers report angry crowds tearing down mainstream party posters across the district. The farmers demand an organic corporate state—one that tears agriculture out of the capitalist market altogether. Tax strikes are spreading, and whole communities are physically blocking bailiffs from foreclosing on neighboring homesteads. The traditional conservative hold over the countryside is shattering from the bottom up.
 
-Our local organizers report that the anonymous rural masses are pulling down mainstream posters. They demand an organic corporate state that detaches the farmer from the capitalistic market economy entirely. Outright tax strikes have begun, and rural communities are physically blocking court bailiffs from foreclosing on neighboring homesteads. The traditional conservative monopoly on the countryside has fractured from the bottom up.
-
-[? if deterministic_mode: The real danger of the *Landvolkbewegung* is the severe structural damage it has dealt to the traditional political layout. By abandoning the mainstream conservative parties, these radicalized middle and lower strata of the rural population have created a massive political vacuum.  <br> If the Marx cabinet does not provide immediate tariff protections or tax relief before the spring campaign begins in earnest, these regional rural leagues will have no choice but to secede from the traditional conservative apparatus entirely to form independent, specialized agrarian parties to survive. ?]
-
+Unrest level: [? if landvolk_fury <= 8: Relatively lower than expected. ?][? if landvolk_fury > 8 and landvolk_fury <= 10: Severe enough to shake the North. ?][? if landvolk_fury > 10: Has engulfed the entire country... ?]
 
 @geest_simmers
 on-arrival: {!
@@ -112,20 +110,21 @@ achievement: winterschwelen
   <img src="img/achievements/winterschwelen.png" alt="Landvolk Collapses" style="width:100%; display:block;">
 </div>
 
-And soon I stared at the crowd of the people. Or, what was left of it.
+I stared out at the dispersing crowd. Or what was left of it.
 
-One day, my poor son asked:
+Beside me, my son pulled his thin coat tight against the biting wind. He looked up at the fading black banners, his eyes wide with quiet indignation.
 
-"Is there no justice? Why can't we do that?"
+"Is there no justice?" he asked. "Why couldn't we win?"
 
-... 
+I had no answer for him then. We were not angry enough, not desperate enough. Most of all, we lacked unity—we had failed to coordinate[? if agricultural_assist > 0:, outmaneuvered and subdued by the *Golden Democrats*?].
 
-Because, we were not angry enough, not willing enough and most importantly - there was no unity, for we have failed to co-ordinate [? if agricultural_assist > 0:, for we have been subdued by the *Golden Democrats*. ?].
+I took one long, careful look at my son's frozen face. ​I thought I still had a son to fight for...
 
-I took one careful look at my son.
+- @end: ...
 
-...
-
-...
+@end
+on-arrival: tariffs += 1; agricultural_assist -= 1; rural -= 0.45; landvolk_fury = 0
 
 Not anymore.
+
+- @root: The cold winter's embrace shrouds this land.
