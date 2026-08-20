@@ -22,7 +22,16 @@ Mod developers: GaufenSpelt / Visionary and Arkadyevna / Sonic Shapeshifter.
 
 - @changelog: Changelog
 - @mechanics: Game mechanics
+- @achievement_guides: Achievement guides
 - @root: Back
+
+@achievement_guides
+new-page: true
+
+Ever wondered "how I could even possibly achieve this?"? No worries, guides below will guide you through. If you don't want to get spoiled, go back.
+
+- @achievement_guides_2: Continue
+- @flavors: Back
 
 @mechanics
 new-page: true
