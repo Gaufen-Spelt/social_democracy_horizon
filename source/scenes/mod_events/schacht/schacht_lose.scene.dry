@@ -1,0 +1,10 @@
+title: Schacht has been ousted.
+subtitle: Lmao.
+tags: event
+max-visits: 1
+new-page: true
+on-arrival: reichsbank_president = "Hans Luther"
+view-if: reichsbank_siege >= 1 and spd_in_government >= 1 and year >= 1931
+face-image: img/achievements/schachtmatt.png
+
+= Schacht got ousted.
