@@ -4055,8 +4055,8 @@ window.disableFocusMode()
 @party_adjust
 new-page: true
 on-arrival: {!
-if (!Q._padj_parties) {
-    Q._padj_parties = [
+if (!Q.padjParties) {
+    Q.padjParties = [
         ['spd','SPD'], ['kpd','KPD'], ['z','Z'], ['bvp','BVP'], ['ddp','DDP'],
         ['dvp','DVP'], ['dnvp','DNVP'], ['nsdap','NSDAP'], ['wp','WP'],
         ['bb','BB'], ['dhp','DHP'], ['csrp','CSRP'], ['vrp','VRP'],
@@ -4068,26 +4068,27 @@ if (!Q._padj_parties) {
         ['faud','FAUD'], ['kapd','KAPD'], ['other','Other']
     ];
 }
-Q._padj_classes = ['workers','old_middle','new_middle','rural','unemployed'];
+Q.padjClasses = ['workers','old_middle','new_middle','rural','unemployed'];
 
-for (var pi = 0; pi < Q._padj_parties.length; pi++) {
-    var pid = Q._padj_parties[pi][0];
+for (var pi = 0; pi < Q.padjParties.length; pi++) {
+    var pid = Q.padjParties[pi][0];
     if (Q[pid + '_r'] === undefined) { Q[pid + '_r'] = 0; }
-    for (var ci = 0; ci < Q._padj_classes.length; ci++) {
-        var key = Q._padj_classes[ci] + '_' + pid;
+    for (var ci = 0; ci < Q.padjClasses.length; ci++) {
+        var key = Q.padjClasses[ci] + '_' + pid;
         if (Q[key] === undefined) { Q[key] = 0; }
     }
 }
 !}
 on-display: {!
-
+// Runs after the scene's HTML (including #padj-container below) is
+// already in the live DOM, per displaySceneContent() -> onDisplay order.
 var holder = document.getElementById('padj-container');
 if (!holder) { return; }
 
 var html = '';
-for (var i = 0; i < Q._padj_parties.length; i++) {
-    var pid = Q._padj_parties[i][0];
-    var label = Q._padj_parties[i][1];
+for (var i = 0; i < Q.padjParties.length; i++) {
+    var pid = Q.padjParties[i][0];
+    var label = Q.padjParties[i][1];
     var active = Q.parties && Q.parties.indexOf(pid) !== -1 && !Q[pid + '_banned'];
     if (!active) { continue; }
     var val = Q[pid + '_r'] || 0;
@@ -4102,7 +4103,9 @@ for (var i = 0; i < Q._padj_parties.length; i++) {
 }
 holder.innerHTML = html || '<em>No active parties. Add some in the Party Selector first.</em>';
 
-
+// Wire listeners AFTER innerHTML is set — string attributes like
+// oninput="..." are unreliable here since Q/state aren't in global
+// scope; addEventListener closures over the real state.qualities are.
 var state = this;
 var rows = holder.querySelectorAll('.padj-row');
 rows.forEach(function(row) {
@@ -4122,7 +4125,7 @@ rows.forEach(function(row) {
 
     drill.addEventListener('click', function(e) {
         e.preventDefault();
-        state.qualities._padj_current_party = pid;
+        state.qualities.padjCurrentParty = pid;
         window.dendryUI.dendryEngine.goToScene('padj_class');
     });
 });
@@ -4138,23 +4141,24 @@ Fine-tune each active party's national vote share and, if you drill in, its supp
 - @challenge: Back
 
 @padj_class
-new-page: true 
+new-page: true
+view-if: padjCurrentParty != ""
 on-display: {!
 var holder = document.getElementById('padjc-container');
 if (!holder) { return; }
 
-var pid = Q._padj_current_party;
+var pid = Q.padjCurrentParty;
 var label = pid;
-for (var i = 0; i < Q._padj_parties.length; i++) {
-    if (Q._padj_parties[i][0] === pid) { label = Q._padj_parties[i][1]; break; }
+for (var i = 0; i < Q.padjParties.length; i++) {
+    if (Q.padjParties[i][0] === pid) { label = Q.padjParties[i][1]; break; }
 }
 
 var titleEl = document.getElementById('padjc-title');
 if (titleEl) { titleEl.textContent = label + ' — Support by Social Class'; }
 
 var html = '';
-for (var ci = 0; ci < Q._padj_classes.length; ci++) {
-    var cid = Q._padj_classes[ci];
+for (var ci = 0; ci < Q.padjClasses.length; ci++) {
+    var cid = Q.padjClasses[ci];
     var key = cid + '_' + pid;
     var val = Q[key] || 0;
     var niceLabel = cid.replace(/_/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
@@ -4185,7 +4189,7 @@ rows.forEach(function(row) {
 });
 !}
 
-= [+ _padj_current_party +] &mdash; Support by Social Class
+= [+ padjCurrentParty +] &mdash; Support by Social Class
 
 <p id="padjc-title"></p>
 <div id="padjc-container"></div>
