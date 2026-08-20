@@ -2296,6 +2296,17 @@ var econ_positive = Math.max(0,  econ_signal);  // 0 when bad, >0 when good
 var econ_negative = Math.max(0, -econ_signal);  // 0 when good, >0 when bad
 var econ_mixed    = 1 - Math.abs(econ_signal);  // peaks at 0, 1 when perfectly mixed
 
+// Persisted onto Q so the PARTY BEHAVIOR SYSTEM (computeTarget, later in
+// this tick) can read the economy signal without recomputing it. This is
+// a SEPARATE channel from the bloc-level nat/soc/pr push-pull above — the
+// per-party government/opposition reward-punish system below does not
+// compound with the bloc-influence system; it reads the same raw
+// econ_signal independently.
+Q.econ_signal   = econ_signal;
+Q.econ_positive = econ_positive;
+Q.econ_negative = econ_negative;
+Q.econ_mixed    = econ_mixed;
+
 // ============================================================
 // PHASE MULTIPLIERS
 // Now applied as multipliers on specific components of econ_negative/positive,
@@ -3631,6 +3642,147 @@ function _classAdj(party, c) {
 }
 
 
+Q.PARTY_BEHAVIORS = {
+    revleft: {
+        label:      'Revolutionary Left',
+        unrestMode: 'climb',
+        govGood: 0.65, govBad: 1.70,
+        oppGood: 1.00, oppBad: 1.15,
+    },
+
+
+    revright: {
+        label:      'Revolutionary Right',
+        unrestMode: 'climb',
+        govGood: 0.65, govBad: 1.70,
+        oppGood: 1.00, oppBad: 1.15,
+    },
+
+    refleft: {
+        label:      'Reformist Left',
+        unrestMode: 'linear',
+        govGood: 1.25, govBad: 0.65,
+        oppGood: 1.00, oppBad: 1.08,
+    },
+
+    refright: {
+        label:      'Reformist Right',
+        unrestMode: 'linear',
+        govGood: 1.25, govBad: 0.65,
+        oppGood: 1.00, oppBad: 1.08,
+    },
+
+    center: {
+        label:      'Establishment Center',
+        unrestMode: 'linear',
+        govGood: 1.35, govBad: 0.55,
+        oppGood: 1.00, oppBad: 1.00,
+    },
+};
+
+// Q.party_behavior — the actual party -> behavior-key assignment.
+// Centralized here; edit this map (or set Q.party_behavior[x] mid-game
+// via an event) to reassign any party's behavior. Parties not listed
+// fall back to 'center' (see _behaviorFor below), so new/splinter
+// parties added later degrade gracefully instead of erroring.
+Q.party_behavior = Q.party_behavior || {
+    kpd: 'revleft',
+    nsdap: 'revright',
+    spd: 'refleft',
+    dvp: 'refright',
+    wp: 'refright',
+    cnbl: 'refright',
+    z: 'center',
+    ddp: 'center',
+};
+
+// Human-readable label per party, stored on Q so it's inspectable/
+// displayable without reaching into Q.PARTY_BEHAVIORS at call sites.
+// Recomputed every tick so it always tracks the current assignment —
+// including live reassignment mid-game.
+for (const _bp of Object.keys(Q.party_behavior)) {
+    const _bKey = Q.party_behavior[_bp];
+    const _bDef = Q.PARTY_BEHAVIORS[_bKey];
+    Q[_bp + '_behavior_name'] = _bDef ? _bDef.label : 'Establishment Center';
+}
+
+function _behaviorFor(party) {
+    const key = Q.party_behavior[party] || 'center';
+    return Q.PARTY_BEHAVIORS[key] || Q.PARTY_BEHAVIORS.center;
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// GOV / OPPOSITION ECONOMY MULTIPLIER
+// Separate channel — reads Q.econ_signal directly, does not touch or
+// compound with the bloc-level influence/honeymoon/fatigue system in
+// OPINION DYNAMICS v2. Applied once per party inside computeTarget.
+// ─────────────────────────────────────────────────────────────────────
+
+function _govEconMult(party) {
+    const beh = _behaviorFor(party);
+    const s = (typeof Q.econ_signal === 'number') ? Q.econ_signal : 0; // -1..+1
+    const inGov = Q[party + '_in_government'] === 1;
+
+    if (inGov) {
+        return s >= 0
+            ? 1 + (beh.govGood - 1) * s
+            : 1 + (beh.govBad  - 1) * -s;
+    } else {
+        return s >= 0
+            ? 1 + (beh.oppGood - 1) * s
+            : 1 + (beh.oppBad  - 1) * -s;
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// REVOLUTIONARY UNREST POINTS ('climb' unrestMode)
+// Replaces the fast/reactive unrest_soc_hybrid / unrest_nat_hybrid term
+// for parties tagged revleft/revright. A persistent stock, not a spot
+// reading: it climbs while the economy is bad, with the increment
+// itself growing the worse conditions get (a point is added on top,
+// plus a bonus scaled by how bad things are), and bleeds off slowly
+// when conditions improve. This makes revolutionary rise gradual and
+// sticky rather than tracking the economy tick-to-tick.
+// ─────────────────────────────────────────────────────────────────────
+
+Q.revolutionary_unrest_points = Q.revolutionary_unrest_points || {};
+
+// computeTarget is called once per (party, class) pair — up to 5x per
+// party per tick in the MAIN DRIFT LOOP below. The stock must only
+// advance ONCE per tick regardless, so each party's climb is gated on
+// Q.tick via a per-party "last advanced" marker.
+Q._revolutionary_unrest_last_tick = Q._revolutionary_unrest_last_tick || {};
+
+function _tickRevolutionaryUnrest(party) {
+    const cur = Q.revolutionary_unrest_points[party] || 0;
+
+    // Already advanced this party's stock this tick (e.g. called again
+    // for a different class) — just return the current value untouched.
+    if (Q._revolutionary_unrest_last_tick[party] === Q.tick) {
+        return cur;
+    }
+    Q._revolutionary_unrest_last_tick[party] = Q.tick;
+
+    const neg = (typeof Q.econ_negative === 'number') ? Q.econ_negative : 0; // 0..1
+
+    if (neg > 0) {
+        // Base point for any bad-economy tick, PLUS a bonus that grows
+        // superlinearly with how bad it is — the worse the economy, the
+        // bigger the increment on top of the flat point.
+        const basePoint = 0.15;
+        const badnessBonus = Math.pow(neg, 1.6) * 0.9;
+        Q.revolutionary_unrest_points[party] = Math.min(20, cur + basePoint + badnessBonus);
+    } else {
+        // Good economy: slow bleed-off, never a hard reset — reflects
+        // that revolutionary sentiment built up over a crisis doesn't
+        // vanish the moment growth turns positive.
+        Q.revolutionary_unrest_points[party] = Math.max(0, cur - 0.05);
+    }
+
+    return Q.revolutionary_unrest_points[party];
+}
+
+
 //   unrest_nat_hybrid — for NATIONALIST-EXTREMIST parties (nsdap, dvfp, dnf).
 //     Crisis alone gives only a mild lift; crisis is a real amplifier
 //     only when nationalism is already elevated. This is the
@@ -3680,7 +3832,12 @@ function computeTarget(party, c) {
 
             let stable_baseline = nat_elevated * 6.0;
 
-            let crisis_contribution = unrest_nat_hybrid * 9.5;
+            // Behavior: revright ('climb') — crisis contribution now comes
+            // from the slow-building revolutionary unrest stock instead of
+            // the reactive unrest_nat_hybrid term. Scaled to land in a
+            // similar range to the old term (points cap at 20).
+            const nsdap_unrest_points = _tickRevolutionaryUnrest('nsdap');
+            let crisis_contribution = nsdap_unrest_points * 4.5;
 
             let soft = 40, hard = 120;
             let raw = (nat * 8.559) + stable_baseline + crisis_contribution;
@@ -3689,10 +3846,14 @@ function computeTarget(party, c) {
                 : soft + (hard - soft) * (1 - Math.exp(-(raw - soft) / 45));
 
             let identity = im.nsdap;
-            if (unrest_nat_hybrid > 1.2) identity = Math.max(identity, 1.0);
+            if (nsdap_unrest_points > 3) identity = Math.max(identity, 1.0);
 
             base = final_raw * identity;
             base *= _partyAdj('nsdap');
+
+            // Behavior: gov/opposition economy reward-punish — separate
+            // channel from the bloc-level nationalism push/pull above.
+            base *= _govEconMult('nsdap');
 
             // Young NSDAP boost: only applies pre-1930
             const young_nsdap = (Q.hitler_young_funded == 1 && Q.year < 1930);
@@ -3910,6 +4071,7 @@ function computeTarget(party, c) {
             let qol_grievance_boost = 1 + Math.min(1.2, (old_mid_qol_low * 0.7 + new_mid_qol_low * 0.5));
             base = rep * 19 * nat * 17 * middle_norm * qol_grievance_boost * im.wp;
             base *= _partyAdj('wp');
+            base *= _govEconMult('wp'); // Behavior: refright
 
             let old_middle_m = 1.70 * (1 + old_mid_qol_low * 0.35) * (Q.peoples_party === 1 ? 0.96 : 1);
             let new_middle_m = 1.60 * (1 + new_mid_qol_low * 0.30) * (Q.peoples_party === 1 ? 0.96 : 1);
@@ -3922,6 +4084,7 @@ function computeTarget(party, c) {
             if (Q.cnbl_banned) return 0;
             base = (rep * 11 + nat * 19) * (1 + Q.rural * 0.009) * im.cnbl;
             base *= _partyAdj('cnbl');
+            base *= _govEconMult('cnbl'); // Behavior: refright
             let rural_m = 1.80 * (1 + Math.min(Q.rural / 100, 0.4)) * (Q.landvolk_fury > 0 ? (1 + Math.min(0.25 * (Math.pow(1.15, Q.landvolk_fury) - 1), 4) + Math.min(0.06 * (Math.pow(1.85, Q.landvolk_fury) - 1), 3)) : 1);
 
             const class_mods = { workers: 0.25, old_middle: 0.18, new_middle: 0.15, rural: rural_m, unemployedc: 0.30 };
@@ -3931,9 +4094,18 @@ function computeTarget(party, c) {
         case 'kpd': {
             if (Q.kpd_banned) return 0;
             let buff = Q.april_challenge === 1 ? 1.30 : 1;
-    
-            base = soc * 34 * 1.9 * (1 + unrest_soc_hybrid * 0.13) * buff * im.kpd;
+
+            // Behavior: revleft ('climb') — replaces the reactive
+            // unrest_soc_hybrid term with the slow-building revolutionary
+            // unrest stock. Scaled down (/20 vs the old term's ~0-1.5
+            // range) since the stock itself climbs to a cap of 20.
+            const kpd_unrest_points = _tickRevolutionaryUnrest('kpd');
+            base = soc * 34 * 1.9 * (1 + (kpd_unrest_points / 20) * 1.6) * buff * im.kpd;
             base *= _partyAdj('kpd');
+
+            // Behavior: gov/opposition economy reward-punish — separate
+            // channel from the bloc-level socialism push/pull above.
+            base *= _govEconMult('kpd');
 
             let workers_m     = 1.45 * (Q.peoples_party === 1 ? 1.08 : 1);
             let old_middle_m  = 0.05 * (Q.peoples_party === 1 ? 0.92 : 1);
@@ -4038,6 +4210,11 @@ function computeTarget(party, c) {
 
     base = (r * 99 + s * 58) * im.spd * (eim.spd || 1.0) * campaign_boost * left_extremism_bump;
     base *= _partyAdj('spd');
+
+    // Behavior: refleft ('linear') — reactive unrest term above is
+    // unchanged; only the gov/opposition economy multiplier is added,
+    // as a separate channel from the bloc-level push/pull system.
+    base *= _govEconMult('spd');
 
     let m;
     if (c === 'workers') {
@@ -4149,6 +4326,7 @@ function computeTarget(party, c) {
                let nat_pen   = (Q.nationalism / 100) * 0.15;
                base = (rep * 47 * (1.1 + sec_bonus - nat_pen + edu_bonus)) * im.ddp;
                base *= _partyAdj('ddp');
+               base *= _govEconMult('ddp'); // Behavior: center
 
                const class_mods = {
                    workers:     (0.25) * (Q.peoples_party === 1 ? 0.93 : 1),
@@ -4166,6 +4344,7 @@ function computeTarget(party, c) {
                            + (Q.womens_rights     || 0) * 0.03;
                base = (rep * 0.30 + wp_strength + mittelstand_bonus - edu_pen) * 52 * im.ddp;
                base *= _partyAdj('ddp');
+               base *= _govEconMult('ddp'); // Behavior: center
 
                const class_mods = {
                    workers:     0.20 * (Q.peoples_party === 1 ? 0.93 : 1),
@@ -4184,6 +4363,7 @@ function computeTarget(party, c) {
                            + (Q.womens_rights     || 0) * 0.05;
                base = (rep * 0.30 + nat * 0.29 + jungdo - edu_pen) * 59 * im.ddp;
                base *= _partyAdj('ddp');
+               base *= _govEconMult('ddp'); // Behavior: center
 
                const class_mods = {
                    workers:     0.50 * (Q.peoples_party === 1 ? 0.93 : 1),
@@ -4203,6 +4383,7 @@ function computeTarget(party, c) {
             let scale       = Q.dvp_right_shift ? 2.2 : 1.8;
             base = factor * 40 * scale * (im.dvp || 1);
             base *= _partyAdj('dvp');
+            base *= _govEconMult('dvp'); // Behavior: refright
 
             const class_mods = {
                 workers:     0.15 * (Q.peoples_party === 1 ? 0.92 : 1),
@@ -4224,6 +4405,12 @@ function computeTarget(party, c) {
             let floor = cath_bonus * 7.5 * gov_mod;
             base = Math.max(base, floor);
             base *= _partyAdj('z');
+
+            // Behavior: center — economy-aware gov/opposition multiplier,
+            // separate channel layered on top of the existing static
+            // gov_mod above (which stays as a flat in/out-of-government
+            // flavor bonus; this adds the economic performance dimension).
+            base *= _govEconMult('z');
 
             const isChristCon = Q.z_ideology === "Christian Conservatism";
             const isCathLabor = Q.z_ideology === "Catholic Laborism";
