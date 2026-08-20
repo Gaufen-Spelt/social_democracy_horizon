@@ -4139,7 +4139,7 @@ Fine-tune each active party's national vote share and, if you drill in, its supp
 
 @padj_class
 new-page: true
-view-if: _padj_current_party != ""
+view-if: _padj_current_party 
 on-display: {!
 var holder = document.getElementById('padjc-container');
 if (!holder) { return; }
