@@ -2,9 +2,10 @@ Title: Walther Lambach's Article...
 subtitle: Monarchismus, People's Conservatism and Hindenburg's tower.
 tags: event
 new-page: true
-view-if: lambach_flavor_0_trigger = 1 and lambach_article_timer <= 0
+view-if: lambach_flavor_trigger_1 = 1 and lambach_article_timer <= 0
 on-arrival: lambach_article_seen = 1
 face-image: img/portraits/LambachWalther.jpg
+max-visits: 1 
 
 = Undisputable's Article
 
