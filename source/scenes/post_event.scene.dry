@@ -290,23 +290,6 @@ if (Q.government_parties) {
 
 Q.coalition_tension = Math.round(Q.coalition_tension * 10) / 10;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // === VARIABLE RANGE CAPPING ===
 
 Q.capped_var_ranges = {
@@ -361,15 +344,7 @@ Q.apply_var_caps = function() {
 
 Q.apply_var_caps();
 
-
-
-
-
-
-
-
-
-// === MINISTRY REASSIGNMENT (runs every tick) ===
+// === MINISTRY REASSIGNMENT ===
 var portfolios = ["foreign_minister", "interior_minister", "justice_minister", "labor_minister",
                    "economic_minister", "finance_minister", "agriculture_minister", "transport_minister"];
 
@@ -397,12 +372,6 @@ for (var i = 0; i < portfolios.length; i++) {
         }
     }
 }
-
-// === MINISTER NAME / PARTY CONSISTENCY CHECK ===
-// Ensures the displayed minister name always matches the party
-// currently holding that portfolio. Catches any drift caused by
-// party-field changes that happen outside the reassignment loop above
-// (e.g. a death, resignation, or manual Q.<port>_party edit elsewhere).
 
 if (!Q.minister_name_table) {
     Q.minister_name_table = {
@@ -824,25 +793,6 @@ if (Q.month_actions >= 1) {
 
 
 
-// QOL
-
-// INSTA ADOPT
-
-if (Q.nationalization_support >= 5) {
-    Q.nationalization_adopted = 1;
-}
-
-if (Q.moderate_plan_support >= 4) {
-    Q.moderate_plan_adopted = 1;
-}
-
-if (Q.austerity_support >= 2) {
-    Q.centrist_adopted = 1;
-}
-
-if (Q.wtb_support >= Q.wtb_threshold) {
-    Q.wtb_adopted = 1;
-}
 
 
 
@@ -1462,6 +1412,27 @@ if (Q.year >= 1932 && Q.communist_revolution_timer > 10 && Q.april_challenge == 
     Q.rfb_strength += 20;
 }
 
+// QOL
+
+// INSTA ADOPT
+
+if (Q.nationalization_support >= 5) {
+    Q.nationalization_adopted = 1;
+}
+
+if (Q.moderate_plan_support >= 4) {
+    Q.moderate_plan_adopted = 1;
+}
+
+if (Q.austerity_support >= 2) {
+    Q.centrist_adopted = 1;
+}
+
+if (Q.wtb_support >= Q.wtb_threshold) {
+    Q.wtb_adopted = 1;
+}
+
+
 
 
 // MODIFIERS OF PARTY ADVISORS AND OTHER STUFF
@@ -1486,8 +1457,6 @@ const key = strengthMap[Q.ideology];
 if (key && Q[key] < 30) { Q[key] += 1; }
 
 
-
-
 // --- reformist_relation_pull ---
 
 if (Q.ideology == "reformist") {
@@ -1510,8 +1479,6 @@ if (Q.ideology == "reformist") {
         Q[relKey] += BASE_GAIN * falloff * SPEED;
     }
 }
-
-
 
 
 // DUES' impact on dissent
@@ -1552,11 +1519,12 @@ applyDuesDissent(Q.dues_rural,       2, 0.3, 'neorevisionist_dissent');
 
 
 
+
+
+
 // ÷====================== SMALL CHECKERS FOR CABINETS ===============÷=======
 
 Q.bruning_cabinet = (Q.chancellor === "Brüning") ? 1 : 0;
-
-// === CABINET TYPE FLAGS ===
 Q.papen_cabinet     = (Q.chancellor === "Papen")      ? 1 : 0;
 Q.schleicher_cabinet = (Q.chancellor === "Schleicher") ? 1 : 0;
 
@@ -2049,54 +2017,9 @@ if ((Q.wtb_timer || 0) > 0) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // ============================================
 // PRESIDENTIAL PATIENCE
 // ============================================
-
-
-
 
 if (Q.presidential_powers == 0 && !Q.government_dismissed) {
 
@@ -5438,39 +5361,6 @@ if (this.ui && this.ui.show_portraits) {
 
 
 
-var parties = ['z','srpd','ddp','dvp','csrp','sapd','kpd','bvp','wp','cnbl','dhp','bb','vrp','kvp','csvd','dnvp','nsdap', 'dnf'];
-
-if (!Q.math_broken) {
-    // NORMAL: Coalition dissent is a straightforward sum
-    var total = 0;
-    for (var i = 0; i < parties.length; i++) {
-        var p = parties[i];
-        if (Q[p + '_in_government']) {
-            total += Q[p + '_dissent'] || 0;
-        } else {
-            Q[p + '_dissent'] = 0;
-        }
-    }
-    Q.coalition_dissent = total;
-} else {
-    // MATH BROKEN: Dissent arithmetic is unreliable
-    var total = Q.impossible_add(0, 0); // "Zero" that may not be zero
-    for (var i = 0; i < parties.length; i++) {
-        var p = parties[i];
-        if (Q[p + '_in_government']) {
-            total = Q.impossible_add(total, Q[p + '_dissent'] || 0);
-        } else {
-            // MATH BROKEN: Setting to zero may produce non-zero
-            Q[p + '_dissent'] = Q.impossible_multiply(0, 1);
-        }
-    }
-    Q.coalition_dissent = total;
-    console.log("DISSENT CHAOS: Coalition dissent = " + Q.coalition_dissent);
-}
-
-
-
-
 
 
 
@@ -6881,12 +6771,12 @@ if (Q.lambach_stage == 1 && Q.flavor_lambach_1_dnvp != 1) {
 }
 
 // 4. Lambach Article Trigger
-if (((Q.year == 1928 && Q.month >= 6) || (Q.year == 1929 && Q.month <= 1)) && (Q.dnvp_pct < (Q.old_dnvp_r - 2.33) || Q.dnvp_pct < (Q.dnvp_r - 5) || Q.dnvp_pct < 16.3) && Q.lambach_flavor_0_trigger != 1 && Q.lambach_article_timer == 0) {
+if (((Q.year == 1928 && Q.month >= 6) || (Q.year == 1929 && Q.month <= 1)) && (Q.dnvp_pct < (Q.old_dnvp_r - 2.33) || Q.dnvp_pct < (Q.dnvp_r - 5) || Q.dnvp_pct < 16.3) && Q.lambach_flavor_trigger_1 != 1) {
     Q.lambach_article_timer = 2;
     if (!Q.timers.includes('lambach_article')) {
         Q.timers.push('lambach_article');
     }
-    Q.lambach_flavor_0_trigger = 1;
+    Q.lambach_flavor_trigger_1 = 1;
 }
 
 // Lambach momentum
