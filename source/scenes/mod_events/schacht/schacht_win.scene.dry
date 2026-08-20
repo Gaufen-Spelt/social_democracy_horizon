@@ -3,7 +3,7 @@ subtitle: Schacht wins.
 tags: event
 max-visits: 1
 new-page: true
-on-arrival: economic_growth -= 3
+on-arrival: economic_growth -= 3; reichsbank_siege = 0
 view-if: reichsbank_siege >= 1 and spd_in_government <= 0
 face-image: img/achievements/schachtmatt.png
 
