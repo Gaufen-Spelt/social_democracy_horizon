@@ -4143,7 +4143,7 @@ rows.forEach(function(row) {
         if (Q.padjCustomParties.indexOf(pid) !== -1) {
             Q['custom_party_' + pid] = 1;
         }
-        window.dendryUI.dendryEngine.goToScene('padj_class');
+        window.dendryUI.dendryEngine.goToScene('root.padj_class');
     });
 });
 !}
