@@ -1,5 +1,11 @@
 title: Achievements
 new-page: true
+on-departure: {!
+window.disableFocusMode()
+!}
+on-arrival: {!
+window.enableFocusMode()
+!}
 
 = Achievements guide
 
