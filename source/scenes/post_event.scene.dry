@@ -1512,7 +1512,25 @@ applyDuesDissent(Q.dues_rural,       2, 0.3, 'neorevisionist_dissent');
 
 
 
+// schachtmatt SCHACHT SIEGE
 
+if (Q.reichsbank_siege >= 1) {
+    if (Q.dvp_in_government >= 1) {
+    Q.dvp_relation -= 1;
+}
+    if (Q.presidential_patience >= 50) {
+        Q.presidential_patience -= 2;
+    } else if (Q.presidential_patience >= 30) {
+        Q.presidential_patience -= 1;
+    } else if (Q.presidential_patience >= 10) {
+        Q.presidential_patience -= 0.5;
+    }
+Q.economic_growth -= 0.1;
+Q.workers -= 0.1;
+Q.unemployed += 0.1;
+Q.budget -= 0.05;
+Q.capital_strike_progress += 0.2;
+}
 
 
 
