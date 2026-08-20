@@ -29,7 +29,7 @@ title: Negotiate with Paul von Hindenburg
 subtitle: As his old friend and influential head of Prussia, he can attempt to reason with him.
 view-if: (spd_prussia = 1 or prussian_government = "SPD") and president = "Hindenburg" and advisor_action_timer <= 0
 unavailable-subtitle: [? if advisor_action_timer > 0 : [+ advisor_action_timer +] months before next advisor action. ?]
-on-arrival: presidential_patience += 10; presidential_patience *= 1.20; advisor_action_timer += 10;
+on-arrival: presidential_patience += 5; presidential_patience *= 1.10; advisor_action_timer += 10;
 
 We have calmed down Hindenburg's mind a bit, just enough to keep him from sacking our government in multiple months. Braun has talked him out about pragmatism of SPD.
 
