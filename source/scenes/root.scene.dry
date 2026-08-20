@@ -2689,6 +2689,7 @@ Choose your challenges!
 - @april: Vanilla Superesque Normal Gamemode of First of Fourth.
 - @separator: -----------------------------
 - @party_picker: Party Selector
+- @party_adjust: Party adjustor.
 - @start_2: Back
 
 @separator
@@ -4027,3 +4028,156 @@ go-to: post_event
 on-departure: {!
 window.disableFocusMode()
 !}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@party_adjust
+new-page: true
+on-arrival: {!
+// Build (once) the master party metadata table used by this menu.
+// id -> [display label, national var, banned var]
+if (!Q._padj_parties) {
+    Q._padj_parties = [
+        ['spd','SPD'], ['kpd','KPD'], ['z','Z'], ['bvp','BVP'], ['ddp','DDP'],
+        ['dvp','DVP'], ['dnvp','DNVP'], ['nsdap','NSDAP'], ['wp','WP'],
+        ['bb','BB'], ['dhp','DHP'], ['csrp','CSRP'], ['vrp','VRP'],
+        ['aspd','ASPD'], ['dtsp','DTSP'], ['rlb','RLB'], ['cnbl','CNBL'],
+        ['sapd','SAPD'], ['srpd','SRPD'], ['csvd','CSVD'], ['kvp','KVP'],
+        ['dvfp','DVFP'], ['hl','HL'], ['kpo','KPO'], ['vnr','VNR'],
+        ['sl','SL'], ['lb','LB'], ['rdp','RDP'], ['sls','SLS'],
+        ['cvp','CVP'], ['dbp','DBP'], ['dsbp','DSBP'], ['dnf','DNF'],
+        ['faud','FAUD'], ['kapd','KAPD'], ['other','Other']
+    ];
+}
+Q._padj_classes = ['workers','old_middle','new_middle','rural','unemployed'];
+
+// Ensure every possible national/class var exists so sliders never read undefined
+for (var pi = 0; pi < Q._padj_parties.length; pi++) {
+    var pid = Q._padj_parties[pi][0];
+    if (Q[pid + '_r'] === undefined) { Q[pid + '_r'] = 0; }
+    for (var ci = 0; ci < Q._padj_classes.length; ci++) {
+        var cid = Q._padj_classes[ci];
+        var key = cid + '_' + pid;
+        if (Q[key] === undefined) { Q[key] = 0; }
+    }
+}
+!}
+
+= Adjust Party Support
+
+Fine-tune each active party's national vote share and, if you drill in, its support by social class. Values are clamped between -100 and 100. Only parties currently active in your game (added via the Party Selector, or vanilla parties that have not been banned) appear below.
+
+{! window.padjRenderList = function() {
+    var out = '';
+    for (var i = 0; i < Q._padj_parties.length; i++) {
+        var pid = Q._padj_parties[i][0];
+        var label = Q._padj_parties[i][1];
+        var active = Q.parties && Q.parties.includes(pid) && !Q[pid + '_banned'];
+        if (!active) continue;
+        var val = Q[pid + '_r'] || 0;
+        out += '<div class="padj-row" style="margin:10px 0;padding:8px;border-bottom:1px solid #444;">';
+        out += '<div style="display:flex;justify-content:space-between;align-items:center;">';
+        out += '<strong>' + label + '</strong>';
+        out += '<span id="padj-val-' + pid + '">' + val.toFixed(2) + '%</span>';
+        out += '</div>';
+        out += '<input type="range" min="-100" max="100" step="0.01" value="' + val + '" ';
+        out += 'id="padj-slider-' + pid + '" style="width:100%;" ';
+        out += 'oninput="window.padjUpdate(\'' + pid + '\', this.value)">';
+        out += '<div style="text-align:right;margin-top:4px;">';
+        out += '<a href="#" onclick="window.padjGoClass(\'' + pid + '\');return false;" style="font-size:0.85em;">Class breakdown &rarr;</a>';
+        out += '</div>';
+        out += '</div>';
+    }
+    return out || '<em>No active parties. Add some in the Party Selector first.</em>';
+};
+
+window.padjUpdate = function(pid, val) {
+    var v = parseFloat(val);
+    if (isNaN(v)) v = 0;
+    if (v < -100) v = -100;
+    if (v > 100) v = 100;
+    Q[pid + '_r'] = v;
+    var span = document.getElementById('padj-val-' + pid);
+    if (span) span.textContent = v.toFixed(2) + '%';
+};
+
+window.padjGoClass = function(pid) {
+    Q._padj_current_party = pid;
+    window.dendryGoTo ? window.dendryGoTo('padj_class') : (window.location.hash = '#padj_class');
+};
+
+document.write('<div id="padj-list">' + window.padjRenderList() + '</div>');
+!}
+
+- @party_adjust: Refresh
+- @challenge: Back
+
+// ------------------------------------------------------------
+// CLASS BREAKDOWN SUB-SCREEN
+// Reached by clicking "Class breakdown" on a party row above.
+// Q._padj_current_party holds which party id we're editing.
+// ------------------------------------------------------------
+@padj_class
+new-page: true
+view-if: _padj_current_party != ""
+
+= [+ _padj_current_party +] &mdash; Support by Social Class
+
+{! 
+var pid = Q._padj_current_party;
+var label = 'Party';
+for (var i = 0; i < Q._padj_parties.length; i++) {
+    if (Q._padj_parties[i][0] === pid) { label = Q._padj_parties[i][1]; break; }
+}
+var out = '<p>Adjust ' + label + '\'s support among each social class. These feed into the national vote calculation alongside the national slider.</p>';
+out += '<div id="padj-class-list">';
+for (var ci = 0; ci < Q._padj_classes.length; ci++) {
+    var cid = Q._padj_classes[ci];
+    var key = cid + '_' + pid;
+    var val = Q[key] || 0;
+    var niceLabel = cid.replace('_', ' ').replace(/\b\w/g, function(c){return c.toUpperCase();});
+    out += '<div class="padj-row" style="margin:10px 0;padding:8px;border-bottom:1px solid #444;">';
+    out += '<div style="display:flex;justify-content:space-between;align-items:center;">';
+    out += '<strong>' + niceLabel + '</strong>';
+    out += '<span id="padjc-val-' + key + '">' + val.toFixed(2) + '%</span>';
+    out += '</div>';
+    out += '<input type="range" min="-100" max="100" step="0.01" value="' + val + '" ';
+    out += 'id="padjc-slider-' + key + '" style="width:100%;" ';
+    out += 'oninput="window.padjcUpdate(\'' + key + '\', this.value)">';
+    out += '</div>';
+}
+out += '</div>';
+document.write(out);
+
+window.padjcUpdate = function(key, val) {
+    var v = parseFloat(val);
+    if (isNaN(v)) v = 0;
+    if (v < -100) v = -100;
+    if (v > 100) v = 100;
+    Q[key] = v;
+    var span = document.getElementById('padjc-val-' + key);
+    if (span) span.textContent = v.toFixed(2) + '%';
+};
+!}
+
+- @padj_class: Refresh
+- @party_adjust: Back to Party List
