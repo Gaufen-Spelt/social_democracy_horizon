@@ -4131,11 +4131,6 @@ document.write('<div id="padj-list">' + window.padjRenderList() + '</div>');
 - @party_adjust: Refresh
 - @challenge: Back
 
-// ------------------------------------------------------------
-// CLASS BREAKDOWN SUB-SCREEN
-// Reached by clicking "Class breakdown" on a party row above.
-// Q._padj_current_party holds which party id we're editing.
-// ------------------------------------------------------------
 @padj_class
 new-page: true
 view-if: _padj_current_party != ""
