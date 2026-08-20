@@ -35,7 +35,7 @@ on-arrival: reformist_dissent += 20; labor_dissent += 10; left_dissent -= 10; ce
 choose-if: ideology != "reformist" and (left_strength + center_strength / 2) > 50 and budget >= -2 and not dvp_in_government
 unavailable-subtitle: [? if ideology == "reformist" : Impossible for a Reformist leadership. ?][? if (left_strength + center_strength / 2) <= 50 : The Left and Center factions are not strong enough. ?][? if budget < -2 : Our deficit is too high. ?][? if dvp_in_government : Cannot be done while the DVP is in government. ?]
 
-Hilferding has decided to not resign in the face of criticism of Reichsbank President, being pushed to stand strong by his left wing base of party. If the issue is not resolved soon, perhaps our doom is no closer than one year. **Reichsbank's siege** been activated.
+Hilferding has decided to not resign in the face of criticism of Reichsbank President, being pushed to stand strong by his left wing base of party. If the issue is not resolved soon, perhaps our doom is no closer than of one year.
 
 @hilferding_resign
 on-arrival: finance_minister_party = "DVP" if dvp_in_government; finance_minister_party = "I" if not dvp_in_government; finance_minister = "Moldenhauer"
