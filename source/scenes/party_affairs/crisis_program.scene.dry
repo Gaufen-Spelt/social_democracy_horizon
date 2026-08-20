@@ -8,7 +8,7 @@ if (Q.year < 1931) {
 Q.wtb_threshold = Q.wtb_threshold || 10;
 }
 
-if (Q.year >= 1931 && Q.wtb_trigger_flavor_1 == 0) {
+if (Q.year >= 1931 && Q.wtb_trigger_flavor_1 != 1) {
 Q.wtb_threshold = 6;
 Q.wtb_trigger_flavor_1 = 1;
 }
