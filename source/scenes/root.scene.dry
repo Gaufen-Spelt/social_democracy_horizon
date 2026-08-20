@@ -4133,7 +4133,6 @@ document.write('<div id="padj-list">' + window.padjRenderList() + '</div>');
 
 @padj_class
 new-page: true
-view-if: _padj_current_party != ""
 
 = [+ _padj_current_party +] &mdash; Support by Social Class
 
