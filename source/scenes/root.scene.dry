@@ -4070,9 +4070,20 @@ if (!Q.padjParties) {
 }
 Q.padjClasses = ['workers','old_middle','new_middle','rural','unemployedc'];
 
+// Parties in this set have no other entry point — the party-adjust
+// slider is the only way to add them — so the party checker accepts
+// custom_party_<pid> = 1 as proof of validity for these ids. Vanilla
+// parties (SPD, KPD, Z, BVP, DDP, DVP, DNVP, NSDAP, WP) are not in
+// this set since they're already valid through the normal party list.
+Q.padjCustomParties = [
+    'sapd','srpd','csvd','kvp','dvfp','cnbl','bb','dhp','vrp','csrp',
+    'aspd','hl','kpo','vnr','sl','lb','rdp','sls','cvp','dtsp','dbp',
+    'dsbp','dnf','faud','kapd','rlb'
+];
+
 for (var pi = 0; pi < Q.padjParties.length; pi++) {
     var pid = Q.padjParties[pi][0];
-    if (Q[pid + '_r'] === undefined) { Q[pid + '_r'] = 0; }
+    if (Q[pid + '_adjustment'] === undefined) { Q[pid + '_adjustment'] = 0; }
     for (var ci = 0; ci < Q.padjClasses.length; ci++) {
         var key = Q.padjClasses[ci] + '_' + pid;
         if (Q[key] === undefined) { Q[key] = 0; }
@@ -4091,7 +4102,7 @@ for (var i = 0; i < Q.padjParties.length; i++) {
     var label = Q.padjParties[i][1];
     var active = Q.parties && Q.parties.indexOf(pid) !== -1 && !Q[pid + '_banned'];
     if (!active) { continue; }
-    var val = Q[pid + '_r'] || 0;
+    var val = Q[pid + '_adjustment'] || 0;
     html += '<div class="padj-row" data-pid="' + pid + '" style="margin:10px 0;padding:8px;border-bottom:1px solid #444;">';
     html += '<div style="display:flex;justify-content:space-between;align-items:center;">';
     html += '<strong>' + label + '</strong>';
@@ -4103,17 +4114,7 @@ for (var i = 0; i < Q.padjParties.length; i++) {
 }
 holder.innerHTML = html || '<em>No active parties. Add some in the Party Selector first.</em>';
 
-// Wire listeners AFTER innerHTML is set — string attributes like
-// oninput="..." are unreliable here since Q/state aren't in global
-// scope; addEventListener closures over the real Q/state are.
-//
-// NOTE: "this" inside on-display is bound to the DendryEngine instance
-// (see runActions -> fn.call(context, state, state.qualities) in the
-// engine), NOT to the state object. state.qualities does not exist on
-// the engine, so "var state = this;" followed by "state.qualities[...]"
-// silently threw inside the listener and nothing ever got saved. Q is
-// the correct live reference — it's the second on-display parameter,
-// which the engine always sets to state.qualities — so use Q directly.
+
 var rows = holder.querySelectorAll('.padj-row');
 rows.forEach(function(row) {
     var pid = row.getAttribute('data-pid');
@@ -4126,13 +4127,22 @@ rows.forEach(function(row) {
         if (isNaN(v)) { v = 0; }
         if (v < -100) { v = -100; }
         if (v > 100) { v = 100; }
-        Q[pid + '_r'] = v;
+        Q[pid + '_adjustment'] = v;
         valSpan.textContent = v.toFixed(2) + '%';
+        // This slider is the only way to add these custom/minor
+        // parties, so satisfy the party checker's custom_party_<pid>
+        // condition as soon as the party is actually adjusted here.
+        if (Q.padjCustomParties.indexOf(pid) !== -1) {
+            Q['custom_party_' + pid] = 1;
+        }
     });
 
     drill.addEventListener('click', function(e) {
         e.preventDefault();
         Q.padjCurrentParty = pid;
+        if (Q.padjCustomParties.indexOf(pid) !== -1) {
+            Q['custom_party_' + pid] = 1;
+        }
         window.dendryUI.dendryEngine.goToScene('padj_class');
     });
 });
@@ -4192,6 +4202,9 @@ rows.forEach(function(row) {
         if (v > 100) { v = 100; }
         Q[key] = v;
         valSpan.textContent = v.toFixed(2) + '%';
+        if (Q.padjCustomParties && Q.padjCustomParties.indexOf(pid) !== -1) {
+            Q['custom_party_' + pid] = 1;
+        }
     });
 });
 !}
