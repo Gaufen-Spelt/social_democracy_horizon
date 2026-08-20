@@ -135,6 +135,7 @@ Q.next_election_month_prussia = 5;
 Q.next_election_year_prussia = 1928;
 Q.ministerpresident = "Braun";
 Q.ministerpresident_party = "SPD";
+Q.mp_party_prussia = "SPD";
 
 Q.dues_workers = 1; 
 Q.dues_unemployed = 0.5; 
