@@ -22,7 +22,9 @@ if (Q.peoples_party >= 1) {
 }
 !}
 
+<hr>
 = Status
+<hr>
 
 [+ weeks: monther +], [+ month : month +] [+ year +]
 
@@ -32,7 +34,9 @@ Next election: [+ next_election_month : month +] [+ next_election_year +]
 
 Next presidential election: [+ next_presidential_election_month : month +] [+ next_presidential_election_year +]
 
+<hr>
 = Government
+<hr>
 
 President: [+ president +] ([+ president_party +])
 
@@ -57,8 +61,8 @@ Reichsbank President: [+ reichsbank_president +]
 Reichstag President: [+ reichstag_president +]
 
 <hr>
-
 = SPD
+<hr>
 
 SPD Leadership: [+ spd_party_leader +]
 
