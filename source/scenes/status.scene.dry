@@ -145,11 +145,15 @@ for (var i = 0; i < Q.parties.length; i++) {
 Q.party_ideology_leadership_html = ideologyHtml;
 !}
 
+<hr>
 = Parties
+<hr>
 
 [+ party_ideology_leadership_html +]
 
+<hr>
 = Internal Factions of the SPD
+<hr>
 
 Internal dissent: [+ dissent_percent : dissent +] [? if deterministic_mode == 1: [+ dissent_percent +] ?]
 
@@ -163,7 +167,9 @@ Internal dissent: [+ dissent_percent : dissent +] [? if deterministic_mode == 1:
 
 [? if neorevisionism > 0 : Neorevisionist / Militant Democrats strength: [+ neorevisionist_strength : strength +] [? if deterministic_mode == 1: [+ neorevisionist_strength +] ?], dissent: [+ neorevisionist_dissent : dissent +] [? if deterministic_mode == 1: [+ neorevisionist_dissent +] ?] ?] [? if neorevisionism > 0 and neorev_split: Neorevisionists have defected from our party! ?]
 
-= Support for the Forces
+<hr>
+= National Sentiment
+<hr>
 
 Support for the Republic: [+ pro_republic_disp +]%
 
@@ -204,8 +210,9 @@ if (Q.ruhr_labor_strike == 1) {
 
 !}
 
-
+<hr>
 = Balance of Paramilitary Power
+<hr>
 
 {!<span class="tooltip-text" title="Effective strength share, weighted by militancy/loyalty.">Forces</span>!}
 
