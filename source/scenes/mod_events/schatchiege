@@ -1,0 +1,24 @@
+title: Schacht's Siege.
+subtitle: We are cornered.
+tags: event
+max-visits: 1
+new-page: true
+on-arrival: economic_growth -= 3
+view-if: year >= 1930 and reichsbank_siege >= 1 and spd_in_government >= 1
+face-image: img/achievements/schachtmatt.png
+
+= Schacht has declared the siege against our government.
+
+On the morning of 5th January, we, specifically Otto Wels, have received simple letter from one our men.
+
+It's content:
+
+> For all best of my judgement, socialist government is currently sabotaging the Reich and the Reichsbank, being unconstructive in negotiations between me, Hjalmar Schacht, and current finance minister holder, Rudolf Hilferding. As of now, I will not give loan to the Reichgovernment in the form of 33 million reichsmarks and I will seek your assistance to sack the current government in order to enable the new ruling.
+
+>> Hjalmar Schacht.
+
+It was expected that our resistance would not be treated very well by reactionary. However, our situation is now in mortal danger and **we can't afford to make mistake in deficit.**
+
+(Schacht's siege is activated.)
+
+- @root: To the hell with banker. We ought to survive this.
