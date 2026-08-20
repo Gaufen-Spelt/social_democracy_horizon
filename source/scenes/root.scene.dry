@@ -4068,7 +4068,7 @@ if (!Q.padjParties) {
         ['faud','FAUD'], ['kapd','KAPD'], ['other','Other']
     ];
 }
-Q.padjClasses = ['workers','old_middle','new_middle','rural','unemployed'];
+Q.padjClasses = ['workers','old_middle','new_middle','rural','unemployedc'];
 
 for (var pi = 0; pi < Q.padjParties.length; pi++) {
     var pid = Q.padjParties[pi][0];
@@ -4105,8 +4105,15 @@ holder.innerHTML = html || '<em>No active parties. Add some in the Party Selecto
 
 // Wire listeners AFTER innerHTML is set — string attributes like
 // oninput="..." are unreliable here since Q/state aren't in global
-// scope; addEventListener closures over the real state.qualities are.
-var state = this;
+// scope; addEventListener closures over the real Q/state are.
+//
+// NOTE: "this" inside on-display is bound to the DendryEngine instance
+// (see runActions -> fn.call(context, state, state.qualities) in the
+// engine), NOT to the state object. state.qualities does not exist on
+// the engine, so "var state = this;" followed by "state.qualities[...]"
+// silently threw inside the listener and nothing ever got saved. Q is
+// the correct live reference — it's the second on-display parameter,
+// which the engine always sets to state.qualities — so use Q directly.
 var rows = holder.querySelectorAll('.padj-row');
 rows.forEach(function(row) {
     var pid = row.getAttribute('data-pid');
@@ -4119,13 +4126,13 @@ rows.forEach(function(row) {
         if (isNaN(v)) { v = 0; }
         if (v < -100) { v = -100; }
         if (v > 100) { v = 100; }
-        state.qualities[pid + '_r'] = v;
+        Q[pid + '_r'] = v;
         valSpan.textContent = v.toFixed(2) + '%';
     });
 
     drill.addEventListener('click', function(e) {
         e.preventDefault();
-        state.qualities.padjCurrentParty = pid;
+        Q.padjCurrentParty = pid;
         window.dendryUI.dendryEngine.goToScene('padj_class');
     });
 });
@@ -4172,7 +4179,7 @@ for (var ci = 0; ci < Q.padjClasses.length; ci++) {
 }
 holder.innerHTML = html;
 
-var state = this;
+// Same fix as @party_adjust: use Q directly, not "this"/state.qualities.
 var rows = holder.querySelectorAll('.padjc-row');
 rows.forEach(function(row) {
     var key = row.getAttribute('data-key');
@@ -4183,7 +4190,7 @@ rows.forEach(function(row) {
         if (isNaN(v)) { v = 0; }
         if (v < -100) { v = -100; }
         if (v > 100) { v = 100; }
-        state.qualities[key] = v;
+        Q[key] = v;
         valSpan.textContent = v.toFixed(2) + '%';
     });
 });
