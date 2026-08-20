@@ -80,7 +80,7 @@ Q.democratization_disp = Q.democratization;
 Q.radicalization_disp = Q.radicalization;
 
 var partyNameOverrideIdeology = {
-    ddp: 'DDP/DStP'
+    ddp: 'Q.ddp_name'
 };
 
 var partyNameOverrideRelations = {
@@ -121,6 +121,11 @@ for (var i = 0; i < Q.parties.length; i++) {
 
         ideologyHtml += label + " Ideology: " + ideology + "<br>" +
                          label + " Leadership: " + leader + "<br>";
+
+        var behaviorName = Q[p + '_behavior_name'];
+        if (behaviorName) {
+            ideologyHtml += label + " Behavior: " + behaviorName + "<br>";
+        }
 
         if (votes > 0) {
             var relLabel = partyLabelRelations(p);
