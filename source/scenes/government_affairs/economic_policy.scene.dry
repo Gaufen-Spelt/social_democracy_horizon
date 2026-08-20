@@ -67,18 +67,6 @@ view-if: centrist_adopted = 1 and austerity_progress < 3
 choose-if: unemployed >= 8
 on-arrival: budget += 1; austerity_progress += 1; unemployed += 1.5; inflation -= 0.3; workers_spd -= 4; unemployed_spd -= 6; old_middle_spd += 3*(1-dissent); new_middle_spd += 2*(1-dissent); rural_spd += 1*(1-dissent); z_relation += 4; ddp_relation += 5; dvp_relation += 4; dnvp_relation += 3 if dnvp_line == 1; center_strength += 5; labor_dissent += 8; left_dissent += 8; coalition_dissent -= 1; capital_strike_progress -= 1 if capital_strike_progress > 0; workers_nsdap += 3; unemployed_nsdap += 4; workers_kpd += 2; economic_growth -= 0.08; demand_impulse -= 0.08; coup_progress += 1 if (sa_strength + sh_strength) > 1500
 
-[? if austerity_progress == 1 : We have begun implementing austerity measures. Government spending is cut, welfare programs are reduced, and fiscal discipline is restored. The Finance Ministry proudly announces a balanced budget. ?]
-
-[? if austerity_progress > 1 : We continue our policy of fiscal restraint. Budget surpluses accumulate while unemployment rises. The bourgeois parties praise our "responsible governance." ?]
-
-The middle classes and bourgeois parties approve: "Finally, fiscal sanity returns to Germany!" International creditors express confidence. Inflation cools.
-
-But workers suffer. Unemployment insurance is cut. Public works are cancelled. Laid-off workers have nowhere to turn. The extremist parties—both Nazi and Communist—gain among the desperate.
-
-[? if left_strength > 30 or labor_strength > 30 : Our left and labor factions are furious. "We're implementing Brüning's policies under a red banner! This is a betrayal of the working class!" ?]
-
-[? if in_weimar_coalition or in_grand_coalition : Our coalition partners appreciate our fiscal responsibility, making governance smoother. ?]
-
 @implement_austerity_harsh
 title: Implement harsh austerity measures.
 subtitle: +2 budget. Severe cuts to restore fiscal balance quickly.
@@ -88,16 +76,6 @@ choose-if: unemployed >= 12
 on-arrival: budget += 2; austerity_progress += 2; unemployed += 3; inflation -= 0.5; workers_spd -= 8; unemployed_spd -= 10; old_middle_spd += 4*(1-dissent); new_middle_spd += 3*(1-dissent); z_relation += 6; ddp_relation += 7; dvp_relation += 6; center_strength += 8; labor_dissent += 15; left_dissent += 15; reformist_dissent += 8; coalition_dissent -= 2; capital_strike_progress -= 2 if capital_strike_progress > 0; workers_nsdap += 5; unemployed_nsdap += 6; workers_kpd += 4; economic_growth -= 0.15; pro_republic -= 2; demand_impulse -= 0.15; coup_progress += 2 if (sa_strength + sh_strength) > 1500
 achievement: wirtschaftspolitik
 
-We implement draconian austerity: massive welfare cuts, civil service layoffs, suspension of unemployment benefits. The Finance Ministry declares Germany "fiscally sound" once more.
-
-The bourgeois press celebrates: "Responsible leadership saves the Mark!" International bankers praise our discipline. Budget surpluses grow.
-
-But the human cost is staggering. Unemployment surges. Soup kitchens overflow. Desperate workers turn to the extremes—Nazi or Communist—promising radical solutions.
-
-[? if labor_strength > 25 or left_strength > 25 : Mass protests erupt within the party. "We've become administrators of capitalist austerity! This is not social democracy!" Emergency conferences are called. ?]
-
-[? if spd_toleration : Our toleration partners are pleased by our fiscal responsibility, but workers on the streets curse our name. ?]
-
 @implement_austerity_moderate
 title: Implement modest austerity measures.
 subtitle: Balanced budget without severe cuts.
@@ -105,16 +83,6 @@ unavailable-subtitle: [? if unemployed < 6 : There is no crisis requiring auster
 view-if: centrist_adopted = 1 and budget <= 0
 choose-if: unemployed >= 6
 on-arrival: budget += 0.5; austerity_progress += 1; unemployed += 0.5; inflation -= 0.15; workers_spd -= 2; unemployed_spd -= 3; old_middle_spd += 2*(1-dissent); new_middle_spd += 1*(1-dissent); z_relation += 2; ddp_relation += 3; center_strength += 3; labor_dissent += 4; left_dissent += 4; coalition_dissent -= 1 if coalition_dissent > 0; workers_nsdap += 1; workers_kpd += 1; economic_growth -= 0.04; demand_impulse -= 0.04; coup_progress += 1 if (sa_strength + sh_strength) > 1500
-
-We implement modest spending cuts and revenue increases, working toward a balanced budget without draconian measures. The approach is gradualist, avoiding the most severe cuts.
-
-The bourgeois parties cautiously approve, though some call for more aggressive action. Workers are unhappy but not enraged. Inflation slowly declines.
-
-This is the path of fiscal caution—neither bold stimulus nor brutal austerity. Whether it will be enough remains to be seen.
-
-
-########## SCHACHT PLAN, NATIONALIST VERSION OF REFORMIST + WTB HYBRID.
-
 
 @schacht_continuation
 title: Continue the Schacht Plan for economic recovery.
