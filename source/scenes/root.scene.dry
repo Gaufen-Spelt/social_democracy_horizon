@@ -4083,10 +4083,10 @@ Q.padjCustomParties = [
 
 for (var pi = 0; pi < Q.padjParties.length; pi++) {
     var pid = Q.padjParties[pi][0];
-    if (Q[pid + '_adjustment'] === undefined) { Q[pid + '_adjustment'] = 0; }
+    if (Q[pid + '_adjustment'] === undefined) { Q[pid + '_adjustment'] = 1; }
     for (var ci = 0; ci < Q.padjClasses.length; ci++) {
         var key = Q.padjClasses[ci] + '_' + pid;
-        if (Q[key] === undefined) { Q[key] = 0; }
+        if (Q[key] === undefined) { Q[key] = 1; }
     }
 }
 !}
