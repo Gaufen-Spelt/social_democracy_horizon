@@ -824,6 +824,25 @@ if (Q.month_actions >= 1) {
 
 
 
+// QOL
+
+// INSTA ADOPT
+
+if (Q.nationalization_support >= 5) {
+    Q.nationalization_adopted = 1;
+}
+
+if (Q.moderate_plan_support >= 4) {
+    Q.moderate_plan_adopted = 1;
+}
+
+if (Q.austerity_support >= 2) {
+    Q.centrist_adopted = 1;
+}
+
+if (Q.wtb_support >= Q.wtb_threshold) {
+    Q.wtb_adopted = 1;
+}
 
 
 
