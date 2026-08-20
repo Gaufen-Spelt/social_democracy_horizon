@@ -4102,7 +4102,7 @@ for (var i = 0; i < Q.padjParties.length; i++) {
     var label = Q.padjParties[i][1];
     var active = Q.parties && Q.parties.indexOf(pid) !== -1 && !Q[pid + '_banned'];
     if (!active) { continue; }
-    var val = Q[pid + '_adjustment'] || 0;
+    var val = Q[pid + '_adjustment'] || 1;
     html += '<div class="padj-row" data-pid="' + pid + '" style="margin:10px 0;padding:8px;border-bottom:1px solid #444;">';
     html += '<div style="display:flex;justify-content:space-between;align-items:center;">';
     html += '<strong>' + label + '</strong>';
@@ -4177,7 +4177,7 @@ var html = '';
 for (var ci = 0; ci < Q.padjClasses.length; ci++) {
     var cid = Q.padjClasses[ci];
     var key = cid + '_' + pid;
-    var val = Q[key] || 0;
+    var val = Q[key] || 1;
     var niceLabel = cid.replace(/_/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
     html += '<div class="padjc-row" data-key="' + key + '" style="margin:10px 0;padding:8px;border-bottom:1px solid #444;">';
     html += '<div style="display:flex;justify-content:space-between;align-items:center;">';
