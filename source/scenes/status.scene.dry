@@ -184,109 +184,102 @@ Support of the Democratization: [+ democratization_disp +]%   -   Support of the
 
 @paramilitaries
 on-arrival: {!
-if (Q.rb_strength) {
-    Q.rb_strength_2 = Q.rb_strength.toFixed(1);
-}
-if (Q.jungdo_strength) {
-    Q.jungdo_strength_2 = Q.jungdo_strength.toFixed(1);
-}
-if (Q.rfb_strength) {
-    Q.rfb_strength_2 = Q.rfb_strength.toFixed(1);
-}
-if (Q.sh_strength) {
-    Q.sh_strength_2 = Q.sh_strength.toFixed(1);
-}
-if (Q.sa_strength) {
-    Q.sa_strength_2 = Q.sa_strength.toFixed(1);
-}
+if (Q.rb_strength) Q.rb_strength_2 = Q.rb_strength.toFixed(1);
+if (Q.jungdo_strength) Q.jungdo_strength_2 = Q.jungdo_strength.toFixed(1);
+if (Q.rfb_strength) Q.rfb_strength_2 = Q.rfb_strength.toFixed(1);
+if (Q.sh_strength) Q.sh_strength_2 = Q.sh_strength.toFixed(1);
+if (Q.sa_strength) Q.sa_strength_2 = Q.sa_strength.toFixed(1);
 if (Q.ruhr_labor_strike == 1) {
-    if (Q.ruhr_faud_strength) {
-        Q.ruhr_faud_strength_2 = Q.ruhr_faud_strength.toFixed(1);
-    }
-    if (Q.ruhr_kapd_strength) {
-        Q.ruhr_kapd_strength_2 = Q.ruhr_kapd_strength.toFixed(1);
-    }
+    if (Q.ruhr_faud_strength) Q.ruhr_faud_strength_2 = Q.ruhr_faud_strength.toFixed(1);
+    if (Q.ruhr_kapd_strength) Q.ruhr_kapd_strength_2 = Q.ruhr_kapd_strength.toFixed(1);
 }
 
+var groups = [];
+
+function addGroup(id, name, tooltip, bloc, strength, militancy) {
+    if (strength === undefined || strength === null) return; // not active/formed
+    groups.push({ id: id, name: name, tooltip: tooltip, bloc: bloc,
+                  strength: strength, militancy: militancy });
+}
+
+var lateWeimarRealignment = (Q.april_challenge === 1 && Q.year >= 1933 && Q.month >= 10);
+
+addGroup('rb', 'Reichsbanner',
+    'The Reichsbanner Schwarz-Rot-Gold is a popular organization for defending democracy, mostly affiliated with the SPD.',
+    lateWeimarRealignment ? 'left' : 'republic',
+    Q.rb_strength_2, Q.rb_militancy);
+
+addGroup('jungdo', 'Young German Order',
+    'The Young German Order is a nationalist-liberal association founded by Artur Mahraun.',
+    'republic',
+    Q.jungdo_strength_2, Q.jungdo_militancy);
+
+if (Q.rpb_formed) {
+    addGroup('rpb', 'RPB', '', 'republic', Q.rpb_strength, Q.rpb_militancy);
+}
+
+addGroup('rfb', 'RFB',
+    'The RFB (Rotfrontkämpferbund) is a communist group associated with the KPD.',
+    'left',
+    Q.rfb_strength_2, Q.rfb_militancy);
+
+addGroup('sh', 'Stahlhelm',
+    'The Stahlhelm is a right-wing organization of war veterans associated with the DNVP.',
+    lateWeimarRealignment ? 'republic' : 'right',
+    Q.sh_strength_2, Q.sh_militancy);
+
+addGroup('sa', 'SA',
+    'The SA (Sturmabteilung) is the Nazi paramilitary.',
+    'right',
+    Q.sa_strength_2, Q.sa_militancy);
+
+if (Q.ruhr_labor_strike == 1) {
+    addGroup('faud', 'FAUD',
+        'The FAUD (Freie Arbeiter-Union Deutschlands) is an anarcho-syndicalist union active in the Ruhr strike.',
+        'left', Q.ruhr_faud_strength_2, Q.ruhr_faud_militancy);
+    addGroup('kapd', 'KAPD',
+        'The KAPD (Kommunistische Arbeiter-Partei Deutschlands) is a council-communist party active in the Ruhr strike.',
+        'left', Q.ruhr_kapd_strength_2, Q.ruhr_kapd_militancy);
+}
+
+var blocNames = { republic: 'Pro-Republic Bloc', left: 'Left Bloc', right: 'Right Bloc' };
+var blocOrder = ['republic', 'left', 'right'];
+var html = "";
+
+if (Q.rb_sh_front) {
+    html += "<i>Reichsbanner</i> and <i>Stahlhelm</i> have signed a mutual non-aggression treaty. What's to come of this is unknown.<br><br>";
+}
+
+for (var b = 0; b < blocOrder.length; b++) {
+    var blocKey = blocOrder[b];
+    var members = groups.filter(function(g){ return g.bloc === blocKey; });
+    if (members.length === 0) continue;
+    html += "<h2>" + blocNames[blocKey] + "</h2>";
+    for (var m = 0; m < members.length; m++) {
+        var g = members[m];
+        html += (g.tooltip
+            ? '<span class="tooltip-text" title="' + g.tooltip + '">' + g.name + '</span>'
+            : g.name) + " Strength: " + g.strength + " thousand<br>";
+        html += g.name + " Militarization: " + g.militancy +
+                (Q.deterministic_mode == 1 ? " (" + g.militancy + ")" : "") + "<br><br>";
+    }
+}
+Q.paramilitaries_by_bloc_html = html;
 !}
 
 <hr>
-= Balance of Paramilitary Power
+= Paramilitaries
 <hr>
 
-{!<span class="tooltip-text" title="Effective strength share, weighted by militancy/loyalty.">Forces</span>!}
+[+ paramilitaries_by_bloc_html +]
 
-Reichswehr: [+ para_share_reichswehr +]%
-
-Prussian Police: [+ para_share_prussian_police +]%
-
-[? if spd_in_government : Interior Police: [+ para_share_interior_police +]% ?]
-
-Reichsbanner: [+ para_share_reichsbanner +]%
-
-[? if rpb_formed: RPB: [+ para_share_rpb +] ?]
-
-Jungdo: [+ para_share_jungdo +]%
-
-RFB: [+ para_share_rfb +]%
-
-Stahlhelm: [+ para_share_stahlhelm +]%
-
-SA: [+ para_share_sa +]%
-
-[? if ruhr_labor_strike == 1: FAUD: [+ para_share_ruhr_faud +]% ?]
-
-[? if ruhr_labor_strike == 1: KAPD: [+ para_share_ruhr_kapd +]% ?]
-
-= Blocs
-
-Pro-Republic bloc: [+ para_bloc_pro_republic +]%
-
-Left bloc: [+ para_bloc_left +]%
-
-Right bloc: [+ para_bloc_right +]%
-
-Military: [+ para_bloc_military +]%
-
-= Paramilitaries
-
-[? if rb_sh_front: *Reichsbanner* and *Stahlhelm* has signed mutual non aggression treaty. What's to come of this - is unknown. ?]
-
-{!<span class="tooltip-text" title="The Reichsbanner Schwarz-Rot-Gold is a popular organization for defending democracy, mostly affiliated with the SPD.">Reichsbanner</span>!} Strength: [+ rb_strength_2 +] thousand
-
-Reichsbanner Militarization: [+ rb_militancy : militancy +] [? if deterministic_mode == 1: [+ rb_militancy +] ?]
-
-{!<span class="tooltip-text" title="The Young German Order is a nationalist-liberal association founded by Artur Mahraun.">Young German Order</span>!} Strength: [+ jungdo_strength_2 +] thousand
-
-Young German Order Militarization: [+ jungdo_militancy : militancy +] [? if deterministic_mode == 1: [+ jungdo_militancy +] ?]
-
-{!<span class="tooltip-text" title="The RFB (Rotfrontkämpferbund) is a communist group associated with the KPD.">RFB</span>!} Strength: [+ rfb_strength_2 +] thousand
-
-RFB Militarization: [+ rfb_militancy : militancy +] [? if deterministic_mode == 1: [+ rfb_militancy +] ?]
-
-[? if rpb_formed: RPB Strength: [+ rpb_strength +] ?]
-
-[? if rpb_formed: RPB Militancy: [+ rpb_militancy : militancy +] [? if deterministic_mode == 1: [+ rpb_militancy +] ?] ?]
-
-{!<span class="tooltip-text" title="The Stahlhelm is a right-wing organization of war veterans associated with the DNVP.">Stahlhelm</span>!} Strength: [+ sh_strength_2 +] thousand
-
-Stahlhelm Militarization: [+ sh_militancy : militancy +] [? if deterministic_mode == 1: [+ sh_militancy +] ?]
-
-{!<span class="tooltip-text" title="The SA (Sturmabteilung) is the Nazi paramilitary.">SA</span>!} Strength: [+ sa_strength_2 +] thousand
-
-SA Militarization: [+ sa_militancy : militancy +] [? if deterministic_mode == 1: [+ sa_militancy +] ?]
-
-[? if ruhr_labor_strike == 1: {!<span class="tooltip-text" title="The FAUD (Freie Arbeiter-Union Deutschlands) is an anarcho-syndicalist union active in the Ruhr strike.">FAUD</span>!} Strength: [+ ruhr_faud_strength_2 +] thousand ?]
-
-[? if ruhr_labor_strike == 1: FAUD Militarization: [+ ruhr_faud_militancy : militancy +] [? if deterministic_mode == 1: [+ ruhr_faud_militancy +] ?] ?]
-
-[? if ruhr_labor_strike == 1: {!<span class="tooltip-text" title="The KAPD (Kommunistische Arbeiter-Partei Deutschlands) is a council-communist party active in the Ruhr strike.">KAPD</span>!} Strength: [+ ruhr_kapd_strength_2 +] thousand ?]
-
-[? if ruhr_labor_strike == 1: KAPD Militarization: [+ ruhr_kapd_militancy : militancy +] [? if deterministic_mode == 1: [+ ruhr_kapd_militancy +] ?] ?]
-
+<hr>
 = Official military/paramilitaries
+<hr>
 
+<hr>
 = Reichswehr
+<hr>
 
 Reichswehr: [+ reichswehr_strength +] thousand troops.
 
@@ -294,7 +287,9 @@ Reichswehr Militancy: [+ reichswehr_militancy +]
 
 Reichswehr Loyalty: [+ reichswehr_loyalty : loyalty +] [? if deterministic_mode == 1: [+ reichswehr_loyalty +] ?]
 
+<hr>
 = Police
+<hr>
 
 Prussian police: [+ prussian_police_strength +] thousand members.
 
