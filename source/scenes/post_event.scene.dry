@@ -6872,7 +6872,7 @@ if (Q.dnvp_party_leader == "Alfred Hugenberg" && Q.lambach_stage == -1 && Q.lamb
 
 // PARTY ACTIONS
 
-if (Q.dnvp_action_timer <= 0 && Q.dnvp_banned <= 0) {
+if (Q.dnvp_action_timer <= 0 && !Q.dnvp_banned) {
 
 function PickHighest(list, prop) {
     var bestKey = null;
