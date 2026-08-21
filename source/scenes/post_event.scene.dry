@@ -6858,7 +6858,7 @@ if (Q.dnvp_party_leader == "Alfred Hugenberg" && Q.lambach_stage == -1 && Q.lamb
 
 // PARTY ACTIONS
 
-if (Q.action_dnvp_timer <= 0) {
+if (Q.dnvp_action_timer <= 0) {
 
 function PickHighest(list, prop) {
     var bestKey = null;
@@ -6898,10 +6898,10 @@ function PickHighest(list, prop) {
 
     if (Q.choosen_action === null) {
         // --- Fallback: everything ignored, do nothing this cycle ---
-        Q.action_dnvp_timer = 6; // short recheck delay instead of a full action cycle
+        Q.dnvp_action_timer = 6; // short recheck delay instead of a full action cycle
         Q.dnvp_action_description = 'The DNVP and Der Stahlhelm remain quiet for the time being, lacking viable options to act on.';
     } else {
-        Q.action_dnvp_timer = Q.dnvp_actions_list[Q.choosen_action].timer;
+        Q.dnvp_action_timer = Q.dnvp_actions_list[Q.choosen_action].timer;
         Q.dnvp_action_description = Q.dnvp_actions_list[Q.choosen_action].description;
 
         // --- Apply effects ---
