@@ -992,21 +992,36 @@ Object.keys(wordPhrases).forEach(function(phrase) {
   // -----------------------------------------------------------------------
   // BOTTOM PANEL — linked to the 'news' scene (news.scene.dry)
   // -----------------------------------------------------------------------
-  var BOTTOM_PANEL_SCENE = 'news';
+var BOTTOM_PANEL_SCENE = 'news';
+window.newsTab = BOTTOM_PANEL_SCENE; // which subscene is currently selected
 
-  window.updateBottomPanel = function() {
-      var panel = $('#bottom_panel');
-      if (!panel.length) return;
+window.changeNewsTab = function(newTab, tabId) {
+    var buttons = document.querySelectorAll('#news_tab_container .tab_button');
+    buttons.forEach(function(b) {
+        b.className = b.className.replace(' active', '');
+    });
+    var btn = document.getElementById(tabId);
+    if (btn) btn.className += ' active';
 
-      // Guard: scene must exist before we try to render it.
-      var scene = dendryUI.game.scenes[BOTTOM_PANEL_SCENE];
-      if (!scene) return;
+    window.newsTab = newTab;
+    window.updateBottomPanel();
+};
 
-      panel.empty();
-      dendryUI.dendryEngine._runActions(scene.onArrival);
-      var displayContent = dendryUI.dendryEngine._makeDisplayContent(scene.content, true);
-      panel.append(dendryUI.contentToHTML.convert(displayContent));
-  };
+window.updateBottomPanel = function() {
+    var panel = $('#bottom_panel_content');
+    if (!panel.length) return;
+
+    var scene = dendryUI.game.scenes[window.newsTab || BOTTOM_PANEL_SCENE];
+    if (!scene) return;
+
+    panel.empty();
+    dendryUI.dendryEngine._runActions(scene.onArrival);
+    var displayContent = dendryUI.dendryEngine._makeDisplayContent(scene.content, true);
+    panel.append(dendryUI.contentToHTML.convert(displayContent));
+    if (scene.onDisplay) {
+        dendryUI.dendryEngine._runActions(scene.onDisplay);
+    }
+};
 
   // Tab switching — still 2-arg so existing HTML onclick calls keep working.
   // The optional 3rd arg (target panel selector) is accepted but unused for
