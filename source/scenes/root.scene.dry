@@ -70,6 +70,24 @@ Q.ddp_in_government_prussia = 1;
 Q.coalition_name_prussia = "Weimar Coalition";
 Q.coalition_name = "Bürgerblock";
 
+Q.copy_parties = [
+    'kpo', 'sl', 'sapd', 'srpd', 'ddp', 'z', 'bvp', 'csrp', 'dvp', 'wp',
+    'cnbl', 'csvd', 'dnvp', 'vrp', 'kvp', 'dhp', 'bb', 'dvfp',
+    'aspd', 'vnr', 'hl', 'lb', 'rdp', 'cvp', 'sls', 'dtsp', 'dbp', 'dsbp', 'dnf', 'rlb', 'faud', 'kapd'
+];
+
+for (const party of Q.copy_parties) {
+    var govKey = party + '_in_government';
+    var govPrussiaKey = party + '_in_government_prussia';
+
+    if (Q[govKey] === undefined) {
+        Q[govKey] = 0;
+    }
+    if (Q[govPrussiaKey] === undefined) {
+        Q[govPrussiaKey] = 0;
+    }
+}
+
 
 
 
