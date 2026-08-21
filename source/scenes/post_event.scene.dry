@@ -6856,6 +6856,80 @@ if (Q.dnvp_party_leader == "Alfred Hugenberg" && Q.lambach_stage == -1 && Q.lamb
 
 
 
+// PARTY ACTIONS
+
+if (Q.action_dnvp_timer <= 0) {
+
+function PickHighest(list, prop) {
+    var bestKey = null;
+    var bestVal = -Infinity;
+    for (var key in list) {
+        if (list[key].ignore) continue; // skip ignored actions
+        if (list[key][prop] > bestVal) {
+            bestVal = list[key][prop];
+            bestKey = key;
+        }
+    }
+    return bestKey; // null if every action was ignored
+}
+
+    function scaledWeight(baseWeight, currentValue, baseValue, maxMultiplier = 5) {
+        var ratio = Math.min(baseValue / Math.max(currentValue, 1), maxMultiplier);
+        return baseWeight * ratio;
+    }
+
+    Q.dnvp_actions_list = {
+        stahlhelm_recruitment: {
+            weight: scaledWeight(1.00, Q.stahlhelm_strength, 700),
+            description: 'Der Stahlhelm has recruited some of the disgruntled mittelstand and outclasses into their paramilitary, receiving some anonymous fundings alongside.',
+            ignore: Q.sh_banned >= 1,
+            timer: 12
+        },
+        nationalist_campaign: {
+            weight: scaledWeight(0.75, Q.nationalism, 10),
+            description: 'Der Stahlhelm and DNVP have initiated the rally for nationalism and opposition against the republican order.',
+            ignore: false,
+            timer: 10
+        }
+    };
+
+    // --- Pick the highest-weight action, respecting 'ignore' ---
+    Q.choosen_action = PickHighest(Q.dnvp_actions_list, 'weight');
+
+    if (Q.choosen_action === null) {
+        // --- Fallback: everything ignored, do nothing this cycle ---
+        Q.action_dnvp_timer = 6; // short recheck delay instead of a full action cycle
+        Q.dnvp_action_description = 'The DNVP and Der Stahlhelm remain quiet for the time being, lacking viable options to act on.';
+    } else {
+        Q.action_dnvp_timer = Q.dnvp_actions_list[Q.choosen_action].timer;
+        Q.dnvp_action_description = Q.dnvp_actions_list[Q.choosen_action].description;
+
+        // --- Apply effects ---
+        if (Q.choosen_action === 'nationalist_campaign') {
+            Q.nationalism += 10;
+        }
+        if (Q.choosen_action === 'stahlhelm_recruitment') {
+            Q.stahlhelm_strength += 50;
+            Q.stahlhelm_militancy += 0.01;
+        }
+
+        // --- Queue flavor action ---
+        if (!Q.timers.includes('flavor_action')) {
+            Q.timers.push('flavor_action');
+        }
+        Q.flavor_action_timer = 4;
+    }
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
