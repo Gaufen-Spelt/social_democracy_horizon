@@ -1,4 +1,4 @@
-title: Yeah
+title: News
 is-special: true
 new-page: true
 
@@ -61,3 +61,7 @@ new-page: true
 [? if year == 1930 and month == 11 and weeks < 2 and scholz_victory: Eduard Dingeldey assumed the power of chairmanship with Scholz citing issues with health. ?]
 
 [? if year == 1929 and month == 9 and weeks < 2 and stresemann_success: Julius Curtis assumed the power of chairmanship following the death of Gustav Stresemann... ?]
+
+@actions
+
+= Actions and Events of Daily Life
