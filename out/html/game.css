@@ -362,6 +362,13 @@ footer a {
   margin-top: auto;
 }
 
+#news_tab_container {
+  margin-bottom: 0.6em;
+}
+
+#bottom_panel_content {
+}
+
 .tab_button {
   font-family: "Playfair Display", Georgia, serif;
   background-color: var(--tab-color);
