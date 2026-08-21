@@ -279,8 +279,16 @@
         <div id="content"></div>
 
         <div id="bottom_panel">
-          <h2>State Bulletin</h2>
-          <p>Dispatches and reports will appear here.</p>
+          <div class="tab_container" id="news_tab_container">
+            <button class="tab_button active" id="news_tab_news"
+              onclick="window.changeNewsTab('news', 'news_tab_news');">News</button>
+            <button class="tab_button" id="news_tab_actions"
+              onclick="window.changeNewsTab('news.actions', 'news_tab_actions');">Actions</button>
+          </div>
+          <div id="bottom_panel_content">
+            <h2>State Bulletin</h2>
+            <p>Dispatches and reports will appear here.</p>
+          </div>
         </div>
 
         <footer></footer>
