@@ -65,3 +65,7 @@ new-page: true
 @actions
 
 = Actions and Events of Daily Life
+
+# DNVP
+
+[? if flavor_action_timer <= 0: [+ dnvp_action_description +] ?]
