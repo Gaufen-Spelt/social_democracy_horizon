@@ -68,4 +68,4 @@ new-page: true
 
 # DNVP
 
-[? if flavor_action_timer <= 0: [+ dnvp_action_description +] ?]
+[? if flavor_action_timer >= 1: [+ dnvp_action_description +] ?]
