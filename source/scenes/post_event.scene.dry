@@ -122,6 +122,15 @@ for (const p of EXTRA_IDEO_PARTIES) {
 
 Q.parties = [...new Set(Q.parties)];
 
+// PUSH PARTY ACTION TIMER FOR PARTY ACTIONS.
+
+for (const party of Q.parties) {
+    var timerKey = party + '_action';
+    if (!Q.timers.includes(timerKey)) {
+        Q.timers.push(timerKey);
+    }
+}
+
 
 // CODE EXAMPLE FOR REMOVING Tolerator...
 // Q.tolerating_parties = Q.tolerating_parties.filter(function(p) { return p !== 'DVP'; });
