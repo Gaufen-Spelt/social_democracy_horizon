@@ -207,21 +207,15 @@ function fmtPct(v) {
 }
 
 // ---------- 1. define active forces ----------
-// Each force: raw strength, militancy, and a bloc resolver function.
-// Bloc resolvers read live Q state so allegiance shifts are automatic
-// whenever the underlying flags change - no separate "mode" branches.
 
 var forces = [];
 
 forces.push({
     key: "reichsbanner",
     name: "Reichsbanner",
-    tooltip: "The Reichsbanner Schwarz-Rot-Gold is a popular organization for defending democracy, mostly affiliated with the SPD.",
     strength: Q.rb_strength || 0,
     militancy: Q.rb_militancy || 0,
     bloc: function() {
-        // Splits from the Republic bloc into a dedicated Left posture
-        // once the April Challenge repolarizes the SPD base.
         if (Q.april_challenge == 1 && Q.year >= 1933 && Q.month >= 10) return "left";
         return "republic";
     }
@@ -230,7 +224,6 @@ forces.push({
 forces.push({
     key: "jungdo",
     name: "Young German Order",
-    tooltip: "The Young German Order is a nationalist-liberal association founded by Artur Mahraun.",
     strength: Q.jungdo_strength || 0,
     militancy: Q.jungdo_militancy || 0,
     bloc: function() { return "republic"; }
@@ -240,7 +233,6 @@ if (Q.rpb_formed) {
     forces.push({
         key: "rpb",
         name: "RPB",
-        tooltip: "The RPB is a united republican defense formation.",
         strength: Q.rpb_strength || 0,
         militancy: Q.rpb_militancy || 0,
         bloc: function() { return "republic"; }
@@ -250,7 +242,6 @@ if (Q.rpb_formed) {
 forces.push({
     key: "rfb",
     name: "RFB",
-    tooltip: "The RFB (Rotfrontkämpferbund) is a communist group associated with the KPD.",
     strength: Q.rfb_strength || 0,
     militancy: Q.rfb_militancy || 0,
     bloc: function() { return "left"; }
@@ -259,13 +250,9 @@ forces.push({
 forces.push({
     key: "stahlhelm",
     name: "Stahlhelm",
-    tooltip: "The Stahlhelm is a right-wing organization of war veterans associated with the DNVP.",
     strength: Q.sh_strength || 0,
     militancy: Q.sh_militancy || 0,
     bloc: function() {
-        // Turns against the SA and lines up with the Republic once the
-        // April Challenge hits, OR immediately if a non-aggression
-        // front with the Reichsbanner has been signed.
         if (Q.april_challenge == 1 && Q.year >= 1933 && Q.month >= 10) return "republic";
         if (Q.rb_sh_front) return "republic";
         return "right";
@@ -275,7 +262,6 @@ forces.push({
 forces.push({
     key: "sa",
     name: "SA",
-    tooltip: "The SA (Sturmabteilung) is the Nazi paramilitary.",
     strength: Q.sa_strength || 0,
     militancy: Q.sa_militancy || 0,
     bloc: function() { return "right"; }
@@ -285,7 +271,6 @@ if (Q.ruhr_labor_strike == 1) {
     forces.push({
         key: "ruhr_faud",
         name: "FAUD",
-        tooltip: "The FAUD (Freie Arbeiter-Union Deutschlands) is an anarcho-syndicalist union active in the Ruhr strike.",
         strength: Q.ruhr_faud_strength || 0,
         militancy: Q.ruhr_faud_militancy || 0,
         bloc: function() { return "left"; }
@@ -293,7 +278,6 @@ if (Q.ruhr_labor_strike == 1) {
     forces.push({
         key: "ruhr_kapd",
         name: "KAPD",
-        tooltip: "The KAPD (Kommunistische Arbeiter-Partei Deutschlands) is a council-communist party active in the Ruhr strike.",
         strength: Q.ruhr_kapd_strength || 0,
         militancy: Q.ruhr_kapd_militancy || 0,
         bloc: function() { return "left"; }
@@ -303,7 +287,6 @@ if (Q.ruhr_labor_strike == 1) {
 forces.push({
     key: "prussian_police",
     name: "Prussian Police",
-    tooltip: "State police force of Prussia.",
     strength: Q.prussian_police_strength || 0,
     militancy: (Q.prussian_police_loyalty || 0) / 100,
     isPolice: true,
@@ -314,7 +297,6 @@ if (Q.spd_in_government) {
     forces.push({
         key: "interior_police",
         name: "Interior Police",
-        tooltip: "Federal interior police, deployed while the SPD holds the Interior Ministry.",
         strength: Q.interior_police_strength || 0,
         militancy: (Q.interior_police_loyalty || 0) / 100,
         isPolice: true,
@@ -322,7 +304,6 @@ if (Q.spd_in_government) {
     });
 }
 
-// Reichswehr is tracked but kept in its own Military bloc, never merged.
 var reichswehr = {
     key: "reichswehr",
     name: "Reichswehr",
@@ -369,15 +350,12 @@ var blocMeta = {
 };
 
 function renderForceRow(f) {
-    var tooltipSpan = f.tooltip
-        ? '<span class="tooltip-text" title="' + f.tooltip + '">' + f.name + '</span>'
-        : f.name;
     var militancyText = f.isPolice
         ? "Loyalty: " + militancyLabel(f.militancy) + (Q.deterministic_mode == 1 ? " (" + f.militancy.toFixed(2) + ")" : "")
         : "Militarization: " + militancyLabel(f.militancy) + (Q.deterministic_mode == 1 ? " (" + f.militancy.toFixed(2) + ")" : "");
 
     return '<div class="para-force">' +
-             '<b>' + tooltipSpan + '</b> &mdash; Strength: ' + fmtStrength(f.strength) + ' thousand ' +
+             '<b>' + f.name + '</b> &mdash; Strength: ' + fmtStrength(f.strength) + ' thousand ' +
              '(' + fmtPct(f.share) + '% of total)<br>' +
              militancyText +
            '</div>';
@@ -385,7 +363,6 @@ function renderForceRow(f) {
 
 var html = "";
 
-// Bloc share summary bar
 html += '<div class="para-bloc-summary">';
 html += '<b>Pro-Republic bloc:</b> ' + fmtPct(Q.para_bloc_pro_republic) + '%<br>';
 html += '<b>Left bloc:</b> ' + fmtPct(Q.para_bloc_left) + '%<br>';
@@ -397,7 +374,6 @@ if (Q.rb_sh_front) {
     html += '<p><i>Reichsbanner and Stahlhelm have signed a mutual non-aggression treaty. What is to come of this is unknown.</i></p>';
 }
 
-// Group forces by bloc for display, in a fixed order: republic, left, right
 var order = ["republic", "left", "right"];
 for (var b = 0; b < order.length; b++) {
     var bk = order[b];
@@ -411,7 +387,6 @@ for (var b = 0; b < order.length; b++) {
     }
 }
 
-// Military stands alone, outside the three political blocs
 html += '<h3 style="color:#1e90ff">Military</h3>';
 html += '<div class="para-force"><b>Reichswehr</b> &mdash; Strength: ' + fmtStrength(reichswehr.strength) +
         ' thousand (' + fmtPct(reichswehr.share) + '% of total)<br>' +
