@@ -184,94 +184,252 @@ Support of the Democratization: [+ democratization_disp +]%   -   Support of the
 
 @paramilitaries
 on-arrival: {!
-if (Q.rb_strength) Q.rb_strength_2 = Q.rb_strength.toFixed(1);
-if (Q.jungdo_strength) Q.jungdo_strength_2 = Q.jungdo_strength.toFixed(1);
-if (Q.rfb_strength) Q.rfb_strength_2 = Q.rfb_strength.toFixed(1);
-if (Q.sh_strength) Q.sh_strength_2 = Q.sh_strength.toFixed(1);
-if (Q.sa_strength) Q.sa_strength_2 = Q.sa_strength.toFixed(1);
-if (Q.ruhr_labor_strike == 1) {
-    if (Q.ruhr_faud_strength) Q.ruhr_faud_strength_2 = Q.ruhr_faud_strength.toFixed(1);
-    if (Q.ruhr_kapd_strength) Q.ruhr_kapd_strength_2 = Q.ruhr_kapd_strength.toFixed(1);
+
+// ---------- helpers ----------
+
+function militancyLabel(v) {
+    if (v === undefined || v === null) return "Nonexistent";
+    if (v < 0.05) return "Nonexistent";
+    if (v < 0.14) return "Very low";
+    if (v < 0.24) return "Low";
+    if (v < 0.44) return "Medium-low";
+    if (v < 0.69) return "Medium";
+    if (v < 1.0)  return "High";
+    return "Very high";
 }
 
-var groups = [];
-
-function addGroup(id, name, tooltip, bloc, strength, militancy) {
-    if (strength === undefined || strength === null) return; // not active/formed
-    groups.push({ id: id, name: name, tooltip: tooltip, bloc: bloc,
-                  strength: strength, militancy: militancy });
+function fmtStrength(v) {
+    return (v || 0).toFixed(1);
 }
 
-var lateWeimarRealignment = (Q.april_challenge === 1 && Q.year >= 1933 && Q.month >= 10);
+function fmtPct(v) {
+    return (v || 0).toFixed(1);
+}
 
-addGroup('rb', 'Reichsbanner',
-    'The Reichsbanner Schwarz-Rot-Gold is a popular organization for defending democracy, mostly affiliated with the SPD.',
-    lateWeimarRealignment ? 'left' : 'republic',
-    Q.rb_strength_2, Q.rb_militancy);
+// ---------- 1. define active forces ----------
+// Each force: raw strength, militancy, and a bloc resolver function.
+// Bloc resolvers read live Q state so allegiance shifts are automatic
+// whenever the underlying flags change - no separate "mode" branches.
 
-addGroup('jungdo', 'Young German Order',
-    'The Young German Order is a nationalist-liberal association founded by Artur Mahraun.',
-    'republic',
-    Q.jungdo_strength_2, Q.jungdo_militancy);
+var forces = [];
+
+forces.push({
+    key: "reichsbanner",
+    name: "Reichsbanner",
+    tooltip: "The Reichsbanner Schwarz-Rot-Gold is a popular organization for defending democracy, mostly affiliated with the SPD.",
+    strength: Q.rb_strength || 0,
+    militancy: Q.rb_militancy || 0,
+    bloc: function() {
+        // Splits from the Republic bloc into a dedicated Left posture
+        // once the April Challenge repolarizes the SPD base.
+        if (Q.april_challenge == 1 && Q.year >= 1933 && Q.month >= 10) return "left";
+        return "republic";
+    }
+});
+
+forces.push({
+    key: "jungdo",
+    name: "Young German Order",
+    tooltip: "The Young German Order is a nationalist-liberal association founded by Artur Mahraun.",
+    strength: Q.jungdo_strength || 0,
+    militancy: Q.jungdo_militancy || 0,
+    bloc: function() { return "republic"; }
+});
 
 if (Q.rpb_formed) {
-    addGroup('rpb', 'RPB', '', 'republic', Q.rpb_strength, Q.rpb_militancy);
+    forces.push({
+        key: "rpb",
+        name: "RPB",
+        tooltip: "The RPB is a united republican defense formation.",
+        strength: Q.rpb_strength || 0,
+        militancy: Q.rpb_militancy || 0,
+        bloc: function() { return "republic"; }
+    });
 }
 
-addGroup('rfb', 'RFB',
-    'The RFB (Rotfrontkämpferbund) is a communist group associated with the KPD.',
-    'left',
-    Q.rfb_strength_2, Q.rfb_militancy);
+forces.push({
+    key: "rfb",
+    name: "RFB",
+    tooltip: "The RFB (Rotfrontkämpferbund) is a communist group associated with the KPD.",
+    strength: Q.rfb_strength || 0,
+    militancy: Q.rfb_militancy || 0,
+    bloc: function() { return "left"; }
+});
 
-addGroup('sh', 'Stahlhelm',
-    'The Stahlhelm is a right-wing organization of war veterans associated with the DNVP.',
-    lateWeimarRealignment ? 'republic' : 'right',
-    Q.sh_strength_2, Q.sh_militancy);
+forces.push({
+    key: "stahlhelm",
+    name: "Stahlhelm",
+    tooltip: "The Stahlhelm is a right-wing organization of war veterans associated with the DNVP.",
+    strength: Q.sh_strength || 0,
+    militancy: Q.sh_militancy || 0,
+    bloc: function() {
+        // Turns against the SA and lines up with the Republic once the
+        // April Challenge hits, OR immediately if a non-aggression
+        // front with the Reichsbanner has been signed.
+        if (Q.april_challenge == 1 && Q.year >= 1933 && Q.month >= 10) return "republic";
+        if (Q.rb_sh_front) return "republic";
+        return "right";
+    }
+});
 
-addGroup('sa', 'SA',
-    'The SA (Sturmabteilung) is the Nazi paramilitary.',
-    'right',
-    Q.sa_strength_2, Q.sa_militancy);
+forces.push({
+    key: "sa",
+    name: "SA",
+    tooltip: "The SA (Sturmabteilung) is the Nazi paramilitary.",
+    strength: Q.sa_strength || 0,
+    militancy: Q.sa_militancy || 0,
+    bloc: function() { return "right"; }
+});
 
 if (Q.ruhr_labor_strike == 1) {
-    addGroup('faud', 'FAUD',
-        'The FAUD (Freie Arbeiter-Union Deutschlands) is an anarcho-syndicalist union active in the Ruhr strike.',
-        'left', Q.ruhr_faud_strength_2, Q.ruhr_faud_militancy);
-    addGroup('kapd', 'KAPD',
-        'The KAPD (Kommunistische Arbeiter-Partei Deutschlands) is a council-communist party active in the Ruhr strike.',
-        'left', Q.ruhr_kapd_strength_2, Q.ruhr_kapd_militancy);
+    forces.push({
+        key: "ruhr_faud",
+        name: "FAUD",
+        tooltip: "The FAUD (Freie Arbeiter-Union Deutschlands) is an anarcho-syndicalist union active in the Ruhr strike.",
+        strength: Q.ruhr_faud_strength || 0,
+        militancy: Q.ruhr_faud_militancy || 0,
+        bloc: function() { return "left"; }
+    });
+    forces.push({
+        key: "ruhr_kapd",
+        name: "KAPD",
+        tooltip: "The KAPD (Kommunistische Arbeiter-Partei Deutschlands) is a council-communist party active in the Ruhr strike.",
+        strength: Q.ruhr_kapd_strength || 0,
+        militancy: Q.ruhr_kapd_militancy || 0,
+        bloc: function() { return "left"; }
+    });
 }
 
-var blocNames = { republic: 'Pro-Republic Bloc', left: 'Left Bloc', right: 'Right Bloc' };
-var blocOrder = ['republic', 'left', 'right'];
+forces.push({
+    key: "prussian_police",
+    name: "Prussian Police",
+    tooltip: "State police force of Prussia.",
+    strength: Q.prussian_police_strength || 0,
+    militancy: (Q.prussian_police_loyalty || 0) / 100,
+    isPolice: true,
+    bloc: function() { return "republic"; }
+});
+
+if (Q.spd_in_government) {
+    forces.push({
+        key: "interior_police",
+        name: "Interior Police",
+        tooltip: "Federal interior police, deployed while the SPD holds the Interior Ministry.",
+        strength: Q.interior_police_strength || 0,
+        militancy: (Q.interior_police_loyalty || 0) / 100,
+        isPolice: true,
+        bloc: function() { return "republic"; }
+    });
+}
+
+// Reichswehr is tracked but kept in its own Military bloc, never merged.
+var reichswehr = {
+    key: "reichswehr",
+    name: "Reichswehr",
+    strength: Q.reichswehr_strength || 0,
+    militancy: (Q.reichswehr_militancy || 0),
+    loyalty: Q.reichswehr_loyalty || 0
+};
+
+// ---------- 2. compute effective (militancy-weighted) shares ----------
+
+var total_effective = reichswehr.strength * (reichswehr.militancy / 5 || 0.2);
+for (var i = 0; i < forces.length; i++) {
+    var f = forces[i];
+    var weight = f.isPolice ? f.militancy : (f.militancy / 5);
+    f.effective = f.strength * weight;
+    total_effective += f.effective;
+}
+
+function shareOf(effective) {
+    return total_effective > 0 ? (effective / total_effective) * 100 : 0;
+}
+
+reichswehr.share = shareOf(reichswehr.strength * (reichswehr.militancy / 5 || 0.2));
+
+var blocTotals = { republic: 0, left: 0, right: 0 };
+for (var i = 0; i < forces.length; i++) {
+    var f = forces[i];
+    f.share = shareOf(f.effective);
+    f.blocKey = f.bloc();
+    blocTotals[f.blocKey] += f.share;
+}
+
+Q.para_bloc_pro_republic = Math.round(blocTotals.republic * 10) / 10;
+Q.para_bloc_left         = Math.round(blocTotals.left * 10) / 10;
+Q.para_bloc_right        = Math.round(blocTotals.right * 10) / 10;
+Q.para_bloc_military     = Math.round(reichswehr.share * 10) / 10;
+
+// ---------- 3. render everything into one HTML block ----------
+
+var blocMeta = {
+    republic: { label: "Pro-Republic Bloc", color: "#FFD700" },
+    left:     { label: "Left Bloc",         color: "#dc143c" },
+    right:    { label: "Right Bloc",        color: "#4b4b4b" }
+};
+
+function renderForceRow(f) {
+    var tooltipSpan = f.tooltip
+        ? '<span class="tooltip-text" title="' + f.tooltip + '">' + f.name + '</span>'
+        : f.name;
+    var militancyText = f.isPolice
+        ? "Loyalty: " + militancyLabel(f.militancy) + (Q.deterministic_mode == 1 ? " (" + f.militancy.toFixed(2) + ")" : "")
+        : "Militarization: " + militancyLabel(f.militancy) + (Q.deterministic_mode == 1 ? " (" + f.militancy.toFixed(2) + ")" : "");
+
+    return '<div class="para-force">' +
+             '<b>' + tooltipSpan + '</b> &mdash; Strength: ' + fmtStrength(f.strength) + ' thousand ' +
+             '(' + fmtPct(f.share) + '% of total)<br>' +
+             militancyText +
+           '</div>';
+}
+
 var html = "";
 
+// Bloc share summary bar
+html += '<div class="para-bloc-summary">';
+html += '<b>Pro-Republic bloc:</b> ' + fmtPct(Q.para_bloc_pro_republic) + '%<br>';
+html += '<b>Left bloc:</b> ' + fmtPct(Q.para_bloc_left) + '%<br>';
+html += '<b>Right bloc:</b> ' + fmtPct(Q.para_bloc_right) + '%<br>';
+html += '<b>Military (Reichswehr):</b> ' + fmtPct(Q.para_bloc_military) + '%';
+html += '</div><hr>';
+
 if (Q.rb_sh_front) {
-    html += "<i>Reichsbanner</i> and <i>Stahlhelm</i> have signed a mutual non-aggression treaty. What's to come of this is unknown.<br><br>";
+    html += '<p><i>Reichsbanner and Stahlhelm have signed a mutual non-aggression treaty. What is to come of this is unknown.</i></p>';
 }
 
-for (var b = 0; b < blocOrder.length; b++) {
-    var blocKey = blocOrder[b];
-    var members = groups.filter(function(g){ return g.bloc === blocKey; });
+// Group forces by bloc for display, in a fixed order: republic, left, right
+var order = ["republic", "left", "right"];
+for (var b = 0; b < order.length; b++) {
+    var bk = order[b];
+    var members = forces.filter(function(f) { return f.blocKey === bk; });
     if (members.length === 0) continue;
-    html += "<h2>" + blocNames[blocKey] + "</h2>";
+
+    html += '<h3 style="color:' + blocMeta[bk].color + '">' + blocMeta[bk].label +
+            ' (' + fmtPct(blocTotals[bk]) + '%)</h3>';
     for (var m = 0; m < members.length; m++) {
-        var g = members[m];
-        html += (g.tooltip
-            ? '<span class="tooltip-text" title="' + g.tooltip + '">' + g.name + '</span>'
-            : g.name) + " Strength: " + g.strength + " thousand<br>";
-        html += g.name + " Militarization: " + g.militancy +
-                (Q.deterministic_mode == 1 ? " (" + g.militancy + ")" : "") + "<br><br>";
+        html += renderForceRow(members[m]);
     }
 }
-Q.paramilitaries_by_bloc_html = html;
+
+// Military stands alone, outside the three political blocs
+html += '<h3 style="color:#1e90ff">Military</h3>';
+html += '<div class="para-force"><b>Reichswehr</b> &mdash; Strength: ' + fmtStrength(reichswehr.strength) +
+        ' thousand (' + fmtPct(reichswehr.share) + '% of total)<br>' +
+        'Militancy: ' + militancyLabel(reichswehr.militancy) +
+        (Q.deterministic_mode == 1 ? " (" + reichswehr.militancy.toFixed(2) + ")" : "") + '<br>' +
+        'Loyalty: ' + militancyLabel((reichswehr.loyalty || 0) / 100) +
+        (Q.deterministic_mode == 1 ? " (" + reichswehr.loyalty + ")" : "") +
+        '</div>';
+
+Q.paramilitaries_display = html;
+
 !}
 
 <hr>
-= Paramilitaries
+= Balance of Paramilitary Power
 <hr>
 
-[+ paramilitaries_by_bloc_html +]
+[+ paramilitaries_display +]
 
 <hr>
 = Official military/paramilitaries
