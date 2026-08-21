@@ -124,10 +124,15 @@ Q.parties = [...new Set(Q.parties)];
 
 // PUSH PARTY ACTION TIMER FOR PARTY ACTIONS.
 
+// PARTY ACTION TIMER INIT
+
 for (const party of Q.parties) {
     var timerKey = party + '_action';
     if (!Q.timers.includes(timerKey)) {
         Q.timers.push(timerKey);
+    }
+    if (Q[timerKey + '_timer'] === undefined) {
+        Q[timerKey + '_timer'] = 0;
     }
 }
 
