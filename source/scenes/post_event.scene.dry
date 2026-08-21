@@ -6867,7 +6867,7 @@ if (Q.dnvp_party_leader == "Alfred Hugenberg" && Q.lambach_stage == -1 && Q.lamb
 
 // PARTY ACTIONS
 
-if (Q.dnvp_action_timer <= 0) {
+if (Q.dnvp_action_timer <= 0 && Q.dnvp_banned <= 0) {
 
 function PickHighest(list, prop) {
     var bestKey = null;
@@ -6889,16 +6889,22 @@ function PickHighest(list, prop) {
 
     Q.dnvp_actions_list = {
         stahlhelm_recruitment: {
-            weight: scaledWeight(1.00, Q.stahlhelm_strength, 700),
+            weight: scaledWeight(1.00, Q.stahlhelm_strength, 900),
             description: 'Der Stahlhelm has recruited some of the disgruntled mittelstand and outclasses into their paramilitary, receiving some anonymous fundings alongside.',
             ignore: Q.sh_banned >= 1,
-            timer: 12
+            timer: 10
         },
         nationalist_campaign: {
-            weight: scaledWeight(0.75, Q.nationalism, 10),
+            weight: scaledWeight(0.75, Q.nationalism, 15),
             description: 'Der Stahlhelm and DNVP have initiated the rally for nationalism and opposition against the republican order.',
             ignore: false,
-            timer: 10
+            timer: 8
+        }, 
+        prussian_counter_prussia: {
+            weight: scaledWeight(4.00, Q.prussian_republicanization, 30),
+            description: 'DNVP has partially cleaned up Prussian Government from republicans and socialists, replacing them with nationalist oriented judges, servants and workers – while also turning Prussian Police away from republican values cultivation project.',
+            ignore: Q.dnvp_in_government_prussia <= 0,
+            timer: 12
         }
     };
 
@@ -6915,18 +6921,24 @@ function PickHighest(list, prop) {
 
         // --- Apply effects ---
         if (Q.choosen_action === 'nationalist_campaign') {
-            Q.nationalism += 10;
+            Q.nationalism += 5;
         }
         if (Q.choosen_action === 'stahlhelm_recruitment') {
             Q.stahlhelm_strength += 50;
             Q.stahlhelm_militancy += 0.01;
         }
 
+        if (Q.choosen_action === 'prussian_counter_prussia') {
+            Q.prussian_republicanization -= 5;
+            Q.prussian_police_loyalty -= 0.08;
+            Q.prussian_police_strength += 30;
+        }
+
         // --- Queue flavor action ---
         if (!Q.timers.includes('flavor_action')) {
             Q.timers.push('flavor_action');
         }
-        Q.flavor_action_timer = 4;
+        Q.flavor_action_timer = 3;
     }
 }
 
