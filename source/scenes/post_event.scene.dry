@@ -6910,7 +6910,7 @@ function PickHighest(list, prop) {
             description: 'The DNVP has replaced republican and socialist officials in Prussia with nationalist judges and civil servants, steering the state police away from democratic values.',
             ignore: Q.dnvp_in_government_prussia <= 0,
             timer: 10
-        }
+        },
         prussian_rfb_ban: {
             weight: 6.00,
             description: 'The DNVP has prohibited the communist RFB paramilitary across Prussia, dealing a severe blow to left-wing militant organization in the state.',
