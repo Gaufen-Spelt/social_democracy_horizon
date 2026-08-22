@@ -6912,9 +6912,15 @@ function PickHighest(list, prop) {
             timer: 10
         },
         prussian_rfb_ban: {
-            weight: 6.00,
+            weight: 20.00,
             description: 'The DNVP has prohibited the communist RFB paramilitary across Prussia, dealing a severe blow to left-wing militant organization in the state.',
             ignore: Q.dnvp_in_government_prussia <= 0 && Q.rfb_banned >= 1,
+            timer: 12
+        },
+        prussian_rb_ban: {
+            weight: 20.00,
+            description: 'The DNVP state administration has issued a total ban on the Reichsbanner, citing the pro-republican paramilitary as too dangerous to permit its public activities..',
+            ignore: Q.dnvp_in_government_prussia <= 0 && Q.rb_banned >= 1 && (Q.rb_strength * Q.rb_militancy < 500),
             timer: 12
         }
     };
@@ -6949,6 +6955,12 @@ function PickHighest(list, prop) {
             Q.rfb_banned = 1;
             Q.rfb_strength -= 50;
             Q.rfb_militancy *= 0.95;
+        }
+
+        if (Q.choosen_action === 'prussian_rb_ban') {
+            Q.rb_banned = 1;
+            Q.rb_strength -= 100;
+            Q.rb_militancy *= 0.90;
         }
 
         // --- Queue flavor action ---
