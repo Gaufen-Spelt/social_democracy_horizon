@@ -6894,21 +6894,27 @@ function PickHighest(list, prop) {
 
     Q.dnvp_actions_list = {
         stahlhelm_recruitment: {
-            weight: scaledWeight(1.00, Q.stahlhelm_strength, 900),
+            weight: scaledWeight(1.00, Q.stahlhelm_strength, 1000),
             description: 'Der Stahlhelm has recruited some of the disgruntled mittelstand and outclasses into their paramilitary, receiving some anonymous fundings alongside.',
             ignore: Q.sh_banned >= 1,
             timer: 10
         },
         nationalist_campaign: {
-            weight: scaledWeight(0.75, Q.nationalism, 15),
+            weight: scaledWeight(0.75, Q.nationalism, 5),
             description: 'Der Stahlhelm and DNVP have initiated the rally for nationalism and opposition against the republican order.',
             ignore: false,
             timer: 8
         }, 
         prussian_counter_prussia: {
             weight: scaledWeight(4.00, Q.prussian_republicanization, 30),
-            description: 'DNVP has partially cleaned up Prussian Government from republicans and socialists, replacing them with nationalist oriented judges, servants and workers – while also turning Prussian Police away from republican values cultivation project.',
+            description: 'The DNVP has replaced republican and socialist officials in Prussia with nationalist judges and civil servants, steering the state police away from democratic values.',
             ignore: Q.dnvp_in_government_prussia <= 0,
+            timer: 10
+        }
+        prussian_rfb_ban: {
+            weight: 6.00,
+            description: 'The DNVP has prohibited the communist RFB paramilitary across Prussia, dealing a severe blow to left-wing militant organization in the state.',
+            ignore: Q.dnvp_in_government_prussia <= 0 && Q.rfb_banned >= 1,
             timer: 12
         }
     };
@@ -6937,6 +6943,12 @@ function PickHighest(list, prop) {
             Q.prussian_republicanization -= 5;
             Q.prussian_police_loyalty -= 0.08;
             Q.prussian_police_strength += 30;
+        }
+
+        if (Q.choosen_action === 'prussian_rfb_ban') {
+            Q.rfb_banned = 1;
+            Q.rfb_strength -= 50;
+            Q.rfb_militancy *= 0.95;
         }
 
         // --- Queue flavor action ---
