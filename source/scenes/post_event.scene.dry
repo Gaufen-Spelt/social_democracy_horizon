@@ -6964,7 +6964,7 @@ Q.GLOBAL_PARTY_ACTIONS = {
         ignore: () => false,
         timer: 8,
         apply: () => {
-            Q.nationalism += 5;
+            Q.nationalism += 3;
         }
     },
 
@@ -7005,7 +7005,29 @@ Q.GLOBAL_PARTY_ACTIONS = {
             Q.rb_strength -= 100;
             Q.rb_militancy *= 0.90;
         }
-    }
+    },
+
+    socialist_campaign: {
+        ideoMin: 1, ideoMax: 6,
+        weight: () => scaledWeight(0.75, Q.socialism, 5),
+        description: (party) => partyLabel(party) + ' has initiated a rally for socialism and opposition against the republican order.',
+        ignore: () => false,
+        timer: 8,
+        apply: () => {
+            Q.socialism += 3;
+        }
+    },
+
+    democratic_campaign: {
+        ideoMin: 7, ideoMax: 14,
+        weight: () => scaledWeight(0.75, Q.pro_republic, 5),
+        description: (party) => partyLabel(party) + ' has initiated a rally for republic and opposition against the extremist forces.',
+        ignore: () => false,
+        timer: 8,
+        apply: () => {
+            Q.pro_republic += 2;
+        }
+    },
 };
 
 // --- Run one party's action turn ---
