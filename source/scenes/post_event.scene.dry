@@ -7013,6 +7013,7 @@ function runPartyActions(party) {
     var timerKey = party + '_action_timer';
     var bannedKey = party + '_banned';
     var descKey = party + '_action_description';
+    var flavorTimerKey = party + '_flavor_action_timer'; // per-party now
 
     if (Q[timerKey] > 0 || Q[bannedKey]) return;
 
@@ -7041,13 +7042,14 @@ function runPartyActions(party) {
     Q[descKey] = pool[chosen].description;
     Q.GLOBAL_PARTY_ACTIONS[chosen].apply(party);
 
-    if (!Q.timers.includes('flavor_action')) {
-        Q.timers.push('flavor_action');
+    // Queue this party's OWN flavor timer, keyed to it specifically
+    var flavorTimerName = party + '_flavor_action';
+    if (!Q.timers.includes(flavorTimerName)) {
+        Q.timers.push(flavorTimerName);
     }
-    Q.flavor_action_timer = 3;
+    Q[flavorTimerKey] = 3;
 }
 
-// --- Drive it for every active party ---
 for (const party of Q.parties) {
     runPartyActions(party);
 }
