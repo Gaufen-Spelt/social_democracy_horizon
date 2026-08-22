@@ -7073,6 +7073,7 @@ function runPartyActions(party) {
 }
 
 for (const party of Q.parties) {
+    if (party === 'spd') continue;
     runPartyActions(party);
 }
 
