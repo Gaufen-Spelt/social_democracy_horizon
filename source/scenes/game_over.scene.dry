@@ -394,6 +394,12 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
 {!<div class="ach ach-locked"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/national_rejuvenation.png"></div><div class="ach-body"><strong>Nationale Erneuerung</strong> - Three pillars, two faiths, one nation - elevated above all differences.</div></div>!}
 ?]
 
+{!</div>!}
+
+{!<div class="ach-section">!}
+
+= Horizon
+
 [? if achievement_sanctuary :
 {!<div class="ach" style="background:rgba(20,20,20,0.12)"><div class="ach-icon-box" style="background:linear-gradient(135deg,rgba(255,0,80,0.12),rgba(0,200,255,0.12))"><img class="ach-icon" src="img/achievements/psychosis.png"></div><div class="ach-body"><strong>Zuflucht</strong> - Take a close look again.!}[? if game_achievement_sanctuary : {!<span class="ach-new">Neu!</span>!}?]{!</div></div>!}
 ?]
@@ -408,6 +414,12 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
 {!<div class="ach ach-locked" style="background: rgba(8, 7, 10, 0.9); border: 1px solid rgba(255, 255, 255, 0.03); opacity: 0.55;"><div class="ach-icon-box" style="background: rgba(18, 15, 22, 0.8); filter: grayscale(100%) contrast(120%);"><img class="ach-icon" src="img/achievements/fatamorgana.png"></div><div class="ach-body" style="color: #6a6275;"><strong style="color: #8a8095;">Fata Morgana</strong> - Insidiousness.</div></div>!}
 ?]
 
+[? if achievement_firstwessel :
+{!<div class="ach" style="background: rgba(18, 6, 8, 0.90); border: 1px solid rgba(255, 70, 0, 0.45); box-shadow: 0 0 14px rgba(255, 80, 0, 0.5);"><div class="ach-icon-box" style="background: linear-gradient(135deg, rgba(230, 40, 0, 0.5), rgba(255, 200, 0, 0.3));"><img class="ach-icon" src="img/achievements/firstwessel.png"></div><div class="ach-body" style="color: rgb(240, 210, 200);"><strong style="color: rgb(255, 190, 40); text-shadow: 0 0 8px rgba(255, 80, 0, 0.6);">Breakthrough</strong> - First gate of this world.!}[? if game_achievement_firstwessel : {!<span class="ach-new" style="background: rgba(255, 70, 0, 0.9); color: #fff; box-shadow: 0 0 8px rgba(255, 70, 0, 0.6);">Neu!</span>!}?]{!</div></div>!}
+?]
+[? if not achievement_firstwessel :
+{!<div class="ach ach-locked" style="background: rgba(12, 10, 16, 0.92); border: 1px solid rgba(180, 150, 80, 0.3); opacity: 0.65;"><div class="ach-icon-box" style="background: linear-gradient(135deg, rgba(40, 25, 50, 0.7), rgba(180, 140, 60, 0.3)); filter: grayscale(70%) contrast(110%);"><img class="ach-icon" src="img/achievements/nocturnal.png"></div><div class="ach-body" style="color: rgb(175, 165, 185);"><strong style="color: rgb(210, 175, 110);">Nocturnal</strong> - First wessel.</div></div>!}
+?]
 
 {!</div>!}
 
