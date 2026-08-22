@@ -6872,113 +6872,185 @@ if (Q.dnvp_party_leader == "Alfred Hugenberg" && Q.lambach_stage == -1 && Q.lamb
 
 // PARTY ACTIONS
 
-if (Q.dnvp_action_timer <= 0 && !Q.dnvp_banned) {
-
 function PickHighest(list, prop) {
     var bestKey = null;
     var bestVal = -Infinity;
     for (var key in list) {
-        if (list[key].ignore) continue; // skip ignored actions
+        if (list[key].ignore) continue;
         if (list[key][prop] > bestVal) {
             bestVal = list[key][prop];
             bestKey = key;
         }
     }
-    return bestKey; // null if every action was ignored
+    return bestKey;
 }
 
-    function scaledWeight(baseWeight, currentValue, baseValue, maxMultiplier = 5) {
-        var ratio = Math.min(baseValue / Math.max(currentValue, 1), maxMultiplier);
-        return baseWeight * ratio;
-    }
+function scaledWeight(baseWeight, currentValue, baseValue, maxMultiplier = 5) {
+    var ratio = Math.min(baseValue / Math.max(currentValue, 1), maxMultiplier);
+    return baseWeight * ratio;
+}
 
-    function linearWeight(baseWeight, currentValue, baseValue, maxMultiplier = 5) {
-    // Weight grows as currentValue rises above 0.
-    // Negative or low values shrink the weight toward 0 — never goes below 0.
+function linearWeight(baseWeight, currentValue, baseValue, maxMultiplier = 5) {
     var ratio = Math.max(currentValue, 0) / baseValue;
     ratio = Math.min(ratio, maxMultiplier);
     return baseWeight * ratio;
-  }
+}
 
-    Q.dnvp_actions_list = {
-        stahlhelm_recruitment: {
-            weight: scaledWeight(1.00, Q.stahlhelm_strength, 1000),
-            description: 'Der Stahlhelm has recruited some of the disgruntled mittelstand and outclasses into their paramilitary, receiving some anonymous fundings alongside.',
-            ignore: Q.sh_banned >= 1,
-            timer: 10
-        },
-        nationalist_campaign: {
-            weight: scaledWeight(0.75, Q.nationalism, 5),
-            description: 'Der Stahlhelm and DNVP have initiated the rally for nationalism and opposition against the republican order.',
-            ignore: false,
-            timer: 8
-        }, 
-        prussian_counter_prussia: {
-            weight: linearWeight(4.00, Q.prussian_republicanization, 30),
-            description: 'The DNVP has replaced republican and socialist officials in Prussia with nationalist judges and civil servants, steering the state police away from democratic values.',
-            ignore: Q.dnvp_in_government_prussia <= 0,
-            timer: 10
-        },
-        prussian_rfb_ban: {
-            weight: 20.00,
-            description: 'The DNVP has prohibited the communist RFB paramilitary across Prussia, dealing a severe blow to left-wing militant organization in the state.',
-            ignore: Q.dnvp_in_government_prussia <= 0 || Q.rfb_banned >= 1,
-            timer: 12
-        },
-        prussian_rb_ban: {
-            weight: 20.00,
-            description: 'The DNVP state administration has issued a total ban on the Reichsbanner, citing the pro-republican paramilitary as too dangerous to permit its public activities..',
-            ignore: (Q.dnvp_in_government_prussia <= 0 || Q.rb_banned >= 1) && (Q.rb_strength * Q.rb_militancy < 500),
-            timer: 12
-        }
-    };
+function inIdeoRange(party, min, max) {
+    var score = Q[party + '_ideo_score'];
+    if (score === undefined) return false;
+    return score >= min && score <= max;
+}
 
-    // --- Pick the highest-weight action, respecting 'ignore' ---
-    Q.choosen_action = PickHighest(Q.dnvp_actions_list, 'weight');
+// Human-readable party names for description text.
+Q.PARTY_DISPLAY_NAMES = {
+    dnvp: 'The DNVP',
+    dvp: 'The DVP',
+    kpo: 'The KPO',
+    sl: 'The SL',
+    sapd: 'The SAPD',
+    srpd: 'The SRPD',
+    ddp: Q.ddp_name,
+    z: 'The Zentrum',
+    bvp: 'The BVP',
+    csrp: 'The CSRP',
+    wp: 'The WP',
+    cnbl: 'The CNBL',
+    csvd: 'The CSVD',
+    vrp: 'The VRP',
+    kvp: 'The KVP',
+    dhp: 'The DHP',
+    bb: 'The BB',
+    dvfp: 'The DVFP',
+    aspd: 'The ASPD',
+    vnr: 'The VNR',
+    hl: 'The HL',
+    lb: 'The LB',
+    rdp: 'The RDP',
+    cvp: 'The CVP',
+    sls: 'The SLS',
+    dtsp: 'The DTSP',
+    dbp: 'The DBP',
+    dsbp: 'The DSBP',
+    dnf: 'The DNF',
+    rlb: 'The RLB',
+    faud: 'The FAUD',
+    kapd: 'The KAPD'
+};
 
-    if (Q.choosen_action === null) {
-        // --- Fallback: everything ignored, do nothing this cycle ---
-        Q.dnvp_action_timer = 6; // short recheck delay instead of a full action cycle
-        Q.dnvp_action_description = 'The DNVP and Der Stahlhelm remain quiet for the time being, lacking viable options to act on.';
-    } else {
-        Q.dnvp_action_timer = Q.dnvp_actions_list[Q.choosen_action].timer;
-        Q.dnvp_action_description = Q.dnvp_actions_list[Q.choosen_action].description;
+function partyLabel(party) {
+    return Q.PARTY_DISPLAY_NAMES[party] || party.toUpperCase();
+}
 
-        // --- Apply effects ---
-        if (Q.choosen_action === 'nationalist_campaign') {
-            Q.nationalism += 5;
-        }
-        if (Q.choosen_action === 'stahlhelm_recruitment') {
+// --- Global action definitions ---
+Q.GLOBAL_PARTY_ACTIONS = {
+
+    stahlhelm_recruitment: {
+        ideoMin: 17, ideoMax: 20,
+        weight: () => scaledWeight(1.00, Q.stahlhelm_strength, 1000),
+        description: (party) => partyLabel(party) + ' has overseen Der Stahlhelm recruiting some of the disgruntled mittelstand and outclasses into their paramilitary, receiving some anonymous fundings alongside.',
+        ignore: () => Q.sh_banned >= 1,
+        timer: 10,
+        apply: () => {
             Q.stahlhelm_strength += 50;
             Q.stahlhelm_militancy += 0.01;
         }
+    },
 
-        if (Q.choosen_action === 'prussian_counter_prussia') {
+    nationalist_campaign: {
+        ideoMin: 14, ideoMax: 20,
+        weight: () => scaledWeight(0.75, Q.nationalism, 5),
+        description: (party) => partyLabel(party) + ' has initiated a rally for nationalism and opposition against the republican order.',
+        ignore: () => false,
+        timer: 8,
+        apply: () => {
+            Q.nationalism += 5;
+        }
+    },
+
+    prussian_counter_prussia: {
+        ideoMin: 16, ideoMax: 20,
+        weight: () => linearWeight(4.00, Q.prussian_republicanization, 30),
+        description: (party) => partyLabel(party) + ' has replaced republican and socialist officials in Prussia with nationalist judges and civil servants, steering the state police away from democratic values.',
+        ignore: (party) => Q[party + '_in_government_prussia'] <= 0,
+        timer: 10,
+        apply: () => {
             Q.prussian_republicanization -= 5;
             Q.prussian_police_loyalty -= 0.08;
             Q.prussian_police_strength += 30;
         }
+    },
 
-        if (Q.choosen_action === 'prussian_rfb_ban') {
+    prussian_rfb_ban: {
+        ideoMin: 14, ideoMax: 20,
+        weight: () => 20.00,
+        description: (party) => partyLabel(party) + ' has prohibited the communist RFB paramilitary across Prussia, dealing a severe blow to left-wing militant organization in the state.',
+        ignore: (party) => Q[party + '_in_government_prussia'] <= 0 || Q.rfb_banned >= 1,
+        timer: 12,
+        apply: () => {
             Q.rfb_banned = 1;
             Q.rfb_strength -= 50;
             Q.rfb_militancy *= 0.95;
         }
+    },
 
-        if (Q.choosen_action === 'prussian_rb_ban') {
+    prussian_rb_ban: {
+        ideoMin: 17, ideoMax: 20,
+        weight: () => 20.00,
+        description: (party) => partyLabel(party) + ' has issued a total ban on the Reichsbanner, citing the pro-republican paramilitary as too dangerous to permit its public activities.',
+        ignore: (party) => (Q[party + '_in_government_prussia'] <= 0 || Q.rb_banned >= 1) && (Q.rb_strength * Q.rb_militancy < 500),
+        timer: 12,
+        apply: () => {
             Q.rb_banned = 1;
             Q.rb_strength -= 100;
             Q.rb_militancy *= 0.90;
         }
-
-        // --- Queue flavor action ---
-        if (!Q.timers.includes('flavor_action')) {
-            Q.timers.push('flavor_action');
-        }
-        Q.flavor_action_timer = 3;
     }
+};
+
+// --- Run one party's action turn ---
+function runPartyActions(party) {
+    var timerKey = party + '_action_timer';
+    var bannedKey = party + '_banned';
+    var descKey = party + '_action_description';
+
+    if (Q[timerKey] > 0 || Q[bannedKey]) return;
+
+    var pool = {};
+    for (var key in Q.GLOBAL_PARTY_ACTIONS) {
+        var action = Q.GLOBAL_PARTY_ACTIONS[key];
+        if (!inIdeoRange(party, action.ideoMin, action.ideoMax)) continue;
+
+        pool[key] = {
+            weight: action.weight(party),
+            ignore: action.ignore ? action.ignore(party) : false,
+            timer: action.timer,
+            description: action.description(party)
+        };
+    }
+
+    var chosen = PickHighest(pool, 'weight');
+
+    if (chosen === null) {
+        Q[timerKey] = 6;
+        Q[descKey] = partyLabel(party) + ' remains quiet for the time being, lacking viable options to act on.';
+        return;
+    }
+
+    Q[timerKey] = pool[chosen].timer;
+    Q[descKey] = pool[chosen].description;
+    Q.GLOBAL_PARTY_ACTIONS[chosen].apply(party);
+
+    if (!Q.timers.includes('flavor_action')) {
+        Q.timers.push('flavor_action');
+    }
+    Q.flavor_action_timer = 3;
 }
 
+// --- Drive it for every active party ---
+for (const party of Q.parties) {
+    runPartyActions(party);
+}
 
 
 
