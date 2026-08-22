@@ -4120,7 +4120,10 @@ var html = '';
 for (var i = 0; i < Q.padjParties.length; i++) {
     var pid = Q.padjParties[i][0];
     var label = Q.padjParties[i][1];
-    var active = Q.parties && Q.parties.indexOf(pid) !== -1 && !Q[pid + '_banned'];
+    var isCustom = Q.padjCustomParties.indexOf(pid) !== -1;
+    var active = isCustom
+    ? (Q['custom_party_' + pid] === 1 && !Q[pid + '_banned'])
+    : (Q['custom_party_' + pid] !== 0 && !Q[pid + '_banned']);
     if (!active) { continue; }
     var val = Q[pid + '_adjustment'] || 1;
     html += '<div class="padj-row" data-pid="' + pid + '" style="margin:10px 0;padding:8px;border-bottom:1px solid #444;">';
