@@ -63,9 +63,21 @@ new-page: true
 [? if year == 1929 and month == 9 and weeks < 2 and stresemann_success: Julius Curtis assumed the power of chairmanship following the death of Gustav Stresemann... ?]
 
 @actions
+on-arrival: {!
+
+Q.flavor_display_text = '';
+for (const party of Q.parties) {
+    var flavorTimerKey = party + '_flavor_action_timer';
+    var descKey = party + '_action_description';
+    if (Q[flavorTimerKey] >= 1) {
+        Q.flavor_display_text += Q[descKey] + '<br>';
+    }
+}
+
+!}
 
 = Actions and Events of Daily Life
 
 # DNVP
 
-[? if flavor_action_timer >= 1: [+ dnvp_action_description +] ?]
+[+ flavor_display_text +]
