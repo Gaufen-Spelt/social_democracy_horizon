@@ -72,7 +72,7 @@ Q.coalition_name = "Bürgerblock";
 
 Q.copy_parties = [
     'kpo', 'sl', 'sapd', 'srpd', 'ddp', 'z', 'bvp', 'csrp', 'dvp', 'wp',
-    'cnbl', 'csvd', 'dnvp', 'vrp', 'kvp', 'dhp', 'bb', 'dvfp',
+    'cnbl', 'csvd', 'dnvp', 'vrp', 'kvp', 'dhp', 'bb', 'dvfp', 'nsdap',
     'aspd', 'vnr', 'hl', 'lb', 'rdp', 'cvp', 'sls', 'dtsp', 'dbp', 'dsbp', 'dnf', 'rlb', 'faud', 'kapd'
 ];
 
