@@ -6892,6 +6892,14 @@ function PickHighest(list, prop) {
         return baseWeight * ratio;
     }
 
+    function linearWeight(baseWeight, currentValue, baseValue, maxMultiplier = 5) {
+    // Weight grows as currentValue rises above 0.
+    // Negative or low values shrink the weight toward 0 — never goes below 0.
+    var ratio = Math.max(currentValue, 0) / baseValue;
+    ratio = Math.min(ratio, maxMultiplier);
+    return baseWeight * ratio;
+  }
+
     Q.dnvp_actions_list = {
         stahlhelm_recruitment: {
             weight: scaledWeight(1.00, Q.stahlhelm_strength, 1000),
@@ -6906,7 +6914,7 @@ function PickHighest(list, prop) {
             timer: 8
         }, 
         prussian_counter_prussia: {
-            weight: scaledWeight(4.00, Q.prussian_republicanization, 30),
+            weight: linearWeight(4.00, Q.prussian_republicanization, 30),
             description: 'The DNVP has replaced republican and socialist officials in Prussia with nationalist judges and civil servants, steering the state police away from democratic values.',
             ignore: Q.dnvp_in_government_prussia <= 0,
             timer: 10
