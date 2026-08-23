@@ -136,6 +136,18 @@ for (const party of Q.parties) {
     }
 }
 
+for (const party of Q.parties) {
+    if (Q[party + '_in_government'] <= 0) continue;
+
+    var govTimerKey = party + '_government_action';
+    if (!Q.timers.includes(govTimerKey)) {
+        Q.timers.push(govTimerKey);
+    }
+    if (Q[govTimerKey + '_timer'] === undefined) {
+        Q[govTimerKey + '_timer'] = 0;
+    }
+}
+
 
 // CODE EXAMPLE FOR REMOVING Tolerator...
 // Q.tolerating_parties = Q.tolerating_parties.filter(function(p) { return p !== 'DVP'; });
