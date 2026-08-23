@@ -7073,8 +7073,204 @@ function runPartyActions(party) {
 }
 
 for (const party of Q.parties) {
-    if (party === 'spd') continue;
+    if (party === 'spd' || party === 'other') continue;
     runPartyActions(party);
+}
+
+
+
+
+
+
+
+
+
+// PARTY GOVERNMENT ACTIONS
+
+// --- Ministry registry ---
+// Each ministry maps to a Q key of the form "<ministry>_party", e.g.
+// Q.finance_minister_party === 'dnvp' means the DNVP holds Finance.
+Q.MINISTRIES = [
+    'transport_minister',
+    'agriculture_minister',
+    'finance_minister',
+    'economic_minister',
+    'labor_minister',
+    'justice_minister',
+    'foreign_minister'
+];
+
+// Returns true if `party` currently holds `ministry` (e.g. 'finance_minister').
+function holdsMinistry(party, ministry) {
+    return Q[ministry + '_party'] === party;
+}
+
+// Returns true if `party` holds ANY cabinet ministry.
+function holdsAnyMinistry(party) {
+    for (var i = 0; i < Q.MINISTRIES.length; i++) {
+        if (holdsMinistry(party, Q.MINISTRIES[i])) return true;
+    }
+    return false;
+}
+
+// Returns true if `party` is the chancellor's party.
+function isChancellorParty(party) {
+    return Q.chancellor_party === party;
+}
+
+// Convenience: is this party "in government" at the Reich level at all
+// (chancellorship OR any ministry)? Mirrors the xparty_in_government_prussia
+// pattern used for the Prussian actions.
+function inReichGovernment(party) {
+    return Q[party + '_in_government'] >= 1 || isChancellorParty(party) || holdsAnyMinistry(party);
+}
+
+// --- Global government action definitions ---
+// These are placeholder / generic actions. Swap descriptions and apply()
+// bodies for real policy effects as they're designed; the gating logic
+// (ministry / chancellor checks) is the part that matters structurally.
+Q.GLOBAL_PARTY_GOVERNMENT_ACTIONS = {
+
+    chancellery_agenda_push: {
+        ideoMin: 1, ideoMax: 20,
+        weight: () => 3.00,
+        description: (party) => partyLabel(party) + ', holding the Chancellery, has pushed its legislative agenda through the cabinet.',
+        ignore: (party) => !isChancellorParty(party),
+        timer: 8,
+        apply: () => {
+            Q.government_stability += 1;
+        }
+    },
+
+    finance_budget_maneuver: {
+        ideoMin: 1, ideoMax: 20,
+        weight: () => 2.50,
+        description: (party) => partyLabel(party) + ', controlling the Finance Ministry, has maneuvered the budget to favor its base.',
+        ignore: (party) => !holdsMinistry(party, 'finance_minister'),
+        timer: 8,
+        apply: () => {
+            Q.government_stability += 0.5;
+        }
+    },
+
+    economic_policy_shift: {
+        ideoMin: 1, ideoMax: 20,
+        weight: () => 2.50,
+        description: (party) => partyLabel(party) + ', at the head of the Economics Ministry, has shifted regulatory policy in its favored direction.',
+        ignore: (party) => !holdsMinistry(party, 'economic_minister'),
+        timer: 8,
+        apply: () => {
+            Q.government_stability += 0.5;
+        }
+    },
+
+    labor_dispute_mediation: {
+        ideoMin: 1, ideoMax: 20,
+        weight: () => 2.00,
+        description: (party) => partyLabel(party) + ', running the Labor Ministry, has intervened in ongoing industrial disputes.',
+        ignore: (party) => !holdsMinistry(party, 'labor_minister'),
+        timer: 8,
+        apply: () => {
+            Q.government_stability += 0.5;
+        }
+    },
+
+    justice_appointments: {
+        ideoMin: 1, ideoMax: 20,
+        weight: () => 2.00,
+        description: (party) => partyLabel(party) + ', in charge of the Justice Ministry, has steered key judicial appointments.',
+        ignore: (party) => !holdsMinistry(party, 'justice_minister'),
+        timer: 10,
+        apply: () => {
+            Q.government_stability += 0.5;
+        }
+    },
+
+    foreign_policy_initiative: {
+        ideoMin: 1, ideoMax: 20,
+        weight: () => 2.00,
+        description: (party) => partyLabel(party) + ', holding the Foreign Ministry, has advanced a diplomatic initiative abroad.',
+        ignore: (party) => !holdsMinistry(party, 'foreign_minister'),
+        timer: 10,
+        apply: () => {
+            Q.government_stability += 0.5;
+        }
+    },
+
+    agriculture_relief_measure: {
+        ideoMin: 1, ideoMax: 20,
+        weight: () => 1.75,
+        description: (party) => partyLabel(party) + ', controlling the Agriculture Ministry, has enacted relief measures for farmers.',
+        ignore: (party) => !holdsMinistry(party, 'agriculture_minister'),
+        timer: 8,
+        apply: () => {
+            Q.government_stability += 0.5;
+        }
+    },
+
+    transport_infrastructure_deal: {
+        ideoMin: 1, ideoMax: 20,
+        weight: () => 1.75,
+        description: (party) => partyLabel(party) + ', overseeing the Transport Ministry, has brokered an infrastructure deal.',
+        ignore: (party) => !holdsMinistry(party, 'transport_minister'),
+        timer: 8,
+        apply: () => {
+            Q.government_stability += 0.5;
+        }
+    },
+
+    cabinet_coordination: {
+        ideoMin: 1, ideoMax: 20,
+        weight: () => scaledWeight(1.00, Q.government_stability, 10),
+        description: (party) => partyLabel(party) + ' has worked behind the scenes to keep the coalition cabinet aligned.',
+        ignore: (party) => !inReichGovernment(party),
+        timer: 6,
+        apply: () => {
+            Q.government_stability += 0.25;
+        }
+    },
+};
+
+// --- Run one party's government action turn ---
+function runPartyGovernmentActions(party) {
+    var timerKey = party + '_government_action_timer';
+    var bannedKey = party + '_banned';
+    var descKey = party + '_government_action_description';
+
+    if (Q[timerKey] > 0 || Q[bannedKey]) return;
+
+    // Main gate: party must actually be in government to act here at all.
+    if (!inReichGovernment(party)) return;
+
+    var pool = {};
+    for (var key in Q.GLOBAL_PARTY_GOVERNMENT_ACTIONS) {
+        var action = Q.GLOBAL_PARTY_GOVERNMENT_ACTIONS[key];
+        if (!inIdeoRange(party, action.ideoMin, action.ideoMax)) continue;
+
+        pool[key] = {
+            weight: action.weight(party),
+            ignore: action.ignore ? action.ignore(party) : false,
+            timer: action.timer,
+            description: action.description(party)
+        };
+    }
+
+    var chosen = PickHighest(pool, 'weight');
+
+    if (chosen === null) {
+        Q[timerKey] = 6;
+        Q[descKey] = partyLabel(party) + ' takes no notable government action for the time being.';
+        return;
+    }
+
+    Q[timerKey] = pool[chosen].timer;
+    Q[descKey] = pool[chosen].description;
+    Q.GLOBAL_PARTY_GOVERNMENT_ACTIONS[chosen].apply(party);
+}
+
+for (const party of Q.parties) {
+    if (party === 'spd') continue;
+    runPartyGovernmentActions(party);
 }
 
 
