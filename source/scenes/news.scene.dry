@@ -76,8 +76,12 @@ for (const party of Q.parties) {
 
 !}
 
-= Actions and Events of Daily Life
-
-# DNVP
+= Party Actions
 
 [? if flavor_display_text != 0: [+ flavor_display_text +] ?]
+
+= Government Actions
+
+
+
+= Daily events
