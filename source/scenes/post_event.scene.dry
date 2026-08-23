@@ -7132,7 +7132,7 @@ Q.MINISTRIES = [
 
 // Returns true if `party` currently holds `ministry` (e.g. 'finance_minister').
 function holdsMinistry(party, ministry) {
-    return Q[ministry + '_party'] === party;
+    return Q[ministry + '_party'] && Q[ministry + '_party'].toLowerCase() === party.toLowerCase();
 }
 
 // Returns true if `party` holds ANY cabinet ministry.
@@ -7145,7 +7145,7 @@ function holdsAnyMinistry(party) {
 
 // Returns true if `party` is the chancellor's party.
 function isChancellorParty(party) {
-    return Q.chancellor_party === party;
+    return Q.chancellor_party && Q.chancellor_party.toLowerCase() === party.toLowerCase();
 }
 
 // Convenience: is this party "in government" at the Reich level at all
