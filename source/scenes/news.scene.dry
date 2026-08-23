@@ -74,6 +74,15 @@ for (const party of Q.parties) {
     }
 }
 
+Q.government_flavor_display_text = '';
+for (const party of Q.parties) {
+    var govFlavorTimerKey = party + '_government_flavor_action_timer';
+    var govDescKey = party + '_government_action_description';
+    if (Q[govFlavorTimerKey] >= 1) {
+        Q.government_flavor_display_text += Q[govDescKey] + '<br>';
+    }
+}
+
 !}
 
 = Party Actions
@@ -82,6 +91,6 @@ for (const party of Q.parties) {
 
 = Government Actions
 
-
+[? if government_flavor_display_text != 0: [+ government_flavor_display_text +] ?]
 
 = Daily events
