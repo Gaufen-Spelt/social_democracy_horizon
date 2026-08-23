@@ -7126,9 +7126,7 @@ function inReichGovernment(party) {
 }
 
 // --- Global government action definitions ---
-// These are placeholder / generic actions. Swap descriptions and apply()
-// bodies for real policy effects as they're designed; the gating logic
-// (ministry / chancellor checks) is the part that matters structurally.
+
 Q.GLOBAL_PARTY_GOVERNMENT_ACTIONS = {
 
     chancellery_agenda_push: {
@@ -7266,6 +7264,12 @@ function runPartyGovernmentActions(party) {
     Q[timerKey] = pool[chosen].timer;
     Q[descKey] = pool[chosen].description;
     Q.GLOBAL_PARTY_GOVERNMENT_ACTIONS[chosen].apply(party);
+
+    var govFlavorTimerName = party + '_government_flavor_action';
+    if (!Q.timers.includes(govFlavorTimerName)) {
+        Q.timers.push(govFlavorTimerName);
+    }
+    Q[party + '_government_flavor_action_timer'] = 3;
 }
 
 for (const party of Q.parties) {
