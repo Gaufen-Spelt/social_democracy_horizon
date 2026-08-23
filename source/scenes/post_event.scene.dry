@@ -2,7 +2,9 @@ title: Post Event
 new-page: true
 on-arrival: {!
 
-// RNG
+// ============================================================
+// RNG — deterministic per-tick generator
+// ============================================================
 
 function _mkrng(seed) {
     let s = seed >>> 0;
@@ -14,8 +16,8 @@ function _mkrng(seed) {
     };
 }
 
-// Derive a per-tick RNG from the fixed seed + tick counter
-// Same seed + same tick = identical results every time
+// Derive a per-tick RNG from the fixed seed + tick counter.
+// Same seed + same tick = identical results every time.
 const _r = _mkrng((Q.rng_seed + Q.tick * 0x9e3779b9) >>> 0);
 
 Q.random_factor = function(f, variance = 0.65) {
@@ -23,137 +25,150 @@ Q.random_factor = function(f, variance = 0.65) {
 };
 
 
-if (Q.inverted_ideos != 1) {
-
 // ============================================================
 // AUTO IDEOLOGY SCORER — derives 0 (far-left) to 20 (far-right)
+// ============================================================
 
-const IDEO_KEYWORDS = [
-    // 0 — revolutionary / Leninist left
-    [/marxism-leninism/i,                 1],
-    [/council communism/i,                0],
+if (Q.inverted_ideos != 1) {
 
-    // 2 — revolutionary but non-Leninist / left socialist
-    [/revolutionary socialism/i,          2],
-    [/left-wing socialism/i,              3],
+    const IDEO_KEYWORDS = [
+        // 0 — revolutionary / Leninist left
+        [/council communism/i,                       0],
 
-    // NEW — Social Democracy family (must precede generic soc-dem/soc-rep below)
-    [/social democracy \(revolutionary\)/i,      3],  // Left
-    [/social democracy \(center marxist\)/i,     4],  // Center
-    [/social democracy \(reformist\)/i,          6],  // Reformist
-    [/laborism/i,                                7],  // Labor
-    [/social republicanism \(neorevisionist\)/i, 8],  // Neorevisionist
+        // 1
+        [/marxism-leninism/i,                        1],
 
-    // 5 — mainstream social democracy
-    [/social democracy/i,                 6],
-    [/social republicanism/i,             7],
+        // 2 — revolutionary but non-Leninist / left socialist
+        [/revolutionary socialism/i,                 2],
 
-    // 7 — right social democracy / soft-left liberal
-    [/right-wing social democracy/i,      8],
-    [/catholic laborism/i,                10],
+        // 3
+        [/left-wing socialism/i,                      3],
+        [/social democracy \(revolutionary\)/i,      3],  // Left
 
-    // 10 — center / centrist liberal / cross-class Christian
-    [/social liberalism/i,                9],
-    [/christian socialism/i,              7],
-    [/catholic tent/i,                    12],
-    [/middle-class interest/i,            13],
-    [/corporatism/i,                      15],
+        // 4
+        [/social democracy \(center marxist\)/i,      4],  // Center
 
-    // 13 — moderate conservative / regional Catholic conservative / Christian conservatives
-    [/christian conservatism/i,           14],
-    [/bavarian conservatism/i,            13],
-    [/protestant social conservatism/i,   13],
-    [/moderate conservatism/i,            14],
-    [/liberal agrarianism/i,              12],
+        // 6 — mainstream social democracy
+        [/social democracy \(reformist\)/i,          6],  // Reformist
+        [/social democracy/i,                         6],
 
-    // 15 — national liberal / agrarian-liberal right-center
-    [/national liberalism/i,              14],
-    [/hanoverian agrarianism/i,           15],
-    [/hanseatic agrarian conservatism/i,  15],
+        // 7 — right social democracy / soft-left liberal
+        [/social republicanism/i,                     7],
+        [/laborism/i,                                 7],  // Labor
+        [/christian socialism/i,                      7],
 
-    // 17 — hard agrarian conservative
-    [/völkisch liberalism/i,              16],
-    [/populist agrarian conservatism/i,   16],
-    [/agrarian conservatism/i,            17],
-    [/social corporatism/i,               16],
+        // 8
+        [/right-wing social democracy/i,              8],
+        [/social republicanism \(neorevisionist\)/i,  8],  // Neorevisionist
 
-    // 18 — national conservative
-    [/national conservatism/i,            18],
+        // 9
+        [/social liberalism/i,                        9],
 
-    // 20 — far-right nationalist / völkisch / Nazi
-    [/national socialism/i,               20],
-    [/völkisch nationalism/i,             20],
-    [/national conservatism (Hugenbergite)/i,            18],
-];
+        // 10 — center / centrist liberal / cross-class Christian
+        [/catholic laborism/i,                       10],
 
-function ideoScore(ideologyString) {
-    if (!ideologyString) return 10; // Fallback to absolute center (10)
-    for (const [pattern, score] of IDEO_KEYWORDS) {
-        if (pattern.test(ideologyString)) return score;
+        // 12
+        [/catholic tent/i,                           12],
+        [/liberal agrarianism/i,                     12],
+        [/hanoverian agrarianism/i,                  12],
+
+        // 13 — moderate conservative / regional Catholic conservative / Christian conservatives
+        [/middle-class interest/i,                   13],
+        [/bavarian conservatism/i,                   13],
+        [/protestant social conservatism/i,          13],
+
+        // 14
+        [/christian conservatism/i,                  14],
+        [/moderate conservatism/i,                   14],
+        [/national liberalism/i,                     14],
+
+        // 15 — national liberal / agrarian-liberal right-center
+        [/corporatism/i,                             15],
+        [/hanseatic agrarian conservatism/i,         15],
+
+        // 16
+        [/völkisch liberalism/i,                     16],
+        [/populist agrarian conservatism/i,          16],
+        [/social corporatism/i,                      16],
+
+        // 17 — hard agrarian conservative
+        [/agrarian conservatism/i,                   17],
+
+        // 18 — national conservative
+        [/national conservatism/i,                   18],
+
+        // 19
+        [/national conservatism (Hugenbergite)/i,    19],
+
+        // 20 — far-right nationalist / völkisch / Nazi
+        [/national socialism/i,                      20],
+        [/völkisch nationalism/i,                     20],
+    ];
+
+    function ideoScore(ideologyString) {
+        if (!ideologyString) return 10; // Fallback to absolute center (10)
+        for (const [pattern, score] of IDEO_KEYWORDS) {
+            if (pattern.test(ideologyString)) return score;
+        }
+        return 10; // Unrecognized ideology string -> treat as centrist/unknown
     }
-    return 10; // Unrecognized ideology string -> treat as centrist/unknown
-}
 
-// Apply to every active party, reading straight from Q.[party]_ideology
-for (const p of Q.parties) {
-    const key = p + '_ideology';
-    Q[p + '_ideo_score'] = ideoScore(Q[key]);
-}
+    // Apply to every active party, reading straight from Q.[party]_ideology
+    for (const p of Q.parties) {
+        Q[p + '_ideo_score'] = ideoScore(Q[p + '_ideology']);
+    }
 
-// Also cover parties tracked outside Q.parties but referenced in
-// party_relations / coalition_blocks (splinters, KPO, LB, etc.)
-const EXTRA_IDEO_PARTIES = [
-    'kpo', 'sl', 'sapd', 'srpd', 'ddp', 'z', 'bvp', 'csrp', 'dvp', 'wp',
-    'cnbl', 'csvd', 'dnvp', 'vrp', 'kvp', 'dhp', 'bb', 'dvfp',
-    'aspd', 'vnr', 'hl', 'lb', 'rdp', 'cvp', 'sls', 'dtsp', 'dbp', 'dsbp', 'dnf', 'rlb', 'faud', 'kapd'
-];
-for (const p of EXTRA_IDEO_PARTIES) {
-    const key = p + '_ideology';
-    if (Q[key] !== undefined) {
-        Q[p + '_ideo_score'] = ideoScore(Q[key]);
+    // Also cover parties tracked outside Q.parties but referenced in
+    // party_relations / coalition_blocks (splinters, KPO, LB, etc.)
+    const EXTRA_IDEO_PARTIES = [
+        'kpo', 'sl', 'sapd', 'srpd', 'ddp', 'z', 'bvp', 'csrp', 'dvp', 'wp',
+        'cnbl', 'csvd', 'dnvp', 'vrp', 'kvp', 'dhp', 'bb', 'dvfp',
+        'aspd', 'vnr', 'hl', 'lb', 'rdp', 'cvp', 'sls', 'dtsp', 'dbp', 'dsbp', 'dnf', 'rlb', 'faud', 'kapd'
+    ];
+    for (const p of EXTRA_IDEO_PARTIES) {
+        const key = p + '_ideology';
+        if (Q[key] !== undefined) {
+            Q[p + '_ideo_score'] = ideoScore(Q[key]);
+        }
     }
 }
 
-}
 
-
-
-// REMOVE DUPLICATES 
+// ============================================================
+// REMOVE DUPLICATE PARTY ENTRIES
+// ============================================================
 
 Q.parties = [...new Set(Q.parties)];
-
-
 
 // CODE EXAMPLE FOR REMOVING Tolerator...
 // Q.tolerating_parties = Q.tolerating_parties.filter(function(p) { return p !== 'DVP'; });
 // Q.dvp_tolerating = 0;
 
-// QOL. TRACK GOVERNMENT VOTES.
 
-// ============================================
-// GOVERNMENT VOTE/SEAT TRACKER
-// ============================================
+// ============================================================
+// GOVERNMENT VOTE / SEAT TRACKER
+// ============================================================
+
 Q.government_total_votes = 0;
-
 for (var i = 0; i < Q.parties.length; i++) {
     var p = Q.parties[i];
     if (Q[p + '_in_government'] === 1) {
         Q.government_total_votes += Q[p + '_r'] || 0;
     }
 }
-
 Q.government_total_votes = Math.round(Q.government_total_votes * 10) / 10;
 
 
-// ============================================
+// ============================================================
 // CONSTITUTIONAL SUPERMAJORITY CHECK (2/3)
-// ============================================
+// ============================================================
+
 Q.has_supermajority = (Q.government_effective_pct >= 66.7) ? 1 : 0;
 
 
-// ============================================
+// ============================================================
 // GOVERNMENT COLLAPSE CHECK
-// ============================================
+// ============================================================
 
 var gov_count = 0;
 for (var i = 0; i < Q.parties.length; i++) {
@@ -191,26 +206,23 @@ if (gov_count > 0) {
 }
 
 
-
-
-
-
-
-// QOL. REMOVES PHANTON PARTIES.
+// ============================================================
+// REMOVE PHANTOM PARTIES FROM DISPLAY
+// ============================================================
 
 const inGov = Object.keys(Q)
-  .filter(key => key.endsWith("_in_government") && Q[key] == 1)
-  .map(key => key.replace("_in_government", ""))
-  .filter(party => (Q[party + "_votes"] > 0) && (Q[party + "_r"] > 0))
-  .map(party => party.toUpperCase());
+    .filter(key => key.endsWith("_in_government") && Q[key] == 1)
+    .map(key => key.replace("_in_government", ""))
+    .filter(party => (Q[party + "_votes"] > 0) && (Q[party + "_r"] > 0))
+    .map(party => party.toUpperCase());
 
-Q.parties_in_government_display = inGov.length > 0
-  ? inGov.join(", ")
-  : "None";
+Q.parties_in_government_display = inGov.length > 0 ? inGov.join(", ") : "None";
 
 
+// ============================================================
+// PARTY RELATION GRAVITY (soft pull back from extremes, then hard clamp)
+// ============================================================
 
-// === PARTY RELATION GRAVITY ===
 Q.relation_gravity = function(value) {
     var abs = Math.abs(value);
     if (abs <= 80) return value;
@@ -228,10 +240,13 @@ for (var i = 0; i < Q.parties.length; i++) {
     }
 }
 
-// === CHECK FOR LOW-RELATION COALITION PARTNER ===
-Q.coalition_low_relation = 0;
 
-// Check full government parties (threshold: <= 30)
+// ============================================================
+// COALITION PARTNER RELATION CHECKS
+// ============================================================
+
+// Full government parties (threshold: <= 30)
+Q.coalition_low_relation = 0;
 for (var i = 0; i < Q.parties.length; i++) {
     var p = Q.parties[i];
     if (p === "spd") continue;
@@ -241,7 +256,7 @@ for (var i = 0; i < Q.parties.length; i++) {
     }
 }
 
-// Check tolerating parties (threshold: <= 20), only if not already triggered
+// Tolerating parties (threshold: <= 20), only checked if not already triggered
 if (!Q.coalition_low_relation && Q.tolerating_parties) {
     for (var i = 0; i < Q.tolerating_parties.length; i++) {
         var tp = Q.tolerating_parties[i].toLowerCase();
@@ -253,13 +268,11 @@ if (!Q.coalition_low_relation && Q.tolerating_parties) {
     }
 }
 
-
-// === CHECK FOR LOW-RELATION COALITION PARTNER ===
+// Find the single angriest coalition partner (threshold: < 45)
 Q.coalition_mid_relation = 0;
 Q.mad_party = "";
 Q.mad_party_key = "";
 var lowest_relation = 999;
-
 for (var i = 0; i < Q.parties.length; i++) {
     var p = Q.parties[i];
     if (p === "spd") continue;
@@ -271,13 +284,8 @@ for (var i = 0; i < Q.parties.length; i++) {
     }
 }
 
-
-
-
-
-
+// Aggregate coalition tension score across government parties
 Q.coalition_tension = 0;
-
 if (Q.government_parties) {
     for (var i = 0; i < Q.government_parties.length; i++) {
         var p = Q.government_parties[i].toLowerCase();
@@ -288,64 +296,12 @@ if (Q.government_parties) {
         }
     }
 }
-
 Q.coalition_tension = Math.round(Q.coalition_tension * 10) / 10;
 
-// === VARIABLE RANGE CAPPING ===
+// ============================================================
+// MINISTRY REASSIGNMENT
+// ============================================================
 
-Q.capped_var_ranges = {
-    // 0 to 10
-    pro_consumer:              [0, 10],
-    agricultural_finance:      [0, 10],
-    land_reform:               [0, 10],
-    socialization:             [0, 10],
-    commonwealth_cooperation:  [0, 10],
-    cooperatives:              [0, 10],
-    economic_democracy:        [0, 20],
-    workers_safety:            [0, 10],
-    working_hours:             [0, 10],
-    womens_rights:             [0, 10],
-
-    // -10 to 10
-    welfare:                   [-10, 10],
-    judicial_reform:           [-10, 10],
-    pacifism:                  [-10, 10],
-    radicalization:            [-10, 10],
-    democratization:           [-10, 10],
-
-    // -1 to 2
-    confronting_antisemitism:  [-1, 2],
-
-    // 0 to 15
-    workers_aid:               [0, 15],
-    campaign_media:            [0, 15],
-    commercialized_media:      [0, 15],
-    cultural_organizations:    [0, 15],
-    wtb_support:               [0, 15],
-    local_rally:               [0, 15],
-    peoples_party_support:     [0, 15]
-};
-
-Q.apply_var_caps = function() {
-    for (var varName in Q.capped_var_ranges) {
-        if (!Q.capped_var_ranges.hasOwnProperty(varName)) continue;
-        if (Q[varName] === undefined) continue; // skip vars not in use
-
-        var range = Q.capped_var_ranges[varName];
-        var min = range[0];
-        var max = range[1];
-
-        if (Q[varName] < min) {
-            Q[varName] = min;
-        } else if (Q[varName] > max) {
-            Q[varName] = max;
-        }
-    }
-};
-
-Q.apply_var_caps();
-
-// === MINISTRY REASSIGNMENT ===
 var portfolios = ["foreign_minister", "interior_minister", "justice_minister", "labor_minister",
                    "economic_minister", "finance_minister", "agriculture_minister", "transport_minister"];
 
@@ -404,14 +360,10 @@ for (var i = 0; i < portfolios.length; i++) {
 }
 
 
+// ============================================================
+// LOBBYING ACTIVITY CHECK
+// ============================================================
 
-
-
-
-
-
-
-// === LOBBYING ACTIVITY CHECK ===
 Q.lobbying_active = 0;
 Q.lobbyable_ministries = [];
 
@@ -430,14 +382,9 @@ for (var i = 0; i < portfolios.length; i++) {
 }
 
 
-
-
-
-
-
-
-
-// UPDATE PARTY RELATIONSHIPS EACH TIME.
+// ============================================================
+// UPDATE PARTY RELATIONSHIPS EACH TICK
+// ============================================================
 
 function updatePartyRelations() {
     // 1. Direct mappings to variables that events already alter
@@ -472,7 +419,7 @@ function updatePartyRelations() {
     Q.party_relations.ASPD.Z    = Q.z_relation;
     Q.party_relations.ASPD.DVP  = Q.dvp_relation + 10;
 
-    // --- newly added: remaining tracked-relation parties, mirrored both ways ---
+    // --- remaining tracked-relation parties, mirrored both ways ---
     Q.party_relations.SAPD.SPD  = 50 + (Q.left_strength >= 50 ? 15 : 0);
     Q.party_relations.SPD.SAPD  = 50 + (Q.left_strength >= 50 ? 15 : 0);
 
@@ -520,7 +467,7 @@ function updatePartyRelations() {
     Q.party_relations.NSDAP.DVP = 25 + (Q.capital_strike_progress * 5) + (Q.dvp_right_shift ?? 0) * 10;
     Q.party_relations.NSDAP.WP  = 30 + (Q.capital_strike_progress * 3);
 
-    // 2. Re-evaluate Booleans for Coalition Blocks based on the live numbers
+    // 2. Re-evaluate booleans for coalition blocks based on the live numbers
     Q.coalition_blocks = {
         DBP_KPD:   true,
         DBP_SAPD:  true,
@@ -529,7 +476,7 @@ function updatePartyRelations() {
         DBP_DTSP:  true,
         DBP_CNBL:  false,
         DBP_BB:    false,
-        
+
         KPD_Z:     Q.party_relations.Z.SPD < 65 || Q.kpd_relation < 65,
         KPD_BVP:   true,
         KPD_DVP:   true,
@@ -678,9 +625,10 @@ function updatePartyRelations() {
 updatePartyRelations();
 
 
+// ============================================================
+// ENSURE EVERY Q.parties MEMBER HAS A FULL RELATIONS ROW/COLUMN
+// ============================================================
 
-
-// ── ENSURE EVERY Q.parties MEMBER HAS A FULL RELATIONS ROW/COLUMN ──
 function ensurePartyRelationsComplete() {
     if (!Array.isArray(Q.parties) || !Q.party_relations) return;
 
@@ -717,6 +665,7 @@ function ensurePartyRelationsComplete() {
         }
     }
 }
+
 
 
 
@@ -3269,14 +3218,14 @@ function buildIdentityModifier(cs, ps, ss, ys) {
         ddp:   1 + (ss * 0.25) + (ps * 0.05) - (ys * 0.20),
         z:     (Q.z_ideology === "Christian Conservatism")
                    ? 1
-                       + (cs * 1.45 * (Q.prussian_concordat >= 1 ? 1.15 : 1) * (Q.z_transition_cvp === 1 ? (1/3) : 0.5))
+                       + (cs * 1.75 * (Q.prussian_concordat >= 1 ? 1.15 : 1) * (Q.z_transition_cvp === 1 ? (1/3) : 0.5))
                        + (ps * 0.35 * (Q.z_transition_cvp === 1 ? 1.55 : 1))
                        + (ss * (0.15 + (Q.z_transition_cvp === 2 ? 0.20 : 0)))
                        + (ys * (0.10 + (Q.z_transition_cvp === 2 ? 0.15 : 0)))
                        - (ys * 0.10)
                : (Q.z_ideology === "Catholic Laborism")
                    ? 1
-                       + (cs * 1.45 * (Q.prussian_concordat >= 1 ? 1.15 : 1) * 1.10)
+                       + (cs * 1.65 * (Q.prussian_concordat >= 1 ? 1.15 : 1) * 1.10)
                        - (ss * 0.20)
                        - (ys * 0.05)
                : 1 + (cs * 1.45 * (Q.prussian_concordat >= 1 ? 1.15 : 1)) - (ss * 0.20) - (ys * 0.10),
@@ -4904,10 +4853,10 @@ Q.identities = Q.identities || ['catholics', 'protestants', 'seculars', 'youth']
 // the setting (rural more religious/Protestant, workers/new_middle more
 // secular and younger, old_middle the most religiously conventional).
 Q.class_identity_lean = Q.class_identity_lean || {
-    workers:     { catholics: 0.90, protestants: 0.95, seculars: 1.45, youth: 1.20 },
-    old_middle:  { catholics: 1.05, protestants: 1.10, seculars: 0.55, youth: 0.75 },
+    workers:     { catholics: 0.90, protestants: 0.95, seculars: 1.45, youth: 1.40 },
+    old_middle:  { catholics: 1.10, protestants: 1.10, seculars: 0.55, youth: 0.75 },
     new_middle:  { catholics: 0.95, protestants: 1.00, seculars: 1.30, youth: 1.05 },
-    rural:       { catholics: 1.10, protestants: 1.20, seculars: 0.25, youth: 0.85 },
+    rural:       { catholics: 1.15, protestants: 1.20, seculars: 0.25, youth: 0.85 },
     unemployedc: { catholics: 0.95, protestants: 0.95, seculars: 1.15, youth: 1.55 },
 };
 
@@ -5082,14 +5031,14 @@ if (!Q.math_broken) {
 
 // === PARAMILITARY STRENGTH UPDATES ===
 
-if (Q.nsdap_banned) {
+if (Q.sa_banned) {
     Q.sa_strength *= 0.98;
     Q.sa_militancy = Math.max(0, Q.sa_militancy - 0.0003);
 } else {
     Q.sa_strength += Q.random_factor(Q.unrest_factor / 3, 0.3);
 }
 
-if (Q.dnvp_banned || Q.sh_banned) {
+if (Q.sh_banned) {
     Q.sh_strength *= 0.95;
     Q.sh_militancy = Math.max(0, Q.sh_militancy - 0.008);
 } else {
@@ -5108,7 +5057,7 @@ if (Q.rfb_banned && !Q.april_challenge) {
 
 if (Q.rb_banned) {
     Q.rb_strength *= 0.93;
-    Q.rb_militancy = Math.max(0, Q.rfb_militancy - 0.0005);
+    Q.rb_militancy = Math.max(0, Q.rb_militancy - 0.0005);
 } else {
     Q.rb_strength += Q.random_factor(Q.unrest_factor / 20, 0.3);
 }
@@ -7419,19 +7368,220 @@ Q.inflation              = Math.max(-15, Math.min(1000, Q.inflation));
 Q.unemployed             = Math.max(0,   Math.min(50,   Q.unemployed));
 Q.economic_growth        = Math.max(-20, Math.min(20,   Q.economic_growth));
 Q.inflation_expectations = Math.max(-15, Math.min(1000, Q.inflation_expectations));
-Q.budget = Math.max(-50, Math.min(50, Q.budget));
+Q.budget = Math.max(-60, Math.min(60, Q.budget));
 Q.budget = Math.round(Q.budget * 100) / 100;
 
 Q.capital_strike_progress = Math.max(0, Math.min(15, Q.capital_strike_progress || 0));
 Q.coup_progress           = Math.max(0, Math.min(15, Q.coup_progress           || 0));
 Q.general_strike_progress = Math.max(0, Math.min(15, Q.general_strike_progress || 0));
 
+Q.pro_republic = Math.max(0.1, Math.min(99.9, Q.pro_republic));
+Q.nationalism  = Math.max(0.1, Math.min(99.9, Q.nationalism));
+Q.socialism    = Math.max(0.1, Math.min(99.9, Q.socialism));
+
+Q.NAIRU = Math.max(3, Math.min(12, Q.NAIRU));
+
+Q.presidential_patience = Math.max(0, Math.min(100, Q.presidential_patience));
+
+Q.sa_strength     = Math.max(0, Math.min(10000, Q.sa_strength));
+Q.sh_strength     = Math.max(0, Math.min(10000, Q.sh_strength));
+Q.rfb_strength    = Math.max(0, Math.min(10000, Q.rfb_strength));
+Q.rb_strength     = Math.max(0, Math.min(10000, Q.rb_strength));
+Q.jungdo_strength = Math.max(0, Math.min(10000, Q.jungdo_strength));
+if (Q.ruhr_labor_strike == 1) {
+    Q.ruhr_faud_strength = Math.max(0, Math.min(10000, Q.ruhr_faud_strength));
+    Q.ruhr_kapd_strength = Math.max(0, Math.min(10000, Q.ruhr_kapd_strength));
+}
+
+Q.sa_militancy     = Math.max(0.01, Math.min(0.99999, Q.sa_militancy));
+Q.sh_militancy     = Math.max(0.01, Math.min(0.99999, Q.sh_militancy));
+Q.rfb_militancy    = Math.max(0.01, Math.min(0.99999, Q.rfb_militancy));
+Q.rb_militancy     = Math.max(0.01, Math.min(0.99999, Q.rb_militancy));
+Q.jungdo_militancy = Math.max(0.01, Math.min(0.99999, Q.jungdo_militancy));
+if (Q.rpb_formed) {
+    Q.rpb_militancy = Math.max(0.01, Math.min(0.99999, Q.rpb_militancy));
+}
+if (Q.ruhr_labor_strike == 1) {
+    Q.ruhr_faud_militancy = Math.max(0.01, Math.min(0.99999, Q.ruhr_faud_militancy));
+    Q.ruhr_kapd_militancy = Math.max(0.01, Math.min(0.99999, Q.ruhr_kapd_militancy));
+}
+
+// Party relations: clamp every tracked party's relation value
+for (var i = 0; i < Q.parties.length; i++) {
+    var _relParty = Q.parties[i];
+    if (Q[_relParty + '_relation'] !== undefined) {
+        Q[_relParty + '_relation'] = Math.max(-100, Math.min(100, Q[_relParty + '_relation']));
+    }
+}
+
+// Faction dissent/strength: clamp every tracked faction
+if (Q.factions) {
+    for (var i = 0; i < Q.factions.length; i++) {
+        var _facKey = Q.factions[i];
+        if (Q[_facKey + '_dissent'] < 0) {
+            Q[_facKey + '_dissent'] = 0;
+        } else if (Q[_facKey + '_dissent'] >= 100) {
+            Q[_facKey + '_dissent'] = 99;
+        }
+        if (Q[_facKey + '_strength'] < 0) {
+            Q[_facKey + '_strength'] = 0;
+        }
+    }
+}
+
+if (Q.revolutionary_unrest_points) {
+    for (var _rup in Q.revolutionary_unrest_points) {
+        Q.revolutionary_unrest_points[_rup] = Math.max(0, Math.min(20, Q.revolutionary_unrest_points[_rup]));
+    }
+}
+
 //               HOME TO ALL CONSTRAINTS OF THE VALUES HERE, OKAY.
 
+// ============================================================
+// VARIABLE RANGE CAPPING
+// ============================================================
+
+Q.capped_var_ranges = {
+    // 0 to 10
+    pro_consumer:              [0, 10],
+    agricultural_finance:      [0, 10],
+    land_reform:               [0, 10],
+    socialization:             [0, 10],
+    commonwealth_cooperation:  [0, 10],
+    cooperatives:              [0, 10],
+    economic_democracy:        [0, 20],
+    workers_safety:            [0, 10],
+    working_hours:             [0, 10],
+    womens_rights:             [0, 10],
+
+    // -10 to 10
+    welfare:                   [-10, 10],
+    judicial_reform:           [-10, 10],
+    pacifism:                  [-10, 10],
+    radicalization:            [-10, 10],
+    democratization:           [-10, 10],
+
+    // -1 to 2
+    confronting_antisemitism:  [-1, 2],
+
+    // 0 to 15
+    workers_aid:               [0, 15],
+    campaign_media:            [0, 15],
+    commercialized_media:      [0, 15],
+    cultural_organizations:    [0, 15],
+    wtb_support:               [0, 15],
+    local_rally:               [0, 15],
+    peoples_party_support:     [0, 15]
+};
+
+Q.apply_var_caps = function() {
+    for (var varName in Q.capped_var_ranges) {
+        if (!Q.capped_var_ranges.hasOwnProperty(varName)) continue;
+        if (Q[varName] === undefined) continue; // skip vars not in use
+
+        var range = Q.capped_var_ranges[varName];
+        var min = range[0];
+        var max = range[1];
+
+        if (Q[varName] < min) {
+            Q[varName] = min;
+        } else if (Q[varName] > max) {
+            Q[varName] = max;
+        }
+    }
+};
+
+Q.apply_var_caps();
 
 
+{
+    const _dnvp_total_cap = 1000;
+    const _dnvp_tracked = [
+        'hugenberg_momentum',
+        'delegate_power_moderates',
+        'delegate_power_nat_cons',
+        'delegate_power_agrarians',
+        'delegate_power_yocon',
+        'delegate_power_christsoc'
+    ];
+
+    const _dnvp_sum = _dnvp_tracked.reduce((sum, key) => sum + (Q[key] || 0), 0);
+
+    if (_dnvp_sum > _dnvp_total_cap) {
+        const _dnvp_scale = _dnvp_total_cap / _dnvp_sum;
+        _dnvp_tracked.forEach(key => {
+            Q[key] *= _dnvp_scale;
+        });
+        Q.delegate_power_traditionalists =
+            Q.delegate_power_moderates + Q.delegate_power_nat_cons + Q.delegate_power_agrarians;
+    }
+}
 
 
+{
+    const _ns_total_cap = 1000;
+    const _ns_tracked = [
+        'hitlerist_power',
+        'strasserist_power',
+        'rohmite_power'
+    ];
+
+    const _ns_sum = _ns_tracked.reduce((sum, key) => sum + (Q[key] || 0), 0);
+
+    if (_ns_sum > _ns_total_cap) {
+        const _ns_scale = _ns_total_cap / _ns_sum;
+        _ns_tracked.forEach(key => {
+            Q[key] *= _ns_scale;
+        });
+    }
+}
+
+
+{
+    const _dvp_total_cap = 500;
+    const _dvp_tracked = ['dvp_left', 'dvp_right'];
+    const _dvp_sum = _dvp_tracked.reduce((sum, key) => sum + (Q[key] || 0), 0);
+
+    if (_dvp_sum > _dvp_total_cap) {
+        const _dvp_scale = _dvp_total_cap / _dvp_sum;
+        Q.dvp_left *= _dvp_scale;
+        Q.dvp_right *= _dvp_scale;
+    }
+}
+
+
+{
+    const _ddp_total_cap = 500;
+    const _ddp_tracked = ['business_wing_ddp', 'social_republican_ddp'];
+    const _ddp_sum = _ddp_tracked.reduce((sum, key) => sum + (Q[key] || 0), 0);
+
+    if (_ddp_sum > _ddp_total_cap) {
+        const _ddp_scale = _ddp_total_cap / _ddp_sum;
+        _ddp_tracked.forEach(key => {
+            Q[key] *= _ddp_scale;
+        });
+    }
+}
+
+
+{
+    const _z_total_cap = 1000;
+    const _z_tracked = [
+        'z_clerical_power',
+        'z_left_labor_power',
+        'z_right_labor_power',
+        'z_moderate_power'
+    ];
+
+    const _z_sum = _z_tracked.reduce((sum, key) => sum + (Q[key] || 0), 0);
+
+    if (_z_sum > _z_total_cap) {
+        const _z_scale = _z_total_cap / _z_sum;
+        _z_tracked.forEach(key => {
+            Q[key] *= _z_scale;
+        });
+    }
+}
 
 
 
