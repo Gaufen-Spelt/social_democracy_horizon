@@ -6873,9 +6873,14 @@ for (const party of Q.parties) {
     if (Q[timerKey + '_timer'] === undefined) {
         Q[timerKey + '_timer'] = 0;
     }
-}
 
-for (const party of Q.parties) {
+    var flavorTimerKey = party + '_flavor_action';
+    if (!Q.timers.includes(flavorTimerKey)) {
+        Q.timers.push(flavorTimerKey);
+    }
+    if (Q[flavorTimerKey + '_timer'] === undefined) {
+        Q[flavorTimerKey + '_timer'] = 0;
+    }
 
     var govTimerKey = party + '_government_action';
     if (!Q.timers.includes(govTimerKey)) {
@@ -6883,6 +6888,14 @@ for (const party of Q.parties) {
     }
     if (Q[govTimerKey + '_timer'] === undefined) {
         Q[govTimerKey + '_timer'] = 0;
+    }
+
+    var govFlavorTimerKey = party + '_government_flavor_action';
+    if (!Q.timers.includes(govFlavorTimerKey)) {
+        Q.timers.push(govFlavorTimerKey);
+    }
+    if (Q[govFlavorTimerKey + '_timer'] === undefined) {
+        Q[govFlavorTimerKey + '_timer'] = 0;
     }
 }
 
