@@ -6899,6 +6899,12 @@ for (const party of Q.parties) {
     }
 }
 
+function isParty(party, targetParties) {
+    if (!party || !targetParties) return false;
+    var targets = Array.isArray(targetParties) ? targetParties : [targetParties];
+    return targets.some(t => t && party.toLowerCase() === t.toLowerCase());
+}
+
 
 // PARTY ACTIONS
 
@@ -6977,13 +6983,25 @@ Q.GLOBAL_PARTY_ACTIONS = {
 
     stahlhelm_recruitment: {
         ideoMin: 17, ideoMax: 20,
-        weight: () => scaledWeight(1.00, Q.stahlhelm_strength, 1000),
+        weight: () => scaledWeight(1.30, Q.stahlhelm_strength, 1300),
         description: (party) => partyLabel(party) + ' has overseen Der Stahlhelm recruiting some of the disgruntled mittelstand and outclasses into their paramilitary, receiving some anonymous fundings alongside.',
-        ignore: () => Q.sh_banned >= 1,
+        ignore: (party) => Q.sh_banned >= 1 || !isParty(party, 'dnvp'),
         timer: 10,
         apply: () => {
             Q.stahlhelm_strength += 50;
             Q.stahlhelm_militancy += 0.01;
+        }
+    },
+
+    rfb_recruitment: {
+        ideoMin: 1, ideoMax: 4,
+        weight: () => scaledWeight(1.30, Q.rfb_strength, 1000),
+        description: (party) => partyLabel(party) + ' has overseen the Roter Frontkämpferbund recruiting some of the disgruntled workers and unemployed into their paramilitary, receiving some anonymous fundings alongside.',
+        ignore: (party) => Q.rfb_banned >= 1 || !isParty(party, 'kpd'),
+        timer: 10,
+        apply: () => {
+            Q.rfb_strength += 50;
+            Q.rfb_militancy += 0.01;
         }
     },
 
