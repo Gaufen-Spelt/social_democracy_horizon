@@ -122,31 +122,6 @@ for (const p of EXTRA_IDEO_PARTIES) {
 
 Q.parties = [...new Set(Q.parties)];
 
-// PUSH PARTY ACTION TIMER FOR PARTY ACTIONS.
-
-// PARTY ACTION TIMER INIT
-
-for (const party of Q.parties) {
-    var timerKey = party + '_action';
-    if (!Q.timers.includes(timerKey)) {
-        Q.timers.push(timerKey);
-    }
-    if (Q[timerKey + '_timer'] === undefined) {
-        Q[timerKey + '_timer'] = 0;
-    }
-}
-
-for (const party of Q.parties) {
-    if (Q[party + '_in_government'] <= 0) continue;
-
-    var govTimerKey = party + '_government_action';
-    if (!Q.timers.includes(govTimerKey)) {
-        Q.timers.push(govTimerKey);
-    }
-    if (Q[govTimerKey + '_timer'] === undefined) {
-        Q[govTimerKey + '_timer'] = 0;
-    }
-}
 
 
 // CODE EXAMPLE FOR REMOVING Tolerator...
@@ -6880,6 +6855,36 @@ if (Q.dnvp_party_leader == "Alfred Hugenberg" && Q.lambach_stage == -1 && Q.lamb
 
 
 
+
+
+
+
+
+
+
+
+
+
+for (const party of Q.parties) {
+    var timerKey = party + '_action';
+    if (!Q.timers.includes(timerKey)) {
+        Q.timers.push(timerKey);
+    }
+    if (Q[timerKey + '_timer'] === undefined) {
+        Q[timerKey + '_timer'] = 0;
+    }
+}
+
+for (const party of Q.parties) {
+
+    var govTimerKey = party + '_government_action';
+    if (!Q.timers.includes(govTimerKey)) {
+        Q.timers.push(govTimerKey);
+    }
+    if (Q[govTimerKey + '_timer'] === undefined) {
+        Q[govTimerKey + '_timer'] = 0;
+    }
+}
 
 
 // PARTY ACTIONS
