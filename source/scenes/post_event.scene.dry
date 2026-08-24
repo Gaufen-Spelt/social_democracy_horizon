@@ -2122,6 +2122,7 @@ function wall_damp(value, wall, width, pushing_toward_wall) {
 if (Q.nat_vel  === undefined) Q.nat_vel  = 0;
 if (Q.soc_vel  === undefined) Q.soc_vel  = 0;
 if (Q.pr_vel   === undefined) Q.pr_vel   = 0;
+if (Q.lib_vel  === undefined) Q.lib_vel  = 0;
 
 // Momentum factor: a signal moving fast in one direction amplifies
 // further movement in that direction (bandwagon), but only up to a cap.
@@ -2305,6 +2306,15 @@ if (Q.nsdap_in_government) nationalist_party_count++;
 if (Q.dvfp_in_government) nationalist_party_count++;
 if (Q.dvp_in_government && (Q.dvp_right_shift || 0) >= 1) nationalist_party_count++;
 
+// Liberal bloc — DDP and non-right-shifted DVP double-count here AND in
+// centrist_party_count above. That's intentional: centrist_party_count
+// feeds coalition-size/blame math (unchanged), while liberal_party_count
+// feeds the new liberalism ideology axis below. They are different jobs
+// for the same parties, not duplicate bookkeeping.
+var liberal_party_count = 0;
+if (Q.ddp_in_government) liberal_party_count++;
+if (Q.dvp_in_government && (Q.dvp_right_shift || 0) < 1) liberal_party_count++;
+
 // Influence: junior partners (single-party-count blocs in large coalitions)
 // take amplified blame. The smaller you are relative to the coalition,
 // the more exposed you are to voter punishment.
@@ -2322,10 +2332,12 @@ function bloc_influence(count) {
 var socialist_influence   = bloc_influence(socialist_party_count);
 var centrist_influence    = bloc_influence(centrist_party_count);
 var nationalist_influence = bloc_influence(nationalist_party_count);
+var liberal_influence     = bloc_influence(liberal_party_count);
 
 var socialist_in_power    = socialist_party_count > 0;
 var centrist_in_power     = centrist_party_count > 0;
 var nationalist_in_power  = nationalist_party_count > 0;
+var liberal_in_power      = liberal_party_count > 0;
 
 // ============================================================
 // HONEYMOON / FATIGUE
@@ -2343,77 +2355,76 @@ var honeymoon_factor = 1.0 - (0.40 * Math.max(0, 1 - Q.govt_tenure_ticks / 12));
 var fatigue_factor   = 1.0 - (0.25 * scale(Q.govt_tenure_ticks, 52, 104));
 
 // ============================================================
-// PRO_REPUBLIC
-// Sluggish in both directions — institutions change slowly.
+// THE PIE — six ideology slices sharing one fixed pool
+//   nationalism, socialism, liberalism, conservatism,
+//   social_democracy, misc
+// Each slice computes its own raw push/pull from economic and
+// incumbency signals (same machinery as before). Radical/moderate
+// siblings (nationalism<->conservatism, socialism<->social_democracy)
+// then trade voters directly via sibling-transfer. Liberalism and
+// misc have no dedicated sibling and instead draw from/return to
+// a diffuse remainder pool built from whatever the sibling pairs
+// didn't claim. A final small proportional correction guarantees
+// the six deltas sum to exactly zero after floating-point drift.
+//
+// pro_republic is NOT a pie slice. It's a meta-legitimacy stat,
+// computed AFTER the pie settles, fed by which slices grew and
+// whether their current governing expression is system-loyal.
+// See REPUBLIC LEGITIMACY below, after PIE RECONCILIATION.
 // ============================================================
 
-var pr_push = 0;
-var pr_pull = 0;
+// ------------------------------------------------------------
+// PIE VELOCITY TRACKERS
+// ------------------------------------------------------------
 
-// Positive economy feeds republic legitimacy — but slowly,
-// institutions earn trust over time more than via single events
-pr_push += (unemp_pos * 1.2 + infl_pos * 0.7 + growth_pos * 1.0) * econ_positive * fatigue_factor;
+if (Q.con_vel    === undefined) Q.con_vel    = 0;
+if (Q.socdem_vel === undefined) Q.socdem_vel = 0;
+if (Q.misc_vel   === undefined) Q.misc_vel   = 0;
 
-// Negative economy bleeds republic — faster than recovery
-pr_pull += (unemp_neg * 2.2 + infl_neg * 1.0 + growth_neg * 1.8) * econ_negative * honeymoon_factor;
+// ------------------------------------------------------------
+// CONSERVATIVE / SOCIAL-DEMOCRATIC BLOC COUNTS
+// Moderate-line DNVP (dnvp_line === 1) is conservatism's core,
+// not nationalism's. SPD is social democracy's core, and no
+// longer feeds the radical socialism slice directly.
+// ------------------------------------------------------------
 
-// Blame attribution — only when economy is clearly bad
-if (econ_negative > 0.3) {
-    if (!Q.spd_in_government && !Q.z_in_government) {
-        pr_pull += 0.6 * econ_negative;
-    }
-    if (centrist_in_power && !socialist_in_power && !nationalist_in_power) {
-        pr_pull += phase_centrist_penalty * centrist_influence * econ_negative;
-    }
-}
+var conservative_party_count = 0;
+if (Q.dnvp_in_government && Q.dnvp_line === 1) conservative_party_count++;
+if (Q.bvp_in_government) conservative_party_count++;
+if (Q.z_in_government && (Q.z_line || 0) >= 1) conservative_party_count++; // right-Zentrum, if tracked
 
-// TSE: multiplied into existing push/pull rather than additive
-if (tse) {
-    if (econ_positive > 0.3) {
-        // Transformation + prosperity: "the republic can deliver"
-        pr_push *= (1.0 + 0.4 * socialist_influence);
-    } else if (econ_negative > 0.3) {
-        // Transformation + crisis: constitutional anxiety
-        pr_pull *= (1.0 + 0.7 * socialist_influence);
-    } else {
-        // Mixed: structural anxiety
-        pr_pull += 0.25 * socialist_influence;
-    }
-}
+var socdem_party_count = 0;
+if (Q.spd_in_government && Q.social_fascism_adopted != 1) socdem_party_count++;
 
-var raw_pr_delta = (pr_push - pr_pull);
+var misc_party_count = 0;
+if (Q.wp_in_government)   misc_party_count++;
+if (Q.cnbl_in_government) misc_party_count++;
+if (Q.rdp_in_government)  misc_party_count++;
+if (Q.dbp_in_government)  misc_party_count++;
+if (Q.dsbp_in_government) misc_party_count++;
 
-// Republic legitimacy: asymmetric inertia.
-// Recovers at ~60% the speed it falls — institutions bleed faster than they heal.
-var pr_inertia = raw_pr_delta > 0 ? 0.60 : 1.0;
-raw_pr_delta *= pr_inertia;
+var conservative_influence = bloc_influence(conservative_party_count);
+var socdem_influence       = bloc_influence(socdem_party_count);
+var misc_influence         = bloc_influence(misc_party_count);
 
-// Momentum
-var pr_mom = momentum_mult(Q.pr_vel, raw_pr_delta > 0 ? 1 : -1);
-raw_pr_delta *= pr_mom;
-
-// Wall damping
-raw_pr_delta *= wall_damp(Q.pro_republic, raw_pr_delta > 0 ? 90 : 10, 18, true);
-
-var pr_delta = raw_pr_delta * TICK;
-Q.pr_vel = lerp(Q.pr_vel, raw_pr_delta, 0.3); // velocity updates toward raw signal
+var conservative_in_power = conservative_party_count > 0;
+var socdem_in_power       = socdem_party_count > 0;
+var misc_in_power         = misc_party_count > 0;
 
 // ============================================================
-// NATIONALISM
-// Fast to spike, slow to bleed.
-// Explanatory simplicity (scapegoating, betrayal) makes it
-// the fastest absorber of economic anxiety.
+// NATIONALISM (radical — anti-republic)
+// Fast to spike, slow to bleed. Explanatory simplicity
+// (scapegoating, betrayal) makes it the fastest absorber
+// of economic anxiety.
 // ============================================================
 
 var nat_push = 0;
 var nat_pull = 0;
 
-// Crisis: nationalism absorbs anxiety fastest of the three
 nat_push += (unemp_neg * 2.8 + infl_neg * 1.0 + growth_neg * 2.0) * econ_negative;
 
 if (econ_negative > 0.25) {
     if (nationalist_in_power) {
-        // In power during bad times: takes blame, but less than left would
         nat_pull += 1.3 * nationalist_influence * econ_negative * honeymoon_factor;
     }
     if (socialist_in_power || centrist_in_power) {
@@ -2422,12 +2433,10 @@ if (econ_negative > 0.25) {
     }
 }
 
-// Prosperity: nationalism loses its core message
 nat_pull += (unemp_pos * 1.0 + infl_pos * 0.7) * econ_positive;
 
 if (econ_positive > 0.25) {
     if (nationalist_in_power) {
-        // In power during good times: gets some credit but also scrutiny
         nat_push += 1.0 * nationalist_influence * econ_positive * fatigue_factor;
     }
     if (socialist_in_power) {
@@ -2435,22 +2444,17 @@ if (econ_positive > 0.25) {
     }
 }
 
-// TSE opposition effect: multiplied into the push/pull
 if (tse) {
     if (econ_negative > 0.25 && !nationalist_in_power) {
-        // "We told you so" — amplified by how badly transformation is failing
         nat_push *= (1.0 + 0.6 * (1 - socialist_influence) * econ_negative);
     }
     if (econ_positive > 0.25 && !nationalist_in_power) {
-        // Successful transformation: ideological defeat for nationalism
         nat_pull *= (1.0 + 0.35 * socialist_influence);
     }
 }
 
 var raw_nat_delta = (nat_push - nat_pull);
 
-// Nationalism: FAST spike, SLOW bleed.
-// Rising: 1.25x speed. Falling: 0.65x speed.
 var nat_inertia = raw_nat_delta > 0 ? 1.25 : 0.65;
 raw_nat_delta *= nat_inertia;
 
@@ -2459,24 +2463,22 @@ raw_nat_delta *= nat_mom;
 
 raw_nat_delta *= wall_damp(Q.nationalism, raw_nat_delta > 0 ? 90 : 10, 18, true);
 
-var nat_delta = raw_nat_delta * TICK;
+var nat_delta_raw = raw_nat_delta * TICK; // pre-sibling-transfer, pre-reconciliation
 Q.nat_vel = lerp(Q.nat_vel, raw_nat_delta, 0.35);
 
 // ============================================================
-// SOCIALISM
+// SOCIALISM (radical — anti-republic)
 // Slower to move than nationalism, stickier once established.
-// Class consciousness builds gradually; it also dissolves gradually.
 // ============================================================
 
 var soc_push = 0;
 var soc_pull = 0;
 
-// Crisis: socialism gains, but more slowly than nationalism
 soc_push += (unemp_neg * 2.8 + infl_neg * 0.8 + growth_neg * 1.6) * econ_negative;
 
 if (econ_negative > 0.25) {
     if (socialist_in_power) {
-        var soc_blame_mult = tse ? 0.55 : 1.0; // TSE enables blame deflection
+        var soc_blame_mult = tse ? 0.55 : 1.0;
         soc_blame_mult *= honeymoon_factor;
         soc_pull += 1.3 * socialist_influence * econ_negative * soc_blame_mult;
     }
@@ -2485,7 +2487,6 @@ if (econ_negative > 0.25) {
     }
 }
 
-// Prosperity: socialism loses urgency narrative
 soc_pull += (unemp_pos * 1.0 + infl_pos * 0.7) * econ_positive;
 
 if (econ_positive > 0.25) {
@@ -2497,21 +2498,15 @@ if (econ_positive > 0.25) {
     }
 }
 
-// TSE structural legitimacy — multiplied into existing signals
 if (tse && socialist_in_power) {
-    // The transformation itself generates ongoing ideological momentum
     soc_push += 0.25 * socialist_influence;
-
     if (econ_positive > 0.3) {
-        // Vindication narrative amplifies what's already happening
         soc_push *= (1.0 + 0.5 * socialist_influence);
     }
 }
 
 var raw_soc_delta = (soc_push - soc_pull);
 
-// Socialism: moderate speed both ways, stickier than nationalism.
-// Rising: 0.95x. Falling: 0.75x (class loyalty persists under pressure).
 var soc_inertia = raw_soc_delta > 0 ? 0.95 : 0.75;
 raw_soc_delta *= soc_inertia;
 
@@ -2520,8 +2515,282 @@ raw_soc_delta *= soc_mom;
 
 raw_soc_delta *= wall_damp(Q.socialism, raw_soc_delta > 0 ? 90 : 10, 18, true);
 
-var soc_delta = raw_soc_delta * TICK;
-Q.soc_vel = lerp(Q.soc_vel, raw_soc_delta, 0.25); // slowest velocity update = stickiest
+var soc_delta_raw = raw_soc_delta * TICK;
+Q.soc_vel = lerp(Q.soc_vel, raw_soc_delta, 0.25);
+
+// ============================================================
+// CONSERVATISM (moderate — pro-republic, nationalism's sibling)
+// Falls off slowly. Its own econ signal is muted relative to
+// nationalism's — it doesn't feed as hungrily on crisis, because
+// its whole pitch is "order within the system," which crisis
+// undermines as much as it feeds. Its main driver is the sibling
+// transfer below, not this independent term.
+// ============================================================
+
+var con_push = 0;
+var con_pull = 0;
+
+// Mild direct response to economy — order/stability appeal
+con_push += (unemp_pos * 0.6 + infl_pos * 0.8 + growth_pos * 0.7) * econ_positive;
+con_pull += (unemp_neg * 0.9 + infl_neg * 0.6 + growth_neg * 0.8) * econ_negative;
+
+if (econ_negative > 0.25 && conservative_in_power) {
+    con_pull += 0.9 * conservative_influence * econ_negative * honeymoon_factor;
+}
+if (econ_positive > 0.25 && conservative_in_power) {
+    con_push += 0.8 * conservative_influence * econ_positive * fatigue_factor;
+}
+
+var raw_con_delta = (con_push - con_pull);
+
+// Falls off slowly, rises at moderate speed — mirror image of nationalism's
+// fast-spike/slow-bleed, since conservatism is the "settled" version
+var con_inertia = raw_con_delta > 0 ? 0.85 : 0.55;
+raw_con_delta *= con_inertia;
+
+var con_mom = momentum_mult(Q.con_vel, raw_con_delta > 0 ? 1 : -1);
+raw_con_delta *= con_mom;
+
+raw_con_delta *= wall_damp(Q.conservatism, raw_con_delta > 0 ? 90 : 10, 18, true);
+
+var con_delta_raw = raw_con_delta * TICK;
+Q.con_vel = lerp(Q.con_vel, raw_con_delta, 0.30);
+
+// ============================================================
+// SOCIAL DEMOCRACY (moderate — pro-republic, socialism's sibling)
+// Falls off slowly. Same logic as conservatism: muted independent
+// signal, driven mainly by sibling transfer with radical socialism.
+// ============================================================
+
+var socdem_push = 0;
+var socdem_pull = 0;
+
+socdem_push += (unemp_pos * 0.7 + infl_pos * 0.6 + growth_pos * 0.8) * econ_positive;
+socdem_pull += (unemp_neg * 1.0 + infl_neg * 0.5 + growth_neg * 0.9) * econ_negative;
+
+if (econ_negative > 0.25 && socdem_in_power) {
+    socdem_pull += 0.9 * socdem_influence * econ_negative * honeymoon_factor;
+}
+if (econ_positive > 0.25 && socdem_in_power) {
+    socdem_push += 0.8 * socdem_influence * econ_positive * fatigue_factor;
+}
+
+var raw_socdem_delta = (socdem_push - socdem_pull);
+
+var socdem_inertia = raw_socdem_delta > 0 ? 0.85 : 0.55;
+raw_socdem_delta *= socdem_inertia;
+
+var socdem_mom = momentum_mult(Q.socdem_vel, raw_socdem_delta > 0 ? 1 : -1);
+raw_socdem_delta *= socdem_mom;
+
+raw_socdem_delta *= wall_damp(Q.social_democracy, raw_socdem_delta > 0 ? 90 : 10, 18, true);
+
+var socdem_delta_raw = raw_socdem_delta * TICK;
+Q.socdem_vel = lerp(Q.socdem_vel, raw_socdem_delta, 0.30);
+
+// ============================================================
+// LIBERALISM (pro-republic, no dedicated sibling)
+// Prosperity is its only real fuel. No crisis narrative of its
+// own — under stress it draws from the diffuse remainder pool
+// below rather than trading with one specific rival.
+// ============================================================
+
+var lib_push = 0;
+var lib_pull = 0;
+
+lib_push += (unemp_pos * 1.0 + infl_pos * 1.1 + growth_pos * 1.3) * econ_positive;
+
+if (econ_positive > 0.25 && liberal_in_power) {
+    lib_push += 1.1 * liberal_influence * econ_positive * fatigue_factor;
+}
+
+lib_pull += (unemp_neg * 1.6 + infl_neg * 1.8 + growth_neg * 1.4) * econ_negative;
+
+if (econ_negative > 0.25 && liberal_in_power) {
+    lib_pull += 1.4 * liberal_influence * econ_negative * honeymoon_factor;
+}
+
+if (Q.phase === "hyperinflation") {
+    lib_pull += 0.5 * econ_negative;
+}
+
+if (tse) {
+    if (econ_positive > 0.3) {
+        lib_pull *= (1.0 + 0.4 * socialist_influence);
+    } else if (econ_negative > 0.3) {
+        lib_push += 0.2 * (1 - socialist_influence);
+    }
+}
+
+var raw_lib_delta = (lib_push - lib_pull);
+
+var lib_inertia = raw_lib_delta > 0 ? 0.85 : 1.05;
+raw_lib_delta *= lib_inertia;
+
+var lib_mom = momentum_mult(Q.lib_vel, raw_lib_delta > 0 ? 1 : -1);
+raw_lib_delta *= lib_mom;
+
+raw_lib_delta *= wall_damp(Q.liberalism, raw_lib_delta > 0 ? 90 : 10, 18, true);
+
+var lib_delta_raw = raw_lib_delta * TICK;
+Q.lib_vel = lerp(Q.lib_vel, raw_lib_delta, 0.30);
+
+// ============================================================
+// MISC (WP, CNBL, RDP, DBP, DSBP and other minor parties)
+// Small, mostly reactive. No sibling, no strong independent
+// pull — mainly rides the diffuse remainder pool. Kept modest
+// on purpose: this slice should never become a major attractor.
+// ============================================================
+
+var misc_push = 0;
+var misc_pull = 0;
+
+misc_push += (unemp_neg * 0.5 + growth_neg * 0.6) * econ_negative * 0.5; // agrarian/sectoral distress, muted
+misc_pull += (unemp_pos * 0.4 + growth_pos * 0.4) * econ_positive * 0.5;
+
+if (econ_negative > 0.3 && misc_in_power) {
+    misc_pull += 0.6 * misc_influence * econ_negative * honeymoon_factor;
+}
+
+var raw_misc_delta = (misc_push - misc_pull);
+
+var misc_inertia = 0.70; // no directional asymmetry — minor parties aren't sticky either way
+raw_misc_delta *= misc_inertia;
+
+var misc_mom = momentum_mult(Q.misc_vel, raw_misc_delta > 0 ? 1 : -1);
+raw_misc_delta *= misc_mom;
+
+raw_misc_delta *= wall_damp(Q.misc_ideology, raw_misc_delta > 0 ? 40 : 5, 10, true);
+
+var misc_delta_raw = raw_misc_delta * TICK;
+Q.misc_vel = lerp(Q.misc_vel, raw_misc_delta, 0.30);
+
+// ============================================================
+// SIBLING TRANSFER
+// Radical axes trade voters with their moderate sibling rather
+// than gaining/losing into the void. When a radical axis is
+// losing ground (raw pull dominant, delta negative), a portion
+// of that outflow routes to its sibling. When a radical axis is
+// surging (delta positive), it can also draw FROM its sibling —
+// disillusioned moderates radicalizing — but at a lower rate,
+// since radicalization is harder than settling down.
+// ============================================================
+
+var NAT_CON_SOFTEN_RATE   = 0.45; // nationalism losing -> conservatism gains
+var NAT_CON_RADICALIZE_RATE = 0.20; // nationalism surging -> pulls from conservatism
+var SOC_SOCDEM_SOFTEN_RATE  = 0.45;
+var SOC_SOCDEM_RADICALIZE_RATE = 0.20;
+
+var nat_delta = nat_delta_raw;
+var con_delta = con_delta_raw;
+var soc_delta = soc_delta_raw;
+var socdem_delta = socdem_delta_raw;
+
+if (nat_delta_raw < 0) {
+    // Nationalism losing ground -> some of that outflow settles as conservatism
+    var nat_outflow = -nat_delta_raw * NAT_CON_SOFTEN_RATE;
+    con_delta += nat_outflow;
+} else if (nat_delta_raw > 0) {
+    // Nationalism surging -> draws some voters from conservatism, but softly
+    con_delta -= nat_delta_raw * NAT_CON_RADICALIZE_RATE;
+}
+
+if (soc_delta_raw < 0) {
+    var soc_outflow = -soc_delta_raw * SOC_SOCDEM_SOFTEN_RATE;
+    socdem_delta += soc_outflow;
+} else if (soc_delta_raw > 0) {
+    socdem_delta -= soc_delta_raw * SOC_SOCDEM_RADICALIZE_RATE;
+}
+
+// ============================================================
+// DIFFUSE REMAINDER POOL
+// Liberalism and misc have no dedicated sibling. They draw from
+// (or return to) whatever the sibling-pair transfers above didn't
+// already claim — approximated as the negative sum of everyone
+// else's net movement so far, split between liberalism and misc
+// in proportion to how strongly each is currently pulling.
+// ============================================================
+
+var lib_delta = lib_delta_raw;
+var misc_delta = misc_delta_raw;
+
+var claimed_so_far = nat_delta + con_delta + soc_delta + socdem_delta;
+var remainder = -claimed_so_far; // what's left in the pie after sibling trades
+
+var lib_pull_strength  = Math.abs(lib_delta_raw)  + 0.05; // small floor so split is never divide-by-zero
+var misc_pull_strength = Math.abs(misc_delta_raw) + 0.05;
+var pull_total = lib_pull_strength + misc_pull_strength;
+
+lib_delta  += remainder * (lib_pull_strength  / pull_total);
+misc_delta += remainder * (misc_pull_strength / pull_total);
+
+// ============================================================
+// PIE RECONCILIATION
+// Guarantees the six deltas sum to exactly zero. Naive proportional
+// correction breaks when a slice is pinned at a wall (0 or 100) by
+// wall_damp — that slice can't actually absorb its assigned share of
+// the correction, which leaves the pie unbalanced by exactly however
+// much it was asked to eat. Instead: figure out which slices have
+// real room to move in the direction the correction requires, and
+// redistribute only across those, iterating a few times in case
+// removing one pinned slice pushes another one to its own limit.
+// ============================================================
+
+var PIE_FLOOR = 0.5;   // treat a slice as "pinned low" once this close to 0
+var PIE_CEIL  = 99.5;  // treat a slice as "pinned high" once this close to 100
+
+var pie_slices = {
+    nat: { delta: nat_delta, current: Q.nationalism },
+    soc: { delta: soc_delta, current: Q.socialism },
+    lib: { delta: lib_delta, current: Q.liberalism },
+    con: { delta: con_delta, current: Q.conservatism },
+    socdem: { delta: socdem_delta, current: Q.social_democracy },
+    misc: { delta: misc_delta, current: Q.misc_ideology }
+};
+
+var pie_sum = 0;
+for (var k in pie_slices) pie_sum += pie_slices[k].delta;
+
+var reconcile_attempts = 0;
+while (Math.abs(pie_sum) > 0.0001 && reconcile_attempts < 4) {
+    // Correction needs to SUBTRACT pie_sum overall. A slice can only
+    // absorb a subtraction if it isn't already pinned at its floor
+    // (subtracting would push it further below 0), and can only
+    // absorb an addition if it isn't pinned at its ceiling.
+    var correction_is_subtraction = pie_sum > 0;
+
+    var eligible_total_magnitude = 0.0001;
+    for (var k in pie_slices) {
+        var s = pie_slices[k];
+        var pinned_low  = s.current <= PIE_FLOOR && correction_is_subtraction;
+        var pinned_high = s.current >= PIE_CEIL  && !correction_is_subtraction;
+        s.eligible = !pinned_low && !pinned_high;
+        if (s.eligible) eligible_total_magnitude += Math.abs(s.delta) + 0.01; // small floor so zero-delta slices can still absorb
+    }
+
+    var any_eligible = false;
+    for (var k in pie_slices) {
+        var s = pie_slices[k];
+        if (s.eligible) {
+            any_eligible = true;
+            var share = (Math.abs(s.delta) + 0.01) / eligible_total_magnitude;
+            s.delta -= pie_sum * share;
+        }
+    }
+
+    if (!any_eligible) break; // entire pie pinned — nothing left to redistribute onto, give up cleanly
+
+    pie_sum = 0;
+    for (var k in pie_slices) pie_sum += pie_slices[k].delta;
+    reconcile_attempts++;
+}
+
+nat_delta    = pie_slices.nat.delta;
+soc_delta    = pie_slices.soc.delta;
+lib_delta    = pie_slices.lib.delta;
+con_delta    = pie_slices.con.delta;
+socdem_delta = pie_slices.socdem.delta;
+misc_delta   = pie_slices.misc.delta;
 
 // ============================================================
 // COMPETENCE COUNTERS
@@ -2568,11 +2837,9 @@ var cross_mult = tse ? 1.4 : 1.0;
 if (Q.nationalism > 35 || Q.socialism > 35) {
 
     if (nat_delta > 0) {
-        pr_delta  -= nat_delta * 0.20 * cross_mult;
         soc_delta -= nat_delta * 0.12; // fear displaces solidarity
     }
     if (soc_delta > 0) {
-        pr_delta  -= soc_delta * 0.20 * cross_mult;
         nat_delta -= soc_delta * 0.08; // weaker displacement in this direction
     }
 
@@ -2583,7 +2850,72 @@ if (Q.nationalism > 35 || Q.socialism > 35) {
         nat_delta -= smaller * 0.10;
         soc_delta -= smaller * 0.10;
     }
+
+    // Liberalism has no defense against either extreme rising —
+    // it loses ground to both, unlike pro_republic which at least
+    // gets partial credit from "moderate" versions of nat/soc
+    if (nat_delta > 0) lib_delta -= nat_delta * 0.25;
+    if (soc_delta > 0) lib_delta -= soc_delta * 0.20;
 }
+
+// ============================================================
+// REPUBLIC LEGITIMACY
+// pro_republic is not a pie slice. It's a meta-legitimacy stat,
+// computed here from how the pie just moved: every point gained
+// by nationalism or socialism (both now defined as explicitly
+// anti-republic, revolutionary wings) bleeds legitimacy. Every
+// point gained by liberalism, conservatism, or social_democracy
+// (all pro-republic by definition, per the classification this
+// system encodes) builds it. Misc is treated as republic-neutral
+// — it doesn't move pro_republic either way, since minor/regional
+// parties aren't defined by a republic/anti-republic stance.
+//
+// This replaces the old independent push/pull PRO_REPUBLIC block
+// entirely. Institutional-legitimacy asymmetry (bleeds faster than
+// it heals) is preserved via differential weighting below, not via
+// a separate inertia system — since pro_republic no longer has its
+// own raw_delta/velocity/wall_damp pipeline, that asymmetry has to
+// live in the weights themselves.
+// ============================================================
+
+if (Q.pro_republic === undefined) Q.pro_republic = 50;
+
+var pr_delta = 0;
+
+// Anti-republic gains bleed legitimacy fast (bleeds faster than it heals)
+if (nat_delta > 0) pr_delta -= nat_delta * 0.85;
+if (soc_delta > 0) pr_delta -= soc_delta * 0.85;
+
+// Anti-republic LOSSES (radical wings shrinking) rebuild legitimacy,
+// but slowly — recovery lags collapse, same asymmetry as before
+if (nat_delta < 0) pr_delta += Math.abs(nat_delta) * 0.35;
+if (soc_delta < 0) pr_delta += Math.abs(soc_delta) * 0.35;
+
+// Pro-republic slices gaining ground builds legitimacy directly
+if (lib_delta    > 0) pr_delta += lib_delta    * 0.40;
+if (con_delta    > 0) pr_delta += con_delta    * 0.40;
+if (socdem_delta > 0) pr_delta += socdem_delta * 0.40;
+
+// Pro-republic slices LOSING ground (presumably to their radical
+// sibling, given how sibling-transfer works) also bleeds legitimacy,
+// since it signals the moderate flank is losing the argument
+if (lib_delta    < 0) pr_delta -= Math.abs(lib_delta)    * 0.20;
+if (con_delta    < 0) pr_delta -= Math.abs(con_delta)    * 0.20;
+if (socdem_delta < 0) pr_delta -= Math.abs(socdem_delta) * 0.20;
+
+// TSE: structural anxiety layered on top, same as before
+if (tse) {
+    if (econ_positive > 0.3) {
+        pr_delta += 0.15 * socialist_influence;
+    } else if (econ_negative > 0.3) {
+        pr_delta -= 0.30 * socialist_influence;
+    }
+}
+
+// Wall damping — legitimacy saturates near 0/100 same as everything else
+pr_delta *= wall_damp(Q.pro_republic, pr_delta > 0 ? 90 : 10, 18, true);
+
+
 
 // ============================================================
 // BROKEN PROMISES
@@ -2667,9 +2999,13 @@ if (Q.nationalist_crisis_failures && Q.nationalist_crisis_failures > 0
 // APPLY DELTAS
 // ============================================================
 
-Q.pro_republic += pr_delta;
-Q.nationalism  += nat_delta;
-Q.socialism    += soc_delta;
+Q.pro_republic      += pr_delta;
+Q.nationalism        += nat_delta;
+Q.socialism          += soc_delta;
+Q.liberalism         += lib_delta;
+Q.conservatism       += con_delta;
+Q.social_democracy   += socdem_delta;
+Q.misc_ideology      += misc_delta;
 
 // ============================================================
 // CLAMP & ROUND
@@ -2677,15 +3013,26 @@ Q.socialism    += soc_delta;
 
 if (!Q.math_broken) {
     // NORMAL: Clamp to [0, 100] and round to 1 decimal
-    Q.pro_republic = Math.round(Math.max(0, Math.min(100, Q.pro_republic)) * 10) / 10;
-    Q.nationalism  = Math.round(Math.max(0, Math.min(100, Q.nationalism))  * 10) / 10;
-    Q.socialism    = Math.round(Math.max(0, Math.min(100, Q.socialism))    * 10) / 10;
+    Q.pro_republic     = Math.round(Math.max(0, Math.min(100, Q.pro_republic))     * 10) / 10;
+    Q.nationalism      = Math.round(Math.max(0, Math.min(100, Q.nationalism))      * 10) / 10;
+    Q.socialism        = Math.round(Math.max(0, Math.min(100, Q.socialism))        * 10) / 10;
+    Q.liberalism       = Math.round(Math.max(0, Math.min(100, Q.liberalism))       * 10) / 10;
+    Q.conservatism     = Math.round(Math.max(0, Math.min(100, Q.conservatism))     * 10) / 10;
+    Q.social_democracy = Math.round(Math.max(0, Math.min(100, Q.social_democracy)) * 10) / 10;
+    Q.misc_ideology    = Math.round(Math.max(0, Math.min(100, Q.misc_ideology))    * 10) / 10;
 } else {
     // MATH BROKEN: Values can exceed 100, go negative, or become nonsense
-    Q.pro_republic = Q.impossible_percentage(Q.pro_republic);
-    Q.nationalism  = Q.impossible_percentage(Q.nationalism);
-    Q.socialism    = Q.impossible_percentage(Q.socialism);
-    console.log("OPINION CHAOS: PR=" + Q.pro_republic + " Nat=" + Q.nationalism + " Soc=" + Q.socialism + " Total=" + (Q.pro_republic + Q.nationalism + Q.socialism));
+    Q.pro_republic     = Q.impossible_percentage(Q.pro_republic);
+    Q.nationalism      = Q.impossible_percentage(Q.nationalism);
+    Q.socialism        = Q.impossible_percentage(Q.socialism);
+    Q.liberalism       = Q.impossible_percentage(Q.liberalism);
+    Q.conservatism     = Q.impossible_percentage(Q.conservatism);
+    Q.social_democracy = Q.impossible_percentage(Q.social_democracy);
+    Q.misc_ideology    = Q.impossible_percentage(Q.misc_ideology);
+    console.log("OPINION CHAOS: PR=" + Q.pro_republic + " Nat=" + Q.nationalism + " Soc=" + Q.socialism
+        + " Lib=" + Q.liberalism + " Con=" + Q.conservatism + " SocDem=" + Q.social_democracy
+        + " Misc=" + Q.misc_ideology
+        + " PieTotal=" + (Q.nationalism + Q.socialism + Q.liberalism + Q.conservatism + Q.social_democracy + Q.misc_ideology));
 }
 
 
@@ -5337,39 +5684,44 @@ if (this.ui && this.ui.show_portraits) {
  
 // === EARLY BOUNDS CHECKING (SKIP IN CHAOS MODE) ===
 if (!Q.math_broken) {
-    Q.pro_republic = Math.round(Q.pro_republic * 10) / 10;
-    Q.nationalism  = Math.round(Q.nationalism  * 10) / 10;
-    Q.socialism    = Math.round(Q.socialism    * 10) / 10;
+    Q.pro_republic    = Math.round(Q.pro_republic    * 10) / 10;
+    Q.nationalism     = Math.round(Q.nationalism     * 10) / 10;
+    Q.socialism       = Math.round(Q.socialism       * 10) / 10;
+    Q.liberalism      = Math.round(Q.liberalism      * 10) / 10;
+    Q.conservatism    = Math.round(Q.conservatism    * 10) / 10;
+    Q.social_democracy = Math.round(Q.social_democracy * 10) / 10;
+    Q.misc_ideology   = Math.round(Q.misc_ideology   * 10) / 10;
 
-    Q.pro_republic = Math.max(0.1, Math.min(99.9, Q.pro_republic));
-    Q.nationalism  = Math.max(0.1, Math.min(99.9, Q.nationalism));
-    Q.socialism    = Math.max(0.1, Math.min(99.9, Q.socialism));
+    Q.pro_republic     = Math.max(0.1, Math.min(99.9, Q.pro_republic));
+    Q.nationalism      = Math.max(0.1, Math.min(99.9, Q.nationalism));
+    Q.socialism        = Math.max(0.1, Math.min(99.9, Q.socialism));
+    Q.liberalism       = Math.max(0.1, Math.min(99.9, Q.liberalism));
+    Q.conservatism     = Math.max(0.1, Math.min(99.9, Q.conservatism));
+    Q.social_democracy = Math.max(0.1, Math.min(99.9, Q.social_democracy));
+    Q.misc_ideology    = Math.max(0.1, Math.min(99.9, Q.misc_ideology));
 } else {
     // MATH BROKEN: Political values can be anything
-    Q.pro_republic = Q.impossible_add(Q.pro_republic, 0);
-    Q.nationalism  = Q.impossible_multiply(Q.nationalism, 1);
-    Q.socialism    = Q.impossible_subtract(Q.socialism, 0);
+    Q.pro_republic     = Q.impossible_add(Q.pro_republic, 0);
+    Q.nationalism      = Q.impossible_multiply(Q.nationalism, 1);
+    Q.socialism        = Q.impossible_subtract(Q.socialism, 0);
+    Q.liberalism       = Q.impossible_add(Q.liberalism, 0);
+    Q.conservatism     = Q.impossible_add(Q.conservatism, 0);
+    Q.social_democracy = Q.impossible_add(Q.social_democracy, 0);
+    Q.misc_ideology    = Q.impossible_add(Q.misc_ideology, 0);
 }
 
-// === IDEOLOGICAL NORMALIZATION (SKIP IN CHAOS MODE) ===
-let ideologies = ['pro_republic', 'socialism', 'nationalism'];
+let pie_ideologies = ['nationalism', 'socialism', 'liberalism', 'conservatism', 'social_democracy', 'misc_ideology'];
 
 if (!Q.math_broken) {
-    // NORMAL: Ideologies sum to 200
-    let total = 0;
-    for (let ideology of ideologies) {
-        total += Q[ideology];
-    }
-    let factor = 100 / total;
-    for (let ideology of ideologies) {
-        Q[ideology] = Math.round(Q[ideology] * factor * 10) / 10;
+    for (let ideology of pie_ideologies) {
+        Q[ideology] = Math.max(0.1, Math.min(99.9, Q[ideology]));
     }
 } else {
-    // MATH BROKEN: Ideologies don't normalize
-    for (let ideology of ideologies) {
+    // MATH BROKEN: pie slices can be anything, don't clamp
+    for (let ideology of pie_ideologies) {
         Q[ideology] = Q.impossible_percentage(Q[ideology]);
     }
-    console.log("IDEOLOGY CHAOS: Total = " + (Q.pro_republic + Q.socialism + Q.nationalism));
+    console.log("IDEOLOGY CHAOS: Pie total = " + pie_ideologies.reduce((sum, i) => sum + Q[i], 0) + " (PR excluded, meta-stat) = " + Q.pro_republic);
 }
 
 // === FACTION BOUNDS (SKIP IN CHAOS MODE) ===
