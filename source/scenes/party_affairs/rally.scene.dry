@@ -121,15 +121,8 @@ Mass rallies are a common feature of social democratic life, especially in the l
 - @democracy: Expanding our nascent democracy and defending it against dictatorship and fascism.
 - @pacifism: Opposing war, nationalism, and militarism at all costs.
 - @wtb: Support the WTB plan!
-- @antinsdap: Oppose the NSDAP!
 - @local: A mixture of various local and national concerns that resonate most with the audience.
 - @easy_discard
-
-@antinsdap
-subtitle: {! <img class="face-image" src="img/antinsdap.png" alt="NSDAP"> !}
-on-arrival: workers_nsdap -= 10; new_middle_nsdap -= 5
-
-PLACEHOLDER AND WORK WITH IMAGES.
 
 @class_struggle
 on-arrival: dvp_relation -= 2; ddp_relation -= 2; z_relation -= 2; kpd_relation += 2; sapd_relation += 2; reformist_dissent += 3; neorevisionist_dissent += 3; workers_spd += 4*(1-dissent); unemployedc_spd += 3*(1-dissent) if left_strength > reformist_strength; workers_spd += 4*(1-dissent) if nationalization_progress > 0; unemployedc_spd += 3*(1-dissent) if nationalization_progress > 0; left_strength += 5; left_dissent -= 5; old_middle_spd -= 3; new_middle_spd -= 2; socialism += 2
