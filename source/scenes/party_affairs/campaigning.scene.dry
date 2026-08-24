@@ -11,6 +11,8 @@ go-to: campaigning_scene
 
 = Campaigning
 
+[the world]
+
 Whether or not we are in an electoral campaign, the party is always trying to broaden its voter base. Who should we focus our campaign efforts on?
 [? if nazi_urgency > 1: Awareness of National Socialism and it's threat amongst and to the society allows us to begin mobilization earlier, granting additional votes among workers and the unemployed. ?]
 
