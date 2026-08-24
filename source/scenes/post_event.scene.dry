@@ -387,75 +387,47 @@ for (var i = 0; i < portfolios.length; i++) {
 // ============================================================
 
 function updatePartyRelations() {
-    // 1. Direct mappings to variables that events already alter
-    Q.party_relations.KPD.SPD   = Q.kpd_relation;
-    Q.party_relations.KPD.SRPD  = Q.kpd_relation + 5;
-    Q.party_relations.SPD.KPD   = Q.kpd_relation;
-    Q.party_relations.SPD.DDP   = Q.ddp_relation;
-    Q.party_relations.SPD.Z     = Q.z_relation;
-    Q.party_relations.SPD.DVP   = Q.dvp_relation;
-    Q.party_relations.SPD.CSRP  = Q.csrp_relation;
-    Q.party_relations.SPD.DNVP  = Q.dnvp_relation;
-    Q.party_relations.SPD.KVP   = Q.kvp_relation;
-    Q.party_relations.SPD.DHP   = Q.dhp_relation;
-    Q.party_relations.SPD.BB    = Q.bb_relation;
-    Q.party_relations.SPD.DVFP  = Q.dvfp_relation;
-    Q.party_relations.SPD.BVP   = Q.bvp_relation;
-    Q.party_relations.SRPD.KPD  = Q.kpd_relation - 10;
-    Q.party_relations.SRPD.DDP  = Q.ddp_relation + 10;
-    Q.party_relations.SRPD.Z    = Q.z_relation + 5;
-    Q.party_relations.DDP.SPD   = Q.ddp_relation;
-    Q.party_relations.DDP.SRPD  = Q.ddp_relation + 10;
-    Q.party_relations.Z.SPD     = Q.z_relation;
-    Q.party_relations.Z.SRPD    = Q.z_relation + 5;
-    Q.party_relations.CSRP.SPD  = Q.csrp_relation;
-    Q.party_relations.CSRP.SRPD = Q.csrp_relation + 5;
-    Q.party_relations.DNVP.SPD  = Q.dnvp_relation;
-    Q.party_relations.DNVP.SRPD = Q.dnvp_relation - 5;
-    Q.party_relations.DVFP.SPD  = Q.dvfp_relation;
-    Q.party_relations.VRP.SPD   = Q.vrp_relation;
-    Q.party_relations.ASPD.KPD  = Q.kpd_relation - 10;
-    Q.party_relations.ASPD.DDP  = Q.ddp_relation + 5;
-    Q.party_relations.ASPD.Z    = Q.z_relation;
-    Q.party_relations.ASPD.DVP  = Q.dvp_relation + 10;
+    
+    var allParties = (Q.parties || []).concat(EXTRA_IDEO_PARTIES || []);
+    
+    var partyList = Array.from(new Set(allParties)).filter(p => p !== 'spd');
 
-    // --- remaining tracked-relation parties, mirrored both ways ---
+    if (!Q.party_relations) Q.party_relations = {};
+    if (!Q.party_relations.SPD) Q.party_relations.SPD = {};
+
+    // --- Dynamic SPD <-> Party Mapping ---
+    for (var i = 0; i < partyList.length; i++) {
+        var p = partyList[i];
+        var pUpper = p.toUpperCase();
+        var relVar = p + '_relation';
+
+        // Ensure the sub-object exists for this party (e.g., Q.party_relations.KPD)
+        if (!Q.party_relations[pUpper]) {
+            Q.party_relations[pUpper] = {};
+        }
+
+        // If Q[party_relation] exists, automatically sync SPD <-> Party bidirectionally
+        if (Q[relVar] !== undefined) {
+            Q.party_relations.SPD[pUpper] = Q[relVar];
+            Q.party_relations[pUpper].SPD = Q[relVar];
+        }
+    }
+
+    // --- Non-SPD specific party interaction rules ---
     Q.party_relations.SAPD.SPD  = 50 + (Q.left_strength >= 50 ? 15 : 0);
     Q.party_relations.SPD.SAPD  = 50 + (Q.left_strength >= 50 ? 15 : 0);
 
-    Q.party_relations.BVP.SPD   = Q.bvp_relation;
-    Q.party_relations.BVP.SRPD  = Q.bvp_relation + 5;
-
-    Q.party_relations.DVP.SPD   = Q.dvp_relation;
-    Q.party_relations.DVP.SRPD  = Q.dvp_relation - 5;
     Q.party_relations.DVP.DDP   = 65 - (Q.dvp_right_shift ?? 0) * 10;
     Q.party_relations.DVP.Z     = 60 + (Q.z_party_leader === "Kaas" ? 10 : 0);
     Q.party_relations.DVP.DNVP  = 50 + (Q.dvp_right_shift ?? 0) * 15;
     Q.party_relations.DVP.NSDAP = 20 + (Q.capital_strike_progress * 6) + (Q.dvp_right_shift ?? 0) * 12;
 
-    Q.party_relations.WP.SPD    = Q.wp_relation;
-    Q.party_relations.WP.SRPD   = Q.wp_relation - 5;
     Q.party_relations.WP.NSDAP  = 30 + (Q.capital_strike_progress * 3);
-
-    Q.party_relations.CNBL.SPD  = Q.cnbl_relation;
-    Q.party_relations.CNBL.SRPD = Q.cnbl_relation + 5;
     Q.party_relations.CNBL.NSDAP = 30 + (Q.capital_strike_progress * 4) + (Q.year >= 1930 ? 10 : 0);
 
-    Q.party_relations.CSVD.SPD  = Q.csvd_relation;
-    Q.party_relations.CSVD.SRPD = Q.csvd_relation + 5;
     Q.party_relations.CSVD.DNVP = Q.dnvp_line === 3 ? 5 : 55;
-
     Q.party_relations.KVP.DNVP  = Q.dnvp_line === 3 ? 5 : 60;
-
     Q.party_relations.DHP.DNVP  = Q.dnvp_line === 3 ? 15 : 55;
-
-    Q.party_relations.BB.SPD    = Q.bb_relation;
-
-    Q.party_relations.DBP.SPD   = Q.dbp_relation;
-    Q.party_relations.DBP.SRPD  = Q.dbp_relation + 5;
-
-    Q.party_relations.DSBP.SPD  = Q.dsbp_relation;
-    Q.party_relations.DSBP.SRPD = Q.dsbp_relation + 3;
 
     Q.party_relations.DNVP.Z    = (Q.dnvp_line === 3 ? 20 : 50) + (Q.z_party_leader === "Kaas" ? 15 : -10);
     Q.party_relations.Z.DNVP    = (Q.dnvp_line === 3 ? 20 : 50) + (Q.z_party_leader === "Kaas" ? 15 : -10);
@@ -467,7 +439,6 @@ function updatePartyRelations() {
     Q.party_relations.NSDAP.DVP = 25 + (Q.capital_strike_progress * 5) + (Q.dvp_right_shift ?? 0) * 10;
     Q.party_relations.NSDAP.WP  = 30 + (Q.capital_strike_progress * 3);
 
-    // 2. Re-evaluate booleans for coalition blocks based on the live numbers
     Q.coalition_blocks = {
         DBP_KPD:   true,
         DBP_SAPD:  true,
@@ -623,6 +594,7 @@ function updatePartyRelations() {
 }
 
 updatePartyRelations();
+
 
 
 // ============================================================
@@ -911,13 +883,14 @@ if (Q.left_split) {
 
 Q.relation_dynamics_speed = 0.25;
 
-// --- dominant_party_backlash (inlined) ---
+// --- dominant_party_backlash (Harsher Punishment Version) ---
 {
-    var THRESHOLD = 30;
+    var THRESHOLD = 25;      
     var MAX_VOTE = 100;
-    var MAX_SHIFT = 28;
+    var MAX_SHIFT = 40;      
     var SPEED = Q.relation_dynamics_speed;
-    var MAX_DIST = 20;
+    var MAX_DIST = 12;        
+    var BASE_FEAR = 0.3;      
 
     for (var i = 0; i < Q.parties.length; i++) {
         var dom = Q.parties[i];
@@ -925,14 +898,15 @@ Q.relation_dynamics_speed = 0.25;
         if (domVotes <= THRESHOLD) continue;
 
         var t = Math.min(1, (domVotes - THRESHOLD) / (MAX_VOTE - THRESHOLD));
-        var severity = Math.pow(t, 1.5);
+        var severity = Math.pow(t, 0.8); // Sub-linear curve hits hard early
 
         var domIdeo = Q[dom + '_ideo_score'] !== undefined ? Q[dom + '_ideo_score'] : 10;
 
+        // SPD specific backlash
         if (dom !== 'spd') {
             var spdIdeo = Q['spd_ideo_score'] !== undefined ? Q['spd_ideo_score'] : 10;
-            var spdIdeoDist = Math.abs(spdIdeo - domIdeo) / MAX_DIST;
-            var spdDecay = Math.max(0, Math.min(1, severity * spdIdeoDist));
+            var spdIdeoDist = Math.min(1, Math.abs(spdIdeo - domIdeo) / MAX_DIST);
+            var spdDecay = severity * (BASE_FEAR + (1 - BASE_FEAR) * spdIdeoDist);
 
             var spdRelKey = dom + '_relation';
             if (Q[spdRelKey] !== undefined) {
@@ -940,13 +914,14 @@ Q.relation_dynamics_speed = 0.25;
             }
         }
 
+        // Other parties backlash
         for (var j = 0; j < Q.parties.length; j++) {
             var other = Q.parties[j];
             if (other === dom || other === 'spd') continue;
 
             var otherIdeo = Q[other + '_ideo_score'] !== undefined ? Q[other + '_ideo_score'] : 10;
-            var ideoDist = Math.abs(otherIdeo - domIdeo) / MAX_DIST;
-            var decay = Math.max(0, Math.min(1, severity * ideoDist));
+            var ideoDist = Math.min(1, Math.abs(otherIdeo - domIdeo) / MAX_DIST);
+            var decay = severity * (BASE_FEAR + (1 - BASE_FEAR) * ideoDist);
 
             if (Q.party_relations[other.toUpperCase()] &&
                 Q.party_relations[other.toUpperCase()][dom.toUpperCase()] !== undefined) {
@@ -955,6 +930,7 @@ Q.relation_dynamics_speed = 0.25;
         }
     }
 }
+
 
 // --- ideological_affinity_drift (inlined) ---
 {
@@ -971,7 +947,7 @@ Q.relation_dynamics_speed = 0.25;
         var pIdeo = Q[p + '_ideo_score'] !== undefined ? Q[p + '_ideo_score'] : 10;
         var dist = Math.abs(spdIdeo - pIdeo);
         var closeness = Math.max(0, 1 - (dist / CLOSE_RANGE));
-        var gain = closeness * closeness * closeness * MAX_GAIN;
+        var gain = Math.pow(closeness, 5) * MAX_GAIN; 
 
         var relKey = p + '_relation';
         if (Q[relKey] !== undefined) {
