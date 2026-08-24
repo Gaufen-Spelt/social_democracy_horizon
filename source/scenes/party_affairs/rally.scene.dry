@@ -126,7 +126,7 @@ Mass rallies are a common feature of social democratic life, especially in the l
 - @easy_discard
 
 @antinsdap
-subtitle: {! <img class="face-image" src="img/antinsdapnna_happy.png" alt="NSDAP"> !}
+subtitle: {! <img class="face-image" src="img/antinsdap.png" alt="NSDAP"> !}
 on-arrival: workers_nsdap -= 10; new_middle_nsdap -= 5
 
 PLACEHOLDER AND WORK WITH IMAGES.
