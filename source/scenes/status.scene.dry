@@ -79,6 +79,10 @@ on-arrival: {!
 Q.pro_republic_disp = Q.pro_republic;
 Q.nationalism_disp = Q.nationalism;
 Q.socialism_disp = Q.socialism;
+Q.liberalism_disp = Q.liberalism;
+Q.conservatism_disp = Q.conservatism;
+Q.social_democracy_disp = Q.social_democracy;
+Q.misc_ideology_disp = Q.misc_ideology;
 Q.pacifism_disp = Q.pacifism;
 Q.democratization_disp = Q.democratization;
 Q.radicalization_disp = Q.radicalization;
@@ -171,7 +175,17 @@ Internal dissent: [+ dissent_percent : dissent +] [? if deterministic_mode == 1:
 = National Sentiment
 <hr>
 
-Support for the Republic: [+ pro_republic_disp +]%
+Support for the Republic: [+ pro_republic_disp +]%:
+
+Support for Liberalism: [+ liberalism_disp +]
+
+Support for Conservatism: [+ conservatism_disp +]
+
+Support for Social Democracy: [+ social_democracy_disp +]
+
+Support for miscellanious: [+ misc_ideology_disp +]
+
+<hr>
 
 Support for the Nationalism: [+ nationalism_disp +]%
 
