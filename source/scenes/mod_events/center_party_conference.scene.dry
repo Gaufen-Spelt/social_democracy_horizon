@@ -159,6 +159,7 @@ if (Q.congress_1_winner == "kaas") {
     Q.workers_z += 5;
 }
 !}
+go-to: root
 
 
 
