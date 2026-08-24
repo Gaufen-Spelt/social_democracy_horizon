@@ -50,7 +50,8 @@ on-arrival: workers_spd += 8*(1-dissent); unemployedc_spd += 8*(1-dissent); new_
 The WTB-Plan is the rallying point for the entire SPD and its affiliated organizations, including the Iron Front.
 
 @antisemitism
-title: Rally against antisemitism and in defense of Jewish Germans. {! <img class="face-image" style="width:20%;height:auto;" src="img/antinsdap.png" alt="NSDAP"> !}
+title: Rally against antisemitism and in defense of Jewish Germans. 
+subtitle: {! <img class="face-image" style="width:20%;height:auto;" src="img/antinsdap.png" alt="NSDAP"> !}
 view-if: confronting_antisemitism > 1
 on-arrival: nationalism -= 4*(1-dissent); pro_republic += 3*(1-dissent); confronting_antisemitism += 1; workers_nsdap -= 4*(1-dissent); unemployedc_nsdap -= 4*(1-dissent);
 
