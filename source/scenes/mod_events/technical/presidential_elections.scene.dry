@@ -571,7 +571,10 @@ var PARTIES = {
     rdp:   { label: "RDP",  tier: "independent", requires: "Q.rdp_votes > 0 && !Q.rdp_banned" },
     cvp:   { label: "CVP",  tier: "independent", requires: "Q.cvp_votes > 0 && !Q.cvp_banned" },
     sls:   { label: "SLS",  tier: "independent", requires: "Q.sls_votes > 0 && !Q.sls_banned" },
-    dtsp:  { label: "DtsP", tier: "independent", requires: "Q.dtsp_votes > 0 && !Q.dtsp_banned" }
+    dtsp:  { label: "DtsP", tier: "independent", requires: "Q.dtsp_votes > 0 && !Q.dtsp_banned" },
+    uspd:  { label: "USPD", tier: "independent", requires: "Q.uspd_votes > 0 && !Q.uspd_banned" },
+    pp:  { label: "PP", tier: "independent", requires: "Q.pp_votes > 0 && !Q.pp_banned" },
+    gsrn:  { label: "GSRN", tier: "independent", requires: "Q.gsrn_votes > 0 && !Q.gsrn_banned" }
 };
 
 
@@ -636,7 +639,7 @@ function getRelationSafe(a, b) {
 // ---------------------------------------------------------------------
 
 var BLOC_IDEO_FALLBACK_R1 = { far_left: 2, left: 5, cultural: 10, center_left: 8,
-                               center: 10, center_right: 13, far_right: 19 };
+                               center: 10, center_right: 14, far_right: 20 };
 
 function candIdeoScoreR1(name) {
     var key = canonEngine(name);
@@ -715,18 +718,18 @@ var OWN_BENCH = {
 
     dnvp: [
         { if: "jointActive() && Q.dnvp_line !== 3", pick: jointCand },
-        { if: "Q.dnvp_line === 1", pick: "Westarp" },
-        { if: "Q.dnvp_line === 2", pick: "Westarp" },
-        { if: "Q.dnvp_line === 0 && Q.dnvp_party_leader === 'Westarp'", pick: "Westarp" },
-        { if: "Q.dnvp_line === 0 && Q.dnvp_party_leader === 'Treviranus'", pick: "Treviranus" },
-        { if: "Q.dnvp_line === 0 && Q.dnvp_party_leader === 'Lambach'", pick: "Lambach" },
-        { if: "Q.dnvp_line === 0 && Q.dnvp_party_leader === 'Lindeiner-Wildau'", pick: "Lindeiner" },
-        { if: "Q.dnvp_line === 0", pick: "Treviranus" },
-        { if: "Q.dnvp_line === 3 && Q.nsdap_banned", pick: "Hugenberg" },
-        { if: "Q.dnvp_line === 3 && Q.hitler_dead && Q.dnvp_relation_nsdap >= 70", pick: "Goebbels" },
-        { if: "Q.dnvp_line === 3 && Q.hitler_dead", pick: "Hugenberg" },
-        { if: "Q.dnvp_line === 3 && Q.hitler_deported", pick: "Goring" },
-        { if: "Q.dnvp_line === 3", pick: "Hitler" },
+        { if: "Q.dnvp_party_leader != "Alfred Hugenberg" ", pick: "Westarp" },
+        { if: "Q.dnvp_ideology === "Social Corporatism"", pick: "Lambach" },
+        { if: "Q.dnvp_party_leader === 'Westarp'", pick: "Westarp" },
+        { if: "Q.dnvp_party_leader === 'Treviranus'", pick: "Treviranus" },
+        { if: "Q.dnvp_party_leader === 'Lambach'", pick: "Lambach" },
+        { if: "Q.dnvp_party_leader === 'Lindeiner-Wildau'", pick: "Lindeiner" },
+        { if: "Q.dnf_votes > 0", pick: "Treviranus" },
+        { if: "Q.dnvp_party_leader == "Alfred Hugenberg" && Q.nsdap_banned", pick: "Hugenberg" },
+        { if: "Q.dnvp_party_leader == "Alfred Hugenberg" && Q.hitler_dead && Q.dnvp_relation_nsdap >= 70", pick: "Goebbels" },
+        { if: "Q.dnvp_party_leader == "Alfred Hugenberg" && Q.hitler_dead", pick: "Hugenberg" },
+        { if: "Q.dnvp_party_leader == "Alfred Hugenberg" && Q.hitler_deported", pick: "Goring" },
+        { if: "Q.dnvp_party_leader == "Alfred Hugenberg"", pick: "Hitler" },
         { default: "Seldte" }
     ],
 
@@ -963,7 +966,7 @@ var RESOLUTION_ORDER = [
     "nsdap", "kpd", "dnvp", "z", "bvp", "dvp", "ddp", "wp", "cnbl",
     "bb", "dhp", "csvd", "kvp", "vrp", "sapd", "srpd", "dbp", "dsbp",
     "dvfp", "csrp", "dnf",
-    "kpo", "sl", "aspd", "vnr", "hl", "lb", "rdp", "cvp", "sls", "dtsp", "rlb", "kapd", "faud"
+    "kpo", "sl", "aspd", "vnr", "hl", "lb", "rdp", "cvp", "sls", "dtsp", "rlb", "kapd", "faud", 'uspd', 'gsrn', 'pp'
 ];
 
 // ---------------------------------------------------------------------
