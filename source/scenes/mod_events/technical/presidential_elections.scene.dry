@@ -718,20 +718,20 @@ var OWN_BENCH = {
 
     dnvp: [
         { if: "jointActive() && Q.dnvp_line !== 3", pick: jointCand },
-        { if: "Q.dnvp_party_leader != "Alfred Hugenberg" ", pick: "Westarp" },
-        { if: "Q.dnvp_ideology === "Social Corporatism"", pick: "Lambach" },
+        { if: "Q.dnvp_ideology === 'Social Corporatism'", pick: "Lambach" },
         { if: "Q.dnvp_party_leader === 'Westarp'", pick: "Westarp" },
         { if: "Q.dnvp_party_leader === 'Treviranus'", pick: "Treviranus" },
         { if: "Q.dnvp_party_leader === 'Lambach'", pick: "Lambach" },
         { if: "Q.dnvp_party_leader === 'Lindeiner-Wildau'", pick: "Lindeiner" },
         { if: "Q.dnf_votes > 0", pick: "Treviranus" },
-        { if: "Q.dnvp_party_leader == "Alfred Hugenberg" && Q.nsdap_banned", pick: "Hugenberg" },
-        { if: "Q.dnvp_party_leader == "Alfred Hugenberg" && Q.hitler_dead && Q.dnvp_relation_nsdap >= 70", pick: "Goebbels" },
-        { if: "Q.dnvp_party_leader == "Alfred Hugenberg" && Q.hitler_dead", pick: "Hugenberg" },
-        { if: "Q.dnvp_party_leader == "Alfred Hugenberg" && Q.hitler_deported", pick: "Goring" },
-        { if: "Q.dnvp_party_leader == "Alfred Hugenberg"", pick: "Hitler" },
+        { if: "Q.dnvp_party_leader === 'Alfred Hugenberg' && Q.nsdap_banned", pick: "Hugenberg" },
+        { if: "Q.dnvp_party_leader === 'Alfred Hugenberg' && Q.hitler_dead && Q.dnvp_relation_nsdap >= 70", pick: "Goebbels" },
+        { if: "Q.dnvp_party_leader === 'Alfred Hugenberg' && Q.hitler_dead", pick: "Hugenberg" },
+        { if: "Q.dnvp_party_leader === 'Alfred Hugenberg' && Q.hitler_deported", pick: "Goring" },
+        { if: "Q.dnvp_party_leader === 'Alfred Hugenberg'", pick: "Hitler" },
         { default: "Seldte" }
     ],
+
 
     z: [
         { if: "jointActive()", pick: jointCand },
