@@ -1861,8 +1861,11 @@ Q.dhp_party_leader = "Boden";        // Wilhelm Boden, Deutsch-Hannoversche Part
 Q.bb_party_leader = "Eisenberger";   // Karl Eisenberger, Bayerischer Bauernbund chairman
 Q.dbp_party_leader = "Fehr";
 Q.dnf_party_leader = "Alfred Hugenberg";
-Q.rlb_party_leader = "Martin Schiele"
-Q.aspd_party_leader = "Wilhelm Buck"
+Q.rlb_party_leader = "Martin Schiele";
+Q.aspd_party_leader = "Wilhelm Buck";
+Q.uspd_party_leader = "Georg Ledebour"; // or Theodor Liebknecht
+Q.gsrn_party_leader = "Karl Paetel";
+Q.pp_party_leader = "Stanisław Sierakowski";
 
 
 // === DEPRECATED - Keep for compatibility, sync with party_leader ===
@@ -1916,7 +1919,7 @@ Q.rfb_strength = 130;
 Q.rfb_militancy = 0.5;
 Q.rfb_banned = 0;
 Q.rfb_banned_prussia = 0;
-Q.jungdo_strength = 10;
+Q.jungdo_strength = 30;
 Q.jungdo_militancy = 0.01;
 
 Q.interior_police_strength = 50;
@@ -2562,8 +2565,6 @@ Q.custom_party_bvp   = Q.custom_party_bvp   || 1;
 Q.custom_party_dvp   = Q.custom_party_dvp   || 1;
 Q.custom_party_dnvp  = Q.custom_party_dnvp  || 1;
 Q.custom_party_nsdap = Q.custom_party_nsdap || 1;
-Q.custom_party_lb    = Q.custom_party_lb    || 0;
-Q.custom_party_kpo   = Q.custom_party_kpo   || 0;
 
 // ============================================================
 // AUTO IDEOLOGY SCORER — derives 0 (far-left) to 20 (far-right)
@@ -2596,6 +2597,7 @@ const IDEO_KEYWORDS = [
     [/christian socialism/i,              6],
     [/catholic tent/i,                    12],
     [/middle-class interest/i,            13],
+    [/polish interests/i,                 12],
 
     // 13 — moderate conservative / regional Catholic conservative
     [/bavarian conservatism/i,            13],
@@ -2616,6 +2618,7 @@ const IDEO_KEYWORDS = [
     [/national conservatism/i,            18],
 
     // 20 — far-right nationalist / völkisch / Nazi
+    [/revolutionary nationalism/i,               0],
     [/national socialism/i,               20],
     [/völkisch nationalism/i,             20],
     [/völkisch liberalism/i,              16],
@@ -2639,8 +2642,9 @@ for (const p of Q.parties) {
 // party_relations / coalition_blocks (splinters, KPO, LB, etc.)
 const EXTRA_IDEO_PARTIES = [
     'kpo', 'sl', 'sapd', 'srpd', 'ddp', 'z', 'bvp', 'csrp', 'dvp', 'wp',
-    'cnbl', 'csvd', 'dnvp', 'vrp', 'kvp', 'dhp', 'bb', 'dvfp',
-    'aspd', 'vnr', 'hl', 'lb', 'rdp', 'cvp', 'sls', 'dtsp', 'dbp', 'dsbp', 'dnf', 'rlb', 'faud', 'kapd'
+    'cnbl', 'csvd', 'dnvp', 'nsdap', 'vrp', 'kvp', 'dhp', 'bb', 'dvfp',
+    'aspd', 'vnr', 'hl', 'lb', 'rdp', 'cvp', 'sls', 'dtsp', 'dbp', 'dsbp', 'dnf', 'rlb', 'faud', 'kapd', 
+    'uspd', 'gsrn', 'pp'
 ];
 for (const p of EXTRA_IDEO_PARTIES) {
     const key = p + '_ideology';
@@ -2686,7 +2690,6 @@ Choose your challenges!
 > *Duel: [? if duel_challenge = 1: ON ?][? if duel_challenge != 1: OFF ?]*<br>
 > *Hindenburg: [? if hindenburg_challenge = 1: ON ?][? if hindenburg_challenge != 1: OFF ?]*<br>
 > *FPTH: [? if fptp_variable = 1: ON ?] [? if fptp_variable = 0: OFF ?]*<br>
-> *Street Law: [? if street_law_challenge = 1: ON ?] [? if street_law_challenge = 0: OFF ?]*<br>
 > *Base Gamemode Trust Me: [? if april_challenge = 1: ON ?][? if april_challenge != 1: OFF ?]*<br>
 
 - @separator_3: Main Modes:
@@ -2731,60 +2734,22 @@ new-page: true
 
 Choose which optional parties will appear in your game. Core parties (SPD, KPD, DNVP, Z, DVP, DDP, BVP, WP, NSDAP, OTHER) are always present.
 
-> *SAPD: [? if custom_party_sapd = 1: ON ?][? if custom_party_sapd != 1: OFF ?]*
-> *SRPD: [? if custom_party_srpd = 1: ON ?][? if custom_party_srpd != 1: OFF ?]*
-> *CSVD: [? if custom_party_csvd = 1: ON ?][? if custom_party_csvd != 1: OFF ?]*
-> *KVP: [? if custom_party_kvp = 1: ON ?][? if custom_party_kvp != 1: OFF ?]*
-> *DVFP: [? if custom_party_dvfp = 1: ON ?][? if custom_party_dvfp != 1: OFF ?]*
-> *CNBL: [? if custom_party_cnbl = 1: ON ?][? if custom_party_cnbl != 1: OFF ?]*
-> *BB: [? if custom_party_bb = 1: ON ?][? if custom_party_bb != 1: OFF ?]*
-> *DHP: [? if custom_party_dhp = 1: ON ?][? if custom_party_dhp != 1: OFF ?]*
-> *VRP: [? if custom_party_vrp = 1: ON ?][? if custom_party_vrp != 1: OFF ?]*
-> *CSRP: [? if custom_party_csrp = 1: ON ?][? if custom_party_csrp != 1: OFF ?]*
-> *ASPD: [? if custom_party_aspd = 1: ON ?][? if custom_party_aspd != 1: OFF ?]*
-> *HL: [? if custom_party_hl = 1: ON ?][? if custom_party_hl != 1: OFF ?]*
-> *KPO: [? if custom_party_kpo = 1: ON ?][? if custom_party_kpo != 1: OFF ?]*
-> *VNR: [? if custom_party_vnr = 1: ON ?][? if custom_party_vnr != 1: OFF ?]*
-> *SL: [? if custom_party_sl = 1: ON ?][? if custom_party_sl != 1: OFF ?]*
-> *LB: [? if custom_party_lb = 1: ON ?][? if custom_party_lb != 1: OFF ?]*
-> *RDP: [? if custom_party_rdp = 1: ON ?][? if custom_party_rdp != 1: OFF ?]*
-> *SLS: [? if custom_party_sls = 1: ON ?][? if custom_party_sls != 1: OFF ?]*
-> *CVP: [? if custom_party_cvp = 1: ON ?][? if custom_party_cvp != 1: OFF ?]*
-> *DTSP: [? if custom_party_dtsp = 1: ON ?][? if custom_party_dtsp != 1: OFF ?]*
-> *DBP: [? if custom_party_dbp = 1: ON ?][? if custom_party_dbp != 1: OFF ?]*
-> *DSBP: [? if custom_party_dsbp = 1: ON ?][? if custom_party_dsbp != 1: OFF ?]*
-> *DNF: [? if custom_party_dnf = 1: ON ?][? if custom_party_dnf != 1: OFF ?]*
-> *FAUD: [? if custom_party_faud = 1: ON ?][? if custom_party_faud != 1: OFF ?]*
-> *KAPD: [? if custom_party_kapd = 1: ON ?][? if custom_party_kapd != 1: OFF ?]*
-> *RLB: [? if custom_party_rlb = 1: ON ?][? if custom_party_rlb != 1: OFF ?]*
-
-
-Vanilla: <br>
-> *WP: [? if custom_party_wp = 1: ON ?][? if custom_party_wp != 1: OFF ?]*
-> *Z: [? if custom_party_z = 1: ON ?][? if custom_party_z != 1: OFF ?]*
-> *KPD: [? if custom_party_kpd = 1: ON ?][? if custom_party_kpd != 1: OFF ?]*
-> *DDP: [? if custom_party_ddp = 1: ON ?][? if custom_party_ddp != 1: OFF ?]*
-> *BVP: [? if custom_party_bvp = 1: ON ?][? if custom_party_bvp != 1: OFF ?]*
-> *DVP: [? if custom_party_dvp = 1: ON ?][? if custom_party_dvp != 1: OFF ?]*
-> *DNVP: [? if custom_party_dnvp = 1: ON ?][? if custom_party_dnvp != 1: OFF ?]*
-> *NSDAP: [? if custom_party_nsdap = 1: ON ?][? if custom_party_nsdap != 1: OFF ?]*
-
 - @pp_wp_on: WP
-- @pp_wp_off: WP 
-- @pp_z_on: Z (Centre) 
-- @pp_z_off: Z (Centre) 
-- @pp_kpd_on: KPD 
+- @pp_wp_off: WP
+- @pp_z_on: Z (Centre)
+- @pp_z_off: Z (Centre)
+- @pp_kpd_on: KPD
 - @pp_kpd_off: KPD
 - @pp_ddp_on: DDP
-- @pp_ddp_off: DDP 
-- @pp_bvp_on: BVP 
-- @pp_bvp_off: BVP 
+- @pp_ddp_off: DDP
+- @pp_bvp_on: BVP
+- @pp_bvp_off: BVP
 - @pp_dvp_on: DVP
-- @pp_dvp_off: DVP 
-- @pp_dnvp_on: DNVP 
-- @pp_dnvp_off: DNVP 
-- @pp_nsdap_on: NSDAP 
-- @pp_nsdap_off: NSDAP 
+- @pp_dvp_off: DVP
+- @pp_dnvp_on: DNVP
+- @pp_dnvp_off: DNVP
+- @pp_nsdap_on: NSDAP
+- @pp_nsdap_off: NSDAP
 - @pp_sapd_on: SAPD (Left split from SPD)
 - @pp_sapd_off: SAPD (Left split from SPD)
 - @pp_srpd_on: SRPD (Right split from SPD)
@@ -2831,352 +2796,462 @@ Vanilla: <br>
 - @pp_dsbp_off: DSBP
 - @pp_dnf_on: DNF
 - @pp_dnf_off: DNF
-- @pp_rlb_off: RLB
 - @pp_rlb_on: RLB
+- @pp_rlb_off: RLB
 - @pp_kapd_on: KAPD
 - @pp_kapd_off: KAPD
 - @pp_faud_on: FAUD
 - @pp_faud_off: FAUD
+- @pp_uspd_on: USPD
+- @pp_uspd_off: USPD
+- @pp_pp_on: PP
+- @pp_pp_off: PP
+- @pp_gsrn_on: GSRN
+- @pp_gsrn_off: GSRN
 - @challenge: Back
-
-@pp_rlb_on
-view-if: custom_party_rlb = 0
-on-arrival: custom_party_rlb = 1; rlb_banned = 0
-go-to: party_picker
-
-@pp_rlb_off
-view-if: custom_party_rlb = 1
-on-arrival: custom_party_rlb = 0; rlb_banned = 1
-go-to: party_picker
-
-@pp_kapd_on
-view-if: custom_party_kapd = 0
-on-arrival: custom_party_kapd = 1; kapd_banned = 0
-go-to: party_picker
-
-@pp_kapd_off
-view-if: custom_party_kapd = 1
-on-arrival: custom_party_kapd = 0; kapd_banned = 1
-go-to: party_picker
-
-@pp_faud_on
-view-if: custom_party_faud = 0
-on-arrival: custom_party_faud = 1; faud_banned = 0
-go-to: party_picker
-
-@pp_faud_off
-view-if: custom_party_faud = 1
-on-arrival: custom_party_faud = 0; faud_banned = 1
-go-to: party_picker
-
-@pp_dnf_on
-view-if: custom_party_dnf = 0
-on-arrival: custom_party_dnf = 1; dnf_banned = 0
-go-to: party_picker
-
-@pp_dnf_off
-view-if: custom_party_dnf = 1
-on-arrival: custom_party_dnf = 0; dnf_banned = 1
-go-to: party_picker
-
-@pp_dbp_on
-view-if: custom_party_dbp = 0
-on-arrival: custom_party_dbp = 1; dbp_banned = 0
-go-to: party_picker
-
-@pp_dbp_off
-view-if: custom_party_dbp = 1
-on-arrival: custom_party_dbp = 0; dbp_banned = 1
-go-to: party_picker
 
 @pp_wp_on
 view-if: custom_party_wp = 0
+subtitle: [? if custom_party_wp = 1: ON ?][? if custom_party_wp != 1: OFF ?]
 on-arrival: custom_party_wp = 1; wp_banned = 0
 go-to: party_picker
 
 @pp_wp_off
 view-if: custom_party_wp = 1
+subtitle: [? if custom_party_wp = 1: ON ?][? if custom_party_wp != 1: OFF ?]
 on-arrival: custom_party_wp = 0; wp_banned = 1
 go-to: party_picker
 
 @pp_z_on
 view-if: custom_party_z = 0
+subtitle: [? if custom_party_z = 1: ON ?][? if custom_party_z != 1: OFF ?]
 on-arrival: custom_party_z = 1; z_banned = 0
 go-to: party_picker
 
 @pp_z_off
 view-if: custom_party_z = 1
+subtitle: [? if custom_party_z = 1: ON ?][? if custom_party_z != 1: OFF ?]
 on-arrival: custom_party_z = 0; z_banned = 1
 go-to: party_picker
 
 @pp_kpd_on
 view-if: custom_party_kpd = 0
+subtitle: [? if custom_party_kpd = 1: ON ?][? if custom_party_kpd != 1: OFF ?]
 on-arrival: custom_party_kpd = 1; kpd_banned = 0
 go-to: party_picker
 
 @pp_kpd_off
 view-if: custom_party_kpd = 1
+subtitle: [? if custom_party_kpd = 1: ON ?][? if custom_party_kpd != 1: OFF ?]
 on-arrival: custom_party_kpd = 0; kpd_banned = 1
 go-to: party_picker
 
 @pp_ddp_on
 view-if: custom_party_ddp = 0
+subtitle: [? if custom_party_ddp = 1: ON ?][? if custom_party_ddp != 1: OFF ?]
 on-arrival: custom_party_ddp = 1; ddp_banned = 0
 go-to: party_picker
 
 @pp_ddp_off
 view-if: custom_party_ddp = 1
+subtitle: [? if custom_party_ddp = 1: ON ?][? if custom_party_ddp != 1: OFF ?]
 on-arrival: custom_party_ddp = 0; ddp_banned = 1
 go-to: party_picker
 
 @pp_bvp_on
 view-if: custom_party_bvp = 0
+subtitle: [? if custom_party_bvp = 1: ON ?][? if custom_party_bvp != 1: OFF ?]
 on-arrival: custom_party_bvp = 1; bvp_banned = 0
 go-to: party_picker
 
 @pp_bvp_off
 view-if: custom_party_bvp = 1
+subtitle: [? if custom_party_bvp = 1: ON ?][? if custom_party_bvp != 1: OFF ?]
 on-arrival: custom_party_bvp = 0; bvp_banned = 1
 go-to: party_picker
 
 @pp_dvp_on
 view-if: custom_party_dvp = 0
+subtitle: [? if custom_party_dvp = 1: ON ?][? if custom_party_dvp != 1: OFF ?]
 on-arrival: custom_party_dvp = 1; dvp_banned = 0
 go-to: party_picker
 
 @pp_dvp_off
 view-if: custom_party_dvp = 1
+subtitle: [? if custom_party_dvp = 1: ON ?][? if custom_party_dvp != 1: OFF ?]
 on-arrival: custom_party_dvp = 0; dvp_banned = 1
 go-to: party_picker
 
 @pp_dnvp_on
 view-if: custom_party_dnvp = 0
+subtitle: [? if custom_party_dnvp = 1: ON ?][? if custom_party_dnvp != 1: OFF ?]
 on-arrival: custom_party_dnvp = 1; dnvp_banned = 0
 go-to: party_picker
 
 @pp_dnvp_off
 view-if: custom_party_dnvp = 1
+subtitle: [? if custom_party_dnvp = 1: ON ?][? if custom_party_dnvp != 1: OFF ?]
 on-arrival: custom_party_dnvp = 0; dnvp_banned = 1
 go-to: party_picker
 
 @pp_nsdap_on
 view-if: custom_party_nsdap = 0
+subtitle: [? if custom_party_nsdap = 1: ON ?][? if custom_party_nsdap != 1: OFF ?]
 on-arrival: custom_party_nsdap = 1; nsdap_banned = 0; sa_banned = 0
 go-to: party_picker
 
 @pp_nsdap_off
 view-if: custom_party_nsdap = 1
+subtitle: [? if custom_party_nsdap = 1: ON ?][? if custom_party_nsdap != 1: OFF ?]
 on-arrival: custom_party_nsdap = 0; nsdap_banned = 1; sa_banned = 1
 go-to: party_picker
 
 @pp_sapd_on
 view-if: custom_party_sapd = 0
+subtitle: [? if custom_party_sapd = 1: ON ?][? if custom_party_sapd != 1: OFF ?]
 on-arrival: custom_party_sapd = 1; sapd_formed = 1; workers_sapd = 8; unemployedc_sapd = 6; sapd_banned = 0
 go-to: party_picker
 
 @pp_sapd_off
 view-if: custom_party_sapd = 1
+subtitle: [? if custom_party_sapd = 1: ON ?][? if custom_party_sapd != 1: OFF ?]
 on-arrival: custom_party_sapd = 0; sapd_banned = 1
 go-to: party_picker
 
 @pp_srpd_on
 view-if: custom_party_srpd = 0
+subtitle: [? if custom_party_srpd = 1: ON ?][? if custom_party_srpd != 1: OFF ?]
 on-arrival: custom_party_srpd = 1; srpd_formed = 1; workers_srpd = 10; srpd_banned = 0
 go-to: party_picker
 
 @pp_srpd_off
 view-if: custom_party_srpd = 1
+subtitle: [? if custom_party_srpd = 1: ON ?][? if custom_party_srpd != 1: OFF ?]
 on-arrival: custom_party_srpd = 0; srpd_banned = 1
 go-to: party_picker
 
 @pp_csvd_on
 view-if: custom_party_csvd = 0
+subtitle: [? if custom_party_csvd = 1: ON ?][? if custom_party_csvd != 1: OFF ?]
 on-arrival: custom_party_csvd = 1; csvd_flee = 1; rural_csvd = 8; old_middle_csvd = 6; csvd_banned = 0
 go-to: party_picker
 
 @pp_csvd_off
 view-if: custom_party_csvd = 1
+subtitle: [? if custom_party_csvd = 1: ON ?][? if custom_party_csvd != 1: OFF ?]
 on-arrival: custom_party_csvd = 0; csvd_banned = 1
 go-to: party_picker
 
 @pp_kvp_on
 view-if: custom_party_kvp = 0
+subtitle: [? if custom_party_kvp = 1: ON ?][? if custom_party_kvp != 1: OFF ?]
 on-arrival: custom_party_kvp = 1; kvp_flee = 1; old_middle_kvp = 10; kvp_banned = 0
 go-to: party_picker
 
 @pp_kvp_off
 view-if: custom_party_kvp = 1
+subtitle: [? if custom_party_kvp = 1: ON ?][? if custom_party_kvp != 1: OFF ?]
 on-arrival: custom_party_kvp = 0; kvp_banned = 1
 go-to: party_picker
 
 @pp_dvfp_on
 view-if: custom_party_dvfp = 0
+subtitle: [? if custom_party_dvfp = 1: ON ?][? if custom_party_dvfp != 1: OFF ?]
 on-arrival: custom_party_dvfp = 1; dvfp_formed = 1; old_middle_dvfp = 5; rural_dvfp = 5; dvfp_banned = 0
 go-to: party_picker
 
 @pp_dvfp_off
 view-if: custom_party_dvfp = 1
+subtitle: [? if custom_party_dvfp = 1: ON ?][? if custom_party_dvfp != 1: OFF ?]
 on-arrival: custom_party_dvfp = 0; dvfp_banned = 1
 go-to: party_picker
 
 @pp_cnbl_on
 view-if: custom_party_cnbl = 0
+subtitle: [? if custom_party_cnbl = 1: ON ?][? if custom_party_cnbl != 1: OFF ?]
 on-arrival: custom_party_cnbl = 1; rural_cnbl = 12; cnbl_banned = 0
 go-to: party_picker
 
 @pp_cnbl_off
 view-if: custom_party_cnbl = 1
+subtitle: [? if custom_party_cnbl = 1: ON ?][? if custom_party_cnbl != 1: OFF ?]
 on-arrival: custom_party_cnbl = 0; cnbl_banned = 1
 go-to: party_picker
 
 @pp_bb_on
 view-if: custom_party_bb = 0
+subtitle: [? if custom_party_bb = 1: ON ?][? if custom_party_bb != 1: OFF ?]
 on-arrival: custom_party_bb = 1; rural_bb = 8; bb_banned = 0
 go-to: party_picker
 
 @pp_bb_off
 view-if: custom_party_bb = 1
+subtitle: [? if custom_party_bb = 1: ON ?][? if custom_party_bb != 1: OFF ?]
 on-arrival: custom_party_bb = 0; bb_banned = 1
 go-to: party_picker
 
 @pp_dhp_on
 view-if: custom_party_dhp = 0
+subtitle: [? if custom_party_dhp = 1: ON ?][? if custom_party_dhp != 1: OFF ?]
 on-arrival: custom_party_dhp = 1; old_middle_dhp = 5; rural_dhp = 6; dhp_banned = 0
 go-to: party_picker
 
 @pp_dhp_off
 view-if: custom_party_dhp = 1
+subtitle: [? if custom_party_dhp = 1: ON ?][? if custom_party_dhp != 1: OFF ?]
 on-arrival: custom_party_dhp = 0; dhp_banned = 1
 go-to: party_picker
 
 @pp_vrp_on
 view-if: custom_party_vrp = 0
+subtitle: [? if custom_party_vrp = 1: ON ?][? if custom_party_vrp != 1: OFF ?]
 on-arrival: custom_party_vrp = 1; workers_vrp = 4; unemployedc_vrp = 5; vrp_banned = 0
 go-to: party_picker
 
 @pp_vrp_off
 view-if: custom_party_vrp = 1
+subtitle: [? if custom_party_vrp = 1: ON ?][? if custom_party_vrp != 1: OFF ?]
 on-arrival: custom_party_vrp = 0; vrp_banned = 1
 go-to: party_picker
 
 @pp_csrp_on
 view-if: custom_party_csrp = 0
+subtitle: [? if custom_party_csrp = 1: ON ?][? if custom_party_csrp != 1: OFF ?]
 on-arrival: custom_party_csrp = 1; workers_csrp = 3; csrp_banned = 0
 go-to: party_picker
 
 @pp_csrp_off
 view-if: custom_party_csrp = 1
+subtitle: [? if custom_party_csrp = 1: ON ?][? if custom_party_csrp != 1: OFF ?]
 on-arrival: custom_party_csrp = 0; csrp_banned = 1
 go-to: party_picker
 
 @pp_aspd_on
 view-if: custom_party_aspd = 0
+subtitle: [? if custom_party_aspd = 1: ON ?][? if custom_party_aspd != 1: OFF ?]
 on-arrival: custom_party_aspd = 1; workers_aspd = 3; aspd_banned = 0
 go-to: party_picker
 
 @pp_aspd_off
 view-if: custom_party_aspd = 1
+subtitle: [? if custom_party_aspd = 1: ON ?][? if custom_party_aspd != 1: OFF ?]
 on-arrival: custom_party_aspd = 0; aspd_banned = 1
 go-to: party_picker
 
 @pp_hl_on
 view-if: custom_party_hl = 0
+subtitle: [? if custom_party_hl = 1: ON ?][? if custom_party_hl != 1: OFF ?]
 on-arrival: custom_party_hl = 1; workers_hl = 3; hl_banned = 0
 go-to: party_picker
 
 @pp_hl_off
 view-if: custom_party_hl = 1
+subtitle: [? if custom_party_hl = 1: ON ?][? if custom_party_hl != 1: OFF ?]
 on-arrival: custom_party_hl = 0; hl_banned = 1
 go-to: party_picker
 
 @pp_kpo_on
 view-if: custom_party_kpo = 0
+subtitle: [? if custom_party_kpo = 1: ON ?][? if custom_party_kpo != 1: OFF ?]
 on-arrival: custom_party_kpo = 1; workers_kpo = 3; unemployedc_kpo = 3; kpo_banned = 0
 go-to: party_picker
 
 @pp_kpo_off
 view-if: custom_party_kpo = 1
+subtitle: [? if custom_party_kpo = 1: ON ?][? if custom_party_kpo != 1: OFF ?]
 on-arrival: custom_party_kpo = 0; kpo_banned = 1
 go-to: party_picker
 
 @pp_vnr_on
 view-if: custom_party_vnr = 0
+subtitle: [? if custom_party_vnr = 1: ON ?][? if custom_party_vnr != 1: OFF ?]
 on-arrival: custom_party_vnr = 1; old_middle_vnr = 4; rural_vnr = 4; vnr_banned = 0
 go-to: party_picker
 
 @pp_vnr_off
 view-if: custom_party_vnr = 1
+subtitle: [? if custom_party_vnr = 1: ON ?][? if custom_party_vnr != 1: OFF ?]
 on-arrival: custom_party_vnr = 0; vnr_banned = 1
 go-to: party_picker
 
 @pp_sl_on
 view-if: custom_party_sl = 0
+subtitle: [? if custom_party_sl = 1: ON ?][? if custom_party_sl != 1: OFF ?]
 on-arrival: custom_party_sl = 1; workers_sl = 3; unemployedc_sl = 4; sl_banned = 0
 go-to: party_picker
 
 @pp_sl_off
 view-if: custom_party_sl = 1
+subtitle: [? if custom_party_sl = 1: ON ?][? if custom_party_sl != 1: OFF ?]
 on-arrival: custom_party_sl = 0; sl_banned = 1
 go-to: party_picker
 
 @pp_lb_on
 view-if: custom_party_lb = 0
+subtitle: [? if custom_party_lb = 1: ON ?][? if custom_party_lb != 1: OFF ?]
 on-arrival: custom_party_lb = 1; workers_lb = 4; unemployedc_lb = 5; lb_banned = 0
 go-to: party_picker
 
 @pp_lb_off
 view-if: custom_party_lb = 1
+subtitle: [? if custom_party_lb = 1: ON ?][? if custom_party_lb != 1: OFF ?]
 on-arrival: custom_party_lb = 0; lb_banned = 1
 go-to: party_picker
 
 @pp_rdp_on
 view-if: custom_party_rdp = 0
+subtitle: [? if custom_party_rdp = 1: ON ?][? if custom_party_rdp != 1: OFF ?]
 on-arrival: custom_party_rdp = 1; new_middle_rdp = 5; rdp_banned = 0
 go-to: party_picker
 
 @pp_rdp_off
 view-if: custom_party_rdp = 1
+subtitle: [? if custom_party_rdp = 1: ON ?][? if custom_party_rdp != 1: OFF ?]
 on-arrival: custom_party_rdp = 0; rdp_banned = 1
 go-to: party_picker
 
 @pp_sls_on
 view-if: custom_party_sls = 0
+subtitle: [? if custom_party_sls = 1: ON ?][? if custom_party_sls != 1: OFF ?]
 on-arrival: custom_party_sls = 1; rural_sls = 4; sls_banned = 0
 go-to: party_picker
 
 @pp_sls_off
 view-if: custom_party_sls = 1
+subtitle: [? if custom_party_sls = 1: ON ?][? if custom_party_sls != 1: OFF ?]
 on-arrival: custom_party_sls = 0; sls_banned = 1
 go-to: party_picker
 
 @pp_cvp_on
 view-if: custom_party_cvp = 0
+subtitle: [? if custom_party_cvp = 1: ON ?][? if custom_party_cvp != 1: OFF ?]
 on-arrival: custom_party_cvp = 1; old_middle_cvp = 5; rural_cvp = 4; cvp_banned = 0
 go-to: party_picker
 
 @pp_cvp_off
 view-if: custom_party_cvp = 1
+subtitle: [? if custom_party_cvp = 1: ON ?][? if custom_party_cvp != 1: OFF ?]
 on-arrival: custom_party_cvp = 0; cvp_banned = 1
 go-to: party_picker
 
 @pp_dtsp_on
 view-if: custom_party_dtsp = 0
+subtitle: [? if custom_party_dtsp = 1: ON ?][? if custom_party_dtsp != 1: OFF ?]
 on-arrival: custom_party_dtsp = 1; old_middle_dtsp = 5; rural_dtsp = 4; dtsp_banned = 0
 go-to: party_picker
 
 @pp_dtsp_off
 view-if: custom_party_dtsp = 1
+subtitle: [? if custom_party_dtsp = 1: ON ?][? if custom_party_dtsp != 1: OFF ?]
 on-arrival: custom_party_dtsp = 0; dtsp_banned = 1
+go-to: party_picker
+
+@pp_dbp_on
+view-if: custom_party_dbp = 0
+subtitle: [? if custom_party_dbp = 1: ON ?][? if custom_party_dbp != 1: OFF ?]
+on-arrival: custom_party_dbp = 1; dbp_banned = 0
+go-to: party_picker
+
+@pp_dbp_off
+view-if: custom_party_dbp = 1
+subtitle: [? if custom_party_dbp = 1: ON ?][? if custom_party_dbp != 1: OFF ?]
+on-arrival: custom_party_dbp = 0; dbp_banned = 1
 go-to: party_picker
 
 @pp_dsbp_on
 view-if: custom_party_dsbp = 0
+subtitle: [? if custom_party_dsbp = 1: ON ?][? if custom_party_dsbp != 1: OFF ?]
 on-arrival: custom_party_dsbp = 1; dsbp_banned = 0
 go-to: party_picker
 
 @pp_dsbp_off
 view-if: custom_party_dsbp = 1
+subtitle: [? if custom_party_dsbp = 1: ON ?][? if custom_party_dsbp != 1: OFF ?]
 on-arrival: custom_party_dsbp = 0; dsbp_banned = 1
+go-to: party_picker
+
+@pp_dnf_on
+view-if: custom_party_dnf = 0
+subtitle: [? if custom_party_dnf = 1: ON ?][? if custom_party_dnf != 1: OFF ?]
+on-arrival: custom_party_dnf = 1; dnf_banned = 0
+go-to: party_picker
+
+@pp_dnf_off
+view-if: custom_party_dnf = 1
+subtitle: [? if custom_party_dnf = 1: ON ?][? if custom_party_dnf != 1: OFF ?]
+on-arrival: custom_party_dnf = 0; dnf_banned = 1
+go-to: party_picker
+
+@pp_rlb_on
+view-if: custom_party_rlb = 0
+subtitle: [? if custom_party_rlb = 1: ON ?][? if custom_party_rlb != 1: OFF ?]
+on-arrival: custom_party_rlb = 1; rlb_banned = 0
+go-to: party_picker
+
+@pp_rlb_off
+view-if: custom_party_rlb = 1
+subtitle: [? if custom_party_rlb = 1: ON ?][? if custom_party_rlb != 1: OFF ?]
+on-arrival: custom_party_rlb = 0; rlb_banned = 1
+go-to: party_picker
+
+@pp_kapd_on
+view-if: custom_party_kapd = 0
+subtitle: [? if custom_party_kapd = 1: ON ?][? if custom_party_kapd != 1: OFF ?]
+on-arrival: custom_party_kapd = 1; kapd_banned = 0
+go-to: party_picker
+
+@pp_kapd_off
+view-if: custom_party_kapd = 1
+subtitle: [? if custom_party_kapd = 1: ON ?][? if custom_party_kapd != 1: OFF ?]
+on-arrival: custom_party_kapd = 0; kapd_banned = 1
+go-to: party_picker
+
+@pp_faud_on
+view-if: custom_party_faud = 0
+subtitle: [? if custom_party_faud = 1: ON ?][? if custom_party_faud != 1: OFF ?]
+on-arrival: custom_party_faud = 1; faud_banned = 0
+go-to: party_picker
+
+@pp_faud_off
+view-if: custom_party_faud = 1
+subtitle: [? if custom_party_faud = 1: ON ?][? if custom_party_faud != 1: OFF ?]
+on-arrival: custom_party_faud = 0; faud_banned = 1
+go-to: party_picker
+
+@pp_uspd_on
+view-if: custom_party_uspd = 0
+subtitle: [? if custom_party_uspd = 1: ON ?][? if custom_party_uspd != 1: OFF ?]
+on-arrival: custom_party_uspd = 1; uspd_banned = 0
+go-to: party_picker
+
+@pp_uspd_off
+view-if: custom_party_uspd = 1
+subtitle: [? if custom_party_uspd = 1: ON ?][? if custom_party_uspd != 1: OFF ?]
+on-arrival: custom_party_uspd = 0; uspd_banned = 1
+go-to: party_picker
+
+@pp_pp_on
+view-if: custom_party_pp = 0
+subtitle: [? if custom_party_pp = 1: ON ?][? if custom_party_pp != 1: OFF ?]
+on-arrival: custom_party_pp = 1; pp_banned = 0
+go-to: party_picker
+
+@pp_pp_off
+view-if: custom_party_pp = 1
+subtitle: [? if custom_party_pp = 1: ON ?][? if custom_party_pp != 1: OFF ?]
+on-arrival: custom_party_pp = 0; pp_banned = 1
+go-to: party_picker
+
+@pp_gsrn_on
+view-if: custom_party_gsrn = 0
+subtitle: [? if custom_party_gsrn = 1: ON ?][? if custom_party_gsrn != 1: OFF ?]
+on-arrival: custom_party_gsrn = 1; gsrn_banned = 0
+go-to: party_picker
+
+@pp_gsrn_off
+view-if: custom_party_gsrn = 1
+subtitle: [? if custom_party_gsrn = 1: ON ?][? if custom_party_gsrn != 1: OFF ?]
+on-arrival: custom_party_gsrn = 0; gsrn_banned = 1
 go-to: party_picker
 
 
@@ -3842,6 +3917,9 @@ Q.parties.push('rlb');
 Q.parties.push('dnf');
 Q.parties.push('faud');
 Q.parties.push('kapd');
+Q.parties.push('uspd');
+Q.parties.push('pp');
+Q.parties.push('gsrn');
 }
 if (Q.peasant_revolution === 1) {
     Q.rural = 60;
@@ -4025,6 +4103,9 @@ if (Q.custom_party_dnf === 1 && !Q.parties.includes('dnf')) { Q.parties.push('dn
 if (Q.custom_party_rlb === 1 && !Q.parties.includes('rlb')) { Q.parties.push('rlb'); }
 if (Q.custom_party_faud === 1 && !Q.parties.includes('faud')) { Q.parties.push('faud'); }
 if (Q.custom_party_kapd === 1 && !Q.parties.includes('kapd')) { Q.parties.push('kapd'); }
+if (Q.custom_party_uspd === 1 && !Q.parties.includes('uspd')) { Q.parties.push('uspd'); }
+if (Q.custom_party_pp === 1 && !Q.parties.includes('pp')) { Q.parties.push('pp'); }
+if (Q.custom_party_gsrn === 1 && !Q.parties.includes('gsrn')) { Q.parties.push('gsrn'); }
 
 !}
 go-to: apberg if april_challenge = 1; starum if april_challenge = 0
@@ -4085,7 +4166,7 @@ if (!Q.padjParties) {
         ['dvfp','DVFP'], ['hl','HL'], ['kpo','KPO'], ['vnr','VNR'],
         ['sl','SL'], ['lb','LB'], ['rdp','RDP'], ['sls','SLS'],
         ['cvp','CVP'], ['dbp','DBP'], ['dsbp','DSBP'], ['dnf','DNF'],
-        ['faud','FAUD'], ['kapd','KAPD'], ['other','Other']
+        ['faud','FAUD'], ['kapd','KAPD'], ['other','Other'], ['uspd','USPD'], ['pp','PP'], ['gsrn,'GSRN']
     ];
 }
 Q.padjClasses = ['workers','old_middle','new_middle','rural','unemployedc'];
@@ -4098,7 +4179,7 @@ Q.padjClasses = ['workers','old_middle','new_middle','rural','unemployedc'];
 Q.padjCustomParties = [
     'sapd','srpd','csvd','kvp','dvfp','cnbl','bb','dhp','vrp','csrp',
     'aspd','hl','kpo','vnr','sl','lb','rdp','sls','cvp','dtsp','dbp',
-    'dsbp','dnf','faud','kapd','rlb'
+    'dsbp','dnf','faud','kapd','rlb', 'pp', 'uspd', 'gsrn'
 ];
 
 for (var pi = 0; pi < Q.padjParties.length; pi++) {
