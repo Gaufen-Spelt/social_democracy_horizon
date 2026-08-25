@@ -7419,14 +7419,220 @@ Q.inflation              = Math.max(-15, Math.min(1000, Q.inflation));
 Q.unemployed             = Math.max(0,   Math.min(50,   Q.unemployed));
 Q.economic_growth        = Math.max(-20, Math.min(20,   Q.economic_growth));
 Q.inflation_expectations = Math.max(-15, Math.min(1000, Q.inflation_expectations));
-Q.budget = Math.max(-50, Math.min(50, Q.budget));
+Q.budget = Math.max(-60, Math.min(60, Q.budget));
 Q.budget = Math.round(Q.budget * 100) / 100;
 
 Q.capital_strike_progress = Math.max(0, Math.min(15, Q.capital_strike_progress || 0));
 Q.coup_progress           = Math.max(0, Math.min(15, Q.coup_progress           || 0));
 Q.general_strike_progress = Math.max(0, Math.min(15, Q.general_strike_progress || 0));
 
+Q.pro_republic = Math.max(0.1, Math.min(99.9, Q.pro_republic));
+Q.nationalism  = Math.max(0.1, Math.min(99.9, Q.nationalism));
+Q.socialism    = Math.max(0.1, Math.min(99.9, Q.socialism));
+
+Q.NAIRU = Math.max(3, Math.min(12, Q.NAIRU));
+
+Q.presidential_patience = Math.max(0, Math.min(100, Q.presidential_patience));
+
+Q.sa_strength     = Math.max(0, Math.min(10000, Q.sa_strength));
+Q.sh_strength     = Math.max(0, Math.min(10000, Q.sh_strength));
+Q.rfb_strength    = Math.max(0, Math.min(10000, Q.rfb_strength));
+Q.rb_strength     = Math.max(0, Math.min(10000, Q.rb_strength));
+Q.jungdo_strength = Math.max(0, Math.min(10000, Q.jungdo_strength));
+if (Q.ruhr_labor_strike == 1) {
+    Q.ruhr_faud_strength = Math.max(0, Math.min(10000, Q.ruhr_faud_strength));
+    Q.ruhr_kapd_strength = Math.max(0, Math.min(10000, Q.ruhr_kapd_strength));
+}
+
+Q.sa_militancy     = Math.max(0.01, Math.min(0.99999, Q.sa_militancy));
+Q.sh_militancy     = Math.max(0.01, Math.min(0.99999, Q.sh_militancy));
+Q.rfb_militancy    = Math.max(0.01, Math.min(0.99999, Q.rfb_militancy));
+Q.rb_militancy     = Math.max(0.01, Math.min(0.99999, Q.rb_militancy));
+Q.jungdo_militancy = Math.max(0.01, Math.min(0.99999, Q.jungdo_militancy));
+if (Q.rpb_formed) {
+    Q.rpb_militancy = Math.max(0.01, Math.min(0.99999, Q.rpb_militancy));
+}
+if (Q.ruhr_labor_strike == 1) {
+    Q.ruhr_faud_militancy = Math.max(0.01, Math.min(0.99999, Q.ruhr_faud_militancy));
+    Q.ruhr_kapd_militancy = Math.max(0.01, Math.min(0.99999, Q.ruhr_kapd_militancy));
+}
+
+// Party relations: clamp every tracked party's relation value
+for (var i = 0; i < Q.parties.length; i++) {
+    var _relParty = Q.parties[i];
+    if (Q[_relParty + '_relation'] !== undefined) {
+        Q[_relParty + '_relation'] = Math.max(-100, Math.min(100, Q[_relParty + '_relation']));
+    }
+}
+
+// Faction dissent/strength: clamp every tracked faction
+if (Q.factions) {
+    for (var i = 0; i < Q.factions.length; i++) {
+        var _facKey = Q.factions[i];
+        if (Q[_facKey + '_dissent'] < 0) {
+            Q[_facKey + '_dissent'] = 0;
+        } else if (Q[_facKey + '_dissent'] >= 100) {
+            Q[_facKey + '_dissent'] = 99;
+        }
+        if (Q[_facKey + '_strength'] < 0) {
+            Q[_facKey + '_strength'] = 0;
+        }
+    }
+}
+
+if (Q.revolutionary_unrest_points) {
+    for (var _rup in Q.revolutionary_unrest_points) {
+        Q.revolutionary_unrest_points[_rup] = Math.max(0, Math.min(20, Q.revolutionary_unrest_points[_rup]));
+    }
+}
+
 //               HOME TO ALL CONSTRAINTS OF THE VALUES HERE, OKAY.
+
+// ============================================================
+// VARIABLE RANGE CAPPING
+// ============================================================
+
+Q.capped_var_ranges = {
+    // 0 to 10
+    pro_consumer:              [0, 10],
+    agricultural_finance:      [0, 10],
+    land_reform:               [0, 10],
+    socialization:             [0, 10],
+    commonwealth_cooperation:  [0, 10],
+    cooperatives:              [0, 10],
+    economic_democracy:        [0, 20],
+    workers_safety:            [0, 10],
+    working_hours:             [0, 10],
+    womens_rights:             [0, 10],
+
+    // -10 to 10
+    welfare:                   [-10, 10],
+    judicial_reform:           [-10, 10],
+    pacifism:                  [-10, 10],
+    radicalization:            [-10, 10],
+    democratization:           [-10, 10],
+
+    // -1 to 2
+    confronting_antisemitism:  [-1, 2],
+
+    // 0 to 15
+    workers_aid:               [0, 15],
+    campaign_media:            [0, 15],
+    commercialized_media:      [0, 15],
+    cultural_organizations:    [0, 15],
+    wtb_support:               [0, 15],
+    local_rally:               [0, 15],
+    peoples_party_support:     [0, 15]
+};
+
+Q.apply_var_caps = function() {
+    for (var varName in Q.capped_var_ranges) {
+        if (!Q.capped_var_ranges.hasOwnProperty(varName)) continue;
+        if (Q[varName] === undefined) continue; // skip vars not in use
+
+        var range = Q.capped_var_ranges[varName];
+        var min = range[0];
+        var max = range[1];
+
+        if (Q[varName] < min) {
+            Q[varName] = min;
+        } else if (Q[varName] > max) {
+            Q[varName] = max;
+        }
+    }
+};
+
+Q.apply_var_caps();
+
+
+{
+    const _dnvp_total_cap = 1000;
+    const _dnvp_tracked = [
+        'hugenberg_momentum',
+        'delegate_power_moderates',
+        'delegate_power_nat_cons',
+        'delegate_power_agrarians',
+        'delegate_power_yocon',
+        'delegate_power_christsoc'
+    ];
+
+    const _dnvp_sum = _dnvp_tracked.reduce((sum, key) => sum + (Q[key] || 0), 0);
+
+    if (_dnvp_sum > _dnvp_total_cap) {
+        const _dnvp_scale = _dnvp_total_cap / _dnvp_sum;
+        _dnvp_tracked.forEach(key => {
+            Q[key] *= _dnvp_scale;
+        });
+        Q.delegate_power_traditionalists =
+            Q.delegate_power_moderates + Q.delegate_power_nat_cons + Q.delegate_power_agrarians;
+    }
+}
+
+
+{
+    const _ns_total_cap = 1000;
+    const _ns_tracked = [
+        'hitlerist_power',
+        'strasserist_power',
+        'rohmite_power'
+    ];
+
+    const _ns_sum = _ns_tracked.reduce((sum, key) => sum + (Q[key] || 0), 0);
+
+    if (_ns_sum > _ns_total_cap) {
+        const _ns_scale = _ns_total_cap / _ns_sum;
+        _ns_tracked.forEach(key => {
+            Q[key] *= _ns_scale;
+        });
+    }
+}
+
+
+{
+    const _dvp_total_cap = 500;
+    const _dvp_tracked = ['dvp_left', 'dvp_right'];
+    const _dvp_sum = _dvp_tracked.reduce((sum, key) => sum + (Q[key] || 0), 0);
+
+    if (_dvp_sum > _dvp_total_cap) {
+        const _dvp_scale = _dvp_total_cap / _dvp_sum;
+        Q.dvp_left *= _dvp_scale;
+        Q.dvp_right *= _dvp_scale;
+    }
+}
+
+
+{
+    const _ddp_total_cap = 500;
+    const _ddp_tracked = ['business_wing_ddp', 'social_republican_ddp'];
+    const _ddp_sum = _ddp_tracked.reduce((sum, key) => sum + (Q[key] || 0), 0);
+
+    if (_ddp_sum > _ddp_total_cap) {
+        const _ddp_scale = _ddp_total_cap / _ddp_sum;
+        _ddp_tracked.forEach(key => {
+            Q[key] *= _ddp_scale;
+        });
+    }
+}
+
+
+{
+    const _z_total_cap = 1000;
+    const _z_tracked = [
+        'z_clerical_power',
+        'z_left_labor_power',
+        'z_right_labor_power',
+        'z_moderate_power'
+    ];
+
+    const _z_sum = _z_tracked.reduce((sum, key) => sum + (Q[key] || 0), 0);
+
+    if (_z_sum > _z_total_cap) {
+        const _z_scale = _z_total_cap / _z_sum;
+        _z_tracked.forEach(key => {
+            Q[key] *= _z_scale;
+        });
+    }
+}
 
 
 
