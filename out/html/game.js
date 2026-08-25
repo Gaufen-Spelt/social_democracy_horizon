@@ -790,9 +790,6 @@ Object.keys(wordPhrases).forEach(function(phrase) {
         'FAUD':   '#1C1C1C',
         'KAPD':   '#5C0000',
         'RLB':   '#4A5D23',
-        'GSRN':  '#C43131',
-        'USPD':  '#C40000',
-        'PP':    '#C43131',
 
       
         // Centre Party (Z) — avoid single-letter match, use full name below
@@ -2391,4 +2388,3 @@ var _achievePatchInterval = setInterval(function() {
     return result;
   };
 }, 100);
-
