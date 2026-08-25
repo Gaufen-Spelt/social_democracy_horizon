@@ -4166,7 +4166,7 @@ if (!Q.padjParties) {
         ['dvfp','DVFP'], ['hl','HL'], ['kpo','KPO'], ['vnr','VNR'],
         ['sl','SL'], ['lb','LB'], ['rdp','RDP'], ['sls','SLS'],
         ['cvp','CVP'], ['dbp','DBP'], ['dsbp','DSBP'], ['dnf','DNF'],
-        ['faud','FAUD'], ['kapd','KAPD'], ['other','Other'], ['uspd','USPD'], ['pp','PP'], ['gsrn,'GSRN']
+        ['faud','FAUD'], ['kapd','KAPD'], ['other','Other'], ['uspd','USPD'], ['pp','PP'], ['gsrn,'GSRN'],
     ];
 }
 Q.padjClasses = ['workers','old_middle','new_middle','rural','unemployedc'];
