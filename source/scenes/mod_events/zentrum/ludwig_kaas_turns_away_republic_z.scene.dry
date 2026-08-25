@@ -12,4 +12,4 @@ on-arrival: z_relation *= 0.80; z_ideology = "Authoritarian Catholic Tent"; pres
 
 ​With the unofficial **Weimar Divorce**, the SPD [? if ddp_votes > 0: and possibly [+ ddp_name +] ?] remain the sole parties loyal to the republican order. Our time has come.
 
-​@root: Perhaps Zentrum was never committed to democracy to begin with?
+- ​@root: Perhaps Zentrum was never committed to democracy to begin with?
