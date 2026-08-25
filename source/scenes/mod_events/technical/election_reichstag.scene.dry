@@ -269,7 +269,6 @@ Q.partyData = [
 { id: "faud", name: "FAUD",       color: "#1C1C1C", row: "far-left",  seats: Q.faud_seats, show: !!(Q.faud_r > 0) },
 { id: "kpd",  name: "KPD",        color: "#8B0000", row: "left",      seats: Q.kpd_seats,  show: !!(Q.kpd_r  && Q.kpd_r  > 0) },
 { id: "sapd", name: "SAPD",       color: "#C40000", row: "left",      seats: Q.sapd_seats, show: !!(Q.sapd_r && Q.sapd_r > 0) },
-{ id: "uspd", name: "USPD",       color: "#C40000", row: "left",      seats: Q.uspd_seats, show: !!(Q.uspd_r && Q.uspd_r > 0) },
 { id: "lb",   name: "LB",         color: "#6B0000", row: "left",      seats: Q.lb_seats,   show: !!(Q.lb_r   && Q.lb_r   > 0) },
 { id: "sl",   name: "SL",         color: "#005B96", row: "left",      seats: Q.sl_seats,   show: !!(Q.sl_r   && Q.sl_r   > 0) },
 { id: "kpo",  name: "KPO",        color: "#990000", row: "left",      seats: Q.kpo_seats,  show: !!(Q.kpo_r  && Q.kpo_r  > 0) },
@@ -278,7 +277,6 @@ Q.partyData = [
 { id: "rdp",  name: "RDP",        color: "#B8B000", row: "center",    seats: Q.rdp_seats,  show: !!(Q.rdp_r  && Q.rdp_r  > 0) },
 { id: "ddp",  name: Q.ddp_name,   color: "#DCCA4A", row: "center",    seats: Q.ddp_seats,  show: !!(Q.ddp_r  && Q.ddp_r  > 0) },
 { id: "dbp",  name: "DBP",        color: "#03A331", row: "liberal",   seats: Q.dbp_seats,  show: !!(Q.dbp_r  && Q.dbp_r  > 0) },
-{ id: "pp",  name: "PP",          color: "#FF9696", row: "center",    seats: Q.pp_seats,  show: !!(Q.pp_r  && Q.pp_r  > 0) },
 { id: "cvp",  name: "CVP",        color: "#1A1A1A", row: "center",    seats: Q.cvp_seats,  show: !!(Q.cvp_r  && Q.cvp_r  > 0) },
 { id: "z",    name: "Z (Center)", color: "#000000", row: "liberal",   seats: Q.z_seats,    show: !!(Q.z_r    && Q.z_r    > 0) },
 { id: "bb",   name: "BB",         color: "#69A2BE", row: "liberal",   seats: Q.bb_seats,   show: !!(Q.bb_r   && Q.bb_r   > 0) },
@@ -303,7 +301,6 @@ Q.partyData = [
 { id: "nsdap",name: "NSDAP",      color: "#954B00", row: "far-right", seats: Q.nsdap_seats,show: !!(Q.nsdap_r && Q.nsdap_r > 0) },
 { id: "dtsp", name: "DtsP",       color: "#3B1A00", row: "far-right", seats: Q.dtsp_seats, show: !!(Q.dtsp_r  && Q.dtsp_r  > 0) },
 { id: "dvfp", name: "DVFP",       color: "#1A0F00", row: "far-right", seats: Q.dvfp_seats, show: !!(Q.dvfp_r && Q.dvfp_r > 0) },
-{ id: "gsrn", name: "GSRN",       color: "#A30000", row: "far-left", seats: Q.gsrn_seats, show: !!(Q.gsrn_r && Q.gsrn_r > 0) },
 ];
 
 var visibleParties = Q.partyData.filter(function(p) { return p.show && p.seats > 0; });
@@ -838,7 +835,7 @@ function classify_coalition(parties) {
     var has = {};
     for (var i = 0; i < parties.length; i++) has[parties[i]] = true;
     if (has.SPD && has.KPD && !has.Z)                                       return 'left_front';
-    if (has.KPD && has.Z && has.SPD)                             return 'popular_front';
+    if (has.KPD && has.Z && has.SPD && has.DDP)                             return 'popular_front';
     if (has.SPD && has.SAPD && !has.KPD && !has.Z)                         return 'socialist_unity';
     if (has.SPD && has.Z && has.DDP && parties.length === 3)                return 'weimar';
     if (has.SPD && has.Z && has.DDP && has.DVP && has.BVP)                 return 'grand';
@@ -869,6 +866,203 @@ for (var _i = 0; _i < _cbkeys.length; _i++) {
     }
 }
 Q.coalition_blocks = _cb;
+
+// ============================================================
+// COALITION FORMATION DIAGNOSTICS
+// Paste at the START of begin_negotiations on-arrival,
+// after helpers are defined but before any logic runs.
+// ============================================================
+
+(function diagnostics() {
+
+    console.group("=== COALITION FORMATION DIAGNOSTICS ===");
+
+    // --- 1. CORE STATE ---
+    console.group("1. Core State");
+    console.log("formateur:", Q.formateur);
+    console.log("year:", Q.year);
+    console.log("formation_round:", Q.formation_round);
+    console.log("president:", Q.president);
+    console.log("president_interfered:", Q.president_interfered);
+    console.log("president_skips_coalition:", Q.president_skips_coalition);
+    console.log("communist_coalition:", Q.communist_coalition);
+    console.log("dnvp_line:", Q.dnvp_line);
+    console.log("nazi_urgency:", Q.nazi_urgency);
+    console.log("capital_strike_progress:", Q.capital_strike_progress);
+    console.log("dvp_right_shift:", Q.dvp_right_shift);
+    console.log("z_party_leader:", Q.z_party_leader);
+    console.log("kpd_party_leader:", Q.kpd_party_leader);
+    console.log("left_strength:", Q.left_strength);
+    console.groupEnd();
+
+    // --- 2. PARTY VOTES ARRAY ---
+    console.group("2. Party Votes (sorted)");
+    if (Q.party_votes && Q.party_votes.length) {
+        Q.party_votes.forEach(function(pv) {
+            console.log(pv.party + ": " + pv.votes.toFixed(2) + "%");
+        });
+    } else {
+        console.warn("party_votes is empty or undefined!");
+    }
+    console.groupEnd();
+
+    // --- 3. BASE RELATION VARIABLES ---
+    console.group("3. Base Relation Variables");
+    var rel_vars = [
+        'z_relation','kpd_relation','ddp_relation','bvp_relation',
+        'dvp_relation','wp_relation','dnvp_relation','nsdap_relation',
+        'csrp_relation','vrp_relation','kvp_relation','bb_relation',
+        'dhp_relation','dbp_relation','dsbp_relation','dvfp_relation',
+        'cnbl_relation','csvd_relation','sapd_relation','srpd_relation'
+    ];
+    rel_vars.forEach(function(v) {
+        var val = Q[v];
+        var flag = (val === null || val === undefined || isNaN(val)) ? " ⚠️ NULL/NaN" : "";
+        console.log("Q." + v + " =", val, flag);
+    });
+    console.groupEnd();
+
+    // --- 4. PARTY RELATIONS TABLE — SPD ROW ---
+    console.group("4. party_relations: SPD outgoing");
+    var pr = Q.party_relations;
+    if (pr && pr.SPD) {
+        var spd = pr.SPD;
+        Object.keys(spd).forEach(function(target) {
+            var val = spd[target];
+            var flag = (val === null || val === undefined || isNaN(val)) ? " ⚠️" : "";
+            console.log("  SPD →", target + ":", val, flag);
+        });
+    } else {
+        console.error("party_relations.SPD is missing!");
+    }
+    console.groupEnd();
+
+    // --- 5. ALL NULL/NaN ENTRIES IN party_relations ---
+    console.group("5. All null/NaN entries in party_relations");
+    var nullCount = 0;
+    if (pr) {
+        Object.keys(pr).forEach(function(p1) {
+            Object.keys(pr[p1]).forEach(function(p2) {
+                var val = pr[p1][p2];
+                if (val === null || val === undefined || isNaN(val)) {
+                    console.warn(p1 + " → " + p2 + ": " + val);
+                    nullCount++;
+                }
+            });
+        });
+    }
+    if (nullCount === 0) console.log("None found ✓");
+    console.log("Total null/NaN entries:", nullCount);
+    console.groupEnd();
+
+    // --- 6. COALITION BLOCKS involving SPD ---
+    console.group("6. Coalition blocks involving SPD");
+    var cb = Q.coalition_blocks || {};
+    var spd_blocks = [];
+    Object.keys(cb).forEach(function(k) {
+        if (k.indexOf('SPD') >= 0 && cb[k]) spd_blocks.push(k);
+    });
+    if (spd_blocks.length) {
+        spd_blocks.forEach(function(k) { console.log("BLOCKED:", k, "=", cb[k]); });
+    } else {
+        console.log("No active blocks for SPD");
+    }
+    console.groupEnd();
+
+    // --- 7. can_partner CHECK — SPD vs every other party ---
+    console.group("7. can_partner results for SPD");
+    if (Q.party_votes) {
+        Q.party_votes.forEach(function(pv) {
+            var partner = pv.party;
+            if (partner === 'SPD') return;
+
+            var blocked = is_blocked('SPD', partner);
+            var v1 = (pr && pr.SPD  && pr.SPD[partner]  !== undefined) ? pr.SPD[partner]  : -1;
+            var v2 = (pr && pr[partner] && pr[partner].SPD !== undefined) ? pr[partner].SPD : -1;
+            var v1c = (isNaN(v1) || v1 < 0) ? 0 : v1;
+            var v2c = (isNaN(v2) || v2 < 0) ? 0 : v2;
+            var result = can_partner('SPD', partner);
+
+            var note = "";
+            if (blocked)      note = "  ← BLOCKED";
+            else if (v1c < 30) note = "  ← SPD→" + partner + " relation too low (" + v1c + ")";
+            else if (v2c < 30) note = "  ← " + partner + "→SPD relation too low (" + v2c + ")";
+
+            console.log(
+                "SPD ↔", partner + ":",
+                result ? "✓ CAN partner" : "✗ CANNOT",
+                "| SPD→" + partner + "=" + v1c,
+                "| " + partner + "→SPD=" + v2c,
+                note
+            );
+        });
+    }
+    console.groupEnd();
+
+    // --- 8. SEAT TOTALS ---
+    console.group("8. Seat counts");
+    var seat_total_dbg = 0;
+    if (Q.parties) {
+        Q.parties.forEach(function(p) {
+            var s = Q[p + '_seats'] || 0;
+            seat_total_dbg += s;
+            console.log(p + "_seats:", s);
+        });
+        console.log("TOTAL seats:", seat_total_dbg);
+        var spd_seats = Q.spd_seats || 0;
+        console.log("SPD seat share:", ((spd_seats / (seat_total_dbg || 1)) * 100).toFixed(2) + "%");
+    } else {
+        console.warn("Q.parties is undefined!");
+    }
+    console.groupEnd();
+
+    // --- 9. POSSIBLE COALITIONS (after logic runs, move this block to end) ---
+    // Run this AFTER the coalition search, not before.
+    // Wrapped in a deferred check:
+    console.group("9. possible_coalitions snapshot (pre-search, should be empty)");
+    console.log("Count:", (Q.possible_coalitions || []).length);
+    console.groupEnd();
+
+    console.groupEnd(); // end outer group
+})();
+
+// ---- SECOND BLOCK: paste this AFTER the full coalition search, before go-to ----
+(function diagnostics_post() {
+    console.group("=== POST-SEARCH COALITION RESULTS ===");
+
+    console.log("coalition_formed:", Q.coalition_formed);
+    console.log("spd_must_decide:", Q.spd_must_decide);
+    console.log("spd_in_chosen_coalition:", Q.spd_in_chosen_coalition);
+    console.log("spd_can_govern_alone:", Q.spd_can_govern_alone);
+    console.log("num_coalitions:", Q.num_coalitions);
+
+    console.group("All possible_coalitions:");
+    (Q.possible_coalitions || []).forEach(function(c, i) {
+        var tol = c.toleration
+            ? " [TOLERATED BY: " + (c.tolerating_parties || []).join(', ') + "]"
+            : "";
+        console.log(
+            i + ".",
+            c.parties.join('+'),
+            "| votes:", (c.votes || 0).toFixed(1) + "%",
+            "| compat:", (c.compatibility || 0).toFixed(1),
+            "| type:", c.type,
+            tol
+        );
+    });
+    if (!Q.possible_coalitions || Q.possible_coalitions.length === 0) {
+        console.warn("NO COALITIONS FOUND");
+    }
+    console.groupEnd();
+
+    if (Q.chosen_coalition) {
+        console.log("chosen_coalition:", Q.chosen_coalition.parties.join('+'));
+    } else {
+        console.warn("chosen_coalition: none");
+    }
+
+    console.groupEnd();
+})();
 
 // ============================================================
 // SETUP
