@@ -7139,12 +7139,28 @@ Q.PARTY_DISPLAY_NAMES = {
     dnf: 'The DNF',
     rlb: 'The RLB',
     faud: 'The FAUD',
-    kapd: 'The KAPD'
+    kapd: 'The KAPD',
+    pp: 'The PP',
+    gsrn: 'The GSRN',
+    uspd: 'The USPD'
 };
 
 function partyLabel(party) {
     return Q.PARTY_DISPLAY_NAMES[party] || party.toUpperCase();
 }
+
+// Map internal class keys (as used in Q.classes / computeTarget's `c`
+// argument) to the campaign_focus_<party> string vocabulary used by
+// _campaignMult / _campaignSpeedBonus in the QOL/drift system
+// (_CAMPAIGN_FOCUS_CLASS_MAP there maps the other direction). Only
+// 'unemployedc' differs from its own class key ('unemployed' focus).
+Q.CLASS_TO_CAMPAIGN_FOCUS = {
+    workers:     'workers',
+    unemployedc: 'unemployed',
+    old_middle:  'old_middle',
+    new_middle:  'new_middle',
+    rural:       'rural',
+};
 
 // --- Global action definitions ---
 Q.GLOBAL_PARTY_ACTIONS = {
@@ -7244,6 +7260,65 @@ Q.GLOBAL_PARTY_ACTIONS = {
             Q.pro_republic += 2;
         }
     },
+
+    campaigning: {
+        ideoMin: 1, ideoMax: 20,
+        weight: (party) => {
+            var oldR = Q[party + '_old_r'];
+            var pct  = Q[party + '_pct'];
+            if (!oldR || oldR <= 0) return 0;
+            var shortfall = Math.max(0, oldR - pct); // 0 if not underperforming
+            return linearWeight(1.60, shortfall, oldR, 4);
+        },
+        description: (party) => {
+            var focusClass = Q[party + '_campaign_target_class'];
+            var focusLabel = {
+                workers: 'the industrial working class',
+                unemployedc: 'the unemployed',
+                old_middle: 'shopkeepers and artisans',
+                new_middle: 'white-collar workers and civil servants',
+                rural: 'the countryside',
+            }[focusClass] || 'the electorate';
+            return partyLabel(party) + ' has launched a campaign push targeting ' + focusLabel + ', trailing its last Reichstag result.';
+        },
+        ignore: (party) => {
+            var oldR = Q[party + '_old_r'];
+            var pct  = Q[party + '_pct'];
+            return !oldR || oldR <= 0 || pct >= oldR;
+        },
+        timer: 8,
+        apply: (party) => {
+            // --- Pick focus class: biggest shortfall vs computeTarget ---
+            var bestClass = null;
+            var bestGap   = -Infinity;
+            for (const c of Q.classes) {
+                var current = Q[c + '_' + party] || 0;
+                var target  = computeTarget(party, c);
+                var gap     = target - current; // positive = underperforming potential here
+                if (gap > bestGap) {
+                    bestGap   = gap;
+                    bestClass = c;
+                }
+            }
+            if (!bestClass) return;
+
+            Q[party + '_campaign_target_class'] = bestClass; // for description/display
+            Q['campaign_focus_' + party] = Q.CLASS_TO_CAMPAIGN_FOCUS[bestClass] || bestClass;
+
+            // --- Intensity scaled by how far below old_r they are ---
+            var oldR = Q[party + '_old_r'];
+            var pct  = Q[party + '_pct'];
+            var shortfallRatio = Math.min(1.0, Math.max(0, oldR - pct) / oldR); // 0..1
+            // Floor of 0.4 so even a marginal shortfall still mounts a
+            // meaningful campaign; scales up to 1.0 at total collapse.
+            var newIntensity = 0.4 + shortfallRatio * 0.6;
+
+            Q['campaign_intensity_' + party] = Math.max(
+                Q['campaign_intensity_' + party] || 0,
+                newIntensity
+            );
+        }
+    },
 };
 
 // --- Run one party's action turn ---
@@ -7292,6 +7367,7 @@ for (const party of Q.parties) {
     if (party === 'spd' || party === 'other') continue;
     runPartyActions(party);
 }
+
 
 
 
@@ -7684,12 +7760,12 @@ Q.capped_var_ranges = {
     confronting_antisemitism:  [-1, 2],
 
     // 0 to 15
-    workers_aid:               [0, 15],
-    campaign_media:            [0, 15],
-    commercialized_media:      [0, 15],
-    cultural_organizations:    [0, 15],
-    wtb_support:               [0, 15],
-    local_rally:               [0, 15],
+    workers_aid:               [-5, 15],
+    campaign_media:            [-5, 15],
+    commercialized_media:      [-5, 15],
+    cultural_organizations:    [-5, 15],
+    wtb_support:               [-5, 15],
+    local_rally:               [-5, 15],
     peoples_party_support:     [0, 15]
 };
 
