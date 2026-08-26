@@ -7282,7 +7282,7 @@ Q.GLOBAL_PARTY_ACTIONS = {
             return partyLabel(party) + ' has launched a campaign push targeting ' + focusLabel + ', trailing its last Reichstag result.';
         },
         ignore: (party) => {
-            var oldR = Q[party + '_old_r'];
+            var oldR = Q['old_' + party + '_r'];
             var pct  = Q[party + '_pct'];
             return !oldR || oldR <= 0 || pct >= oldR;
         },
@@ -7306,7 +7306,7 @@ Q.GLOBAL_PARTY_ACTIONS = {
             Q['campaign_focus_' + party] = Q.CLASS_TO_CAMPAIGN_FOCUS[bestClass] || bestClass;
 
             // --- Intensity scaled by how far below old_r they are ---
-            var oldR = Q[party + '_old_r'];
+            var oldR = Q['old_' + party + '_r'];
             var pct  = Q[party + '_pct'];
             var shortfallRatio = Math.min(1.0, Math.max(0, oldR - pct) / oldR); // 0..1
             // Floor of 0.4 so even a marginal shortfall still mounts a
