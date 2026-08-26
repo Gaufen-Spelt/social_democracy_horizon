@@ -57,7 +57,6 @@ For pacifism! Neorevs are pissed.
 
 title: Our ideological stance?
 tags: matter
-view-if: (not social_fascism_adopted or sandbox = 1)
 on-arrival: old_ideology = ideology
 subtitle: <img class="face-image" style="width:20%;height:auto;" src="img/arbeiterbew.jpg" alt="Ideologies"> !}
 
@@ -121,7 +120,7 @@ The time has come. Neorevisionist doctrine against the NSDAP will be applied.
 view-if: april_challenge = 1 and (reformist_strength + neorevisionist_strength) > (left_strength + center_strength)
 on-arrival: ideology = "reformist"; spd_ideology = "Right-wing Social Democracy"; left_dissent += 20; social_fascism_adopted = 1; nationalization_support += 2; democratization -= 1; kpd_relation -= 5; dnvp_relation += 10; nsdap_relation += 50; dvfp_relation -= 20; wp_relation += 10
 
-The party turns toward a state socialist course: the nation's economy brought under firm central direction, industry and labor bound together under the authority of the state, class conflict subordinated to national unity. It is a socialism of order and discipline rather than revolution — welfare and security extended to the worker in exchange for loyalty to the state above the party. This card is no longer available until 1935.
+The party turns toward a state socialist course: the nation's economy brought under firm central direction, industry and labor bound together under the authority of the state, class conflict subordinated to national unity. It is a socialism of order and discipline rather than revolution — welfare and security extended to the worker in exchange for loyalty to the state above the party.
 
 @changed
 on-arrival: left_dissent += 5; center_dissent += 5; labor_dissent += 5; reformist_dissent += 5
