@@ -54,7 +54,7 @@ on-arrival: pacifism += 5; neorevisionist_dissent += 15
 For pacifism! Neorevs are pissed.
 
 
-
+@ideology_matters
 title: Our ideological stance?
 tags: matter
 on-arrival: old_ideology = ideology
