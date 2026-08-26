@@ -7268,7 +7268,7 @@ Q.GLOBAL_PARTY_ACTIONS = {
             var pct  = Q[party + '_pct'];
             if (!oldR || oldR <= 0) return 0;
             var shortfall = Math.max(0, oldR - pct); // 0 if not underperforming
-            return linearWeight(1.60, shortfall, oldR, 4);
+            return linearWeight(5.00, shortfall, oldR, 4);
         },
         description: (party) => {
             var focusClass = Q[party + '_campaign_target_class'];
