@@ -28,7 +28,7 @@ title: Paramilitary Politics
 
 - @war: Support the radical way
 - @center: Support the middle course
-- @reform: Support the reformist way
+- @reformat: Support the reformist way
 - @pacifism: Support the pacifist way
 - @party_program: Back
 
@@ -43,7 +43,7 @@ on-arrival: resources += 1
 
 Nothing burger
 
-@reform
+@reformat
 on-arrival: pacifism += 1; rb_strength -= 10; rb_militancy -= 0.01
 
 We stand against paramilitaries in general...
@@ -73,8 +73,7 @@ The SPD is torn between many different ideological currents. What should be our 
 - @reform: Following Eduard Bernstein, we should work for ethical socialism, strengthen democracy, and expand the party's electorate.
 - @neorevisionist: Neorevisionist doctrine: stop the NSDAP!
 - @social_fascism: Social fascism, as always, is correct way.
-- @return: This issue will be delayed to indefinite date.
-- @easy_discard
+- @party_program: Back
 
 @class_struggle
 choose-if: left_strength > 40 or (left_strength + center_strength > 70)
