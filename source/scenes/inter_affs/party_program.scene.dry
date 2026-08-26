@@ -1,0 +1,15 @@
+title: Party Program
+subtitle: Do we need to revisit our programs?
+tags: party_aff
+view-if: party_program_timer <= 0 
+choose-if: commercialized_media > 0
+unavailable-subtitle: Our commercial media must be expanded.
+on-arrival: party_program_timer = 48 - commercialized_media; party_program_timer = 0 if deterministic_mode
+
+= Party Program
+
+- @partyaff2: Return back
+
+@partyaff2
+on-arrival: party_program_timer = 0
+go-to: partyaff
