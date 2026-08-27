@@ -86,6 +86,8 @@ const IDEO_KEYWORDS = [
     [/national conservatism (Hugenbergite)/i,            18],
 ];
 
+--- FIND THIS BLOCK in @post_event's on-arrival (inside `if (Q.inverted_ideos != 1) { ... }`) ---
+
 function ideoScore(ideologyString) {
     if (!ideologyString) return 10; // Fallback to absolute center (10)
     for (const [pattern, score] of IDEO_KEYWORDS) {
@@ -111,6 +113,52 @@ for (const p of EXTRA_IDEO_PARTIES) {
     const key = p + '_ideology';
     if (Q[key] !== undefined) {
         Q[p + '_ideo_score'] = ideoScore(Q[key]);
+    }
+}
+
+
+--- REPLACE WITH ---
+
+function ideoScore(ideologyString) {
+    if (!ideologyString) return 10; // Fallback to absolute center (10)
+    for (const [pattern, score] of IDEO_KEYWORDS) {
+        if (pattern.test(ideologyString)) return score;
+    }
+    return 10; // Unrecognized ideology string -> treat as centrist/unknown
+}
+
+// Player-set numeric nudge on top of the keyword-derived base score.
+// Set by the Party Ideologies editor screen (root.ideo_adjust).
+// Defaults to 0 (no change) so untouched parties behave exactly as before.
+function ideoScoreWithOverride(pid, ideologyString) {
+    var base = ideoScore(ideologyString);
+    var override = Q[pid + '_ideo_override'];
+    if (override === undefined || override === null || isNaN(override)) {
+        override = 0;
+    }
+    var final = base + override;
+    if (final < 0) { final = 0; }
+    if (final > 20) { final = 20; }
+    return final;
+}
+
+// Apply to every active party, reading straight from Q.[party]_ideology
+for (const p of Q.parties) {
+    const key = p + '_ideology';
+    Q[p + '_ideo_score'] = ideoScoreWithOverride(p, Q[key]);
+}
+
+// Also cover parties tracked outside Q.parties but referenced in
+// party_relations / coalition_blocks (splinters, KPO, LB, etc.)
+const EXTRA_IDEO_PARTIES = [
+    'kpo', 'sl', 'sapd', 'srpd', 'ddp', 'z', 'bvp', 'csrp', 'dvp', 'wp',
+    'cnbl', 'csvd', 'dnvp', 'vrp', 'kvp', 'dhp', 'bb', 'dvfp',
+    'aspd', 'vnr', 'hl', 'lb', 'rdp', 'cvp', 'sls', 'dtsp', 'dbp', 'dsbp', 'dnf', 'rlb', 'faud', 'kapd', 'gsrn', 'pp', 'uspd'
+];
+for (const p of EXTRA_IDEO_PARTIES) {
+    const key = p + '_ideology';
+    if (Q[key] !== undefined) {
+        Q[p + '_ideo_score'] = ideoScoreWithOverride(p, Q[key]);
     }
 }
 
