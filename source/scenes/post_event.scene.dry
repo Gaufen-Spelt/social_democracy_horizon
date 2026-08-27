@@ -23,435 +23,6 @@ Q.random_factor = function(f, variance = 0.65) {
 };
 
 
-if (Q.inverted_ideos != 1) {
-
-// ============================================================
-// AUTO IDEOLOGY SCORER — derives 0 (far-left) to 20 (far-right)
-
-const IDEO_KEYWORDS = [
-    // 0 — revolutionary / Leninist left
-    [/marxism-leninism/i,                 1],
-    [/council communism/i,                0],
-
-    // 2 — revolutionary but non-Leninist / left socialist
-    [/revolutionary socialism/i,          2],
-    [/left-wing socialism/i,              3],
-
-    // NEW — Social Democracy family (must precede generic soc-dem/soc-rep below)
-    [/social democracy \(revolutionary\)/i,      3],  // Left
-    [/social democracy \(center marxist\)/i,     4],  // Center
-    [/social democracy \(reformist\)/i,          6],  // Reformist
-    [/laborism/i,                                7],  // Labor
-    [/social republicanism \(neorevisionist\)/i, 8],  // Neorevisionist
-
-    // 5 — mainstream social democracy
-    [/social democracy/i,                 6],
-    [/social republicanism/i,             7],
-
-    // 7 — right social democracy / soft-left liberal
-    [/right-wing social democracy/i,      8],
-    [/catholic laborism/i,                10],
-
-    // 10 — center / centrist liberal / cross-class Christian
-    [/social liberalism/i,                9],
-    [/christian socialism/i,              7],
-    [/catholic tent/i,                    12],
-    [/middle-class interest/i,            13],
-    [/corporatism/i,                      15],
-
-    // 13 — moderate conservative / regional Catholic conservative / Christian conservatives
-    [/christian conservatism/i,           14],
-    [/bavarian conservatism/i,            13],
-    [/protestant social conservatism/i,   13],
-    [/moderate conservatism/i,            14],
-    [/liberal agrarianism/i,              12],
-
-    // 15 — national liberal / agrarian-liberal right-center
-    [/national liberalism/i,              14],
-    [/hanoverian agrarianism/i,           15],
-    [/hanseatic agrarian conservatism/i,  15],
-
-    // 17 — hard agrarian conservative
-    [/völkisch liberalism/i,              16],
-    [/populist agrarian conservatism/i,   16],
-    [/agrarian conservatism/i,            17],
-    [/social corporatism/i,               16],
-
-    // 18 — national conservative
-    [/national conservatism/i,            18],
-
-    // 20 — far-right nationalist / völkisch / Nazi
-    [/national socialism/i,               20],
-    [/völkisch nationalism/i,             20],
-    [/national conservatism (Hugenbergite)/i,            18],
-];
-
-function ideoScore(ideologyString) {
-    if (!ideologyString) return 10; // Fallback to absolute center (10)
-    for (const [pattern, score] of IDEO_KEYWORDS) {
-        if (pattern.test(ideologyString)) return score;
-    }
-    return 10; // Unrecognized ideology string -> treat as centrist/unknown
-}
-
-// Player-set numeric nudge on top of the keyword-derived base score.
-// Set by the Party Ideologies editor screen (root.ideo_adjust).
-// Defaults to 0 (no change) so untouched parties behave exactly as before.
-function ideoScoreWithOverride(pid, ideologyString) {
-    var base = ideoScore(ideologyString);
-    var override = Q[pid + '_ideo_override'];
-    if (override === undefined || override === null || isNaN(override)) {
-        override = 0;
-    }
-    var final = base + override;
-    if (final < 0) { final = 0; }
-    if (final > 20) { final = 20; }
-    return final;
-}
-
-// Apply to every active party, reading straight from Q.[party]_ideology
-for (const p of Q.parties) {
-    const key = p + '_ideology';
-    Q[p + '_ideo_score'] = ideoScoreWithOverride(p, Q[key]);
-}
-
-// Also cover parties tracked outside Q.parties but referenced in
-// party_relations / coalition_blocks (splinters, KPO, LB, etc.)
-const EXTRA_IDEO_PARTIES = [
-    'kpo', 'sl', 'sapd', 'srpd', 'ddp', 'z', 'bvp', 'csrp', 'dvp', 'wp',
-    'cnbl', 'csvd', 'dnvp', 'vrp', 'kvp', 'dhp', 'bb', 'dvfp',
-    'aspd', 'vnr', 'hl', 'lb', 'rdp', 'cvp', 'sls', 'dtsp', 'dbp', 'dsbp', 'dnf', 'rlb', 'faud', 'kapd', 'gsrn', 'pp', 'uspd'
-];
-for (const p of EXTRA_IDEO_PARTIES) {
-    const key = p + '_ideology';
-    if (Q[key] !== undefined) {
-        Q[p + '_ideo_score'] = ideoScoreWithOverride(p, Q[key]);
-    }
-}
-
-}
-
-
-
-// REMOVE DUPLICATES 
-
-Q.parties = [...new Set(Q.parties)];
-
-
-
-// CODE EXAMPLE FOR REMOVING Tolerator...
-// Q.tolerating_parties = Q.tolerating_parties.filter(function(p) { return p !== 'DVP'; });
-// Q.dvp_tolerating = 0;
-
-// QOL. TRACK GOVERNMENT VOTES.
-
-// ============================================
-// GOVERNMENT VOTE/SEAT TRACKER
-// ============================================
-Q.government_total_votes = 0;
-
-for (var i = 0; i < Q.parties.length; i++) {
-    var p = Q.parties[i];
-    if (Q[p + '_in_government'] === 1) {
-        Q.government_total_votes += Q[p + '_r'] || 0;
-    }
-}
-
-Q.government_total_votes = Math.round(Q.government_total_votes * 10) / 10;
-
-
-// ============================================
-// CONSTITUTIONAL SUPERMAJORITY CHECK (2/3)
-// ============================================
-Q.has_supermajority = (Q.government_effective_pct >= 66.7) ? 1 : 0;
-
-
-// ============================================
-// GOVERNMENT COLLAPSE CHECK
-// ============================================
-
-var gov_count = 0;
-for (var i = 0; i < Q.parties.length; i++) {
-    if (Q[Q.parties[i] + '_in_government'] === 1) gov_count++;
-}
-
-if (gov_count > 0) {
-    var effective_votes = Q.government_total_votes;
-
-    if (Q.tolerating_parties) {
-        for (var i = 0; i < Q.tolerating_parties.length; i++) {
-            var tp = Q.tolerating_parties[i].toLowerCase();
-            if (Q[tp + '_in_government'] !== 1) {
-                effective_votes += Q[tp + '_r'] || 0;
-            }
-        }
-    }
-
-    if (effective_votes < 50 && !(Q.in_emergency_government >= 1)) {
-        Q.government_collapsed = 1;
-        Q.next_election_year = Q.year;
-        Q.next_election_month = Q.month + 2;
-        if (Q.next_election_month > 12) {
-            Q.next_election_month = 1;
-            Q.next_election_year += 1;
-        }
-        for (var i = 0; i < Q.parties.length; i++) {
-            Q[Q.parties[i] + '_in_government'] = 0;
-        }
-        Q.government_parties = [];
-        Q.tolerating_parties = [];
-        Q.spd_toleration = 0;
-        Q.is_minority_government = 0;
-    }
-}
-
-
-
-
-
-
-
-// QOL. REMOVES PHANTON PARTIES.
-
-const inGov = Object.keys(Q)
-  .filter(key => key.endsWith("_in_government") && Q[key] == 1)
-  .map(key => key.replace("_in_government", ""))
-  .filter(party => (Q[party + "_votes"] > 0) && (Q[party + "_r"] > 0))
-  .map(party => party.toUpperCase());
-
-Q.parties_in_government_display = inGov.length > 0
-  ? inGov.join(", ")
-  : "None";
-
-
-
-// === PARTY RELATION GRAVITY ===
-Q.relation_gravity = function(value) {
-    var abs = Math.abs(value);
-    if (abs <= 80) return value;
-    var pull = (abs - 80) * 0.04;
-    return value > 0 ? value - pull : value + pull;
-};
-
-for (var i = 0; i < Q.parties.length; i++) {
-    var p = Q.parties[i];
-    Q[p + '_relation'] = Q.relation_gravity(Q[p + '_relation'] || 0);
-    if (!Q.math_broken) {
-        Q[p + '_relation'] = Math.max(-100, Math.min(100, Q[p + '_relation']));
-    } else {
-        Q[p + '_relation'] = Q.impossible_add(Q[p + '_relation'], 0);
-    }
-}
-
-// === CHECK FOR LOW-RELATION COALITION PARTNER ===
-Q.coalition_low_relation = 0;
-
-// Check full government parties (threshold: <= 30)
-for (var i = 0; i < Q.parties.length; i++) {
-    var p = Q.parties[i];
-    if (p === "spd") continue;
-    if (Q[p + '_in_government'] === 1 && Q[p + '_relation'] <= 30) {
-        Q.coalition_low_relation = 1;
-        break;
-    }
-}
-
-// Check tolerating parties (threshold: <= 20), only if not already triggered
-if (!Q.coalition_low_relation && Q.tolerating_parties) {
-    for (var i = 0; i < Q.tolerating_parties.length; i++) {
-        var tp = Q.tolerating_parties[i].toLowerCase();
-        if (tp === "spd") continue;
-        if (Q[tp + '_relation'] <= 20) {
-            Q.coalition_low_relation = 1;
-            break;
-        }
-    }
-}
-
-
-// === CHECK FOR LOW-RELATION COALITION PARTNER ===
-Q.coalition_mid_relation = 0;
-Q.mad_party = "";
-Q.mad_party_key = "";
-var lowest_relation = 999;
-
-for (var i = 0; i < Q.parties.length; i++) {
-    var p = Q.parties[i];
-    if (p === "spd") continue;
-    if (Q[p + '_in_government'] === 1 && Q[p + '_relation'] < 45 && Q[p + '_relation'] < lowest_relation) {
-        Q.coalition_mid_relation = 1;
-        Q.mad_party = p.toUpperCase();
-        Q.mad_party_key = p;
-        lowest_relation = Q[p + '_relation'];
-    }
-}
-
-
-
-
-
-
-Q.coalition_tension = 0;
-
-if (Q.government_parties) {
-    for (var i = 0; i < Q.government_parties.length; i++) {
-        var p = Q.government_parties[i].toLowerCase();
-        if (p === 'spd') continue;
-        var rel = Q[p + '_relation'] !== undefined ? Q[p + '_relation'] : 50;
-        if (rel < 50) {
-            Q.coalition_tension += (50 - rel) / 10;
-        }
-    }
-}
-
-Q.coalition_tension = Math.round(Q.coalition_tension * 10) / 10;
-
-// === VARIABLE RANGE CAPPING ===
-
-Q.capped_var_ranges = {
-    // 0 to 10
-    pro_consumer:              [0, 10],
-    agricultural_finance:      [0, 10],
-    land_reform:               [0, 10],
-    socialization:             [0, 10],
-    commonwealth_cooperation:  [0, 10],
-    cooperatives:              [0, 10],
-    economic_democracy:        [0, 20],
-    workers_safety:            [0, 10],
-    working_hours:             [0, 10],
-    womens_rights:             [0, 10],
-
-    // -10 to 10
-    welfare:                   [-10, 10],
-    judicial_reform:           [-10, 10],
-    pacifism:                  [-10, 10],
-    radicalization:            [-10, 10],
-    democratization:           [-10, 10],
-
-    // -1 to 2
-    confronting_antisemitism:  [-1, 2],
-
-    // 0 to 15
-    workers_aid:               [0, 15],
-    campaign_media:            [0, 15],
-    commercialized_media:      [0, 15],
-    cultural_organizations:    [0, 15],
-    wtb_support:               [0, 15],
-    local_rally:               [0, 15],
-    peoples_party_support:     [0, 15]
-};
-
-Q.apply_var_caps = function() {
-    for (var varName in Q.capped_var_ranges) {
-        if (!Q.capped_var_ranges.hasOwnProperty(varName)) continue;
-        if (Q[varName] === undefined) continue; // skip vars not in use
-
-        var range = Q.capped_var_ranges[varName];
-        var min = range[0];
-        var max = range[1];
-
-        if (Q[varName] < min) {
-            Q[varName] = min;
-        } else if (Q[varName] > max) {
-            Q[varName] = max;
-        }
-    }
-};
-
-Q.apply_var_caps();
-
-// === MINISTRY REASSIGNMENT ===
-var portfolios = ["foreign_minister", "interior_minister", "justice_minister", "labor_minister",
-                   "economic_minister", "finance_minister", "agriculture_minister", "transport_minister"];
-
-for (var i = 0; i < portfolios.length; i++) {
-    var port = portfolios[i];
-    var partyField = port + "_party";
-    var currentParty = (Q[partyField] || "").toLowerCase();
-
-    // If held party isn't in government anymore, reassign
-    if (Q[currentParty + '_in_government'] !== 1) {
-        // Find the largest remaining government party by seat share
-        var bestParty = "";
-        var bestVotes = -1;
-        for (var j = 0; j < Q.parties.length; j++) {
-            var p = Q.parties[j];
-            if (Q[p + '_in_government'] === 1 && (Q[p + '_r'] || 0) > bestVotes) {
-                bestVotes = Q[p + '_r'] || 0;
-                bestParty = p;
-            }
-        }
-
-        if (bestParty !== "") {
-            Q[partyField] = bestParty.toUpperCase();
-            Q[port] = (Q.ministry_roster[bestParty] && Q.ministry_roster[bestParty][port]) || 0;
-        }
-    }
-}
-
-if (!Q.minister_name_table) {
-    Q.minister_name_table = {
-        foreign_minister:     { KPD:'Pieck', SAPD:'Rosenfeld', SPD:'Breitscheid', SRPD:'Breitscheid', DDP:'Koch-Weser', Z:'Curtius', BVP:'Held', DVP:'Stresemann', WP:'Lambach', CNBL:'Hepp', DNVP:'Westarp' },
-        interior_minister:    { KPD:'Ulbricht', SAPD:'Seydewitz', SPD:'Severing', SRPD:'Braun', DDP:'Koch-Weser', Z:'Wirth', BVP:'Schätzel', DVP:'Scholz', WP:'Petersen', CNBL:'Behrens', DNVP:'Hergt' },
-        justice_minister:     { KPD:'Heckert', SAPD:'Ledebour', SPD:'Radbruch', SRPD:'Heilmann', DDP:'Koch-Weser', Z:'Bredt', BVP:'Gürtner', DVP:'Heinze', WP:'Drewitz', CNBL:'von Rohr', DNVP:'Schiele' },
-        labor_minister:       { KPD:'Münzenberg', SAPD:'Seydewitz', SPD:'Wissell', SRPD:'Aufhäuser', DDP:'Dietrich', Z:'Stegerwald', BVP:'Stützel', DVP:'Brauns', WP:'Petersen', CNBL:'Lohse', DNVP:'Schiele' },
-        economic_minister:    { KPD:'Remmele', SAPD:'Rosenfeld', SPD:'Hilferding', SRPD:'Schmidt', DDP:'Dietrich', Z:'Bredt', BVP:'Held', DVP:'Curtius', WP:'Lambach', CNBL:'Heim', DNVP:'Schiele' },
-        finance_minister:     { KPD:'Neumann', SAPD:'Rosenfeld', SPD:'Hilferding', SRPD:'Hilferding', DDP:'Dietrich', Z:'Köhler', BVP:'Krausneck', DVP:'Moldenhauer', WP:'Drewitz', CNBL:'Hepp', DNVP:'Schiele' },
-        agriculture_minister: { KPD:'Hoernle', SAPD:'Baade', SPD:'Baade', SRPD:'Baade', DDP:'Dietrich', Z:'Hermes', BVP:'Wutzlhofer', DVP:'Schiele', WP:'Bredt', CNBL:'Hamkens', DNVP:'Schiele' },
-        transport_minister:   { KPD:'Hoernle', SAPD:'Baade', SPD:'Baade', SRPD:'Baade', DDP:'Dietrich', Z:'Guerard', BVP:'Wutzlhofer', DVP:'Schiele', WP:'Bredt', CNBL:'Hamkens', DNVP:'Schiele' }
-    };
-}
-
-for (var i = 0; i < portfolios.length; i++) {
-    var port = portfolios[i];
-    var party = (Q[port + '_party'] || '').toUpperCase();
-
-    var expectedName = (Q.minister_name_table[port] && Q.minister_name_table[port][party]) || 'Unbesetzt';
-
-    // Special case: Stresemann's death reassigns the DVP foreign minister slot to Curtius
-    if (port === 'foreign_minister' && party === 'DVP' && Q.stresemann_dead) {
-        expectedName = 'Curtius';
-    }
-
-    if (Q[port] !== expectedName) {
-        Q[port] = expectedName;
-    }
-}
-
-
-
-
-
-
-
-
-
-// === LOBBYING ACTIVITY CHECK ===
-Q.lobbying_active = 0;
-Q.lobbyable_ministries = [];
-
-for (var i = 0; i < portfolios.length; i++) {
-    var port = portfolios[i];
-    var mp = (Q[port + '_party'] || '').toLowerCase();
-    var qualifies = mp && (Q[mp + '_relation'] || 0) >= 80;
-
-    // flat boolean per portfolio, for use in plain view-if: syntax
-    Q['lobby_' + port + '_available'] = qualifies ? 1 : 0;
-
-    if (qualifies) {
-        Q.lobbying_active = 1;
-        Q.lobbyable_ministries.push({ portfolio: port, party: mp });
-    }
-}
-
-
-
-
-
-
-
-
-
 // UPDATE PARTY RELATIONSHIPS EACH TIME.
 
 function updatePartyRelations() {
@@ -1255,19 +826,6 @@ Q.budget_audit_text =
 
 
 
-/// SMALL SETTINGS
-
-if (!Q.math_broken) {
-    // NORMAL: Sum of progressive party support
-    Q.progressive_coalition = Q.spd_r + Q.kpd_r + Q.ddp_r + Q.srpd_r + Q.sapd_r + Q.csrp_r;
-} else {
-    // MATH BROKEN: Coalition math doesn't add up
-    Q.progressive_coalition = Q.impossible_add(
-        Q.impossible_add(Q.spd_r, Q.kpd_r),
-        Q.impossible_add(Q.impossible_add(Q.ddp_r, Q.srpd_r), Q.impossible_add(Q.sapd_r, Q.csrp_r))
-    );
-    console.log("COALITION CHAOS: Progressive coalition = " + Q.progressive_coalition + "%");
-}
 
 if (Q.year >= 1932 && Q.communist_revolution_timer > 10 && Q.april_challenge == 1) {
     Q.communist_revolution_timer -= 1;
@@ -1402,18 +960,6 @@ Q.capital_strike_progress += 0.2;
 
 
 
-// ÷====================== SMALL CHECKERS FOR CABINETS ===============÷=======
-
-Q.bruning_cabinet = (Q.chancellor === "Brüning") ? 1 : 0;
-Q.papen_cabinet     = (Q.chancellor === "Papen")      ? 1 : 0;
-Q.schleicher_cabinet = (Q.chancellor === "Schleicher") ? 1 : 0;
-
-// Generic x_cabinet check for any chancellor with that flag pattern
-const CABINET_CHANCELLORS = ["Papen", "Schleicher", "Brüning", "Luther", "Marx", "Stegerwald"];
-for (const name of CABINET_CHANCELLORS) {
-    const key = name.toLowerCase().replace("ü", "u") + "_cabinet";
-    Q[key] = (Q.chancellor === name) ? 1 : 0;
-}
 
 
 
@@ -1433,15 +979,26 @@ for (const name of CABINET_CHANCELLORS) {
 
 
     
-// ECONOMIC SIMULATION — v7
-
+// ECONOMIC SIMULATION — v8
+// Changes from v7 (volatility pass):
+//  - DT_SCALE 0.65 -> 1.0 (no longer blanket-throttling every delta)
+//  - dGrowth / dUnemployment mean-reversion made LINEAR instead of
+//    self-dampening (denominator grew with the gap, so worse states
+//    got proportionally weaker restoring force — exactly backwards)
+//  - widened delta caps to match the now-larger single-tick corrections
+//  - depression NAIRU creep capped in duration so it stops raising its
+//    own exit bar indefinitely
+//  - loosened phase hysteresis (ENTER_TICKS, MIN_PHASE_TICKS) so exits
+//    aren't artificially floored once conditions actually clear
+//  - stagflation/overheating reversion terms also de-dampened for
+//    consistency (see SECTION 5 notes)
 
 
 // ============================================================
 // SECTION 0 — TIME CONSTANTS
 // ============================================================
 
-const DT_SCALE = 0.65;
+const DT_SCALE = 1.0; // was 0.65
 const dt = 1 * DT_SCALE;
 
 const POTENTIAL_GROWTH = 2.5;
@@ -1530,9 +1087,13 @@ if (Q.fiscal_impulse) {
 // Hysteresis: to CHANGE phase, the new zone must be satisfied for
 // ENTER_TICKS consecutive ticks. To prevent instant reversal, a phase must
 // also have lasted at least MIN_PHASE_TICKS before it's eligible to exit.
+//
+// v8: both loosened slightly — 7-tick minimum floor to exit a phase was
+// stacking with already-slow reversion dynamics to make depression in
+// particular last far too long in real time.
 
-const ENTER_TICKS     = 3;   // consecutive ticks a new zone must hold before we switch
-const MIN_PHASE_TICKS = 4;   // minimum ticks in a phase before it can change again
+const ENTER_TICKS     = 2;   // was 3
+const MIN_PHASE_TICKS = 3;   // was 4
 
 const ZONES = {
     // Order matters: checked top to bottom, first match wins.
@@ -1578,7 +1139,7 @@ function currentZone() {
         const heldLongEnough   = Q.pending_phase_ticks >= ENTER_TICKS;
 
         // Hyperinflation is an emergency zone: allowed to override MIN_PHASE_TICKS,
-        // because "wait 4 ticks before acknowledging hyperinflation" is not realistic.
+        // because "wait N ticks before acknowledging hyperinflation" is not realistic.
         const isEmergencyOverride = zoneNow === "hyperinflation";
 
         if (heldLongEnough && (eligibleToSwitch || isEmergencyOverride)) {
@@ -1598,9 +1159,11 @@ function currentZone() {
 // NAIRU hysteresis: prolonged depression raises structural unemployment slowly;
 // recovery brings it back down slowly. This is deliberately slow-moving.
 //
-// PATCH #3: creep rate reduced (0.01 -> 0.006) so depression doesn't dig its
-// own exit threshold deeper the longer it lasts.
-if (Q.phase === "depression" && Q.phase_duration > 8) {
+// v8: creep now also STOPS after phase_duration > 20 — previously depression
+// raised its own exit bar (higher NAIRU -> harder to satisfy uGap-based
+// recovery terms) for as long as the phase lasted, which fights its own
+// resolution the longer a depression runs.
+if (Q.phase === "depression" && Q.phase_duration > 8 && Q.phase_duration < 20) {
     Q.NAIRU += (9.0 - Q.NAIRU) * 0.006 * dt;
 } else {
     Q.NAIRU += (BASE_NAIRU - Q.NAIRU) * 0.008 * dt;
@@ -1652,6 +1215,10 @@ const uGap      = Q.unemployed - Q.NAIRU;
 // Two-sided by construction: runaway terms (Phillips curve slope, expectations
 // unanchoring) are matched by a restoring term that scales with how unanchored
 // things have gotten, so there is no regime where only the runaway side can act.
+// (Left as-is in v8 — inflation dynamics weren't the reported problem, and
+// the restoring force here is already correctly non-dampened, i.e. it grows
+// FASTER than linear with drift via the ^1.4 exponent, unlike the growth/
+// unemployment terms below which had it backwards.)
 
 let dInflation = 0;
 
@@ -1659,31 +1226,21 @@ const tightnessMult = Q.unemployed < 3 ? (1 + (3 - Q.unemployed) * 0.25) : 1;
 dInflation += 0.05 * -uGap * tightnessMult;
 
 dInflation += 0.03 * outputGap;
-dInflation += Q.price_pressure * 0.08; // PATCH #4: was 0.10 — slightly less double-counting with Phillips term during recovery
+dInflation += Q.price_pressure * 0.08;
 
-// Expectations pull: if actual inflation is below expectations, it gets pulled up;
-// if above, pulled down. This term runs BOTH directions symmetrically.
 dInflation += 0.08 * (Q.inflation_expectations - Q.inflation);
 
-// Extra de-anchoring acceleration, but capped and always paired with restoring force below
 if (!Q.expectations_anchored) {
     const runaway = Math.max(0, Q.inflation_expectations - Q.inflation) * 0.10;
     dInflation += runaway;
 }
 
-// RESTORING FORCE: grows with how far inflation has drifted from target,
-// and — critically — grows faster than the runaway terms can as drift increases,
-// so extreme inflation is always self-limiting rather than a one-way valve.
-
 const drift = Q.inflation - BASE_INFLATION_TARGET;
 const restoringForce = Math.sign(drift) * 0.03 * Math.pow(Math.abs(drift) / 8, 1.4);
 dInflation -= restoringForce;
 
-// Small noise
 dInflation += (Math.random() - 0.5) * 0.03;
 
-// Deflation has its own (weaker, asymmetric) dynamic — deflation is sticky but
-// still capped, doesn't need the same restoring curve since it's bounded below.
 dInflation = Math.max(-2.0, Math.min(6.0, dInflation));
 
 
@@ -1696,21 +1253,24 @@ dUnemployment -= okunsCoeff * outputGap / (1 + Math.abs(outputGap) * 0.2);
 // Demand pressure (policy) directly affects jobs
 dUnemployment -= Q.demand_pressure * 0.4;
 
-// PATCH #3: faster mean reversion toward NAIRU (0.03 -> 0.05) so unemployment
-// doesn't linger at extreme depression-era levels as long once conditions ease.
-dUnemployment -= 0.05 * uGap / (1 + Math.abs(uGap) * 0.1);
+// v8: mean reversion toward NAIRU made LINEAR (was uGap / (1 + |uGap|*0.1),
+// which diluted its own pull the further unemployment sat from NAIRU —
+// exactly backwards, since larger gaps should correct harder, not softer).
+dUnemployment -= 0.08 * uGap;
 
 dUnemployment += (Math.random() - 0.5) * 0.015;
-dUnemployment = Math.max(-2.0, Math.min(2.0, dUnemployment));
+dUnemployment = Math.max(-3.5, Math.min(3.5, dUnemployment)); // was ±2.0, widened for the larger linear pulls
 
 
 // ---- dGROWTH ----
 let dGrowth = 0;
 
-// PATCH #3: faster mean reversion toward potential growth (0.05 -> 0.08) so
-// growth climbs out of deep negative territory faster, easing the depression
-// stall.
-dGrowth += 0.08 * (POTENTIAL_GROWTH - Q.economic_growth) / (1 + Math.abs(outputGap) * 0.15);
+// v8: mean reversion toward potential growth made LINEAR (was denominator-
+// dampened by |outputGap|, so a growth of -10 got its restoring force cut
+// by ~65% right when it needed the most pull back toward potential — this
+// was the single biggest contributor to depression lasting over a decade
+// of in-game ticks).
+dGrowth += 0.14 * (POTENTIAL_GROWTH - Q.economic_growth);
 
 // Demand and supply pressures move growth directly
 dGrowth += Q.demand_pressure * 0.6;
@@ -1731,7 +1291,7 @@ if (uGap > 0) {
 }
 
 dGrowth += (Math.random() - 0.5) * 0.02;
-dGrowth = Math.max(-3.0, Math.min(3.0, dGrowth));
+dGrowth = Math.max(-4.5, Math.min(4.5, dGrowth)); // was ±3.0, widened for the larger linear pulls
 
 
 // ============================================================
@@ -1890,67 +1450,6 @@ if ((Q.wtb_timer || 0) > 0) {
     // NEW — direct budget boost from WTB activity
     Q.budget += 0.35 * diminish;
 }
-
-
-
-
-
-
-
-// ============================================
-// PRESIDENTIAL PATIENCE
-// ============================================
-
-if (Q.presidential_powers == 0 && !Q.government_dismissed) {
-
-    var pp_gov_count = 0;
-    for (var i = 0; i < Q.parties.length; i++) {
-        if (Q[Q.parties[i] + '_in_government'] === 1) pp_gov_count++;
-    }
-
-    if (pp_gov_count > 0 && !Q.emergency_rule) {
-
-        // --- target patience level based on current economic conditions ---
-        var pp_unemp_stress = Math.max(0, (Q.unemployed || 0) - 8);         // 0 at baseline
-        var pp_infl_stress  = Math.abs((Q.inflation || 0) - 2);              // 0 at stable 2%
-        var pp_growth_bonus = Math.max(0, (Q.economic_growth || 0) - 1);     // rewards real growth
-        var pp_growth_stress = Math.max(0, -(Q.economic_growth || 0));      // punishes contraction
-
-        var pp_target = 50;
-        pp_target -= pp_unemp_stress   * 3.0;
-        pp_target -= pp_infl_stress    * 2.0;
-        pp_target -= pp_growth_stress  * 4.0;
-        pp_target += pp_growth_bonus   * 2.0;
-        pp_target = Math.max(0, Math.min(100, pp_target));
-
-        // --- drift current patience toward target, slowly ---
-        var pp_decay_rate = 0.12; // base monthly drift speed
-        if (Q.presidential_cabinet === 1) {
-            pp_decay_rate *= 0.7; // 30% slowdown: this is his own cabinet
-        }
-
-        Q.presidential_patience = (Q.presidential_patience === undefined) ? 50 : Q.presidential_patience;
-
-        // --- compute drift, with a minimum step so it doesn't stall near the target ---
-        var pp_delta = (pp_target - Q.presidential_patience) * pp_decay_rate;
-        var pp_min_step = 1.0; // minimum monthly movement once heading toward target
-        if (Math.abs(pp_delta) < pp_min_step && Q.presidential_patience !== pp_target) {
-            pp_delta = pp_min_step * Math.sign(pp_target - Q.presidential_patience);
-        }
-        Q.presidential_patience += pp_delta;
-
-        Q.presidential_patience = Math.max(0, Math.min(100, Q.presidential_patience));
-        Q.presidential_patience = Math.round(Q.presidential_patience * 100) / 100;
-
-        // --- dismissal trigger (edge-triggered: fires once, on crossing to 0) ---
-        if (Q.presidential_patience <= 0) {
-            Q.government_dismissed = 1;
-            Q.government_dismissed_reason = "presidential_patience";
-
-        }
-    }
-}
-
 
 
 
@@ -5115,53 +4614,53 @@ if (!Q.math_broken) {
 // === PARAMILITARY STRENGTH UPDATES ===
 
 if (Q.nsdap_banned) {
-    Q.sa_strength *= 0.98;
-    Q.sa_militancy = Math.max(0, Q.sa_militancy - 0.0003);
+    Q.sa_strength *= 0.99;
+    Q.sa_militancy = Math.max(0, Q.sa_militancy - 0.0002);
 } else {
     Q.sa_strength += Q.random_factor(Q.unrest_factor / 3, 0.3);
 }
 
 if (Q.dnvp_banned || Q.sh_banned) {
-    Q.sh_strength *= 0.95;
-    Q.sh_militancy = Math.max(0, Q.sh_militancy - 0.008);
+    Q.sh_strength *= 0.99;
+    Q.sh_militancy = Math.max(0, Q.sh_militancy - 0.002);
 } else {
     Q.sh_strength += Q.random_factor(Q.unrest_factor / 6, 0.3);
 }
 
 if (Q.rfb_banned && !Q.april_challenge) {
-    Q.rfb_strength *= 0.98;
+    Q.rfb_strength *= 0.99;
     Q.rfb_militancy = Math.max(0, Q.rfb_militancy - 0.005);
 } else if (Q.rfb_true_ban && Q.april_challenge) {
-    Q.rfb_strength *= 0.97;
+    Q.rfb_strength *= 0.98;
     Q.rfb_militancy = Math.max(0, Q.rfb_militancy - 0.01);
 } else {
     Q.rfb_strength += Q.random_factor(Q.unrest_factor / 5, 0.3);
 }
 
 if (Q.rb_banned) {
-    Q.rb_strength *= 0.93;
-    Q.rb_militancy = Math.max(0, Q.rfb_militancy - 0.0005);
+    Q.rb_strength *= 0.99;
+    Q.rb_militancy = Math.max(0, Q.rfb_militancy - 0.0001);
 } else {
     Q.rb_strength += Q.random_factor(Q.unrest_factor / 20, 0.3);
 }
 
 if (Q.jungdo_banned) {
-    Q.jungdo_strength *= 0.90;
-    Q.jungdo_militancy = Math.max(0, Q.rfb_militancy - 0.0009);
+    Q.jungdo_strength *= 0.99;
+    Q.jungdo_militancy = Math.max(0, Q.rfb_militancy - 0.0001);
 } else {
     Q.jungdo_strength += Q.random_factor(Q.new_middle/50 + Q.old_middle/100 + Q.nationalism/100, 0.3);
 }
 
 if (Q.ruhr_labor_strike == 1) {
     if (Q.ruhr_faud_banned) {
-        Q.ruhr_faud_strength *= 0.95;
+        Q.ruhr_faud_strength *= 0.99;
         Q.ruhr_faud_militancy = Math.max(0, Q.ruhr_faud_militancy - 0.00000005);
     } else {
         Q.ruhr_faud_strength += Q.random_factor(Q.unrest_factor / 5, 0.3);
     }
 
     if (Q.ruhr_kapd_banned) {
-        Q.ruhr_kapd_strength *= 0.95;
+        Q.ruhr_kapd_strength *= 0.99;
         Q.ruhr_kapd_militancy = Math.max(0, Q.ruhr_kapd_militancy - 0.00000005);
     } else {
         Q.ruhr_kapd_strength += Q.random_factor(Q.unrest_factor / 8, 0.3);
@@ -7523,6 +7022,476 @@ Q.leadership_records.push({
 
 
 
+
+
+
+
+/// SMALL SETTINGS
+
+if (!Q.math_broken) {
+    // NORMAL: Sum of progressive party support
+    Q.progressive_coalition = Q.spd_r + Q.kpd_r + Q.ddp_r + Q.srpd_r + Q.sapd_r + Q.csrp_r;
+} else {
+    // MATH BROKEN: Coalition math doesn't add up
+    Q.progressive_coalition = Q.impossible_add(
+        Q.impossible_add(Q.spd_r, Q.kpd_r),
+        Q.impossible_add(Q.impossible_add(Q.ddp_r, Q.srpd_r), Q.impossible_add(Q.sapd_r, Q.csrp_r))
+    );
+    console.log("COALITION CHAOS: Progressive coalition = " + Q.progressive_coalition + "%");
+}
+
+
+// ÷====================== SMALL CHECKERS FOR CABINETS ===============÷=======
+
+// Derive the *_cabinet flag directly from whoever Q.chancellor currently is,
+// instead of checking against a fixed list. Whichever chancellor is set,
+// that one flag goes to 1 and every other previously-set *_cabinet flag
+// from earlier chancellors is cleared.
+
+if (Q.chancellor) {
+    const currentKey = Q.chancellor
+        .toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // strip diacritics: ü -> u, etc.
+        + "_cabinet";
+
+    if (Q._last_cabinet_key && Q._last_cabinet_key !== currentKey) {
+        Q[Q._last_cabinet_key] = 0;
+    }
+
+    Q[currentKey] = 1;
+    Q._last_cabinet_key = currentKey;
+}
+
+
+
+
+if (Q.inverted_ideos != 1) {
+
+// ============================================================
+// AUTO IDEOLOGY SCORER — derives 0 (far-left) to 20 (far-right)
+
+const IDEO_KEYWORDS = [
+    // 0 — revolutionary / Leninist left
+    [/marxism-leninism/i,                 1],
+    [/council communism/i,                0],
+
+    // 2 — revolutionary but non-Leninist / left socialist
+    [/revolutionary socialism/i,          2],
+    [/left-wing socialism/i,              3],
+
+    // NEW — Social Democracy family (must precede generic soc-dem/soc-rep below)
+    [/social democracy \(revolutionary\)/i,      3],  // Left
+    [/social democracy \(center marxist\)/i,     4],  // Center
+    [/social democracy \(reformist\)/i,          6],  // Reformist
+    [/laborism/i,                                7],  // Labor
+    [/social republicanism \(neorevisionist\)/i, 8],  // Neorevisionist
+
+    // 5 — mainstream social democracy
+    [/social democracy/i,                 6],
+    [/social republicanism/i,             7],
+
+    // 7 — right social democracy / soft-left liberal
+    [/right-wing social democracy/i,      8],
+    [/catholic laborism/i,                10],
+
+    // 10 — center / centrist liberal / cross-class Christian
+    [/social liberalism/i,                9],
+    [/christian socialism/i,              7],
+    [/catholic tent/i,                    12],
+    [/middle-class interest/i,            13],
+    [/corporatism/i,                      15],
+
+    // 13 — moderate conservative / regional Catholic conservative / Christian conservatives
+    [/christian conservatism/i,           14],
+    [/bavarian conservatism/i,            13],
+    [/protestant social conservatism/i,   13],
+    [/moderate conservatism/i,            14],
+    [/liberal agrarianism/i,              12],
+
+    // 15 — national liberal / agrarian-liberal right-center
+    [/national liberalism/i,              14],
+    [/hanoverian agrarianism/i,           15],
+    [/hanseatic agrarian conservatism/i,  15],
+
+    // 17 — hard agrarian conservative
+    [/völkisch liberalism/i,              16],
+    [/populist agrarian conservatism/i,   16],
+    [/agrarian conservatism/i,            17],
+    [/social corporatism/i,               16],
+
+    // 18 — national conservative
+    [/national conservatism/i,            18],
+
+    // 20 — far-right nationalist / völkisch / Nazi
+    [/national socialism/i,               20],
+    [/völkisch nationalism/i,             20],
+    [/national conservatism (Hugenbergite)/i,            18],
+];
+
+function ideoScore(ideologyString) {
+    if (!ideologyString) return 10; // Fallback to absolute center (10)
+    for (const [pattern, score] of IDEO_KEYWORDS) {
+        if (pattern.test(ideologyString)) return score;
+    }
+    return 10; // Unrecognized ideology string -> treat as centrist/unknown
+}
+
+// Player-set numeric nudge on top of the keyword-derived base score.
+// Set by the Party Ideologies editor screen (root.ideo_adjust).
+// Defaults to 0 (no change) so untouched parties behave exactly as before.
+function ideoScoreWithOverride(pid, ideologyString) {
+    var base = ideoScore(ideologyString);
+    var override = Q[pid + '_ideo_override'];
+    if (override === undefined || override === null || isNaN(override)) {
+        override = 0;
+    }
+    var final = base + override;
+    if (final < 0) { final = 0; }
+    if (final > 20) { final = 20; }
+    return final;
+}
+
+// Apply to every active party, reading straight from Q.[party]_ideology
+for (const p of Q.parties) {
+    const key = p + '_ideology';
+    Q[p + '_ideo_score'] = ideoScoreWithOverride(p, Q[key]);
+}
+
+// Also cover parties tracked outside Q.parties but referenced in
+// party_relations / coalition_blocks (splinters, KPO, LB, etc.)
+const EXTRA_IDEO_PARTIES = [
+    'kpo', 'sl', 'sapd', 'srpd', 'ddp', 'z', 'bvp', 'csrp', 'dvp', 'wp',
+    'cnbl', 'csvd', 'dnvp', 'vrp', 'kvp', 'dhp', 'bb', 'dvfp',
+    'aspd', 'vnr', 'hl', 'lb', 'rdp', 'cvp', 'sls', 'dtsp', 'dbp', 'dsbp', 'dnf', 'rlb', 'faud', 'kapd', 'gsrn', 'pp', 'uspd'
+];
+for (const p of EXTRA_IDEO_PARTIES) {
+    const key = p + '_ideology';
+    if (Q[key] !== undefined) {
+        Q[p + '_ideo_score'] = ideoScoreWithOverride(p, Q[key]);
+    }
+}
+
+}
+
+
+
+// REMOVE DUPLICATES 
+
+Q.parties = [...new Set(Q.parties)];
+
+
+
+// CODE EXAMPLE FOR REMOVING Tolerator...
+// Q.tolerating_parties = Q.tolerating_parties.filter(function(p) { return p !== 'DVP'; });
+// Q.dvp_tolerating = 0;
+
+// QOL. TRACK GOVERNMENT VOTES.
+
+// ============================================
+// GOVERNMENT VOTE/SEAT TRACKER
+// ============================================
+Q.government_total_votes = 0;
+
+for (var i = 0; i < Q.parties.length; i++) {
+    var p = Q.parties[i];
+    if (Q[p + '_in_government'] === 1) {
+        Q.government_total_votes += Q[p + '_r'] || 0;
+    }
+}
+
+Q.government_total_votes = Math.round(Q.government_total_votes * 10) / 10;
+
+
+// ============================================
+// CONSTITUTIONAL SUPERMAJORITY CHECK (2/3)
+// ============================================
+Q.has_supermajority = (Q.government_effective_pct >= 66.7) ? 1 : 0;
+
+
+// ============================================
+// GOVERNMENT COLLAPSE CHECK
+// ============================================
+
+var gov_count = 0;
+for (var i = 0; i < Q.parties.length; i++) {
+    if (Q[Q.parties[i] + '_in_government'] === 1) gov_count++;
+}
+
+if (gov_count > 0) {
+    var effective_votes = Q.government_total_votes;
+
+    if (Q.tolerating_parties) {
+        for (var i = 0; i < Q.tolerating_parties.length; i++) {
+            var tp = Q.tolerating_parties[i].toLowerCase();
+            if (Q[tp + '_in_government'] !== 1) {
+                effective_votes += Q[tp + '_r'] || 0;
+            }
+        }
+    }
+
+    if (effective_votes < 50 && !(Q.in_emergency_government >= 1)) {
+        Q.government_collapsed = 1;
+        Q.next_election_year = Q.year;
+        Q.next_election_month = Q.month + 2;
+        if (Q.next_election_month > 12) {
+            Q.next_election_month = 1;
+            Q.next_election_year += 1;
+        }
+        for (var i = 0; i < Q.parties.length; i++) {
+            Q[Q.parties[i] + '_in_government'] = 0;
+        }
+        Q.government_parties = [];
+        Q.tolerating_parties = [];
+        Q.spd_toleration = 0;
+        Q.is_minority_government = 0;
+    }
+}
+
+
+
+
+
+
+
+// QOL. REMOVES PHANTON PARTIES.
+
+const inGov = Object.keys(Q)
+  .filter(key => key.endsWith("_in_government") && Q[key] == 1)
+  .map(key => key.replace("_in_government", ""))
+  .filter(party => (Q[party + "_votes"] > 0) && (Q[party + "_r"] > 0))
+  .map(party => party.toUpperCase());
+
+Q.parties_in_government_display = inGov.length > 0
+  ? inGov.join(", ")
+  : "None";
+
+
+
+// === PARTY RELATION GRAVITY ===
+Q.relation_gravity = function(value) {
+    var abs = Math.abs(value);
+    if (abs <= 80) return value;
+    var pull = (abs - 80) * 0.04;
+    return value > 0 ? value - pull : value + pull;
+};
+
+for (var i = 0; i < Q.parties.length; i++) {
+    var p = Q.parties[i];
+    Q[p + '_relation'] = Q.relation_gravity(Q[p + '_relation'] || 0);
+    if (!Q.math_broken) {
+        Q[p + '_relation'] = Math.max(-100, Math.min(100, Q[p + '_relation']));
+    } else {
+        Q[p + '_relation'] = Q.impossible_add(Q[p + '_relation'], 0);
+    }
+}
+
+// === CHECK FOR LOW-RELATION COALITION PARTNER ===
+Q.coalition_low_relation = 0;
+
+// Check full government parties (threshold: <= 30)
+for (var i = 0; i < Q.parties.length; i++) {
+    var p = Q.parties[i];
+    if (p === "spd") continue;
+    if (Q[p + '_in_government'] === 1 && Q[p + '_relation'] <= 30) {
+        Q.coalition_low_relation = 1;
+        break;
+    }
+}
+
+// Check tolerating parties (threshold: <= 20), only if not already triggered
+if (!Q.coalition_low_relation && Q.tolerating_parties) {
+    for (var i = 0; i < Q.tolerating_parties.length; i++) {
+        var tp = Q.tolerating_parties[i].toLowerCase();
+        if (tp === "spd") continue;
+        if (Q[tp + '_relation'] <= 20) {
+            Q.coalition_low_relation = 1;
+            break;
+        }
+    }
+}
+
+
+// === CHECK FOR LOW-RELATION COALITION PARTNER ===
+Q.coalition_mid_relation = 0;
+Q.mad_party = "";
+Q.mad_party_key = "";
+var lowest_relation = 999;
+
+for (var i = 0; i < Q.parties.length; i++) {
+    var p = Q.parties[i];
+    if (p === "spd") continue;
+    if (Q[p + '_in_government'] === 1 && Q[p + '_relation'] < 45 && Q[p + '_relation'] < lowest_relation) {
+        Q.coalition_mid_relation = 1;
+        Q.mad_party = p.toUpperCase();
+        Q.mad_party_key = p;
+        lowest_relation = Q[p + '_relation'];
+    }
+}
+
+
+
+
+
+
+Q.coalition_tension = 0;
+
+if (Q.government_parties) {
+    for (var i = 0; i < Q.government_parties.length; i++) {
+        var p = Q.government_parties[i].toLowerCase();
+        if (p === 'spd') continue;
+        var rel = Q[p + '_relation'] !== undefined ? Q[p + '_relation'] : 50;
+        if (rel < 50) {
+            Q.coalition_tension += (50 - rel) / 10;
+        }
+    }
+}
+
+Q.coalition_tension = Math.round(Q.coalition_tension * 10) / 10;
+
+// === VARIABLE RANGE CAPPING ===
+
+Q.capped_var_ranges = {
+    // 0 to 10
+    pro_consumer:              [0, 10],
+    agricultural_finance:      [0, 10],
+    land_reform:               [0, 10],
+    socialization:             [0, 10],
+    commonwealth_cooperation:  [0, 10],
+    cooperatives:              [0, 10],
+    economic_democracy:        [0, 20],
+    workers_safety:            [0, 10],
+    working_hours:             [0, 10],
+    womens_rights:             [0, 10],
+
+    // -10 to 10
+    welfare:                   [-10, 10],
+    judicial_reform:           [-10, 10],
+    pacifism:                  [-10, 10],
+    radicalization:            [-10, 10],
+    democratization:           [-10, 10],
+
+    // -1 to 2
+    confronting_antisemitism:  [-1, 2],
+
+    // 0 to 15
+    workers_aid:               [0, 15],
+    campaign_media:            [0, 15],
+    commercialized_media:      [0, 15],
+    cultural_organizations:    [0, 15],
+    wtb_support:               [0, 15],
+    local_rally:               [0, 15],
+    peoples_party_support:     [0, 15]
+};
+
+Q.apply_var_caps = function() {
+    for (var varName in Q.capped_var_ranges) {
+        if (!Q.capped_var_ranges.hasOwnProperty(varName)) continue;
+        if (Q[varName] === undefined) continue; // skip vars not in use
+
+        var range = Q.capped_var_ranges[varName];
+        var min = range[0];
+        var max = range[1];
+
+        if (Q[varName] < min) {
+            Q[varName] = min;
+        } else if (Q[varName] > max) {
+            Q[varName] = max;
+        }
+    }
+};
+
+Q.apply_var_caps();
+
+// === MINISTRY REASSIGNMENT ===
+var portfolios = ["foreign_minister", "interior_minister", "justice_minister", "labor_minister",
+                   "economic_minister", "finance_minister", "agriculture_minister", "transport_minister"];
+
+for (var i = 0; i < portfolios.length; i++) {
+    var port = portfolios[i];
+    var partyField = port + "_party";
+    var currentParty = (Q[partyField] || "").toLowerCase();
+
+    // If held party isn't in government anymore, reassign
+    if (Q[currentParty + '_in_government'] !== 1) {
+        // Find the largest remaining government party by seat share
+        var bestParty = "";
+        var bestVotes = -1;
+        for (var j = 0; j < Q.parties.length; j++) {
+            var p = Q.parties[j];
+            if (Q[p + '_in_government'] === 1 && (Q[p + '_r'] || 0) > bestVotes) {
+                bestVotes = Q[p + '_r'] || 0;
+                bestParty = p;
+            }
+        }
+
+        if (bestParty !== "") {
+            Q[partyField] = bestParty.toUpperCase();
+            Q[port] = (Q.ministry_roster[bestParty] && Q.ministry_roster[bestParty][port]) || 0;
+        }
+    }
+}
+
+if (!Q.minister_name_table) {
+    Q.minister_name_table = {
+        foreign_minister:     { KPD:'Pieck', SAPD:'Rosenfeld', SPD:'Breitscheid', SRPD:'Breitscheid', DDP:'Koch-Weser', Z:'Curtius', BVP:'Held', DVP:'Stresemann', WP:'Lambach', CNBL:'Hepp', DNVP:'Westarp' },
+        interior_minister:    { KPD:'Ulbricht', SAPD:'Seydewitz', SPD:'Severing', SRPD:'Braun', DDP:'Koch-Weser', Z:'Wirth', BVP:'Schätzel', DVP:'Scholz', WP:'Petersen', CNBL:'Behrens', DNVP:'Hergt' },
+        justice_minister:     { KPD:'Heckert', SAPD:'Ledebour', SPD:'Radbruch', SRPD:'Heilmann', DDP:'Koch-Weser', Z:'Bredt', BVP:'Gürtner', DVP:'Heinze', WP:'Drewitz', CNBL:'von Rohr', DNVP:'Schiele' },
+        labor_minister:       { KPD:'Münzenberg', SAPD:'Seydewitz', SPD:'Wissell', SRPD:'Aufhäuser', DDP:'Dietrich', Z:'Stegerwald', BVP:'Stützel', DVP:'Brauns', WP:'Petersen', CNBL:'Lohse', DNVP:'Schiele' },
+        economic_minister:    { KPD:'Remmele', SAPD:'Rosenfeld', SPD:'Hilferding', SRPD:'Schmidt', DDP:'Dietrich', Z:'Bredt', BVP:'Held', DVP:'Curtius', WP:'Lambach', CNBL:'Heim', DNVP:'Schiele' },
+        finance_minister:     { KPD:'Neumann', SAPD:'Rosenfeld', SPD:'Hilferding', SRPD:'Hilferding', DDP:'Dietrich', Z:'Köhler', BVP:'Krausneck', DVP:'Moldenhauer', WP:'Drewitz', CNBL:'Hepp', DNVP:'Schiele' },
+        agriculture_minister: { KPD:'Hoernle', SAPD:'Baade', SPD:'Baade', SRPD:'Baade', DDP:'Dietrich', Z:'Hermes', BVP:'Wutzlhofer', DVP:'Schiele', WP:'Bredt', CNBL:'Hamkens', DNVP:'Schiele' },
+        transport_minister:   { KPD:'Hoernle', SAPD:'Baade', SPD:'Baade', SRPD:'Baade', DDP:'Dietrich', Z:'Guerard', BVP:'Wutzlhofer', DVP:'Schiele', WP:'Bredt', CNBL:'Hamkens', DNVP:'Schiele' }
+    };
+}
+
+for (var i = 0; i < portfolios.length; i++) {
+    var port = portfolios[i];
+    var party = (Q[port + '_party'] || '').toUpperCase();
+
+    var expectedName = (Q.minister_name_table[port] && Q.minister_name_table[port][party]) || 'Unbesetzt';
+
+    // Special case: Stresemann's death reassigns the DVP foreign minister slot to Curtius
+    if (port === 'foreign_minister' && party === 'DVP' && Q.stresemann_dead) {
+        expectedName = 'Curtius';
+    }
+
+    if (Q[port] !== expectedName) {
+        Q[port] = expectedName;
+    }
+}
+
+
+
+
+
+
+
+
+
+// === LOBBYING ACTIVITY CHECK ===
+Q.lobbying_active = 0;
+Q.lobbyable_ministries = [];
+
+for (var i = 0; i < portfolios.length; i++) {
+    var port = portfolios[i];
+    var mp = (Q[port + '_party'] || '').toLowerCase();
+    var qualifies = mp && (Q[mp + '_relation'] || 0) >= 80;
+
+    // flat boolean per portfolio, for use in plain view-if: syntax
+    Q['lobby_' + port + '_available'] = qualifies ? 1 : 0;
+
+    if (qualifies) {
+        Q.lobbying_active = 1;
+        Q.lobbyable_ministries.push({ portfolio: port, party: mp });
+    }
+}
+
+
+
+
+
+
+
 Q.inflation              = Math.max(-15, Math.min(1000, Q.inflation));
 Q.unemployed             = Math.max(0,   Math.min(50,   Q.unemployed));
 Q.economic_growth        = Math.max(-20, Math.min(20,   Q.economic_growth));
@@ -7825,6 +7794,65 @@ Q.recalc_strengths();
 
 
 
+
+// ============================================================
+// REICHSEXEKUTION TRIGGER CHECK (stub)
+// ============================================================
+
+// President's ideology score, using same override pipeline as parties
+var _presidentParty = (Q.president_party || '').toLowerCase();
+Q.president_ideo_score = Q[_presidentParty + '_ideo_score'] !== undefined
+    ? Q[_presidentParty + '_ideo_score']
+    : 10; // unaffiliated/unknown president -> centrist fallback
+Q.president_ideo_bucket =
+    Q.president_ideo_score <= 3  ? 'far-left'  :
+    Q.president_ideo_score <= 8  ? 'left'      :
+    Q.president_ideo_score <= 11 ? 'center'    :
+    Q.president_ideo_score <= 16 ? 'right'     : 'far-right';
+
+// Chancellor's score (chancellor_party assumed to hold a party key, e.g. 'spd')
+var _chancellorParty = (Q.chancellor_party || '').toLowerCase();
+Q.chancellor_ideo_score = Q[_chancellorParty + '_ideo_score'] !== undefined
+    ? Q[_chancellorParty + '_ideo_score']
+    : Q.president_ideo_score; // no valid chancellor -> no gap contribution
+
+// Seat-weighted average ideology of the government (in_government == 1 only)
+var _govWeightedSum = 0;
+var _govSeatTotal = 0;
+for (var i = 0; i < Q.parties.length; i++) {
+    var p = Q.parties[i];
+    if (Q[p + '_in_government'] === 1) {
+        var seats = Q[p + '_r'] || 0;
+        _govWeightedSum += (Q[p + '_ideo_score'] || 10) * seats;
+        _govSeatTotal += seats;
+    }
+}
+Q.government_ideo_score_weighted = _govSeatTotal > 0
+    ? _govWeightedSum / _govSeatTotal
+    : Q.president_ideo_score; // no government -> no gap contribution
+
+// Gap checks, either direction, threshold 7
+var _chancellorGap = Math.abs(Q.president_ideo_score - Q.chancellor_ideo_score);
+var _governmentGap = Math.abs(Q.president_ideo_score - Q.government_ideo_score_weighted);
+
+Q.reichsexekution_chancellor_trip = _chancellorGap >= 7 ? 1 : 0;
+Q.reichsexekution_government_trip = _governmentGap >= 7 ? 1 : 0;
+
+Q.reichsexekution_triggered = 0;
+Q.reichsexekution_cause = '';
+
+if (Q.presidential_powers != 1) {
+    if (Q.reichsexekution_chancellor_trip && Q.reichsexekution_government_trip) {
+        Q.reichsexekution_triggered = 1;
+        Q.reichsexekution_cause = 'both';
+    } else if (Q.reichsexekution_chancellor_trip) {
+        Q.reichsexekution_triggered = 1;
+        Q.reichsexekution_cause = 'chancellor';
+    } else if (Q.reichsexekution_government_trip) {
+        Q.reichsexekution_triggered = 1;
+        Q.reichsexekution_cause = 'government_average';
+    }
+}
 
 
 
