@@ -74,6 +74,10 @@ SPD's stance: [+ spd_status +]
 
 Resources available: [+ resources +]
 
+Our radical convictions: [+ radicalization_disp +] — Our democratic convictions: [+ democratization_disp +]
+
+Strength of pacifist mini-faction: [+ pacifism_disp +].
+
 @politics
 on-arrival: {!
 Q.pro_republic_disp = Q.pro_republic;
@@ -176,12 +180,6 @@ Support for the Republic: [+ pro_republic_disp +]%:
 Support for the Nationalism: [+ nationalism_disp +]%
 
 Support for the Socialism: [+ socialism_disp +]%
-
-Support of the Pacifism: [+ pacifism_disp +]%
-
-Support of the Democratization: [+ democratization_disp +]%
-Support of the Radicalization: [+ radicalization_disp +]
-
 
 @paramilitaries
 on-arrival: {!
