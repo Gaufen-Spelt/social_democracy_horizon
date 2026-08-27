@@ -4077,12 +4077,15 @@ function computeTarget(party, c) {
     if (Q.campaign_focus_spd === 'new_middle' && (Q.campaign_intensity_spd || 0) > 0) {
         campaign_policy_boost +=
               (Q.peoples_party === 1 ? 0.04 : 0)
+            + (Q.radio >= 1 ? 0.04 * Q.radio : 0)
+            + (Q.commercialized_media >= 1 ? 0.02 * Q.commercialized_media : 0)
             - (Q.socialism <= 49 && Q.peoples_party === 0 ? 0.06 : 0)
             - (Q.upper_tax_rates > 0 ? Q.upper_tax_rates * 0.03 : 0);
     }
     if (Q.campaign_focus_spd === 'old_middle' && (Q.campaign_intensity_spd || 0) > 0) {
         campaign_policy_boost +=
               (Q.peoples_party === 1 ? 0.04 : 0)
+            + (Q.radio >= 1 ? 0.02 * Q.radio : 0)
             - (Q.nationalism >= 51 && Q.peoples_party === 0 ? 0.06 : 0)
             - (Q.upper_tax_rates > 0 ? Q.upper_tax_rates * 0.03 : 0)
             - (Q.nationalism / 480);
