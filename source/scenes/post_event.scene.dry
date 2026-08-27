@@ -86,39 +86,6 @@ const IDEO_KEYWORDS = [
     [/national conservatism (Hugenbergite)/i,            18],
 ];
 
---- FIND THIS BLOCK in @post_event's on-arrival (inside `if (Q.inverted_ideos != 1) { ... }`) ---
-
-function ideoScore(ideologyString) {
-    if (!ideologyString) return 10; // Fallback to absolute center (10)
-    for (const [pattern, score] of IDEO_KEYWORDS) {
-        if (pattern.test(ideologyString)) return score;
-    }
-    return 10; // Unrecognized ideology string -> treat as centrist/unknown
-}
-
-// Apply to every active party, reading straight from Q.[party]_ideology
-for (const p of Q.parties) {
-    const key = p + '_ideology';
-    Q[p + '_ideo_score'] = ideoScore(Q[key]);
-}
-
-// Also cover parties tracked outside Q.parties but referenced in
-// party_relations / coalition_blocks (splinters, KPO, LB, etc.)
-const EXTRA_IDEO_PARTIES = [
-    'kpo', 'sl', 'sapd', 'srpd', 'ddp', 'z', 'bvp', 'csrp', 'dvp', 'wp',
-    'cnbl', 'csvd', 'dnvp', 'vrp', 'kvp', 'dhp', 'bb', 'dvfp',
-    'aspd', 'vnr', 'hl', 'lb', 'rdp', 'cvp', 'sls', 'dtsp', 'dbp', 'dsbp', 'dnf', 'rlb', 'faud', 'kapd'
-];
-for (const p of EXTRA_IDEO_PARTIES) {
-    const key = p + '_ideology';
-    if (Q[key] !== undefined) {
-        Q[p + '_ideo_score'] = ideoScore(Q[key]);
-    }
-}
-
-
---- REPLACE WITH ---
-
 function ideoScore(ideologyString) {
     if (!ideologyString) return 10; // Fallback to absolute center (10)
     for (const [pattern, score] of IDEO_KEYWORDS) {
