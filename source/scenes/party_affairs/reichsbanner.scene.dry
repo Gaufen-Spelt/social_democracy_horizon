@@ -62,9 +62,8 @@ We have decided to fund Jungdo, our counterpart from the nationalists. Arthur Ma
 
 @militant
 view-if: rb_militancy >= 0
-choose-if: resources >= 1
-unavailable-subtitle: Not enough resources (1) needed.
-subtitle: -1 resources
+choose-if: resources >= 1 and pacifism <= 7
+unavailable-subtitle: [? if resources < 1: Not enough resources (1) needed. ?][? if pacifism > 7: Our party's pacifist convictions are too strong to support further militarization. ?]
 on-arrival: resources -= 1; rb_investment += 1; rb_strength += 100; rb_militancy += 0.02; left_strength += 2; left_dissent -= 2; reformist_dissent += 5; spd_militancy += 0.05; workers_spd += 2*(1-dissent); unemployed_spd += 2*(1-dissent); z_relation -= 5 if historical_mode; ddp_relation -= 3 if historical_mode; z_dissent += 1 if historical_mode; ddp_dissent += 1 if historical_mode
 
 Some in our party decry the increasing militarization of the Reichsbanner. They say it is emulating the right-wing nationalists or the communists, and risks alienating our allies in the centrist parties. On the other hand, more left-leaning radicals are being lured to our organizations, away from the communists.
@@ -74,8 +73,8 @@ Some in our party decry the increasing militarization of the Reichsbanner. They 
 
 @militant_2
 view-if: rb_militancy >= 0.10
-choose-if: resources >= 3
-unavailable-subtitle: Not enough resources (3) needed.
+choose-if: resources >= 3 and pacifism <= 7
+unavailable-subtitle: [? if resources < 3: Not enough resources (3) needed. ?][? if pacifism > 7: Our party's pacifist convictions are too strong to support further militarization. ?]
 subtitle: -3 resources
 on-arrival: resources -= 3; rb_investment += 1; rb_strength += 150; rb_militancy += 0.04; left_strength += 2; left_dissent -= 2; reformist_dissent += 5; spd_militancy += 0.08; workers_spd += 2*(1-dissent); unemployed_spd += 2*(1-dissent); z_relation -= 5 if historical_mode; ddp_relation -= 3 if historical_mode; z_dissent += 1 if historical_mode; ddp_dissent += 1 if historical_mode
 
@@ -85,8 +84,8 @@ Some in our party decry the increasing militarization of the Reichsbanner. They 
 
 @militant_3
 view-if: rb_militancy >= 0.20
-choose-if: resources >= 6
-unavailable-subtitle: Not enough resources (6) needed.
+choose-if: resources >= 6 and pacifism <= 7
+unavailable-subtitle: [? if resources < 6: Not enough resources (6) needed. ?][? if pacifism > 7: Our party's pacifist convictions are too strong to support further militarization. ?]
 subtitle: -6 resources
 on-arrival: resources -= 6; rb_investment += 1; rb_strength += 220; rb_militancy += 0.06; left_strength += 2; left_dissent -= 2; reformist_dissent += 5; spd_militancy += 0.08; workers_spd += 2*(1-dissent); unemployed_spd += 2*(1-dissent); z_relation -= 5 if historical_mode; ddp_relation -= 3 if historical_mode; z_dissent += 1 if historical_mode; ddp_dissent += 1 if historical_mode
 
@@ -96,8 +95,8 @@ Some in our party decry the increasing militarization of the Reichsbanner. They 
 
 @militant_4
 view-if: rb_militancy >= 0.35
-choose-if: resources >= 8
-unavailable-subtitle: Not enough resources (8) needed).
+choose-if: resources >= 8 and pacifism <= 7
+unavailable-subtitle: [? if resources < 8: Not enough resources (8) needed. ?][? if pacifism > 7: Our party's pacifist convictions are too strong to support further militarization. ?]
 subtitle: -8 resources
 on-arrival: resources -= 8; rb_investment += 4; rb_strength += 300; rb_militancy += 0.09; left_strength += 2; left_dissent -= 2; reformist_dissent += 10; spd_militancy += 0.08; workers_spd += 2*(1-dissent); unemployed_spd += 2*(1-dissent); z_relation -= 10 if historical_mode; ddp_relation -= 8 if historical_mode; z_dissent += 1 if historical_mode; ddp_dissent += 1 if historical_mode
 
@@ -107,9 +106,9 @@ Some in our party decry the increasing militarization of the Reichsbanner. They 
 
 @militant_5
 view-if: rb_militancy >= 0.60
-choose-if: resources >= 12
-unavailable-subtitle: Not enough resources (12) needed.
-subtitle: -12 =esources
+choose-if: resources >= 12 and pacifism <= 7
+unavailable-subtitle: [? if resources < 12: Not enough resources (12) needed. ?][? if pacifism > 7: Our party's pacifist convictions are too strong to support further militarization. ?]
+subtitle: -12 resources
 on-arrival: resources -= 12; rb_investment += 5; rb_strength += 450; rb_militancy += 0.11; left_strength += 5; left_dissent -= 5; reformist_dissent += 15; spd_militancy += 0.012; workers_spd += 2*(1-dissent); unemployed_spd += 2*(1-dissent); z_relation -= 15 if historical_mode; ddp_relation -= 10 if historical_mode; z_dissent += 1 if historical_mode; ddp_dissent += 1 if historical_mode
 
 Some in our party decry the increasing militarization of the Reichsbanner. They say it is emulating the right-wing nationalists or the communists, and risks alienating our allies in the centrist parties. On the other hand, more left-leaning radicals are being lured to our organizations, away from the communists.
