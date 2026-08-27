@@ -1,10 +1,11 @@
 title: All Quiet on the Western Front
 subtitle: Censorship and violence over a movie...
-view-if: year = 1930 and month = 12 and spd_prussia and nsdap_votes >= 10 and not nsdap_banned
+view-if: year = 1930 and month = 12 and (nsdap_votes >= 10 or dvfp_votes >= 10 or (dnvp_votes >= 15 and dnvp_ideology = "National Conservatism (Hugenbergite)") or dtsp_votes >= 10)
 max-visits: 1
 tags: event
 new-page: true
 face-image: img/All_Quiet.jpg
+go-to: ban_2 if not spd_in_government_prussia
 
 = All Quiet on the Western Front
 
@@ -43,3 +44,7 @@ on-arrival: nationalism -= 5; pro_republic += 5*(1-dissent); workers_nsdap -= 3;
 
 Under police protection, crowds throng the film's showings, as Nazis protest outside. The reception is mixed, but a new national conversation develops, reexamining the right-wing histories of the war. Quietly, many minds are changed, or at least affected in subtle ways.
 
+@ban__2
+on-arrival: old_middle_nsdap += 5; new_middle_nsdap += 4; workers_nsdap += 2; unemployed_nsdap += 2; sa_strength += 50; nationalism += 6; pro_republic -= 3
+
+When the Prussian Government ban the film, the Nazis immediately celebrate it as a major victory! It is a major boost to their morale.
