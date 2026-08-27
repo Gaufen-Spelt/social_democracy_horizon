@@ -2557,14 +2557,23 @@ Q.stampfer_advisor = 0; // Friedrich Stampfer
 
 Q.dvfp_formed = 1;
 
-Q.custom_party_wp    = Q.custom_party_wp    || 1;
-Q.custom_party_z     = Q.custom_party_z     || 1;
+Q.custom_party_spd   = Q.custom_party_spd   || 1;
 Q.custom_party_kpd   = Q.custom_party_kpd   || 1;
-Q.custom_party_ddp   = Q.custom_party_ddp   || 1;
+Q.custom_party_z     = Q.custom_party_z     || 1;
 Q.custom_party_bvp   = Q.custom_party_bvp   || 1;
+Q.custom_party_bb    = Q.custom_party_bb    || 1;
+Q.custom_party_ddp   = Q.custom_party_ddp   || 1;
 Q.custom_party_dvp   = Q.custom_party_dvp   || 1;
+Q.custom_party_dhp   = Q.custom_party_dhp   || 1;
+Q.custom_party_csrp  = Q.custom_party_csrp  || 1;
+Q.custom_party_wp    = Q.custom_party_wp    || 1;
+Q.custom_party_vrp   = Q.custom_party_vrp   || 1;
+Q.custom_party_aspd  = Q.custom_party_aspd  || 1;
+Q.custom_party_dtsp  = Q.custom_party_dtsp  || 1;
 Q.custom_party_dnvp  = Q.custom_party_dnvp  || 1;
 Q.custom_party_nsdap = Q.custom_party_nsdap || 1;
+Q.custom_party_rlb   = Q.custom_party_rlb   || 1;
+Q.custom_party_other = Q.custom_party_other || 1;
 
 // ============================================================
 // AUTO IDEOLOGY SCORER — derives 0 (far-left) to 20 (far-right)
