@@ -2722,6 +2722,9 @@ Choose your challenges!
 - @separator: -----------------------------
 - @party_picker: Party Selector
 - @party_adjust: Party adjustor.
+- @rel_adjust: Inter-Party Relations
+- @ideo_adjust: Party Ideologies
+- @coalition_blocks_adjust: Coalition Blocks
 - @start_2: Back
 
 @separator
@@ -4329,3 +4332,335 @@ rows.forEach(function(row) {
 
 - @padj_class: Refresh
 - @party_adjust: Back to Party List
+
+
+
+
+
+
+
+
+@rel_adjust
+new-page: true
+on-arrival: {!
+if (!Q.padjParties) {
+    Q.padjParties = [
+        ['spd','SPD'], ['kpd','KPD'], ['z','Z'], ['bvp','BVP'], ['ddp','DDP'],
+        ['dvp','DVP'], ['dnvp','DNVP'], ['nsdap','NSDAP'], ['wp','WP'],
+        ['bb','BB'], ['dhp','DHP'], ['csrp','CSRP'], ['vrp','VRP'],
+        ['aspd','ASPD'], ['dtsp','DTSP'], ['rlb','RLB'], ['cnbl','CNBL'],
+        ['sapd','SAPD'], ['srpd','SRPD'], ['csvd','CSVD'], ['kvp','KVP'],
+        ['dvfp','DVFP'], ['hl','HL'], ['kpo','KPO'], ['vnr','VNR'],
+        ['sl','SL'], ['lb','LB'], ['rdp','RDP'], ['sls','SLS'],
+        ['cvp','CVP'], ['dbp','DBP'], ['dsbp','DSBP'], ['dnf','DNF'],
+        ['faud','FAUD'], ['kapd','KAPD'], ['other','Other'], ['uspd','USPD'], ['pp','PP'], ['gsrn','GSRN']
+    ];
+}
+if (!Q.padjCustomParties) {
+    Q.padjCustomParties = [
+        'sapd','srpd','csvd','kvp','dvfp','cnbl','bb','dhp','vrp','csrp',
+        'aspd','hl','kpo','vnr','sl','lb','rdp','sls','cvp','dtsp','dbp',
+        'dsbp','dnf','faud','kapd','rlb', 'pp', 'uspd', 'gsrn'
+    ];
+}
+if (!Q.party_relations) { Q.party_relations = {}; }
+!}
+on-display: {!
+var holder = document.getElementById('rel-container');
+if (!holder) { return; }
+
+function isActive(pid) {
+    var isCustom = Q.padjCustomParties.indexOf(pid) !== -1;
+    return isCustom
+        ? (Q['custom_party_' + pid] === 1 && !Q[pid + '_banned'])
+        : (Q['custom_party_' + pid] !== 0 && !Q[pid + '_banned']);
+}
+
+var html = '';
+for (var i = 0; i < Q.padjParties.length; i++) {
+    var pid = Q.padjParties[i][0];
+    var label = Q.padjParties[i][1];
+    if (!isActive(pid)) { continue; }
+    html += '<div class="rel-row" data-pid="' + pid + '" style="margin:6px 0;padding:6px;border-bottom:1px solid #444;display:flex;justify-content:space-between;align-items:center;">';
+    html += '<strong>' + label + '</strong>';
+    html += '<a href="#" class="rel-drill">Edit relations &rarr;</a>';
+    html += '</div>';
+}
+holder.innerHTML = html || '<em>No active parties. Add some in the Party Selector first.</em>';
+
+var rows = holder.querySelectorAll('.rel-row');
+rows.forEach(function(row) {
+    var pid = row.getAttribute('data-pid');
+    var drill = row.querySelector('.rel-drill');
+    drill.addEventListener('click', function(e) {
+        e.preventDefault();
+        Q.padjCurrentRelParty = pid;
+        window.dendryUI.dendryEngine.goToScene('root.rel_party');
+    });
+});
+!}
+
+= Adjust Inter-Party Relations
+
+Pick a party to edit how it feels about every other active party. Values run 0 (hostile) to 100 (closely aligned). Editing here overwrites the game's default relation formulas for that pairing.
+
+<div id="rel-container"></div>
+
+- @challenge: Back
+
+@rel_party
+new-page: true
+view-if: padjCurrentRelParty != ""
+on-display: {!
+var holder = document.getElementById('relp-container');
+if (!holder) { return; }
+
+var pid = Q.padjCurrentRelParty;
+var PID = pid.toUpperCase();
+var label = pid;
+for (var i = 0; i < Q.padjParties.length; i++) {
+    if (Q.padjParties[i][0] === pid) { label = Q.padjParties[i][1]; break; }
+}
+
+var titleEl = document.getElementById('relp-title');
+if (titleEl) { titleEl.textContent = label + ' — Relations to Other Parties'; }
+
+function isActive(otherPid) {
+    var isCustom = Q.padjCustomParties.indexOf(otherPid) !== -1;
+    return isCustom
+        ? (Q['custom_party_' + otherPid] === 1 && !Q[otherPid + '_banned'])
+        : (Q['custom_party_' + otherPid] !== 0 && !Q[otherPid + '_banned']);
+}
+
+if (!Q.party_relations[PID]) { Q.party_relations[PID] = {}; }
+
+var html = '';
+for (var j = 0; j < Q.padjParties.length; j++) {
+    var otherPid = Q.padjParties[j][0];
+    var otherLabel = Q.padjParties[j][1];
+    var OTHER = otherPid.toUpperCase();
+    if (otherPid === pid) { continue; }
+    if (!isActive(otherPid)) { continue; }
+
+    var current = Q.party_relations[PID][OTHER];
+    if (current === undefined || current === null || isNaN(current)) { current = 25; }
+
+    html += '<div class="relp-row" data-other="' + OTHER + '" style="margin:10px 0;padding:8px;border-bottom:1px solid #444;">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;">';
+    html += '<strong>' + otherLabel + '</strong>';
+    html += '<span class="relp-val">' + Number(current).toFixed(0) + '</span>';
+    html += '</div>';
+    html += '<input type="range" class="relp-slider" min="0" max="100" step="1" value="' + current + '" style="width:100%;">';
+    html += '</div>';
+}
+holder.innerHTML = html || '<em>No other active parties to relate to.</em>';
+
+var rows = holder.querySelectorAll('.relp-row');
+rows.forEach(function(row) {
+    var otherKey = row.getAttribute('data-other');
+    var slider = row.querySelector('.relp-slider');
+    var valSpan = row.querySelector('.relp-val');
+    slider.addEventListener('input', function() {
+        var v = parseFloat(slider.value);
+        if (isNaN(v)) { v = 0; }
+        if (v < 0) { v = 0; }
+        if (v > 100) { v = 100; }
+        Q.party_relations[PID][otherKey] = v;
+        valSpan.textContent = v.toFixed(0);
+    });
+});
+!}
+
+= [+ padjCurrentRelParty +] &mdash; Relations to Other Parties
+
+<p id="relp-title"></p>
+<div id="relp-container"></div>
+
+- @rel_party: Refresh
+- @rel_adjust: Back to Party List
+
+
+@ideo_adjust
+new-page: true
+on-arrival: {!
+if (!Q.padjParties) {
+    Q.padjParties = [
+        ['spd','SPD'], ['kpd','KPD'], ['z','Z'], ['bvp','BVP'], ['ddp','DDP'],
+        ['dvp','DVP'], ['dnvp','DNVP'], ['nsdap','NSDAP'], ['wp','WP'],
+        ['bb','BB'], ['dhp','DHP'], ['csrp','CSRP'], ['vrp','VRP'],
+        ['aspd','ASPD'], ['dtsp','DTSP'], ['rlb','RLB'], ['cnbl','CNBL'],
+        ['sapd','SAPD'], ['srpd','SRPD'], ['csvd','CSVD'], ['kvp','KVP'],
+        ['dvfp','DVFP'], ['hl','HL'], ['kpo','KPO'], ['vnr','VNR'],
+        ['sl','SL'], ['lb','LB'], ['rdp','RDP'], ['sls','SLS'],
+        ['cvp','CVP'], ['dbp','DBP'], ['dsbp','DSBP'], ['dnf','DNF'],
+        ['faud','FAUD'], ['kapd','KAPD'], ['other','Other'], ['uspd','USPD'], ['pp','PP'], ['gsrn','GSRN']
+    ];
+}
+if (!Q.padjCustomParties) {
+    Q.padjCustomParties = [
+        'sapd','srpd','csvd','kvp','dvfp','cnbl','bb','dhp','vrp','csrp',
+        'aspd','hl','kpo','vnr','sl','lb','rdp','sls','cvp','dtsp','dbp',
+        'dsbp','dnf','faud','kapd','rlb', 'pp', 'uspd', 'gsrn'
+    ];
+}
+
+// Same named-ideology -> score table used by the auto ideology scorer,
+// exposed here so the dropdown can present labels and snap the score.
+Q.ideoOptions = [
+    ['Council Communism', 0],
+    ['Marxism-Leninism', 1],
+    ['Revolutionary Socialism', 2],
+    ['Left-Wing Socialism', 3],
+    ['Social Democracy (Revolutionary)', 3],
+    ['Social Democracy (Center Marxist)', 4],
+    ['Christian Socialism', 6],
+    ['Social Democracy (Reformist)', 6],
+    ['Social Democracy', 6],
+    ['Laborism', 7],
+    ['Social Republicanism', 7],
+    ['Social Democracy (Neorevisionist)', 8],
+    ['Right-Wing Social Democracy', 8],
+    ['Social Liberalism', 10],
+    ['Ideology Unknown / Centrist', 10],
+    ['Catholic Tent', 12],
+    ['Liberal Agrarianism', 12],
+    ['Middle-Class Interest', 13],
+    ['Polish Interests', 12],
+    ['Bavarian Conservatism', 13],
+    ['Protestant Social Conservatism', 13],
+    ['Moderate Conservatism', 14],
+    ['National Liberalism', 15],
+    ['Hanoverian Agrarianism', 15],
+    ['Hanseatic Agrarian Conservatism', 15],
+    ['Völkisch Liberalism', 16],
+    ['Social Corporatism', 16],
+    ['Agrarian Conservatism', 17],
+    ['National Conservatism', 18],
+    ['Revolutionary Nationalism', 0],
+    ['National Socialism', 20],
+    ['Völkisch Nationalism', 20]
+];
+!}
+on-display: {!
+var holder = document.getElementById('ideo-container');
+if (!holder) { return; }
+
+function isActive(pid) {
+    var isCustom = Q.padjCustomParties.indexOf(pid) !== -1;
+    return isCustom
+        ? (Q['custom_party_' + pid] === 1 && !Q[pid + '_banned'])
+        : (Q['custom_party_' + pid] !== 0 && !Q[pid + '_banned']);
+}
+
+var optionsHtml = '';
+for (var o = 0; o < Q.ideoOptions.length; o++) {
+    optionsHtml += '<option value="' + o + '">' + Q.ideoOptions[o][0] + ' (' + Q.ideoOptions[o][1] + ')</option>';
+}
+
+var html = '';
+for (var i = 0; i < Q.padjParties.length; i++) {
+    var pid = Q.padjParties[i][0];
+    var label = Q.padjParties[i][1];
+    if (!isActive(pid)) { continue; }
+
+    var scoreKey = pid + '_ideo_score';
+    var currentScore = Q[scoreKey];
+    if (currentScore === undefined || currentScore === null || isNaN(currentScore)) { currentScore = 10; }
+
+    html += '<div class="ideo-row" data-pid="' + pid + '" style="margin:12px 0;padding:8px;border-bottom:1px solid #444;">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;">';
+    html += '<strong>' + label + '</strong>';
+    html += '<span class="ideo-val">' + Number(currentScore).toFixed(0) + ' / 20</span>';
+    html += '</div>';
+    html += '<div style="margin:6px 0;"><em>' + (Q[pid + '_ideology'] || 'Unset') + '</em></div>';
+    html += '<select class="ideo-select" style="width:100%;margin-bottom:6px;"><option value="-1">-- pick named ideology --</option>' + optionsHtml + '</select>';
+    html += '<input type="range" class="ideo-slider" min="0" max="20" step="1" value="' + currentScore + '" style="width:100%;">';
+    html += '</div>';
+}
+holder.innerHTML = html || '<em>No active parties. Add some in the Party Selector first.</em>';
+
+var rows = holder.querySelectorAll('.ideo-row');
+rows.forEach(function(row) {
+    var pid = row.getAttribute('data-pid');
+    var select = row.querySelector('.ideo-select');
+    var slider = row.querySelector('.ideo-slider');
+    var valSpan = row.querySelector('.ideo-val');
+    var nameDiv = row.querySelector('em');
+
+    select.addEventListener('change', function() {
+        var idx = parseInt(select.value, 10);
+        if (idx < 0 || isNaN(idx)) { return; }
+        var chosen = Q.ideoOptions[idx];
+        Q[pid + '_ideology'] = chosen[0];
+        Q[pid + '_ideo_score'] = chosen[1];
+        slider.value = chosen[1];
+        valSpan.textContent = chosen[1].toFixed(0) + ' / 20';
+        nameDiv.textContent = chosen[0];
+    });
+
+    slider.addEventListener('input', function() {
+        var v = parseInt(slider.value, 10);
+        if (isNaN(v)) { v = 0; }
+        if (v < 0) { v = 0; }
+        if (v > 20) { v = 20; }
+        Q[pid + '_ideo_score'] = v;
+        valSpan.textContent = v.toFixed(0) + ' / 20';
+    });
+});
+!}
+
+= Adjust Party Ideologies
+
+Set each active party's ideology label (which auto-snaps its 0&ndash;20 score) or drag the score directly for a custom position on the spectrum. 0 is far-left, 20 is far-right.
+
+<div id="ideo-container"></div>
+
+- @ideo_adjust: Refresh
+- @challenge: Back
+
+
+@coalition_blocks_adjust
+new-page: true
+on-arrival: {!
+if (!Q.coalition_blocks) { Q.coalition_blocks = {}; }
+if (!Q.cbKeysCache) {
+    // Snapshot the key list once so toggling doesn't reorder the UI.
+    Q.cbKeysCache = Object.keys(Q.coalition_blocks).sort();
+}
+!}
+on-display: {!
+var holder = document.getElementById('cb-container');
+if (!holder) { return; }
+
+var html = '';
+for (var i = 0; i < Q.cbKeysCache.length; i++) {
+    var key = Q.cbKeysCache[i];
+    var val = !!Q.coalition_blocks[key];
+    var niceLabel = key.replace(/_/g, ' vs ');
+    html += '<div class="cb-row" data-key="' + key + '" style="margin:6px 0;padding:6px;border-bottom:1px solid #444;display:flex;justify-content:space-between;align-items:center;">';
+    html += '<span>' + niceLabel + '</span>';
+    html += '<button type="button" class="cb-toggle" style="min-width:70px;">' + (val ? 'BLOCKED' : 'open') + '</button>';
+    html += '</div>';
+}
+holder.innerHTML = html || '<em>No coalition block flags defined.</em>';
+
+var rows = holder.querySelectorAll('.cb-row');
+rows.forEach(function(row) {
+    var key = row.getAttribute('data-key');
+    var btn = row.querySelector('.cb-toggle');
+    btn.addEventListener('click', function() {
+        var newVal = !Q.coalition_blocks[key];
+        Q.coalition_blocks[key] = newVal;
+        btn.textContent = newVal ? 'BLOCKED' : 'open';
+    });
+});
+!}
+
+= Adjust Coalition Blocks
+
+Toggle which party pairings refuse to form a coalition together, regardless of relation score. "BLOCKED" means that pairing will never ally; "open" means it's allowed if relations otherwise permit it.
+
+<div id="cb-container"></div>
+
+- @coalition_blocks_adjust: Refresh
+- @challenge: Back
