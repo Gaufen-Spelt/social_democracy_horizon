@@ -22,7 +22,8 @@ The Iron Front is our new antifascist coordination front, consisting of the SPD,
 
 @defense
 subtitle: -[+ rb_militarization_cost +] resources
-choose-if: resources >= rb_militarization_cost
+choose-if: resources >= rb_militarization_cost and pacifism <= 7
+unavailable-subtitle: [? if resources < rb_militarization_cost: Not enough resources. ?][? if pacifism > 7: Our party's pacifist convictions are too strong to support further militarization. ?]
 on-arrival: resources -= rb_militarization_cost; rb_strength += 50; rb_militancy += 0.05; z_relation -= 5 if historical_mode
 
 The Iron Front rallies for the militant defense of the republic against the fascist paramilitaries, strengthening the Reichsbanner.
