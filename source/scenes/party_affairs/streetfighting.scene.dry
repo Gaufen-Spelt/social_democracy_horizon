@@ -50,14 +50,14 @@ We have increased training and purchased more armaments for the Reichsbanner.
 
 @if_training
 view-if: iron_front_formed == 1
-on-arrival: rb_militancy += 0.03; rb_strength += 200; sa_strength += 50; iron_front_progress += 1
+on-arrival: rb_militancy += 0.03; rb_strength += 200; sa_strength += 50; iron_front_progress += 1; pacifism -= 2
 max-visits: 5
 
 As part of the Iron Front, we are increasing coordination between the Reichsbanner and the unions, and many union members want to become more involved.
 
 @prussian_police_training
 view-if: spd_prussia == 1 and prussian_police_loyalty > 0.7
-on-arrival: rb_militancy += 0.05; sa_strength += 50; prussian_police_training += 1
+on-arrival: rb_militancy += 0.05; sa_strength += 50; prussian_police_training += 1; pacifism -= 1
 
 The loyal sections of the Prussian police can help train the Reichsbanner.
 
@@ -81,7 +81,7 @@ We have made at least a temporary truce with the KPD, so that our respective par
 view-if: rb_sh_front = 1 and dnvp_relation >= 30 and sh_strength > 200
 choose-if: kpd_relation < 20 and rfb_strength * rfb_militancy > rb_strength * rb_militancy
 unavailable-subtitle: The conditions for such an arrangement are not present — either the RFB threat is insufficient or relations with the KPD are not hostile enough to justify it.
-on-arrival: sh_strength += 50; rb_strength += 50; dnvp_relation += 8; kpd_relation -= 10; z_relation -= 5; strife += 1; neorevisionist_dissent += 8; left_dissent += 5; center_dissent += 3; labor_dissent += 5
+on-arrival: sh_strength += 50; rb_strength += 50; dnvp_relation += 8; kpd_relation -= 10; z_relation -= 5; strife += 1; neorevisionist_dissent += 8; left_dissent += 5; center_dissent += 3; labor_dissent += 5; pacifism -= 1
 
 A quiet arrangement has been reached with Seldte and Duesterberg of the Stahlhelm.
 
