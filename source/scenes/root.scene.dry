@@ -4221,7 +4221,7 @@ for (var i = 0; i < Q.padjParties.length; i++) {
     html += '<strong>' + label + '</strong>';
     html += '<span class="padj-val">' + val.toFixed(2) + '%</span>';
     html += '</div>';
-    html += '<input type="range" class="padj-slider" min="-100" max="100" step="0.01" value="' + val + '" style="width:100%;">';
+    html += '<input type="range" class="padj-slider" min="0" max="10" step="0.01" value="' + val + '" style="width:100%;">';
     html += '<div style="text-align:right;margin-top:4px;"><a href="#" class="padj-drill" style="font-size:0.85em;">Class breakdown &rarr;</a></div>';
     html += '</div>';
 }
@@ -4238,8 +4238,8 @@ rows.forEach(function(row) {
     slider.addEventListener('input', function() {
         var v = parseFloat(slider.value);
         if (isNaN(v)) { v = 0; }
-        if (v < -100) { v = -100; }
-        if (v > 100) { v = 100; }
+        if (v < 0) { v = 0; }
+        if (v > 10) { v = 10; }
         Q[pid + '_adjustment'] = v;
         valSpan.textContent = v.toFixed(2) + '%';
         // This slider is the only way to add these custom/minor
@@ -4263,7 +4263,7 @@ rows.forEach(function(row) {
 
 = Adjust Party Support
 
-Fine-tune each active party's national vote share and, if you drill in, its support by social class. Values are clamped between -100 and 100. Only parties currently active in your game (added via the Party Selector, or vanilla parties that have not been banned) appear below.
+Fine-tune each active party's national vote share and, if you drill in, its support by social class. Values are clamped between 0 and 10. Only parties currently active in your game (added via the Party Selector, or vanilla parties that have not been banned) appear below.
 
 <div id="padj-container"></div>
 
@@ -4297,7 +4297,7 @@ for (var ci = 0; ci < Q.padjClasses.length; ci++) {
     html += '<strong>' + niceLabel + '</strong>';
     html += '<span class="padjc-val">' + val.toFixed(2) + '%</span>';
     html += '</div>';
-    html += '<input type="range" class="padjc-slider" min="-100" max="100" step="0.01" value="' + val + '" style="width:100%;">';
+    html += '<input type="range" class="padjc-slider" min="0" max="10" step="0.01" value="' + val + '" style="width:100%;">';
     html += '</div>';
 }
 holder.innerHTML = html;
@@ -4311,8 +4311,8 @@ rows.forEach(function(row) {
     slider.addEventListener('input', function() {
         var v = parseFloat(slider.value);
         if (isNaN(v)) { v = 0; }
-        if (v < -100) { v = -100; }
-        if (v > 100) { v = 100; }
+        if (v < 0) { v = 0; }
+        if (v > 10) { v = 10; }
         Q[key] = v;
         valSpan.textContent = v.toFixed(2) + '%';
         if (Q.padjCustomParties && Q.padjCustomParties.indexOf(pid) !== -1) {
