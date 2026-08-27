@@ -26,11 +26,10 @@ on-arrival: resources -= 1; france_relation += 1; britain_relation += 2; reformi
 The socialists of France and Britain can influence their governments to be friendlier towards Germany. Hopefully they will reduce our reparations burden.
 
 @austria
-subtitle: -1 resources [? if austrian_parliament_seen and not austrian_civil_war_seen: - We will also help the Austrians oppose their dictatorship. ?]
+subtitle: -1 resources [? if pacifism >= 7: - Our pacifist convictions will blunt the benefits of this cooperation. ?][? if austrian_parliament_seen and not austrian_civil_war_seen: - We will also help the Austrians oppose their dictatorship. ?]
 choose-if: resources >= 1
 unavailable-subtitle: Not enough resources.
-audio: shuffle music/communist/workers_of_vienna_normalized.mp3
-on-arrival: left_strength += 5; radicalization += 1; rb_militancy += 0.02; resources -= 1; austria_relation += 1; sdapo_strength += 1 if austrian_parliament_seen = 1
+on-arrival: left_strength += 5; radicalization += 1; rb_militancy += 0.02; resources -= 1; austria_relation += 1; sdapo_strength += 1 if austrian_parliament_seen = 1; left_strength -= 4 if pacifism >= 7; radicalization -= 1 if pacifism >= 7; rb_militancy -= 0.015 if pacifism >= 7; sdapo_strength -= 1 if (pacifism >= 7 and austrian_parliament_seen = 1)
 
 Our Reichsbanner can learn much in paramilitary organization and training from the Austrian Republikanischer Schutzbund, the paramilitary branch of the Austrian social democrats. [? if austrian_parliament_seen and not austrian_civil_war_seen: We are also helping the Austrian Social Democratic Worker's Party build up their resources in preparation for a future struggle, legally and illegally. ?]
 
