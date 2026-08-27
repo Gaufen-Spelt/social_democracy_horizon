@@ -4334,10 +4334,166 @@ rows.forEach(function(row) {
 - @party_adjust: Back to Party List
 
 
+@ideo_adjust
+new-page: true
+on-arrival: {!
+if (!Q.padjParties) {
+    Q.padjParties = [
+        ['spd','SPD'], ['kpd','KPD'], ['z','Z'], ['bvp','BVP'], ['ddp','DDP'],
+        ['dvp','DVP'], ['dnvp','DNVP'], ['nsdap','NSDAP'], ['wp','WP'],
+        ['bb','BB'], ['dhp','DHP'], ['csrp','CSRP'], ['vrp','VRP'],
+        ['aspd','ASPD'], ['dtsp','DTSP'], ['rlb','RLB'], ['cnbl','CNBL'],
+        ['sapd','SAPD'], ['srpd','SRPD'], ['csvd','CSVD'], ['kvp','KVP'],
+        ['dvfp','DVFP'], ['hl','HL'], ['kpo','KPO'], ['vnr','VNR'],
+        ['sl','SL'], ['lb','LB'], ['rdp','RDP'], ['sls','SLS'],
+        ['cvp','CVP'], ['dbp','DBP'], ['dsbp','DSBP'], ['dnf','DNF'],
+        ['faud','FAUD'], ['kapd','KAPD'], ['other','Other'], ['uspd','USPD'], ['pp','PP'], ['gsrn','GSRN']
+    ];
+}
+if (!Q.padjCustomParties) {
+    Q.padjCustomParties = [
+        'sapd','srpd','csvd','kvp','dvfp','cnbl','bb','dhp','vrp','csrp',
+        'aspd','hl','kpo','vnr','sl','lb','rdp','sls','cvp','dtsp','dbp',
+        'dsbp','dnf','faud','kapd','rlb', 'pp', 'uspd', 'gsrn'
+    ];
+}
 
+// Mirrors the IDEO_KEYWORDS table used by post_event's scorer, so the
+// dropdown's labels match what the simulation actually recognizes.
+// Presentation only -- the real score is computed live each tick by
+// post_event from the chosen label plus _ideo_override (see the
+// post_event patch: ideoScoreWithOverride()).
+Q.ideoOptions = [
+    ['Council Communism', 0],
+    ['Marxism-Leninism', 1],
+    ['Revolutionary Socialism', 2],
+    ['Left-Wing Socialism', 3],
+    ['Social Democracy (Revolutionary)', 3],
+    ['Social Democracy (Center Marxist)', 4],
+    ['Christian Socialism', 7],
+    ['Social Democracy (Reformist)', 6],
+    ['Social Democracy', 6],
+    ['Laborism', 7],
+    ['Social Republicanism', 7],
+    ['Social Democracy (Neorevisionist)', 8],
+    ['Right-Wing Social Democracy', 8],
+    ['Catholic Laborism', 10],
+    ['Social Liberalism', 9],
+    ['Catholic Tent', 12],
+    ['Liberal Agrarianism', 12],
+    ['Middle-Class Interest', 13],
+    ['Corporatism', 15],
+    ['Christian Conservatism', 14],
+    ['Bavarian Conservatism', 13],
+    ['Protestant Social Conservatism', 13],
+    ['Moderate Conservatism', 14],
+    ['National Liberalism', 14],
+    ['Hanoverian Agrarianism', 15],
+    ['Hanseatic Agrarian Conservatism', 15],
+    ['Völkisch Liberalism', 16],
+    ['Populist Agrarian Conservatism', 16],
+    ['Agrarian Conservatism', 17],
+    ['Social Corporatism', 16],
+    ['National Conservatism', 18],
+    ['National Socialism', 20],
+    ['Völkisch Nationalism', 20]
+];
+!}
+on-display: {!
+var holder = document.getElementById('ideo-container');
+if (!holder) { return; }
 
+function isActive(pid) {
+    var isCustom = Q.padjCustomParties.indexOf(pid) !== -1;
+    return isCustom
+        ? (Q['custom_party_' + pid] === 1 && !Q[pid + '_banned'])
+        : (Q['custom_party_' + pid] !== 0 && !Q[pid + '_banned']);
+}
 
+// Case/whitespace-insensitive match, so labels already set by other
+// game code (which may differ slightly in casing) still pre-select
+// correctly in the dropdown instead of silently falling to placeholder.
+function normLabel(s) {
+    return (s || '').toString().trim().toLowerCase();
+}
 
+var html = '';
+for (var i = 0; i < Q.padjParties.length; i++) {
+    var pid = Q.padjParties[i][0];
+    var label = Q.padjParties[i][1];
+    if (!isActive(pid)) { continue; }
+
+    var currentLabel = Q[pid + '_ideology'] || 'Unset';
+    var override = Q[pid + '_ideo_override'];
+    if (override === undefined || override === null || isNaN(override)) { override = 0; }
+    var currentScore = Q[pid + '_ideo_score'];
+    if (currentScore === undefined || currentScore === null || isNaN(currentScore)) { currentScore = 10; }
+
+    var selectedIdx = -1;
+    for (var o2 = 0; o2 < Q.ideoOptions.length; o2++) {
+        if (normLabel(Q.ideoOptions[o2][0]) === normLabel(currentLabel)) { selectedIdx = o2; break; }
+    }
+
+    html += '<div class="ideo-row" data-pid="' + pid + '" style="margin:12px 0;padding:8px;border-bottom:1px solid #444;">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;">';
+    html += '<strong>' + label + '</strong>';
+    html += '<span class="ideo-current">' + currentScore.toFixed(0) + ' / 20 (current)</span>';
+    html += '</div>';
+    html += '<select class="ideo-select" style="width:100%;margin:6px 0;">';
+    html += '<option value="-1"' + (selectedIdx === -1 ? ' selected' : '') + '>-- ' + currentLabel + ' --</option>';
+    for (var o3 = 0; o3 < Q.ideoOptions.length; o3++) {
+        html += '<option value="' + o3 + '"' + (o3 === selectedIdx ? ' selected' : '') + '>' + Q.ideoOptions[o3][0] + ' (base ' + Q.ideoOptions[o3][1] + ')</option>';
+    }
+    html += '</select>';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;">';
+    html += '<span>Override adjustment:</span>';
+    html += '<span class="ideo-override-val">' + (override > 0 ? '+' : '') + override.toFixed(0) + '</span>';
+    html += '</div>';
+    html += '<input type="range" class="ideo-override-slider" min="-10" max="10" step="1" value="' + override + '" style="width:100%;">';
+    html += '<div style="font-size:0.8em;opacity:0.75;margin-top:2px;">Added to the label\'s base score every turn, then clamped 0&ndash;20. Set to 0 to remove.</div>';
+    html += '</div>';
+}
+holder.innerHTML = html || '<em>No active parties. Add some in the Party Selector first.</em>';
+
+var rows = holder.querySelectorAll('.ideo-row');
+rows.forEach(function(row) {
+    var pid = row.getAttribute('data-pid');
+    var select = row.querySelector('.ideo-select');
+    var overrideSlider = row.querySelector('.ideo-override-slider');
+    var overrideVal = row.querySelector('.ideo-override-val');
+    var currentSpan = row.querySelector('.ideo-current');
+
+    select.addEventListener('change', function() {
+        var idx = parseInt(select.value, 10);
+        if (idx < 0 || isNaN(idx)) { return; }
+        var chosen = Q.ideoOptions[idx];
+        // Source of truth: post_event recomputes _ideo_score from this
+        // label (plus _ideo_override) every tick.
+        Q[pid + '_ideology'] = chosen[0];
+        var ov = Q[pid + '_ideo_override'] || 0;
+        var preview = Math.max(0, Math.min(20, chosen[1] + ov));
+        currentSpan.textContent = preview.toFixed(0) + ' / 20 (current)';
+    });
+
+    overrideSlider.addEventListener('input', function() {
+        var v = parseInt(overrideSlider.value, 10);
+        if (isNaN(v)) { v = 0; }
+        if (v < -10) { v = -10; }
+        if (v > 10) { v = 10; }
+        Q[pid + '_ideo_override'] = v;
+        overrideVal.textContent = (v > 0 ? '+' : '') + v.toFixed(0);
+    });
+});
+!}
+
+= Adjust Party Ideologies
+
+Pick each active party's ideology label from the list the simulation recognizes -- this is what the game reads every turn to compute the party's left/right score. Use the override slider to nudge that score without changing the label (e.g. a more radical or moderate wing of the same ideology); it's re-applied on top of the label's base score every turn, so it persists for the rest of the game.
+
+<div id="ideo-container"></div>
+
+- @ideo_adjust: Refresh
+- @challenge: Back
 
 
 @rel_adjust
@@ -4364,6 +4520,52 @@ if (!Q.padjCustomParties) {
     ];
 }
 if (!Q.party_relations) { Q.party_relations = {}; }
+
+// SPD's relation to a given party is mirrored, both directions, from a
+// single scalar driver variable inside updatePartyRelations() in
+// post_event (e.g. Q.z_relation drives BOTH party_relations.SPD.Z and
+// party_relations.Z.SPD every tick). Editing the matrix cell directly
+// does nothing lasting since post_event overwrites it from the scalar
+// each tick, so the editor edits the scalar instead. Parties not listed
+// here have no dedicated scalar in post_event and fall through to the
+// raw matrix cell, which nothing currently overwrites for the SPD side.
+Q.spdRelationScalars = {
+    KPD:  'kpd_relation',
+    Z:    'z_relation',
+    DDP:  'ddp_relation',
+    DVP:  'dvp_relation',
+    CSRP: 'csrp_relation',
+    DNVP: 'dnvp_relation',
+    KVP:  'kvp_relation',
+    DHP:  'dhp_relation',
+    BB:   'bb_relation',
+    DVFP: 'dvfp_relation',
+    BVP:  'bvp_relation',
+    VRP:  'vrp_relation',
+    WP:   'wp_relation',
+    CNBL: 'cnbl_relation',
+    CSVD: 'csvd_relation',
+    DBP:  'dbp_relation',
+    DSBP: 'dsbp_relation',
+    SAPD: null // driven by a formula (left_strength), not a plain scalar -- not editable here
+};
+
+// Non-SPD pairs that updatePartyRelations() hardcodes every tick from a
+// formula. Editing these in the matrix would be silently overwritten
+// next turn, so they're excluded entirely rather than shown as if they
+// persist. Checked in both directions since some pairs (e.g. Z<->NSDAP)
+// use different formulas per direction but are both hardcoded.
+Q.relLockedPairs = {
+    'DVP-DDP': 1, 'DVP-Z': 1, 'DVP-DNVP': 1, 'DVP-NSDAP': 1,
+    'WP-NSDAP': 1,
+    'CNBL-NSDAP': 1,
+    'CSVD-DNVP': 1,
+    'KVP-DNVP': 1,
+    'DHP-DNVP': 1,
+    'DNVP-Z': 1, 'Z-DNVP': 1, 'Z-NSDAP': 1,
+    'NSDAP-Z': 1, 'NSDAP-BVP': 1, 'BVP-NSDAP': 1,
+    'NSDAP-VRP': 1, 'NSDAP-DVP': 1, 'NSDAP-WP': 1
+};
 !}
 on-display: {!
 var holder = document.getElementById('rel-container');
@@ -4381,7 +4583,7 @@ for (var i = 0; i < Q.padjParties.length; i++) {
     var pid = Q.padjParties[i][0];
     var label = Q.padjParties[i][1];
     if (!isActive(pid)) { continue; }
-    html += '<div class="rel-row" data-pid="' + pid + '" style="margin:6px 0;padding:6px;border-bottom:1px solid #444;display:flex;justify-content:space-between;align-items:center;">';
+    html += '<div class="rel-row" data-pid="' + pid + '" data-label="' + label + '" style="margin:6px 0;padding:6px;border-bottom:1px solid #444;display:flex;justify-content:space-between;align-items:center;">';
     html += '<strong>' + label + '</strong>';
     html += '<a href="#" class="rel-drill">Edit relations &rarr;</a>';
     html += '</div>';
@@ -4391,10 +4593,18 @@ holder.innerHTML = html || '<em>No active parties. Add some in the Party Selecto
 var rows = holder.querySelectorAll('.rel-row');
 rows.forEach(function(row) {
     var pid = row.getAttribute('data-pid');
+    var label = row.getAttribute('data-label');
     var drill = row.querySelector('.rel-drill');
     drill.addEventListener('click', function(e) {
         e.preventDefault();
         Q.padjCurrentRelParty = pid;
+        Q.padjCurrentRelPartyLabel = label;
+        // Consistent with @party_adjust's drill handler: touching a
+        // custom/minor party through any editor screen counts as
+        // "added" for the party-active checker.
+        if (Q.padjCustomParties.indexOf(pid) !== -1) {
+            Q['custom_party_' + pid] = 1;
+        }
         window.dendryUI.dendryEngine.goToScene('root.rel_party');
     });
 });
@@ -4402,7 +4612,7 @@ rows.forEach(function(row) {
 
 = Adjust Inter-Party Relations
 
-Pick a party to edit how it feels about every other active party. Values run 0 (hostile) to 100 (closely aligned). Editing here overwrites the game's default relation formulas for that pairing.
+Pick a party to edit its relations to other active parties. Only pairings that actually persist turn-to-turn are shown; some pairings are recalculated by the simulation every turn from other game state and are left out, since editing them would not stick.
 
 <div id="rel-container"></div>
 
@@ -4417,9 +4627,12 @@ if (!holder) { return; }
 
 var pid = Q.padjCurrentRelParty;
 var PID = pid.toUpperCase();
-var label = pid;
-for (var i = 0; i < Q.padjParties.length; i++) {
-    if (Q.padjParties[i][0] === pid) { label = Q.padjParties[i][1]; break; }
+var label = Q.padjCurrentRelPartyLabel;
+if (!label) {
+    label = pid;
+    for (var i = 0; i < Q.padjParties.length; i++) {
+        if (Q.padjParties[i][0] === pid) { label = Q.padjParties[i][1]; break; }
+    }
 }
 
 var titleEl = document.getElementById('relp-title');
@@ -4435,6 +4648,7 @@ function isActive(otherPid) {
 if (!Q.party_relations[PID]) { Q.party_relations[PID] = {}; }
 
 var html = '';
+var skippedAny = false;
 for (var j = 0; j < Q.padjParties.length; j++) {
     var otherPid = Q.padjParties[j][0];
     var otherLabel = Q.padjParties[j][1];
@@ -4442,10 +4656,40 @@ for (var j = 0; j < Q.padjParties.length; j++) {
     if (otherPid === pid) { continue; }
     if (!isActive(otherPid)) { continue; }
 
-    var current = Q.party_relations[PID][OTHER];
+    var isSpdPair = (PID === 'SPD' || OTHER === 'SPD');
+    var scalarKey = null;
+    var mode = 'matrix'; // 'scalar' | 'matrix' | 'locked'
+
+    if (isSpdPair) {
+        var otherOfPair = (PID === 'SPD') ? OTHER : PID;
+        if (Q.spdRelationScalars.hasOwnProperty(otherOfPair)) {
+            scalarKey = Q.spdRelationScalars[otherOfPair];
+            mode = scalarKey ? 'scalar' : 'locked';
+        } else {
+            mode = 'matrix';
+        }
+    } else {
+        var pairKeyA = PID + '-' + OTHER;
+        var pairKeyB = OTHER + '-' + PID;
+        if (Q.relLockedPairs[pairKeyA] || Q.relLockedPairs[pairKeyB]) {
+            mode = 'locked';
+        }
+    }
+
+    if (mode === 'locked') {
+        skippedAny = true;
+        continue;
+    }
+
+    var current;
+    if (mode === 'scalar') {
+        current = Q[scalarKey];
+    } else {
+        current = Q.party_relations[PID][OTHER];
+    }
     if (current === undefined || current === null || isNaN(current)) { current = 25; }
 
-    html += '<div class="relp-row" data-other="' + OTHER + '" style="margin:10px 0;padding:8px;border-bottom:1px solid #444;">';
+    html += '<div class="relp-row" data-other="' + OTHER + '" data-mode="' + mode + '" data-scalar="' + (scalarKey || '') + '" style="margin:10px 0;padding:8px;border-bottom:1px solid #444;">';
     html += '<div style="display:flex;justify-content:space-between;align-items:center;">';
     html += '<strong>' + otherLabel + '</strong>';
     html += '<span class="relp-val">' + Number(current).toFixed(0) + '</span>';
@@ -4453,11 +4697,16 @@ for (var j = 0; j < Q.padjParties.length; j++) {
     html += '<input type="range" class="relp-slider" min="0" max="100" step="1" value="' + current + '" style="width:100%;">';
     html += '</div>';
 }
-holder.innerHTML = html || '<em>No other active parties to relate to.</em>';
+holder.innerHTML = html || '<em>No editable relations for this party.</em>';
+if (skippedAny) {
+    holder.innerHTML += '<div style="opacity:0.7;font-size:0.85em;margin-top:10px;">Some pairings for this party are recalculated by the simulation each turn and are not shown, since edits to them would not persist.</div>';
+}
 
 var rows = holder.querySelectorAll('.relp-row');
 rows.forEach(function(row) {
     var otherKey = row.getAttribute('data-other');
+    var mode = row.getAttribute('data-mode');
+    var scalarKey = row.getAttribute('data-scalar');
     var slider = row.querySelector('.relp-slider');
     var valSpan = row.querySelector('.relp-val');
     slider.addEventListener('input', function() {
@@ -4465,13 +4714,17 @@ rows.forEach(function(row) {
         if (isNaN(v)) { v = 0; }
         if (v < 0) { v = 0; }
         if (v > 100) { v = 100; }
-        Q.party_relations[PID][otherKey] = v;
+        if (mode === 'scalar' && scalarKey) {
+            Q[scalarKey] = v;
+        } else {
+            Q.party_relations[PID][otherKey] = v;
+        }
         valSpan.textContent = v.toFixed(0);
     });
 });
 !}
 
-= [+ padjCurrentRelParty +] &mdash; Relations to Other Parties
+= [+ padjCurrentRelPartyLabel +] &mdash; Relations to Other Parties
 
 <p id="relp-title"></p>
 <div id="relp-container"></div>
@@ -4480,151 +4733,11 @@ rows.forEach(function(row) {
 - @rel_adjust: Back to Party List
 
 
-@ideo_adjust
-new-page: true
-on-arrival: {!
-if (!Q.padjParties) {
-    Q.padjParties = [
-        ['spd','SPD'], ['kpd','KPD'], ['z','Z'], ['bvp','BVP'], ['ddp','DDP'],
-        ['dvp','DVP'], ['dnvp','DNVP'], ['nsdap','NSDAP'], ['wp','WP'],
-        ['bb','BB'], ['dhp','DHP'], ['csrp','CSRP'], ['vrp','VRP'],
-        ['aspd','ASPD'], ['dtsp','DTSP'], ['rlb','RLB'], ['cnbl','CNBL'],
-        ['sapd','SAPD'], ['srpd','SRPD'], ['csvd','CSVD'], ['kvp','KVP'],
-        ['dvfp','DVFP'], ['hl','HL'], ['kpo','KPO'], ['vnr','VNR'],
-        ['sl','SL'], ['lb','LB'], ['rdp','RDP'], ['sls','SLS'],
-        ['cvp','CVP'], ['dbp','DBP'], ['dsbp','DSBP'], ['dnf','DNF'],
-        ['faud','FAUD'], ['kapd','KAPD'], ['other','Other'], ['uspd','USPD'], ['pp','PP'], ['gsrn','GSRN']
-    ];
-}
-if (!Q.padjCustomParties) {
-    Q.padjCustomParties = [
-        'sapd','srpd','csvd','kvp','dvfp','cnbl','bb','dhp','vrp','csrp',
-        'aspd','hl','kpo','vnr','sl','lb','rdp','sls','cvp','dtsp','dbp',
-        'dsbp','dnf','faud','kapd','rlb', 'pp', 'uspd', 'gsrn'
-    ];
-}
-
-// Same named-ideology -> score table used by the auto ideology scorer,
-// exposed here so the dropdown can present labels and snap the score.
-Q.ideoOptions = [
-    ['Council Communism', 0],
-    ['Marxism-Leninism', 1],
-    ['Revolutionary Socialism', 2],
-    ['Left-Wing Socialism', 3],
-    ['Social Democracy (Revolutionary)', 3],
-    ['Social Democracy (Center Marxist)', 4],
-    ['Christian Socialism', 6],
-    ['Social Democracy (Reformist)', 6],
-    ['Social Democracy', 6],
-    ['Laborism', 7],
-    ['Social Republicanism', 7],
-    ['Social Democracy (Neorevisionist)', 8],
-    ['Right-Wing Social Democracy', 8],
-    ['Social Liberalism', 10],
-    ['Ideology Unknown / Centrist', 10],
-    ['Catholic Tent', 12],
-    ['Liberal Agrarianism', 12],
-    ['Middle-Class Interest', 13],
-    ['Polish Interests', 12],
-    ['Bavarian Conservatism', 13],
-    ['Protestant Social Conservatism', 13],
-    ['Moderate Conservatism', 14],
-    ['National Liberalism', 15],
-    ['Hanoverian Agrarianism', 15],
-    ['Hanseatic Agrarian Conservatism', 15],
-    ['Völkisch Liberalism', 16],
-    ['Social Corporatism', 16],
-    ['Agrarian Conservatism', 17],
-    ['National Conservatism', 18],
-    ['Revolutionary Nationalism', 0],
-    ['National Socialism', 20],
-    ['Völkisch Nationalism', 20]
-];
-!}
-on-display: {!
-var holder = document.getElementById('ideo-container');
-if (!holder) { return; }
-
-function isActive(pid) {
-    var isCustom = Q.padjCustomParties.indexOf(pid) !== -1;
-    return isCustom
-        ? (Q['custom_party_' + pid] === 1 && !Q[pid + '_banned'])
-        : (Q['custom_party_' + pid] !== 0 && !Q[pid + '_banned']);
-}
-
-var optionsHtml = '';
-for (var o = 0; o < Q.ideoOptions.length; o++) {
-    optionsHtml += '<option value="' + o + '">' + Q.ideoOptions[o][0] + ' (' + Q.ideoOptions[o][1] + ')</option>';
-}
-
-var html = '';
-for (var i = 0; i < Q.padjParties.length; i++) {
-    var pid = Q.padjParties[i][0];
-    var label = Q.padjParties[i][1];
-    if (!isActive(pid)) { continue; }
-
-    var scoreKey = pid + '_ideo_score';
-    var currentScore = Q[scoreKey];
-    if (currentScore === undefined || currentScore === null || isNaN(currentScore)) { currentScore = 10; }
-
-    html += '<div class="ideo-row" data-pid="' + pid + '" style="margin:12px 0;padding:8px;border-bottom:1px solid #444;">';
-    html += '<div style="display:flex;justify-content:space-between;align-items:center;">';
-    html += '<strong>' + label + '</strong>';
-    html += '<span class="ideo-val">' + Number(currentScore).toFixed(0) + ' / 20</span>';
-    html += '</div>';
-    html += '<div style="margin:6px 0;"><em>' + (Q[pid + '_ideology'] || 'Unset') + '</em></div>';
-    html += '<select class="ideo-select" style="width:100%;margin-bottom:6px;"><option value="-1">-- pick named ideology --</option>' + optionsHtml + '</select>';
-    html += '<input type="range" class="ideo-slider" min="0" max="20" step="1" value="' + currentScore + '" style="width:100%;">';
-    html += '</div>';
-}
-holder.innerHTML = html || '<em>No active parties. Add some in the Party Selector first.</em>';
-
-var rows = holder.querySelectorAll('.ideo-row');
-rows.forEach(function(row) {
-    var pid = row.getAttribute('data-pid');
-    var select = row.querySelector('.ideo-select');
-    var slider = row.querySelector('.ideo-slider');
-    var valSpan = row.querySelector('.ideo-val');
-    var nameDiv = row.querySelector('em');
-
-    select.addEventListener('change', function() {
-        var idx = parseInt(select.value, 10);
-        if (idx < 0 || isNaN(idx)) { return; }
-        var chosen = Q.ideoOptions[idx];
-        Q[pid + '_ideology'] = chosen[0];
-        Q[pid + '_ideo_score'] = chosen[1];
-        slider.value = chosen[1];
-        valSpan.textContent = chosen[1].toFixed(0) + ' / 20';
-        nameDiv.textContent = chosen[0];
-    });
-
-    slider.addEventListener('input', function() {
-        var v = parseInt(slider.value, 10);
-        if (isNaN(v)) { v = 0; }
-        if (v < 0) { v = 0; }
-        if (v > 20) { v = 20; }
-        Q[pid + '_ideo_score'] = v;
-        valSpan.textContent = v.toFixed(0) + ' / 20';
-    });
-});
-!}
-
-= Adjust Party Ideologies
-
-Set each active party's ideology label (which auto-snaps its 0&ndash;20 score) or drag the score directly for a custom position on the spectrum. 0 is far-left, 20 is far-right.
-
-<div id="ideo-container"></div>
-
-- @ideo_adjust: Refresh
-- @challenge: Back
-
-
 @coalition_blocks_adjust
 new-page: true
 on-arrival: {!
 if (!Q.coalition_blocks) { Q.coalition_blocks = {}; }
 if (!Q.cbKeysCache) {
-    // Snapshot the key list once so toggling doesn't reorder the UI.
     Q.cbKeysCache = Object.keys(Q.coalition_blocks).sort();
 }
 !}
@@ -4658,7 +4771,7 @@ rows.forEach(function(row) {
 
 = Adjust Coalition Blocks
 
-Toggle which party pairings refuse to form a coalition together, regardless of relation score. "BLOCKED" means that pairing will never ally; "open" means it's allowed if relations otherwise permit it.
+Toggle which party pairings refuse to form a coalition together, regardless of relation score. "BLOCKED" means that pairing will never ally; "open" means it's allowed if relations otherwise permit it. Note two things: first, "A vs B" and "B vs A" can appear as separate rows and are not always mirrors of each other -- the simulation computes some pairs differently depending on direction, so both are shown. Second, post_event's updatePartyRelations() rebuilds most of these keys every turn from other game state (nazi_urgency, dnvp_line, etc.), so most toggles here only hold until the next turn passes; this screen mainly affects the very first turn, or keys the simulation doesn't touch.
 
 <div id="cb-container"></div>
 
