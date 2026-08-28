@@ -986,19 +986,27 @@ Q.capital_strike_progress += 0.2;
 
 
     
-// ECONOMIC SIMULATION — v8
-// Changes from v7 (volatility pass):
-//  - DT_SCALE 0.65 -> 1.0 (no longer blanket-throttling every delta)
-//  - dGrowth / dUnemployment mean-reversion made LINEAR instead of
-//    self-dampening (denominator grew with the gap, so worse states
-//    got proportionally weaker restoring force — exactly backwards)
-//  - widened delta caps to match the now-larger single-tick corrections
-//  - depression NAIRU creep capped in duration so it stops raising its
-//    own exit bar indefinitely
-//  - loosened phase hysteresis (ENTER_TICKS, MIN_PHASE_TICKS) so exits
-//    aren't artificially floored once conditions actually clear
-//  - stagflation/overheating reversion terms also de-dampened for
-//    consistency (see SECTION 5 notes)
+// ECONOMIC SIMULATION — v9
+// Changes from v8 (over-correction fix):
+//  - v8's LINEAR mean reversion was too strong near equilibrium: any shock
+//    snapped back to potential growth / NAIRU within ~1 year and then sat
+//    glued there with no drift, which reads as "recovers instantly, then
+//    stagnates forever" — technically not stagnation, just an inert model.
+//  - Replaced with a SOFT reversion curve: weak pull near equilibrium (lets
+//    shocks and noise persist / accumulate instead of snapping back), strong
+//    pull far from equilibrium (still guarantees extreme states resolve in
+//    a few years, not a decade, unlike v7).
+//  - Added a demand-destruction feedback loop (uGap-driven demand_pressure
+//    drain) so a deep shock can sustain itself for 1-3 years before fading,
+//    instead of being purely a single-tick event with no persistence.
+//  - Slightly higher noise variance so the economy doesn't freeze at a
+//    fixed point once it settles near potential/NAIRU.
+//
+// v8 changes retained from v7:
+//  - DT_SCALE 0.65 -> 1.0
+//  - widened delta caps
+//  - depression NAIRU creep capped in duration
+//  - loosened phase hysteresis (ENTER_TICKS, MIN_PHASE_TICKS)
 
 
 // ============================================================
@@ -1208,6 +1216,19 @@ Q.inflation_expectations += expectationSpeed * (Q.inflation - Q.inflation_expect
 if (Q.expectations_anchored) {
     // gentle pull back to the long-run target even if current inflation is off
     Q.inflation_expectations += 0.03 * (BASE_INFLATION_TARGET - Q.inflation_expectations) * dt;
+} else {
+    // v9: even while UNANCHORED, apply a small pull toward target. Previously
+    // this branch did nothing, so once expectations de-anchored they had zero
+    // force pulling them back toward BASE_INFLATION_TARGET — they could only
+    // chase whatever actual inflation was doing. During a deep deflationary
+    // shock this created a closed loop: inflation drags expectations down,
+    // expectations (via the dInflation expectations term) offer no upward
+    // pull back, so both sides settle together far from target with nothing
+    // left to break the lock except the hard clamp. This pull is deliberately
+    // much weaker than the anchored case (0.008 vs 0.03) so de-anchoring still
+    // means something — expectations are still unmoored and will still chase
+    // extreme inflation readily — but it's no longer a perfect trap.
+    Q.inflation_expectations += 0.008 * (BASE_INFLATION_TARGET - Q.inflation_expectations) * dt;
 }
 
 
@@ -1243,13 +1264,41 @@ if (!Q.expectations_anchored) {
 }
 
 const drift = Q.inflation - BASE_INFLATION_TARGET;
-const restoringForce = Math.sign(drift) * 0.03 * Math.pow(Math.abs(drift) / 8, 1.4);
+// v9: restoring-force coefficient raised 0.03 -> 0.08. At extreme drift with
+// elevated unemployment, the old coefficient left this term roughly HALF the
+// size of the Phillips-curve term (0.05 * -uGap), so inflation could get
+// pushed to the -15 clamp and just sit there — the model's own dynamics
+// never actually pulled it back, only the hard floor stopped the fall. This
+// keeps the same curve shape (still gentle for ordinary drift) but ensures
+// it dominates the runaway terms once drift is large, so deep deflation/
+// inflation genuinely resolves instead of parking at the clamp.
+const restoringForce = Math.sign(drift) * 0.08 * Math.pow(Math.abs(drift) / 8, 1.4);
 dInflation -= restoringForce;
 
 dInflation += (Math.random() - 0.5) * 0.03;
 
 dInflation = Math.max(-2.0, Math.min(6.0, dInflation));
 
+
+// ---- SOFT REVERSION HELPER ----
+// Weak pull when the gap is small (lets noise/shocks persist near equilibrium
+// instead of snapping back every tick), strong pull once the gap exceeds
+// SOFT_KNEE (so extreme states — real depressions, real overheating — still
+// resolve in a few years rather than getting stuck the way v7 did).
+//
+// v9 tuning note: the original 0.3x near-equilibrium multiplier was too weak
+// to overcome persistent external drags (deflation drag on growth, Phillips
+// term on inflation) once the economy settled a few points off target —
+// those drags don't decay, so a soft-reversion pull that's *also* weak at
+// moderate gaps left growth/unemployment/inflation parked 3-4 points off
+// target indefinitely instead of continuing to close the gap. Raised to 0.45x
+// so it still allows shocks to persist and breathe, but reliably wins against
+// steady-state drags at moderate distances instead of only at extremes.
+const SOFT_KNEE = 3.0;
+function softReversion(gap, baseRate, kneeRate) {
+    const extra = Math.max(0, Math.abs(gap) - SOFT_KNEE) * kneeRate;
+    return -Math.sign(gap) * (baseRate * Math.abs(gap) * 0.45 + extra);
+}
 
 // ---- dUNEMPLOYMENT ----
 // Okun's law: growth below potential raises unemployment, above potential lowers it.
@@ -1260,24 +1309,44 @@ dUnemployment -= okunsCoeff * outputGap / (1 + Math.abs(outputGap) * 0.2);
 // Demand pressure (policy) directly affects jobs
 dUnemployment -= Q.demand_pressure * 0.4;
 
-// v8: mean reversion toward NAIRU made LINEAR (was uGap / (1 + |uGap|*0.1),
-// which diluted its own pull the further unemployment sat from NAIRU —
-// exactly backwards, since larger gaps should correct harder, not softer).
-dUnemployment -= 0.08 * uGap;
+// v9: mean reversion toward NAIRU now uses the soft curve — gentle near NAIRU
+// so unemployment doesn't get glued to it, strong once uGap is large so
+// depression-level unemployment still comes back down within a few years.
+dUnemployment += softReversion(uGap, 0.08, 0.03);
 
-dUnemployment += (Math.random() - 0.5) * 0.015;
-dUnemployment = Math.max(-3.5, Math.min(3.5, dUnemployment)); // was ±2.0, widened for the larger linear pulls
+// v9: demand-destruction feedback — sustained high unemployment above NAIRU
+// suppresses demand, which in turn drags growth. This is what lets a shock
+// stay depressed for 1-3 years instead of being a single-tick event that
+// fades immediately once the initial hit passes.
+//
+// IMPORTANT: this must be an EQUILIBRIUM target, not an unconditional drain.
+// Draining every tick while uGap > 4 (regardless of current demand_pressure)
+// compounds faster than Section 7's exponential decay can remove it, producing
+// an unbounded downward spiral instead of a temporary drag. Instead we pull
+// demand_pressure toward a floor proportional to uGap, so it stops draining
+// once it reaches that floor.
+if (uGap > 4) {
+    // Floor is capped at -2.0 regardless of how large uGap gets — this is a
+    // one-time "demand destruction" drag representing lost confidence/spending,
+    // not a force that scales without limit alongside the crisis it's reacting
+    // to. An unbounded floor here creates a feedback loop that overpowers the
+    // restoring force at any parameterization and spirals to the hard caps.
+    const ddFloor = Math.max(-2.0, -0.15 * (uGap - 4));
+    if (Q.demand_pressure > ddFloor) {
+        Q.demand_pressure += (ddFloor - Q.demand_pressure) * 0.15 * dt;
+    }
+}
+
+dUnemployment += (Math.random() - 0.5) * 0.03; // was 0.015 — more noise so it doesn't freeze at a fixed point
+dUnemployment = Math.max(-3.5, Math.min(3.5, dUnemployment));
 
 
 // ---- dGROWTH ----
 let dGrowth = 0;
 
-// v8: mean reversion toward potential growth made LINEAR (was denominator-
-// dampened by |outputGap|, so a growth of -10 got its restoring force cut
-// by ~65% right when it needed the most pull back toward potential — this
-// was the single biggest contributor to depression lasting over a decade
-// of in-game ticks).
-dGrowth += 0.14 * (POTENTIAL_GROWTH - Q.economic_growth);
+// v9: mean reversion toward potential growth now uses the soft curve —
+// see SOFT REVERSION HELPER above for rationale.
+dGrowth += softReversion(outputGap, 0.14, 0.05);
 
 // Demand and supply pressures move growth directly
 dGrowth += Q.demand_pressure * 0.6;
@@ -1297,8 +1366,8 @@ if (uGap > 0) {
     dGrowth -= Math.min(0.01 * uGap, 1.0);
 }
 
-dGrowth += (Math.random() - 0.5) * 0.02;
-dGrowth = Math.max(-4.5, Math.min(4.5, dGrowth)); // was ±3.0, widened for the larger linear pulls
+dGrowth += (Math.random() - 0.5) * 0.04; // was 0.02 — more noise so it doesn't freeze at a fixed point
+dGrowth = Math.max(-4.5, Math.min(4.5, dGrowth));
 
 
 // ============================================================
@@ -1317,14 +1386,6 @@ Q.economic_growth += dGrowth * dt;
 Q.demand_pressure *= Math.exp(-0.20 * dt);
 Q.supply_pressure *= Math.exp(-0.20 * dt);
 Q.price_pressure  *= Math.exp(-0.25 * dt);
-
-
-Q.inflation              = Math.max(-15, Math.min(1000, Q.inflation));
-Q.unemployed             = Math.max(0,   Math.min(50,   Q.unemployed));
-Q.economic_growth        = Math.max(-20, Math.min(20,   Q.economic_growth));
-Q.inflation_expectations = Math.max(-15, Math.min(1000, Q.inflation_expectations));
-Q.budget = Math.max(-50, Math.min(50, Q.budget));
-Q.budget = Math.round(Q.budget * 100) / 100;
 
 
 // =========================== CABINET ECONOMICAL EFFECTS ====================
@@ -1478,6 +1539,72 @@ if ((Q.wtb_timer || 0) > 0) {
 
 
 
+
+
+
+
+
+
+
+
+
+// ============================================
+// PRESIDENTIAL PATIENCE
+// ============================================
+
+if (Q.presidential_powers == 0 && !Q.government_dismissed) {
+
+    var pp_gov_count = 0;
+    for (var i = 0; i < Q.parties.length; i++) {
+        if (Q[Q.parties[i] + '_in_government'] === 1) pp_gov_count++;
+    }
+
+    if (pp_gov_count > 0 && !Q.emergency_rule) {
+
+        // --- target patience level based on current economic conditions ---
+        var pp_unemp_stress = Math.max(0, (Q.unemployed || 0) - 8);         // 0 at baseline
+        var pp_infl_stress  = Math.abs((Q.inflation || 0) - 2);              // 0 at stable 2%
+        var pp_growth_bonus = Math.max(0, (Q.economic_growth || 0) - 1);     // rewards real growth
+        var pp_growth_stress = Math.max(0, -(Q.economic_growth || 0));      // punishes contraction
+
+        var pp_target = 50;
+        pp_target -= pp_unemp_stress   * 3.0;
+        pp_target -= pp_infl_stress    * 2.0;
+        pp_target -= pp_growth_stress  * 4.0;
+        pp_target += pp_growth_bonus   * 2.0;
+        pp_target = Math.max(0, Math.min(100, pp_target));
+
+        // --- base drift rate, accelerated by how severe current stress is ---
+        var pp_decay_rate = 0.12; // base monthly drift speed
+        if (Q.presidential_cabinet === 1) {
+            pp_decay_rate *= 0.7; // 30% slowdown: this is his own cabinet
+        }
+
+        // crisis multiplier: bad months hit harder, not just settle to a lower target
+        var pp_crisis_multiplier = 1 + (pp_unemp_stress + pp_infl_stress + pp_growth_stress) * 0.02;
+        pp_decay_rate *= pp_crisis_multiplier;
+
+        Q.presidential_patience = (Q.presidential_patience === undefined) ? 50 : Q.presidential_patience;
+
+        // --- compute drift, with a proportional minimum step so it doesn't stall near the target ---
+        var pp_delta = (pp_target - Q.presidential_patience) * pp_decay_rate;
+        var pp_gap = Math.abs(pp_target - Q.presidential_patience);
+        var pp_min_step = Math.max(0.5, pp_gap * 0.05); // scales with distance, never below 0.5
+        if (Math.abs(pp_delta) < pp_min_step && Q.presidential_patience !== pp_target) {
+            pp_delta = pp_min_step * Math.sign(pp_target - Q.presidential_patience);
+        }
+        Q.presidential_patience += pp_delta;
+
+        Q.presidential_patience = Math.max(0, Math.min(100, Q.presidential_patience));
+        Q.presidential_patience = Math.round(Q.presidential_patience * 100) / 100;
+
+        // --- dismissal trigger (edge-triggered: fires once, on crossing to 0) ---
+        if (Q.presidential_patience <= 0) {
+            Q.government_dismissed = 1;
+            Q.government_dismissed_reason = "presidential_patience";
+        }
+    }
+}
 
 
 
@@ -7499,11 +7626,11 @@ for (var i = 0; i < portfolios.length; i++) {
 
 
 
-Q.inflation              = Math.max(-15, Math.min(1000, Q.inflation));
+Q.inflation              = Math.max(-100, Math.min(1000, Q.inflation));
 Q.unemployed             = Math.max(0,   Math.min(50,   Q.unemployed));
-Q.economic_growth        = Math.max(-20, Math.min(20,   Q.economic_growth));
-Q.inflation_expectations = Math.max(-15, Math.min(1000, Q.inflation_expectations));
-Q.budget = Math.max(-60, Math.min(60, Q.budget));
+Q.economic_growth        = Math.max(-100, Math.min(20,   Q.economic_growth));
+Q.inflation_expectations = Math.max(-35, Math.min(1000, Q.inflation_expectations));
+Q.budget = Math.max(-50, Math.min(50, Q.budget));
 Q.budget = Math.round(Q.budget * 100) / 100;
 
 Q.capital_strike_progress = Math.max(0, Math.min(15, Q.capital_strike_progress || 0));
