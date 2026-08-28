@@ -27,7 +27,7 @@ on-departure: {!
 !}
 on-arrival: presidential_patience *= 0.5; economic_growth -= 3; budget -= 2; unemployed += 3; west_relation -= 3; nationalism += 10; socialism += 8; workers_spd -= 3; workers_z -= 3; workers_ddp -= 3; workers_dvp -= 3; workers_other -= 3; pacifism -= 1; pro_republic -= 1; labor_dissent -= 10; left_dissent -= 10; reformist_dissent += 10; young_plan_catastrophy = 1; {!
 window.enableFocusMode()
-window.MusicPlayer.loadFromUrl('music/tranquilite.m4a', 'Tranquilite', { autoplay: true });
+window.MusicPlayer.loadFromUrl('music/tranquilite.mp3', 'Tranquilite', { autoplay: true });
 
 
   var ruhrImages = ["img/events/ruhr1.png", "img/events/ruhr2.png", "img/events/ruhr3.png"];
