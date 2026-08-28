@@ -23,8 +23,6 @@ if (Q.peoples_party >= 1) {
 
 if (Q.country_name = "Weimar Republic" && Q.presidential_powers >= 1) {
     Q.country_name = "German Republic"
-} else {
-    Q.country_name = "Weimar Republic"
 }
 
 Q.country_name_display = Q.country_name || "Weimar Republic";
