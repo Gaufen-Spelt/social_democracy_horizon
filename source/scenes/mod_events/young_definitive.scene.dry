@@ -21,12 +21,41 @@ The Young Plan has managed to be ratified. Now we await to see what happens next
 
 @collapse
 view-if: ((west_relation < 0 and nationalism > 30) or (ruhr_labor > 1 or young_plan_collapse = 1))
-on-arrival: west_relation -= 3; nationalism += 5; socialism += 8; workers_spd -= 3; workers_z -= 3; workers_ddp -= 3; workers_dvp -= 3; workers_other -= 3; pacifism -= 1; pro_republic -= 1; labor_dissent -= 10; left_dissent -= 10; reformist_dissent += 10; young_plan_catastrophy = 1
+on-departure: {!
+  window.disableFocusMode()
+  clearInterval(window._ruhrSliderInterval)
+!}
+on-arrival: presidential_patience *= 0.5; economic_growth -= 3; budget -= 2; unemployed += 3; west_relation -= 3; nationalism += 10; socialism += 8; workers_spd -= 3; workers_z -= 3; workers_ddp -= 3; workers_dvp -= 3; workers_other -= 3; pacifism -= 1; pro_republic -= 1; labor_dissent -= 10; left_dissent -= 10; reformist_dissent += 10; young_plan_catastrophy = 1; {!
+window.enableFocusMode()
+window.MusicPlayer.loadFromUrl('music/tranquilite.m4a', 'Tranquilite', { autoplay: true });
+
+
+  var ruhrImages = ["img/events/ruhr1.png", "img/events/ruhr2.png", "img/events/ruhr3.png"];
+  var ruhrIndex = 0;
+
+  setTimeout(function() {
+    var imgEl = document.getElementById("ruhr-slider-img");
+    if (!imgEl) return;
+
+    clearInterval(window._ruhrSliderInterval);
+    window._ruhrSliderInterval = setInterval(function() {
+      ruhrIndex = (ruhrIndex + 1) % ruhrImages.length;
+      imgEl.src = ruhrImages[ruhrIndex];
+    }, 5000);
+  }, 0);
+
+!}
 achievement: ruhrland
+
+<div id="ruhr-slider" style="width:100%;">
+  <img id="ruhr-slider-img" src="img/events/ruhr1.png" alt="Ruhr is burning" style="width:100%; display:block;">
+</div>
 
 Unfortunately, negotiations have broken down and attempts at implementing the Young Plan has collapsed. The French Government, citing bad faith, has frozen the recall of their military forces and reinforced the Rhineland garrisons. Germany's international standing and the credibility of our goverbment has taken a hit.
 
 [? if president = "Hindenburg": Hindenburg has reportedly has become outraged at this failure to provide the stability he was promised, and the air in the Reichskanzlei is thick with the scent of an impending dismissal. ?]
+
+We have failed the Germany once again...
 
 @resist
 view-if: (reichswehr_strength >= 100 and reichswehr_loyalty > 0.35 and reichswehr_militancy >= 5) and secret_mode and (ruhr_labor >= 2 or young_plan_catastrophy = 1)
