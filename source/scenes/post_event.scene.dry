@@ -7092,7 +7092,7 @@ const IDEO_KEYWORDS = [
     [/social republicanism/i,             7],
 
     // 7 — right social democracy / soft-left liberal
-    [/right-wing social democracy/i,      8],
+    [/right-wing social democracy/i,      12],
     [/catholic laborism/i,                10],
 
     // 10 — center / centrist liberal / cross-class Christian
