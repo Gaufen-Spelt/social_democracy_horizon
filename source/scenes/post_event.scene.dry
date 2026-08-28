@@ -7086,13 +7086,13 @@ const IDEO_KEYWORDS = [
     [/social democracy \(reformist\)/i,          6],  // Reformist
     [/laborism/i,                                7],  // Labor
     [/social republicanism \(neorevisionist\)/i, 8],  // Neorevisionist
+    [/right-wing social democracy/i,      12],
 
     // 5 — mainstream social democracy
     [/social democracy/i,                 6],
     [/social republicanism/i,             7],
 
     // 7 — right social democracy / soft-left liberal
-    [/right-wing social democracy/i,      12],
     [/catholic laborism/i,                10],
 
     // 10 — center / centrist liberal / cross-class Christian
