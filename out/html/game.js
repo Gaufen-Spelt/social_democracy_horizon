@@ -1014,8 +1014,7 @@ function attachFlag(slug, textPrefix, rowClass, imgClass) {
     para.appendChild(flagImg);
 }
 
-attachFlag(Q.flag_slug, '=', 'country-name-row', 'status-flag');
-
+        attachFlag(Q.flag_slug, 'Flag:', 'country-name-row', 'status-flag');
         attachPortrait(Q.president, 'President:', 'president-row', 'status-portrait');
         attachPortrait(Q.chancellor, 'Chancellor:', 'chancellor-row', 'chancellor-portrait');
         attachPortrait(Q.ministerpresident, 'Prussian Minister-President:', 'ministerpresident-row', 'ministerpresident-portrait');
