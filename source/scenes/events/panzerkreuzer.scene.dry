@@ -33,48 +33,64 @@ on-arrival: {!
 Q.panzerkreuzer_a_yes = 0;
 Q.panzerkreuzer_a_no = 0;
 Q.panzerkreuzer_a_abstain = 0;
-Q.panzerkreuzer_a_yes_list = "";
-Q.panzerkreuzer_a_no_list = "";
-Q.panzerkreuzer_a_abstain_list = "";
 
-for Q.parties as Q.party {
-  if (Q.party = "spd") {
-    Q.[Q.party]_pk_vote = Q.spd_pk_vote;
-  } else {
-    Q.score = Q.[Q.party]_ideo_score;
-    if (Q.score <= 9) { Q.[Q.party]_pk_vote = "no"; }
-    else { Q.[Q.party]_pk_vote = "yes"; }
-  }
+Q.panzerkreuzer_a_yes_parties = [];
+Q.panzerkreuzer_a_no_parties = [];
+Q.panzerkreuzer_a_abstain_parties = [];
 
-  Q.seats = Q.[Q.party]_r;
-  Q.label = Q.[Q.party]_name;
+for (var i = 0; i < Q.parties.length; i++) {
+    var party = Q.parties[i];
 
-  if (Q.[Q.party]_pk_vote = "yes") {
-    Q.panzerkreuzer_a_yes += Q.seats;
-    Q.panzerkreuzer_a_yes_list += (Q.panzerkreuzer_a_yes_list = "" ? "" : ", ") + Q.label;
-  } else if (Q.[Q.party]_pk_vote = "no") {
-    Q.panzerkreuzer_a_no += Q.seats;
-    Q.panzerkreuzer_a_no_list += (Q.panzerkreuzer_a_no_list = "" ? "" : ", ") + Q.label;
-  } else {
-    Q.panzerkreuzer_a_abstain += Q.seats;
-    Q.panzerkreuzer_a_abstain_list += (Q.panzerkreuzer_a_abstain_list = "" ? "" : ", ") + Q.label;
-  }
+    if (party === "spd") {
+        Q[party + "_pk_vote"] = Q.spd_pk_vote;
+    } else {
+        var score = Q[party + "_ideo_score"];
+        Q[party + "_pk_vote"] = (score !== undefined && score <= 9) ? "no" : "yes";
+    }
+
+    var seats = Q[party + "_r"] || 0;
+    var label = Q.PARTY_DISPLAY_NAMES && Q.PARTY_DISPLAY_NAMES[party]
+        ? Q.PARTY_DISPLAY_NAMES[party].replace(/^The /, "")
+        : party.toUpperCase();
+
+    if (Q[party + "_pk_vote"] === "yes") {
+        Q.panzerkreuzer_a_yes += seats;
+        Q.panzerkreuzer_a_yes_parties.push(label);
+    } else if (Q[party + "_pk_vote"] === "no") {
+        Q.panzerkreuzer_a_no += seats;
+        Q.panzerkreuzer_a_no_parties.push(label);
+    } else {
+        Q.panzerkreuzer_a_abstain += seats;
+        Q.panzerkreuzer_a_abstain_parties.push(label);
+    }
 }
 
-Q.panzerkreuzer_a_result = (Q.panzerkreuzer_a_yes > Q.panzerkreuzer_a_no) ? "pass" : "fail";
-Q.panzerkreuzer_funded = (Q.panzerkreuzer_a_result = "pass") ? 1 : 0;
-Q.panzerkreuzer_failed = (Q.panzerkreuzer_a_result = "fail") ? 1 : 0;
+Q.panzerkreuzer_a_yes = Math.round(Q.panzerkreuzer_a_yes * 10) / 10;
+Q.panzerkreuzer_a_no = Math.round(Q.panzerkreuzer_a_no * 10) / 10;
+Q.panzerkreuzer_a_abstain = Math.round(Q.panzerkreuzer_a_abstain * 10) / 10;
 
-Q.panzerkreuzer_a_breakdown = "For (" + Q.panzerkreuzer_a_yes + " seats): " + Q.panzerkreuzer_a_yes_list + ". Against (" + Q.panzerkreuzer_a_no + " seats): " + Q.panzerkreuzer_a_no_list + ". Abstaining (" + Q.panzerkreuzer_a_abstain + " seats): " + Q.panzerkreuzer_a_abstain_list + ".";
+var voting_total = Q.panzerkreuzer_a_yes + Q.panzerkreuzer_a_no;
+Q.panzerkreuzer_a_yes_share = voting_total > 0 ? Math.round((Q.panzerkreuzer_a_yes / voting_total) * 1000) / 10 : 0;
+Q.panzerkreuzer_a_no_share = voting_total > 0 ? Math.round((Q.panzerkreuzer_a_no / voting_total) * 1000) / 10 : 0;
+
+Q.panzerkreuzer_a_result = (Q.panzerkreuzer_a_yes > Q.panzerkreuzer_a_no) ? "pass" : "fail";
+Q.panzerkreuzer_funded = (Q.panzerkreuzer_a_result === "pass") ? 1 : 0;
+Q.panzerkreuzer_failed = (Q.panzerkreuzer_a_result === "fail") ? 1 : 0;
+
+Q.panzerkreuzer_a_yes_list = Q.panzerkreuzer_a_yes_parties.length > 0 ? Q.panzerkreuzer_a_yes_parties.join(", ") : "none";
+Q.panzerkreuzer_a_no_list = Q.panzerkreuzer_a_no_parties.length > 0 ? Q.panzerkreuzer_a_no_parties.join(", ") : "none";
+Q.panzerkreuzer_a_abstain_list = Q.panzerkreuzer_a_abstain_parties.length > 0 ? Q.panzerkreuzer_a_abstain_parties.join(", ") : "none";
 !}
 go-to: panzerkreuzer_pass if panzerkreuzer_a_result = "pass"; panzerkreuzer_fail if panzerkreuzer_a_result = "fail"
 
 @panzerkreuzer_pass
 on-arrival: nationalism += 3*(1-dissent); workers_spd -= 3*(1-dissent)
 
-The Reichstag vote is tallied.
+The votes are tallied in the Reichstag.
 
-[+ panzerkreuzer_a_breakdown +]
+**For** ([+ panzerkreuzer_a_yes +] seats, [+ panzerkreuzer_a_yes_share +]%): [+ panzerkreuzer_a_yes_list +]
+**Against** ([+ panzerkreuzer_a_no +] seats, [+ panzerkreuzer_a_no_share +]%): [+ panzerkreuzer_a_no_list +]
+**Abstaining** ([+ panzerkreuzer_a_abstain +] seats): [+ panzerkreuzer_a_abstain_list +]
 
 The measure passes. The ship will be built.
 
@@ -85,8 +101,10 @@ The measure passes. The ship will be built.
 @panzerkreuzer_fail
 on-arrival: nationalism -= 3*(1-dissent); panzerkreuzer_failed = 1; workers_spd += 5*(1-dissent)
 
-The Reichstag vote is tallied.
+The votes are tallied in the Reichstag.
 
-[+ panzerkreuzer_a_breakdown +]
+**For** ([+ panzerkreuzer_a_yes +] seats, [+ panzerkreuzer_a_yes_share +]%): [+ panzerkreuzer_a_yes_list +]
+**Against** ([+ panzerkreuzer_a_no +] seats, [+ panzerkreuzer_a_no_share +]%): [+ panzerkreuzer_a_no_list +]
+**Abstaining** ([+ panzerkreuzer_a_abstain +] seats): [+ panzerkreuzer_a_abstain_list +]
 
 Against expectations, the coalition's numbers fall short. The battlecruiser proposal fails in the Reichstag. The ship will not be built.
