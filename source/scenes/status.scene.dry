@@ -37,6 +37,8 @@ var flagSlugMap = {
   "German Council Republic": "council_republic",
   "Communist Republic of Germany": "communist_republic",
   "German National State": "national_state",
+  "German Empire": "empire",
+  "German State": "junta",
   "Third Reich": "third_reich"
 };
 Q.flag_slug = flagSlugMap[Q.country_name_display] || "weimar";
