@@ -21,10 +21,19 @@ if (Q.peoples_party >= 1) {
     Q.spd_status = "Worker's Party";
 }
 
+if (Q.country_name = "Weimar Republic" && Q.presidential_powers >= 1) {
+    Q.country_name = "Federal Republic of Germany"
+} else {
+    Q.country_name = "Weimar Republic"
+}
+
 Q.country_name_display = Q.country_name || "Weimar Republic";
+
+
 
 var flagSlugMap = {
   "Weimar Republic": "weimar",
+  "Federal Republic of Germany": "weimar_reformed",
   "German Council Republic": "council_republic",
   "Communist Republic of Germany": "communist_republic",
   "German National State": "national_state",
