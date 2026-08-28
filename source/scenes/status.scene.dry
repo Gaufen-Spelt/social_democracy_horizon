@@ -16,11 +16,29 @@ var tolDisplay = (Q.tolerating_parties && Q.tolerating_parties.length > 0)
 Q.tolerating_parties_display = tolDisplay;
 
 if (Q.peoples_party >= 1) {
-    Q.spd_status = "Broad People's Party";
+    Q.spd_status = "People's Party";
 } else {
     Q.spd_status = "Worker's Party";
 }
+
+Q.country_name_display = Q.country_name || "Weimar Republic";
+
+var flagSlugMap = {
+  "Weimar Republic": "weimar",
+  "German Council Republic": "council_republic",
+  "Communist Republic of Germany": "communist_republic",
+  "German National State": "national_state",
+  "Third Reich": "third_reich"
+};
+Q.flag_slug = flagSlugMap[Q.country_name_display] || "weimar";
+
 !}
+
+<hr>
+Name: [+ country_name_display +]
+
+{!<img src="img/flags/[+ flag_slug +].png" onerror="this.onerror=null;this.src='img/flags/weimar.png';" class="status-flag" alt="">!}
+<hr>
 
 <hr>
 = Status
