@@ -230,12 +230,6 @@ new-page: true
 = Achievements
 
 {!<style>
-@keyframes glitchJitter {
-  0%, 92%, 100% { transform: translate(0, 0); }
-  93% { transform: translate(-2px, 1px); filter: drop-shadow(2px -1px 0px #ff0055); }
-  95% { transform: translate(2px, -1px); filter: drop-shadow(-2px 1px 0px #00e5ff); }
-  97% { transform: translate(0, 0); }
-}
 
 .ach { display: flex; align-items: stretch; padding: 0; margin: 0 0 6px 0; border: 1px solid rgba(0,0,0,0.15); border-radius: 4px; overflow: hidden; }
 .ach-icon-box { width: 64px; height: auto; min-height: 64px; flex-shrink: 0; display: flex; align-items: stretch; justify-content: stretch; overflow: hidden; }
