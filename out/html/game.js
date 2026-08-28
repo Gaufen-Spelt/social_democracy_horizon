@@ -986,6 +986,36 @@ Object.keys(wordPhrases).forEach(function(phrase) {
             para.appendChild(portrait);
         }
 
+      var _lastFlagSlug = null;
+
+function attachFlag(slug, textPrefix, rowClass, imgClass) {
+    if (!slug) return;
+    var para = Array.prototype.find.call(paragraphs, function(p) {
+        return p.textContent.trim().indexOf(textPrefix) === 0;
+    });
+    if (!para) return;
+
+    para.classList.add(rowClass);
+
+    if (slug === _lastFlagSlug) {
+        // Same flag as last render — reuse existing img if present, skip recreation
+        var existing = para.querySelector('.' + imgClass);
+        if (existing) return;
+    }
+    _lastFlagSlug = slug;
+
+    var existing = para.querySelector('.' + imgClass);
+    if (existing) existing.remove();
+
+    var flagImg = document.createElement('img');
+    flagImg.className = imgClass;
+    flagImg.onerror = function() { flagImg.src = 'img/flags/weimar.png'; };
+    flagImg.src = 'img/flags/' + slug + '.png';
+    para.appendChild(flagImg);
+}
+
+attachFlag(Q.flag_slug, '=', 'country-name-row', 'status-flag');
+
         attachPortrait(Q.president, 'President:', 'president-row', 'status-portrait');
         attachPortrait(Q.chancellor, 'Chancellor:', 'chancellor-row', 'chancellor-portrait');
         attachPortrait(Q.ministerpresident, 'Prussian Minister-President:', 'ministerpresident-row', 'ministerpresident-portrait');
