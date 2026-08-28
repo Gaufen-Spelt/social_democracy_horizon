@@ -2,6 +2,12 @@ title: Post Event
 new-page: true
 on-arrival: {!
 
+// NOTES: IDEOLOGIES: 1 - 6 ARE FAR LEFT
+// 7 - 9 ARE CENTER LEFT
+// 10 - 12 ARE CENTER
+// 13 - 15 ARE CENTER RIGHT
+// 16 - 20 ARE FAR RIGHT
+
 // RNG
 
 function _mkrng(seed) {
