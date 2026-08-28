@@ -21,9 +21,9 @@ if (Q.peoples_party >= 1) {
     Q.spd_status = "Worker's Party";
 }
 
-if (Q.country_name = "Weimar Republic" && Q.presidential_powers >= 1) {
+if (Q.country_name == "Weimar Republic" && Q.presidential_powers >= 1) {
     Q.country_name = "German Republic"
-}
+} 
 
 Q.country_name_display = Q.country_name || "Weimar Republic";
 
