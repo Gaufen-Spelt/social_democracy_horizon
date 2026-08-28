@@ -50,6 +50,7 @@ Q.player_party = "SPD";
 Q.z_name = "Z";
 Q.dnvp_name = "DNVP";
 Q.country_name = "Weimar Republic";
+Q.prussian_republicanization = 50;
 
 Q.business_wing_ddp = 370;
 Q.social_republican_ddp = 130;
