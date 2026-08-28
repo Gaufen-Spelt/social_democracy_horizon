@@ -813,7 +813,7 @@ a.card:hover .card-tooltip {
   display: block;
   max-width: 120px;
   height: auto;
-  margin: 6px 0 10px 0;
+  margin: 6px auto 10px auto;
 }
 
 /* =====================================================================
