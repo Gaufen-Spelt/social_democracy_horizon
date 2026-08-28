@@ -16,7 +16,7 @@ We can enact policies in Prussia.
 Current police loyalty: [+ prussian_police_loyalty : loyalty +]. <br>
 Current police strength: [+ prussian_police_strength +]. <br>
 
-Republican - Reactionary balance: [+ prussian_republicanization +]
+Republican - Reactionary balance: [+ prussian_republicanization +]% / 100%
 
 - @police_loyalty: Bolster the loyalty of the police.
 - @police_strength: Recruit additional police.
