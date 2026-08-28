@@ -35,13 +35,10 @@ Q.flag_slug = flagSlugMap[Q.country_name_display] || "weimar";
 !}
 
 <hr>
-Name: [+ country_name_display +]
+= Status
+[+ country_name_display +]
 
 {!<img src="img/flags/[+ flag_slug +].png" onerror="this.onerror=null;this.src='img/flags/weimar.png';" class="status-flag" alt="">!}
-<hr>
-
-<hr>
-= Status
 <hr>
 
 [+ weeks: monther +], [+ month : month +] [+ year +]
