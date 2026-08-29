@@ -7536,65 +7536,6 @@ Q.apply_var_caps = function() {
 
 Q.apply_var_caps();
 
-// === MINISTRY REASSIGNMENT ===
-var portfolios = ["foreign_minister", "interior_minister", "justice_minister", "labor_minister",
-                   "economic_minister", "finance_minister", "agriculture_minister", "transport_minister"];
-
-for (var i = 0; i < portfolios.length; i++) {
-    var port = portfolios[i];
-    var partyField = port + "_party";
-    var currentParty = (Q[partyField] || "").toLowerCase();
-
-    // If held party isn't in government anymore, reassign
-    if (Q[currentParty + '_in_government'] !== 1) {
-        // Find the largest remaining government party by seat share
-        var bestParty = "";
-        var bestVotes = -1;
-        for (var j = 0; j < Q.parties.length; j++) {
-            var p = Q.parties[j];
-            if (Q[p + '_in_government'] === 1 && (Q[p + '_r'] || 0) > bestVotes) {
-                bestVotes = Q[p + '_r'] || 0;
-                bestParty = p;
-            }
-        }
-
-        if (bestParty !== "") {
-            Q[partyField] = bestParty.toUpperCase();
-            Q[port] = (Q.ministry_roster[bestParty] && Q.ministry_roster[bestParty][port]) || 0;
-        }
-    }
-}
-
-if (!Q.minister_name_table) {
-    Q.minister_name_table = {
-        foreign_minister:     { KPD:'Pieck', SAPD:'Rosenfeld', SPD:'Breitscheid', SRPD:'Breitscheid', DDP:'Koch-Weser', Z:'Curtius', BVP:'Held', DVP:'Stresemann', WP:'Lambach', CNBL:'Hepp', DNVP:'Westarp' },
-        interior_minister:    { KPD:'Ulbricht', SAPD:'Seydewitz', SPD:'Severing', SRPD:'Braun', DDP:'Koch-Weser', Z:'Wirth', BVP:'Schätzel', DVP:'Scholz', WP:'Petersen', CNBL:'Behrens', DNVP:'Hergt' },
-        justice_minister:     { KPD:'Heckert', SAPD:'Ledebour', SPD:'Radbruch', SRPD:'Heilmann', DDP:'Koch-Weser', Z:'Bredt', BVP:'Gürtner', DVP:'Heinze', WP:'Drewitz', CNBL:'von Rohr', DNVP:'Schiele' },
-        labor_minister:       { KPD:'Münzenberg', SAPD:'Seydewitz', SPD:'Wissell', SRPD:'Aufhäuser', DDP:'Dietrich', Z:'Stegerwald', BVP:'Stützel', DVP:'Brauns', WP:'Petersen', CNBL:'Lohse', DNVP:'Schiele' },
-        economic_minister:    { KPD:'Remmele', SAPD:'Rosenfeld', SPD:'Hilferding', SRPD:'Schmidt', DDP:'Dietrich', Z:'Bredt', BVP:'Held', DVP:'Curtius', WP:'Lambach', CNBL:'Heim', DNVP:'Schiele' },
-        finance_minister:     { KPD:'Neumann', SAPD:'Rosenfeld', SPD:'Hilferding', SRPD:'Hilferding', DDP:'Dietrich', Z:'Köhler', BVP:'Krausneck', DVP:'Moldenhauer', WP:'Drewitz', CNBL:'Hepp', DNVP:'Schiele' },
-        agriculture_minister: { KPD:'Hoernle', SAPD:'Baade', SPD:'Baade', SRPD:'Baade', DDP:'Dietrich', Z:'Hermes', BVP:'Wutzlhofer', DVP:'Schiele', WP:'Bredt', CNBL:'Hamkens', DNVP:'Schiele' },
-        transport_minister:   { KPD:'Hoernle', SAPD:'Baade', SPD:'Baade', SRPD:'Baade', DDP:'Dietrich', Z:'Guerard', BVP:'Wutzlhofer', DVP:'Schiele', WP:'Bredt', CNBL:'Hamkens', DNVP:'Schiele' }
-    };
-}
-
-for (var i = 0; i < portfolios.length; i++) {
-    var port = portfolios[i];
-    var party = (Q[port + '_party'] || '').toUpperCase();
-
-    var expectedName = (Q.minister_name_table[port] && Q.minister_name_table[port][party]) || 'Unbesetzt';
-
-    // Special case: Stresemann's death reassigns the DVP foreign minister slot to Curtius
-    if (port === 'foreign_minister' && party === 'DVP' && Q.stresemann_dead) {
-        expectedName = 'Curtius';
-    }
-
-    if (Q[port] !== expectedName) {
-        Q[port] = expectedName;
-    }
-}
-
-
 
 
 
