@@ -19,13 +19,13 @@ He has slim chances, but who knows? Perhaps his social fascism is justified meas
 @elect
 choose-if: reformist_strength > left_strength and not kpd_rectified_history
 unavailable-subtitle: Left wing blocks this decision. Otherwise, we expelled Noske. Why?
-on-arrival: spd_party_leader = "Gustav Noske"
+on-arrival: spd_party_leader = "Noske"
 
 We have elected Gustav Noske, turning party further rightward than Bernstein could have anticipated.
 
 @oppose
 view-if: not social_fascism_adopted and left_strength > reformist_strength
 unavailable-subtitle: Noske pretty much takes over.
-on-arrival: spd_party_leader = "Otto Wels"
+on-arrival: spd_party_leader = "Wels"
 
 We blocked his election, remaining at old trio, with Otto Wels overtaking and taking course towards co-operation with Z and DDP, without aggressiveness towards KPD.
