@@ -1175,9 +1175,7 @@ Q.tol_has_others = others.length > 0 ? 1 : 0;
 
 **Government seats:** [+ tol_coalition_votes +]%
 
-[? if tol_has_others : **Other tolerating parties:**
-
-[+ tol_other_tolerators_list +] ?]
+[? if tol_has_others : **Other tolerating parties:** <br> [+ tol_other_tolerators_list +] ?]
 
 **With SPD toleration, effective majority:** [+ tol_effective_votes +]%
 
