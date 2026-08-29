@@ -24,9 +24,10 @@ on-arrival: {!
 // time elapsed (in months)
 Q.time = 0;
 Q.year = 1927;
-Q.month = 11;
+Q.month = 10;
+Q.weeks = 2;
 // how many actions have been taken this month?
-Q.month_actions = 0;
+Q.month_actions = 1;
 if (!Q.rng_seed) {
     Q.rng_seed = Date.now() & 0xFFFFFFFF;
 }
