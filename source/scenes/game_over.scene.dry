@@ -442,10 +442,10 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
 = Horizon
 
 [? if achievement_spatialanomaly :
-{!<div class="ach ach-glitch"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/stren2.png"></div><div class="ach-body"><span class="ach-title"><strong>Anomaly</strong> - New divergence.!}[? if game_achievement_spatialanomaly : {!<span class="ach-new">Neu!</span>!}?]{!</span></div></div>!}
+{!<div class="ach ach-glitch"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/stren2.png"></div><div class="ach-body"><span class="ach-title"><strong>Anomaly</strong></span><br><span class="ach-desc">New divergence.</span>!}[? if game_achievement_spatialanomaly : {!<span class="ach-new">Neu!</span>!}?]{!</div></div>!}
 ?]
 [? if not achievement_spatialanomaly :
-{!<div class="ach ach-locked ach-glitch"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/stren.png"></div><div class="ach-body"><span class="ach-title"><strong>Anomaly</strong> - Anomaly in time.</span></div></div>!}
+{!<div class="ach ach-locked ach-glitch"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/stren.png"></div><div class="ach-body"><span class="ach-title"><strong>Anomaly</strong></span><br><span class="ach-desc">Anomaly in time.</span></div></div>!}
 ?]
 
 [? if achievement_fatamorgana :
