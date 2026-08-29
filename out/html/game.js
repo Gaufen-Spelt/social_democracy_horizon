@@ -1018,6 +1018,7 @@ function attachFlag(slug, textPrefix, rowClass, imgClass) {
         attachPortrait(Q.president, 'President:', 'president-row', 'status-portrait');
         attachPortrait(Q.chancellor, 'Chancellor:', 'chancellor-row', 'chancellor-portrait');
         attachPortrait(Q.ministerpresident, 'Prussian Minister-President:', 'ministerpresident-row', 'ministerpresident-portrait');
+        attachPortrait(Q.spd_party_leader, 'SPD Leadership:', 'spdleader-row', 'spdleader-portrait');
     }
 };
 
