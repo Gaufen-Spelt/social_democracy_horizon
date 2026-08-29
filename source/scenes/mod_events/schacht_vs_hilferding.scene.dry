@@ -16,8 +16,9 @@ Of course, this criticism is unfounded, but the bourgeois establishment does not
 - @hilferding_resign: Hilferding must resign.
 
 @expose_him
-choose-if: (investigate_far_right >= 1 and investigate_corruption >= 1) and budget >= 1
-unavailable-subtitle: [? if investigate_far_right < 1: Requires more thorough investigation of the far right. ?][? if investigate_corruption < 1 : Requires an active corruption investigation. ?][? if budget < 1 : We do not have enough budget, therefore, it is our fault... ?]
+choose-if: (investigate_far_right >= 1 and investigate_corruption >= 1) and budget >= 1 and commercialized_media >= 1
+unavailable-subtitle: [? if investigate_far_right < 1: Requires more thorough investigation of the far right. ?][? if investigate_corruption < 1 : Requires an active corruption investigation. ?][? if budget < 1 : We do not have enough budget, therefore, it is our fault... ?] [? if commercialized_media < 1: We have no means to expose Schacht's deeds. ?]
+on-arrival: capital_strike_progress += 1; dvp_relation -= 2
 
 We expose to the public Schacht's dealings with the Nazis. For better or worse, he is cowed, and refrains from taking further actions against us.
 
