@@ -1,4 +1,5 @@
 {
+  "id": "/social_democracy_horizon/",
   "name": "Social Democracy: An Alternate Horizon",
   "short_name": "Divided Horizons",
   "description": "Overhaul modification of the base SD:AAH from Aucchen.",
@@ -24,16 +25,16 @@
     "screenshots": [
     {
       "src": "./logos/screenshot.jpg",
-      "sizes": "1920x1080",
-      "type": "image/png",
-      "form_factor": "wide",
+      "sizes": "1079x1927",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
       "label": "Main menu"
     },
     {
       "src": "./logos/screenshot2.jpg",
-      "sizes": "1920x1080",
-      "type": "image/png",
-      "form_factor": "wide",
+      "sizes": "1080x1918",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
       "label": "Main scene"
     }
   ]
