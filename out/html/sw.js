@@ -1,10 +1,18 @@
-const CACHE_NAME = 'pwa-cache-v1';
+const CACHE_NAME = 'pwa-cache-v2'; // bump version when you change cached files
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
-  './icons/icon-192.png',
-  './icons/icon-512.png'
+  './game.css',
+  './core.js',
+  './game.js',
+  './jquery-1.11.1.min.js',
+  './d3.v7.min.js',
+  './d3-parliament.js',
+  './d3-linegraph.js',
+  './logos/android-chrome-192x192.png',
+  './logos/android-chrome-512x512.png',
+  './logos/favicon.ico'
 ];
 
 // Install Event: Cache essential app shell assets
