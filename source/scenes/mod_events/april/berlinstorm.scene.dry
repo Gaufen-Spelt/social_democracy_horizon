@@ -1,6 +1,6 @@
 title: Berlin Siege, Red March roars...
 subtitle: Red Front Fighters are marching in...
-view-if: communist_revolution_timer < 15 and rfb_strength + rfb_militancy > 150 and year >= 1932 and month >= 9 and april_challenge = 1
+view-if: communist_revolution_timer < 5 and rfb_strength + rfb_militancy > 150 and year >= 1932 and month >= 9 and april_challenge = 1
 tags: event
 max-visits: 1
 on-arrival: rfb_strength += 10; socialism += 20; workers_kpd += 15; rfb_strength += 150 if historical_mode; rfb_strength += workers_kpd * 2
