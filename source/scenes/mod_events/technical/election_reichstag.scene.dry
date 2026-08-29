@@ -1118,11 +1118,18 @@ if (Q.possible_coalitions.length > 0) {
     Q.spd_in_chosen_coalition = 0;
 }
 
+Q.spd_is_tolerator_only = 0;
+if (Q.coalition_formed && !Q.spd_in_chosen_coalition &&
+    Q.chosen_coalition.toleration &&
+    Q.chosen_coalition.tolerating_parties.indexOf('SPD') >= 0) {
+    Q.spd_is_tolerator_only = 1;
+}
+
 Q.num_coalitions = Q.possible_coalitions.length;
 
 } // end if (!goto_coalition_success)
 !}
-go-to: spd_formateur_choice if coalition_formed and formateur = "SPD"; player_coalition_review if coalition_formed and formateur != "SPD" and spd_in_chosen_coalition; coalition_success if coalition_formed and not spd_in_chosen_coalition; coalition_failure if not coalition_formed
+go-to: spd_formateur_choice if coalition_formed and formateur = "SPD"; player_coalition_review if coalition_formed and formateur != "SPD" and spd_in_chosen_coalition; spd_toleration_choice if coalition_formed and spd_is_tolerator_only; coalition_success if coalition_formed and not spd_in_chosen_coalition; coalition_failure if not coalition_formed
 
 
 
@@ -1132,7 +1139,91 @@ go-to: spd_formateur_choice if coalition_formed and formateur = "SPD"; player_co
 
 
 
+@spd_toleration_choice
+on-arrival: {!
+var seat_total = 0;
+for (var i = 0; i < Q.parties.length; i++) {
+    seat_total += Q[Q.parties[i] + '_seats'] || 0;
+}
+if (seat_total === 0) seat_total = 1;
 
+Q.tol_coalition_partners_list = "";
+for (var i = 0; i < Q.chosen_coalition.parties.length; i++) {
+    var party = Q.chosen_coalition.parties[i];
+    var seat_pct = ((Q[party.toLowerCase() + '_seats'] || 0) / seat_total) * 100;
+    Q.tol_coalition_partners_list += "- " + party + " (" + Math.round(seat_pct * 10) / 10 + "%)\n";
+}
+Q.tol_coalition_votes = Q.chosen_coalition.votes;
+Q.tol_effective_votes = Q.chosen_coalition.effective_votes;
+
+Q.tol_other_tolerators_list = "";
+var others = Q.chosen_coalition.tolerating_parties.filter(function(p) { return p !== 'SPD'; });
+for (var i = 0; i < others.length; i++) {
+    var tpct = ((Q[others[i].toLowerCase() + '_seats'] || 0) / seat_total) * 100;
+    Q.tol_other_tolerators_list += "- " + others[i] + " (" + Math.round(tpct * 10) / 10 + "%)\n";
+}
+Q.tol_has_others = others.length > 0 ? 1 : 0;
+!}
+
+= [+ formateur +] Seeks SPD Toleration
+
+**[+ formateur +] has formed a minority government and requires external toleration to survive votes of no confidence.**
+
+**Proposed Government:**
+
+[+ tol_coalition_partners_list +]
+
+**Government seats:** [+ tol_coalition_votes +]%
+
+[? if tol_has_others : **Other tolerating parties:**
+
+[+ tol_other_tolerators_list +] ?]
+
+**With SPD toleration, effective majority:** [+ tol_effective_votes +]%
+
+The SPD is not being asked to join the cabinet — only to abstain or vote against no-confidence motions, allowing this government to function.
+
+**What is our decision?**
+
+- @accept_spd_toleration: Agree to tolerate this government
+- @reject_spd_toleration: Refuse to tolerate this government
+
+@accept_spd_toleration
+on-arrival: spd_toleration_confirmed = 1
+
+We agree to tolerate [+ formateur +]'s government from opposition, without entering the cabinet.
+
+- @coalition_success: Continue
+
+@reject_spd_toleration
+on-arrival: {!
+Q.spd_toleration_confirmed = 0;
+
+// Remove SPD from the tolerating parties of the chosen coalition
+var tols = Q.chosen_coalition.tolerating_parties.filter(function(p) { return p !== 'SPD'; });
+var lost_votes = Q.chosen_coalition.tolerating_votes;
+// crude recompute: subtract SPD's share from effective_votes
+var spd_seats = Q.spd_seats || 0;
+var seat_total = 0;
+for (var i = 0; i < Q.parties.length; i++) seat_total += Q[Q.parties[i] + '_seats'] || 0;
+if (seat_total === 0) seat_total = 1;
+var spd_pct = (spd_seats / seat_total) * 100;
+
+Q.chosen_coalition.tolerating_parties = tols;
+Q.chosen_coalition.effective_votes = Math.max(0, (Q.chosen_coalition.effective_votes || 0) - spd_pct);
+
+// If losing SPD toleration drops it below majority threshold, treat as failed
+Q.coalition_still_viable = Q.chosen_coalition.effective_votes >= 50 ? 1 : 0;
+
+// political cost for refusing to help stabilize government
+Q.reformist_dissent += 2;
+var formateur_lower = Q.formateur.toLowerCase();
+var relation_var = formateur_lower + '_relation';
+if (Q[relation_var] !== undefined) Q[relation_var] -= 5;
+!}
+go-to: coalition_success if coalition_still_viable; coalition_failure if not coalition_still_viable
+
+We refuse to tolerate this government. Relations with [+ formateur +] suffer [? if not coalition_still_viable : , and without our support the government collapses before it can even form ?].
 
 
 
@@ -2107,6 +2198,13 @@ go-to: coalition_success
 
 
 
+
+
+
+
+
+
+
 @coalition_success
 on-arrival: {!
 // ============================================
@@ -2115,7 +2213,7 @@ on-arrival: {!
 
 Q.is_minority_government = Q.chosen_coalition.toleration ? 1 : 0;
 Q.tolerating_parties = Q.chosen_coalition.toleration ? Q.chosen_coalition.tolerating_parties : [];
-Q.spd_toleration = (Q.chosen_coalition.toleration && Q.chosen_coalition.tolerating_parties.indexOf('SPD') >= 0) ? 1 : 0;
+Q.spd_toleration = (Q.chosen_coalition.toleration && Q.chosen_coalition.tolerating_parties.indexOf('SPD') >= 0 && Q.spd_toleration_confirmed !== 0) ? 1 : 0;
 
 // Set flags for each tolerating party
 if (Q.chosen_coalition.toleration) {
