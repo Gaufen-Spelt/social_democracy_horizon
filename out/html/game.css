@@ -808,6 +808,23 @@ a.card:hover .card-tooltip {
 }
 
 
+.spdleader-row {
+  position: relative;
+  padding-right: 90px;
+  min-height: 90px;
+}
+
+.spdleader-portrait {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 90px;
+  object-fit: cover;
+  border: 2px solid var(--card-border-color);
+}
+
+
 
 .status-flag {
   display: block;
