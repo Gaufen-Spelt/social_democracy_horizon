@@ -18,37 +18,96 @@ Much of our party is deeply opposed to rearmament, while the center and right pa
 - @ministry: Use the Reichswehr Ministry to prevent the construction.
 
 @vote_yes
-on-arrival: left_dissent += 10; labor_dissent += 5; center_dissent += 5; reformist_dissent += 5 if not panzerkreuzer_funded; neorevisionist_dissent += 5 if not panzerkreuzer_funded; panzerkreuzer_b_funded = 1; kpd_coalition_dissent += 1; kpd_relation -= 6; workers_spd -= 4
-
-Our grassroots party members are highly critical of our decision. Many party branches have increased their agitation against our parliamentary fraction. [? if panzerkreuzer_funded : However, given the construction of the previous battlecruiser, this seemed to be a foregone conclusion, and the reaction is muted. ?]
-
-The vote in favor of the battlecruiser easily passes, with opposition only from the KPD. The ship will be built.
+on-arrival: left_dissent += 10; labor_dissent += 5; center_dissent += 5; reformist_dissent += 5 if not panzerkreuzer_funded; neorevisionist_dissent += 5 if not panzerkreuzer_funded; panzerkreuzer_b_funded = 1; kpd_coalition_dissent += 1; kpd_relation -= 6; workers_spd -= 4; spd_pkb_vote = "yes"
+go-to: calc_panzerkreuzer_b
 
 @vote_no
-on-arrival: dvp_relation -= 8; z_relation -= 5; pacifism += 1; nationalism -= 5*(1-dissent); workers_spd += 4*(1-dissent) if nationalism < 49;
-go-to: built if spd_r + kpd_r + ddp_r < 50; not_built if spd_r + kpd_r + ddp_r >= 50
-
-Our vote against the battlecruiser is unpopular among the right-wing parties[? if in_grand_coalition or in_weimar_coalition: , including our coalition partners ?][? if spd_toleration: , including the minority government that we are currently supporting ?].
+on-arrival: dvp_relation -= 8; z_relation -= 5; pacifism += 1; nationalism -= 5*(1-dissent); workers_spd += 4*(1-dissent) if nationalism < 49; spd_pkb_vote = "no"
+go-to: calc_panzerkreuzer_b
 
 @abstain
-on-arrival: dvp_relation -= 5; z_relation -= 3; left_dissent += 5; labor_dissent += 5 if not panzerkreuzer_funded; panzerkreuzer_b_funded = 1; kpd_relation -= 3
-
-The center-right parties are critical of our decision to abstain, and the pressure from our left flank is not entirely assuaged. Despite our abstention, the vote in the Reichstag passes, with all parties in favor except the SPD and KPD. The ship will be built.
-
-[? if panzerkreuzer_funded : Given the construction of the previous battlecruiser, this seemed to be a foregone conclusion, and the reaction is muted. ?]
-
-@built
-on-arrival: panzerkreuzer_b_funded = 1
-
-Chancellor [+ chancellor +] brings the matter to a full Reichstag vote, which passes with all parties in favor except the SPD and KPD. The ship will be built.
-
-@not_built
-on-arrival: panzerkreuzer_b_funded = 0; budget += 1 if panzerkreuzer_funded = 0
-
-Our vote against the battlecruiser succeeds, with the support of the KPD and anti-war portions of the [+ ddp_name +]. The ship will not be built! [? if panzerkreuzer_funded == 0 : We have saved some budget from not funding the two ships. ?]
+on-arrival: dvp_relation -= 5; z_relation -= 3; left_dissent += 5; labor_dissent += 5 if not panzerkreuzer_funded; kpd_relation -= 3; spd_pkb_vote = "abstain"
+go-to: calc_panzerkreuzer_b
 
 @ministry
 on-arrival: panzerkreuzer_b_funded = 0; budget += 1 if panzerkreuzer_funded = 0
 view-if: reichswehr_minister_party == "SPD"
 
 With our control of the Reichswehr Ministry, we have pressured the Navy to abandon its rearmament plans. The ship will not be built. [? if panzerkreuzer_funded == 0 : We have saved some budget from not funding the two ships. ?]
+
+@calc_panzerkreuzer_b
+on-arrival: {!
+Q.panzerkreuzer_b_yes = 0;
+Q.panzerkreuzer_b_no = 0;
+Q.panzerkreuzer_b_abstain = 0;
+
+Q.panzerkreuzer_b_yes_parties = [];
+Q.panzerkreuzer_b_no_parties = [];
+Q.panzerkreuzer_b_abstain_parties = [];
+
+for (var i = 0; i < Q.parties.length; i++) {
+    var party = Q.parties[i];
+
+    if (party === "spd") {
+        Q[party + "_pkb_vote"] = Q.spd_pkb_vote;
+    } else {
+        var score = Q[party + "_ideo_score"];
+        Q[party + "_pkb_vote"] = (score !== undefined && score <= 9) ? "no" : "yes";
+    }
+
+    var seats = Q[party + "_r"] || 0;
+    var label = Q.PARTY_DISPLAY_NAMES && Q.PARTY_DISPLAY_NAMES[party]
+        ? Q.PARTY_DISPLAY_NAMES[party].replace(/^The /, "")
+        : party.toUpperCase();
+
+    if (Q[party + "_pkb_vote"] === "yes") {
+        Q.panzerkreuzer_b_yes += seats;
+        Q.panzerkreuzer_b_yes_parties.push(label);
+    } else if (Q[party + "_pkb_vote"] === "no") {
+        Q.panzerkreuzer_b_no += seats;
+        Q.panzerkreuzer_b_no_parties.push(label);
+    } else {
+        Q.panzerkreuzer_b_abstain += seats;
+        Q.panzerkreuzer_b_abstain_parties.push(label);
+    }
+}
+
+Q.panzerkreuzer_b_yes = Math.round(Q.panzerkreuzer_b_yes * 10) / 10;
+Q.panzerkreuzer_b_no = Math.round(Q.panzerkreuzer_b_no * 10) / 10;
+Q.panzerkreuzer_b_abstain = Math.round(Q.panzerkreuzer_b_abstain * 10) / 10;
+
+var voting_total = Q.panzerkreuzer_b_yes + Q.panzerkreuzer_b_no;
+Q.panzerkreuzer_b_yes_share = voting_total > 0 ? Math.round((Q.panzerkreuzer_b_yes / voting_total) * 1000) / 10 : 0;
+Q.panzerkreuzer_b_no_share = voting_total > 0 ? Math.round((Q.panzerkreuzer_b_no / voting_total) * 1000) / 10 : 0;
+
+Q.panzerkreuzer_b_result = (Q.panzerkreuzer_b_yes > Q.panzerkreuzer_b_no) ? "pass" : "fail";
+
+Q.panzerkreuzer_b_yes_list = Q.panzerkreuzer_b_yes_parties.length > 0 ? Q.panzerkreuzer_b_yes_parties.join(", ") : "none";
+Q.panzerkreuzer_b_no_list = Q.panzerkreuzer_b_no_parties.length > 0 ? Q.panzerkreuzer_b_no_parties.join(", ") : "none";
+Q.panzerkreuzer_b_abstain_list = Q.panzerkreuzer_b_abstain_parties.length > 0 ? Q.panzerkreuzer_b_abstain_parties.join(", ") : "none";
+!}
+go-to: built if spd_pkb_vote = "yes" or spd_pkb_vote = "abstain"; built if spd_pkb_vote = "no" and panzerkreuzer_b_result = "pass"; not_built if spd_pkb_vote = "no" and panzerkreuzer_b_result = "fail"
+
+@built
+on-arrival: panzerkreuzer_b_funded = 1
+
+The votes are tallied in the Reichstag.
+
+**For** ([+ panzerkreuzer_b_yes +] seats, [+ panzerkreuzer_b_yes_share +]%): [+ panzerkreuzer_b_yes_list +]
+**Against** ([+ panzerkreuzer_b_no +] seats, [+ panzerkreuzer_b_no_share +]%): [+ panzerkreuzer_b_no_list +]
+**Abstaining** ([+ panzerkreuzer_b_abstain +] seats): [+ panzerkreuzer_b_abstain_list +]
+
+[? if spd_pkb_vote = "yes": The vote in favor of the battlecruiser easily passes, with opposition only from the KPD. The ship will be built. ?]
+[? if spd_pkb_vote = "abstain": Despite our abstention, the vote in the Reichstag passes, with all parties in favor except the SPD and KPD. The ship will be built. [? if panzerkreuzer_funded : Given the construction of the previous battlecruiser, this seemed to be a foregone conclusion, and the reaction is muted. ?] ?]
+[? if spd_pkb_vote = "no": Our vote against the battlecruiser is unpopular among the right-wing parties[? if in_grand_coalition or in_weimar_coalition: , including our coalition partners ?][? if spd_toleration: , including the minority government that we are currently supporting ?]. Chancellor [+ chancellor +] brings the matter to a full Reichstag vote, which passes with all parties in favor except the SPD and KPD. The ship will be built. ?]
+
+@not_built
+on-arrival: panzerkreuzer_b_funded = 0; budget += 1 if panzerkreuzer_funded = 0
+
+The votes are tallied in the Reichstag.
+
+**For** ([+ panzerkreuzer_b_yes +] seats, [+ panzerkreuzer_b_yes_share +]%): [+ panzerkreuzer_b_yes_list +]
+**Against** ([+ panzerkreuzer_b_no +] seats, [+ panzerkreuzer_b_no_share +]%): [+ panzerkreuzer_b_no_list +]
+**Abstaining** ([+ panzerkreuzer_b_abstain +] seats): [+ panzerkreuzer_b_abstain_list +]
+
+Our vote against the battlecruiser succeeds, with the support of the KPD and anti-war portions of the [+ ddp_name +]. The ship will not be built! [? if panzerkreuzer_funded == 0 : We have saved some budget from not funding the two ships. ?]
