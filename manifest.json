@@ -2,7 +2,7 @@
   "name": "Social Democracy: An Alternate Horizon",
   "short_name": "Horizon",
   "description": "Modification of the base SDAAH from Aucchen",
-  "start_url": "./index.html",
+  "start_url": "out/html/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#0969da",
