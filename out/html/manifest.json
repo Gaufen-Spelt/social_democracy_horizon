@@ -20,5 +20,21 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
+  ],
+    "screenshots": [
+    {
+      "src": "./logos/screenshot.jpg",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Main menu"
+    },
+    {
+      "src": "./logos/screenshot2.jpg",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Main scene"
+    }
   ]
 }
