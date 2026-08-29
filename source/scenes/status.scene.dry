@@ -49,8 +49,6 @@ Q.flag_slug = flagSlugMap[Q.country_name_display] || "weimar";
 {!<span class="flag-label-hidden">Flag:</span>!}
 <hr>
 
-[+ weeks: monther +], [+ month : month +] [+ year +]
-
 [? if ruhr_labor_strike: <span style="color: #dc143c;">  Ruhr is under the labor strike! </span> ?]
 
 Next election: [+ next_election_month : month +] [+ next_election_year +]
