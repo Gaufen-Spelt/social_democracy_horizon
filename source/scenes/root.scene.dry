@@ -4132,18 +4132,12 @@ set-bg: img/weimar_2.jpg
 on-arrival: started = 1
 #go-to: main if difficulty = 0; main.main_easy if difficulty < 0; main.main_hard if difficulty = 1; main.main_historical if difficulty >= 2
 go-to: post_event
-on-departure: {!
-window.disableFocusMode()
-!}
 
 @starum
 set-bg: img/weimar.jpg
 on-arrival: started = 1
 #go-to: main if difficulty = 0; main.main_easy if difficulty < 0; main.main_hard if difficulty = 1; main.main_historical if difficulty >= 2
 go-to: post_event
-on-departure: {!
-window.disableFocusMode()
-!}
 
 
 
