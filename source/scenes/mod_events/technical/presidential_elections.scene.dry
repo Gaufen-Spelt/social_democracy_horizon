@@ -90,17 +90,17 @@ if (!Q.CANDIDATE_ALIAS) {
 }
 !}
 
-The Social Democrats must settle on their own candidate and strategy before anyone else in the Reichstag commits to theirs.
+[The Social Democrats must settle on their own candidate and strategy before anyone else in the Reichstag commits to theirs.]
 
-**SPD:**
+[**SPD:**]
 
-We must choose our candidate and strategy.
+[We must choose our candidate and strategy.]
 
 - @spd_candidate_menu: Choose our candidate.
 
 @spd_candidate_menu
 
-Who should represent the SPD in this election?
+[Who should represent the SPD in this election?]
 
 - @eckener_r1: Propose Hugo Eckener as a unity candidate for the Weimar Coalition.
 - @adenauer_r1: Support the Center Party's candidate. ([+ z_default_candidate +])
