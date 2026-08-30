@@ -1440,81 +1440,7 @@ Q.tactical_summary = ""; // cleared here; @tactical_consolidation sets it later 
 
 !}
 
-*The parties have submitted their sincere candidate declarations:*
-
-📰 **FIRST ROUND — CANDIDATE DECLARATIONS**
-
-☠️ **FAR RIGHT**
-[? if not nsdap_banned : • NSDAP — *[+ nsdap_candidate +]* <br> ?]
-[? if dtsp_r > 0 : • DtsP — *[+ dtsp_candidate +]* <br> ?]
-[? if not dvfp_banned and dvfp_formed and dvfp_r > 0 : • DVFP — *[+ dvfp_candidate +]* <br> ?]
-[? if not dnvp_banned and dnvp_candidate != nsdap_candidate and dnvp_candidate != z_dnvp_joint_candidate : • DNVP — *[+ dnvp_candidate +]* <br> ?]
-[? if not dnvp_banned and dnvp_candidate == nsdap_candidate : • DNVP — *Supporting [+ nsdap_candidate +]* <br> ?]
-[? if dnf_r > 0 : • DNF — *[+ dnf_candidate +]* <br> ?]
-
-🎖️ **NATIONALISTS**
-[? if not dnvp_banned and z_dnvp_joint_possible and dnvp_candidate == z_dnvp_joint_candidate : • DNVP — *[+ dnvp_candidate +]* (Conservative Unity) <br> ?]
-[? if vnr_r > 0 and vnr_candidate != nsdap_candidate : • VNR — *[+ vnr_candidate +]* <br> ?]
-
-🌾 **CONSERVATIVES & AGRARIANS**
-[? if z_dnvp_joint_possible : • Conservative Unity Ticket — *[+ z_dnvp_joint_candidate +]* <br> ?]
-[? if not z_dnvp_joint_possible and z_candidate and z_candidate != spd_candidate : • Z (Center) — *[+ z_candidate +]* <br> ?]
-[? if z_candidate == spd_candidate : • Z (Center) — *Supporting [+ spd_candidate +]* <br> ?]
-[? if bvp_candidate and bvp_candidate != z_candidate and bvp_candidate != spd_candidate and bvp_candidate != z_dnvp_joint_candidate : • BVP — *[+ bvp_candidate +]* <br> ?]
-[? if bvp_candidate == spd_candidate : • BVP — *Supporting [+ spd_candidate +]* <br> ?]
-[? if cvp_r > 0 and cvp_candidate != z_candidate and cvp_candidate != spd_candidate : • CVP — *[+ cvp_candidate +]* <br> ?]
-[? if kvp_votes > 0 and kvp_candidate != z_dnvp_joint_candidate and kvp_candidate != spd_candidate : • KVP — *[+ kvp_candidate +]* <br> ?]
-[? if csvd_flee = 1 and csvd_candidate and csvd_candidate != z_dnvp_joint_candidate and csvd_candidate != spd_candidate : • CSVD — *[+ csvd_candidate +]* <br> ?]
-[? if cnbl_candidate and cnbl_candidate != z_dnvp_joint_candidate and cnbl_candidate != spd_candidate : • CNBL — *[+ cnbl_candidate +]* <br> ?]
-[? if cnbl_candidate == spd_candidate : • CNBL — *Supporting [+ spd_candidate +]* <br> ?]
-• BB — *[+ bb_candidate +]* <br>
-[? if dhp_r > 0 and dhp_candidate != cnbl_candidate and dhp_candidate != z_dnvp_joint_candidate : • DHP — *[+ dhp_candidate +]* <br> ?]
-[? if hl_r > 0 and hl_candidate != dhp_candidate and hl_candidate != cnbl_candidate : • HL — *[+ hl_candidate +]* <br> ?]
-[? if rlb_r > 0 and rlb_candidate != dnvp_candidate and rlb_candidate != z_dnvp_joint_candidate : • RLB — *[+ rlb_candidate +]* <br> ?]
-[? if rlb_r > 0 and rlb_candidate == dnvp_candidate : • RLB — *Supporting [+ dnvp_candidate +]* <br> ?]
-
-🗳️ **CENTER & LIBERALS**
-[? if ddp_votes > 0 and ddp_candidate and ddp_candidate != spd_candidate and ddp_candidate != z_candidate : • [+ ddp_name +] — *[+ ddp_candidate +]* <br> ?]
-[? if ddp_votes > 0 and ddp_candidate == spd_candidate : • [+ ddp_name +] — *Supporting [+ spd_candidate +]* <br> ?]
-[? if dsbp_r > 0 and dsbp_candidate and dsbp_candidate != spd_candidate and dsbp_candidate != ddp_candidate and dsbp_candidate != dvp_candidate : • DSBP — *[+ dsbp_candidate +]* <br> ?]
-[? if dsbp_r > 0 and dsbp_candidate == spd_candidate : • DSBP — *Supporting [+ spd_candidate +]* <br> ?]
-[? if dvp_candidate and dvp_candidate != spd_candidate and dvp_candidate != z_candidate and dvp_candidate != ddp_candidate and dvp_candidate != z_dnvp_joint_candidate : • DVP — *[+ dvp_candidate +]* <br> ?]
-[? if dvp_candidate == spd_candidate : • DVP — *Supporting [+ spd_candidate +]* <br> ?]
-[? if vrp_votes > 0.1 and vrp_candidate != ddp_candidate and vrp_candidate != dvp_candidate and vrp_candidate != spd_candidate : • VRP — *[+ vrp_candidate +]* <br> ?]
-[? if wp_candidate and wp_candidate != spd_candidate and wp_candidate != dvp_candidate and wp_candidate != z_dnvp_joint_candidate : • WP — *[+ wp_candidate +]* <br> ?]
-[? if wp_candidate == spd_candidate : • WP — *Supporting [+ spd_candidate +]* <br> ?]
-[? if rdp_r > 0 and rdp_candidate != spd_candidate and rdp_candidate != ddp_candidate : • RDP — *[+ rdp_candidate +]* <br> ?]
-[? if rdp_r > 0 and rdp_candidate == spd_candidate : • RDP — *Supporting [+ spd_candidate +]* <br> ?]
-[? if dbp_r > 0 and dbp_candidate and dbp_candidate != spd_candidate and dbp_candidate != bb_candidate and dbp_candidate != cnbl_candidate : • DBP — *[+ dbp_candidate +]* <br> ?]
-[? if dbp_r > 0 and dbp_candidate == spd_candidate : • DBP — *Supporting [+ spd_candidate +]* <br> ?]
-[? if csrp_votes > 1 and csrp_candidate != z_candidate and csrp_candidate != spd_candidate : • CSRP — *[+ csrp_candidate +]* <br> ?]
-
-🌹 **SOCIAL DEMOCRATS & ALLIES**
-• SPD — *[+ spd_candidate +]* <br>
-[? if srpd_formed = 1 and srpd_candidate and srpd_candidate != spd_candidate : • SRPD — *[+ srpd_candidate +]* <br> ?]
-[? if srpd_formed = 1 and srpd_candidate == spd_candidate : • SRPD — *Supporting [+ spd_candidate +]* <br> ?]
-[? if sls_r > 0 and sls_candidate == spd_candidate : • SLS — *Supporting [+ spd_candidate +]* <br> ?]
-[? if sls_r > 0 and sls_candidate != spd_candidate : • SLS — *[+ sls_candidate +]* <br> ?]
-[? if aspd_r > 0 and aspd_candidate == spd_candidate : • ASPD — *Supporting [+ spd_candidate +]* <br> ?]
-[? if aspd_r > 0 and aspd_candidate != spd_candidate : • ASPD — *[+ aspd_candidate +]* <br> ?]
-
-🔴 **THE LEFT**
-[? if sapd_candidate and sapd_candidate == spd_candidate : • SAPD — *Supporting [+ spd_candidate +]* <br> ?]
-[? if sapd_candidate and sapd_candidate != spd_candidate and sapd_candidate != kpd_candidate : • SAPD — *[+ sapd_candidate +]* <br> ?]
-[? if sapd_candidate == kpd_candidate : • SAPD — *Supporting [+ kpd_candidate +]* <br> ?]
-[? if kpo_r > 0 and kpo_candidate != kpd_candidate : • KPO — *[+ kpo_candidate +]* <br> ?]
-[? if kpo_r > 0 and kpo_candidate == kpd_candidate : • KPO — *Supporting [+ kpd_candidate +]* <br> ?]
-[? if sl_r > 0 and sl_candidate != spd_candidate and sl_candidate != kpd_candidate : • SL — *[+ sl_candidate +]* <br> ?]
-[? if sl_r > 0 and sl_candidate == spd_candidate : • SL — *Supporting [+ spd_candidate +]* <br> ?]
-[? if lb_r > 0 and lb_candidate != kpd_candidate : • LB — *[+ lb_candidate +]* <br> ?]
-[? if lb_r > 0 and lb_candidate == kpd_candidate : • LB — *Supporting [+ kpd_candidate +]* <br> ?]
-
-☭ **FAR LEFT**
-[? if kpd_candidate : • KPD — *[+ kpd_candidate +]* <br> ?]
-[? if kapd_r > 0 and kapd_candidate != kpd_candidate : • KAPD — *[+ kapd_candidate +]* <br> ?]
-[? if kapd_r > 0 and kapd_candidate == kpd_candidate : • KAPD — *Supporting [+ kpd_candidate +]* <br> ?]
-[? if faud_r > 0 and faud_candidate != kpd_candidate : • FAUD — *[+ faud_candidate +]* <br> ?]
-[? if faud_r > 0 and faud_candidate == kpd_candidate : • FAUD — *Supporting [+ kpd_candidate +]* <br> ?]
+*The parties have submitted their sincere candidate declarations.*
 
 - @r1_menu: *Proceed to the first round of voting.*
 
@@ -1783,7 +1709,7 @@ if (Q.tactical_switches.length) {
 !}
 go-to: post_r1
 
-[? if tactical_summary : *Behind the scenes: [+ tactical_summary +]* ?]
+[? if developer_mode and tactical_summary : *Behind the scenes: [+ tactical_summary +]* ?]
 
 
 @post_r1
@@ -1925,6 +1851,18 @@ if (typeof window.ElectionChart === 'undefined') {
     // replacing the four near-duplicate copies of partyColors/partyLabels/
     // canon2/displayNames that existed across the two on-display blocks.
     // ===========================================================================
+    // ===========================================================================
+    // ElectionChart — shared, animated, dependency-free chart module for the
+    // presidential election results screens (round 1 ballot stack, round 2
+    // finalist ballot stack). Defined once (idempotent — safe if this script
+    // block runs more than once) and reused by both @r1_results and @post_r2.
+    //
+    // Style: "ballot stack" — each candidate is a self-contained card with a
+    // colored spine (party color of their largest backer) and a Leads/Runoff/
+    // Elected badge on the front-runner(s). Chosen over a shared-axis bar
+    // chart because it reflows cleanly on narrow/mobile widths and reads as
+    // a results ticker rather than a graph.
+    // ===========================================================================
     (function () {
       if (window.ElectionChart) return; // idempotent — don't redefine on re-arrival
 
@@ -1977,58 +1915,46 @@ if (typeof window.ElectionChart === 'undefined') {
         var style = document.createElement('style');
         style.id = 'election-chart-styles';
         style.textContent = [
-          '.ec-root { width:100%; max-width:640px; font-family:sans-serif; }',
-          '.ec-section-label { font-size:11px; font-weight:bold; color:#888; letter-spacing:0.08em;',
-          '  text-transform:uppercase; margin-bottom:8px; }',
-          '.ec-section-label.ec-divider { border-top:1px solid #ddd; padding-top:10px; margin-top:4px; }',
-          '.ec-row { display:flex; align-items:center; gap:8px; margin-bottom:6px; }',
-          '.ec-row-name { font-size:12px; font-weight:bold; text-align:right; flex-shrink:0;',
-          '  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:#1a1a1a; }',
-          '.ec-barwrap { flex:1; background:#ececec; height:20px; border-radius:4px; position:relative; overflow:hidden; }',
-          '.ec-bar { height:100%; border-radius:4px; width:0%;',
-          '  transition:width 0.9s cubic-bezier(.22,.9,.34,1); }',
-          '.ec-threshold { position:absolute; top:-2px; width:2px; height:calc(100% + 4px);',
-          '  background:rgba(0,0,0,0.35); z-index:2; }',
-          '.ec-pct { width:46px; font-size:12px; color:#333; flex-shrink:0; font-variant-numeric:tabular-nums; }',
-          '.ec-legend { font-size:11px; color:#888; margin-bottom:16px; }',
-          '.ec-mini-row { display:flex; align-items:center; gap:6px; margin-bottom:4px; }',
-          '.ec-chip { width:10px; height:10px; border-radius:2px; flex-shrink:0; }',
-          '.ec-mini-name { width:46px; font-size:11px; color:#333; flex-shrink:0; text-align:right; }',
-          '.ec-mini-barwrap { flex:1; background:#f2f2f2; height:13px; border-radius:3px; overflow:hidden; }',
-          '.ec-mini-bar { height:100%; border-radius:3px; width:0%; opacity:0.88;',
-          '  transition:width 0.7s cubic-bezier(.22,.9,.34,1); }',
-          '.ec-mini-pct { width:38px; font-size:11px; color:#444; flex-shrink:0; }',
-          '.ec-cand-label { font-size:12.5px; font-weight:bold; margin:10px 0 5px; display:flex; align-items:center; gap:6px; }',
-          '.ec-banner { margin-top:10px; padding:8px 12px; border-radius:4px; font-size:12.5px; font-weight:bold;',
-          '  opacity:0; transform:translateY(4px); transition:opacity 0.5s ease, transform 0.5s ease; }',
+          '.ec-root { width:100%; max-width:520px; font-family:Georgia,"Times New Roman",serif; color:#1c1b19; }',
+          '.ec-section-label { font-size:10.5px; font-weight:bold; color:#8a8072; letter-spacing:0.1em;',
+          '  text-transform:uppercase; margin-bottom:10px; font-family:Arial,sans-serif; }',
+          '.ec-stack { display:flex; flex-direction:column; gap:8px; }',
+          '.ec-card { display:flex; align-items:stretch; border:1px solid #1c1b19; background:#fffdf8;',
+          '  position:relative; overflow:hidden; opacity:0; transform:translateY(4px);',
+          '  transition:opacity 0.45s ease, transform 0.45s ease; }',
+          '.ec-card.ec-show { opacity:1; transform:translateY(0); }',
+          '.ec-card.ec-leader { border-width:2px; }',
+          '.ec-card.ec-eliminated { opacity:0.55 !important; }',
+          '.ec-bar { width:7px; flex-shrink:0; transition:background 0.3s; }',
+          '.ec-body { flex:1; padding:9px 12px; display:flex; align-items:center; justify-content:space-between; gap:10px; min-width:0; }',
+          '.ec-name-wrap { min-width:0; }',
+          '.ec-name { font-size:13.5px; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }',
+          '.ec-party { font-family:Arial,sans-serif; font-size:9.5px; color:#8a8072; letter-spacing:0.03em;',
+          '  text-transform:uppercase; margin-top:1px; }',
+          '.ec-pct-wrap { text-align:right; font-family:Arial,sans-serif; flex-shrink:0; }',
+          '.ec-pct { font-size:18px; font-weight:bold; font-variant-numeric:tabular-nums; line-height:1; }',
+          '.ec-badge { font-family:Arial,sans-serif; font-size:8.5px; font-weight:bold; letter-spacing:0.05em;',
+          '  text-transform:uppercase; background:#1c1b19; color:#f2ede2; padding:2px 6px; border-radius:9px;',
+          '  margin-left:7px; white-space:nowrap; }',
+          '.ec-badge.ec-badge-win { background:#2a5a2a; }',
+          '.ec-badge.ec-badge-out { background:#8a8072; }',
+          '.ec-threshold-note { font-family:Arial,sans-serif; font-size:10.5px; color:#8a8072; margin-top:8px; }',
+          '.ec-detail { font-family:Arial,sans-serif; font-size:10.5px; color:#6b6355; margin-top:3px;',
+          '  padding-top:3px; border-top:1px dashed #d8d0bd; }',
+          '.ec-detail-item { white-space:nowrap; }',
+          '.ec-banner { margin-top:12px; padding:9px 12px; border-radius:3px; font-size:12.5px; font-weight:bold;',
+          '  font-family:Arial,sans-serif; opacity:0; transform:translateY(4px);',
+          '  transition:opacity 0.5s ease, transform 0.5s ease; }',
           '.ec-banner.ec-show { opacity:1; transform:translateY(0); }',
           '.ec-banner.ec-win { background:#f0fff0; border-left:4px solid #2a7a2a; color:#1a1a1a; }',
-          '.ec-banner.ec-runoff { background:#fff8f0; border-left:4px solid #c07000; color:#1a1a1a; }',
-          '.ec-cols { display:flex; gap:6px; height:150px; align-items:flex-end; margin-bottom:8px; }',
-          '.ec-col { display:flex; flex-direction:column; height:100%; border-radius:5px; overflow:hidden;',
-          '  transition:flex-grow 0.9s cubic-bezier(.22,.9,.34,1); }',
-          '.ec-col.ec-third { opacity:0.75; outline:2px dashed #aaa; }',
-          '.ec-col-header { display:flex; gap:6px; margin-bottom:6px; }',
-          '.ec-col-header-item { text-align:center; font-size:12px; font-weight:bold;',
-          '  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:2px 0; color:#666;',
-          '  transition:flex-grow 0.9s cubic-bezier(.22,.9,.34,1); }',
-          '.ec-col-header-item.ec-winner { color:#1a1a1a; }',
-          '.ec-seg { display:flex; align-items:center; justify-content:center; overflow:hidden; min-height:0;',
-          '  flex-grow:0; transition:flex-grow 0.7s cubic-bezier(.22,.9,.34,1) 0.15s; }',
-          '.ec-seg-label { font-size:10px; font-weight:bold; color:#fff; white-space:nowrap; pointer-events:none;',
-          '  text-shadow:0 0 2px #000,0 0 3px #000; }'
+          '.ec-banner.ec-runoff { background:#fff8f0; border-left:4px solid #c07000; color:#1a1a1a; }'
         ].join('\n');
         document.head.appendChild(style);
       }
 
-      // Sets flex-grow on the next animation frame (double-rAF for reliability
-      // across browsers) so the CSS transition actually plays instead of
-      // snapping straight to its final value.
-      function animateTo(el, prop, value) {
+      function animateShow(el) {
         requestAnimationFrame(function () {
-          requestAnimationFrame(function () {
-            el.style[prop] = value;
-          });
+          requestAnimationFrame(function () { el.classList.add('ec-show'); });
         });
       }
 
@@ -2049,69 +1975,67 @@ if (typeof window.ElectionChart === 'undefined') {
         return { candidateTotals: candidateTotals, grouped: grouped };
       }
 
-      function renderPartyBreakdown(container, candOrder, grouped, candidateTotals, total, opts) {
-        var divider = document.createElement('div');
-        divider.className = 'ec-section-label ec-divider';
-        divider.textContent = 'Party Support Breakdown';
-        container.appendChild(divider);
+      // Builds one ballot card for a candidate. `badge` is optional text
+      // ("Leads" / "Runoff" / "Elected" / "Eliminated"); `badgeClass` picks
+      // the badge color variant.
+      function renderCard(container, cand, pct, grouped, opts) {
+        var partiesIn = (grouped[cand] || []).slice().sort(function (a, b) { return b.votes - a.votes; });
+        var repParty = partiesIn.length ? partiesIn[0].party : null;
+        var repColor = repParty ? partyColor(repParty) : '#aaa';
 
-        candOrder.forEach(function (cand) {
-          if (!grouped[cand] || grouped[cand].length === 0) return;
-          var isWinner = opts.winnerKey && cand === opts.winnerKey;
-          var candTotal = candidateTotals[cand];
-          var candPct = total > 0 ? candTotal / total * 100 : 0;
+        var card = document.createElement('div');
+        card.className = 'ec-card' + (opts.isLeader ? ' ec-leader' : '') + (opts.eliminated ? ' ec-eliminated' : '');
 
-          var candLabel = document.createElement('div');
-          candLabel.className = 'ec-cand-label';
-          candLabel.style.color = isWinner ? '#1a1a1a' : '#555';
-          candLabel.textContent = dname(cand) + (isWinner ? ' \u2605' : '') + '  (' + candPct.toFixed(1) + '%)';
-          container.appendChild(candLabel);
+        var bar = document.createElement('div');
+        bar.className = 'ec-bar';
+        bar.style.background = repColor;
+        card.appendChild(bar);
 
-          var partiesIn = grouped[cand].slice().sort(function (a, b) { return b.votes - a.votes; });
-          var maxVotes = partiesIn[0].votes;
+        var body = document.createElement('div');
+        body.className = 'ec-body';
 
-          partiesIn.forEach(function (item) {
-            var row = document.createElement('div');
-            row.className = 'ec-mini-row';
+        var nameWrap = document.createElement('div');
+        nameWrap.className = 'ec-name-wrap';
 
-            var chip = document.createElement('div');
-            chip.className = 'ec-chip';
-            chip.style.background = partyColor(item.party);
+        var nameLine = document.createElement('div');
+        nameLine.className = 'ec-name';
+        nameLine.textContent = dname(cand);
+        if (opts.badge) {
+          var badge = document.createElement('span');
+          badge.className = 'ec-badge' + (opts.badgeClass ? ' ' + opts.badgeClass : '');
+          badge.textContent = opts.badge;
+          nameLine.appendChild(badge);
+        }
+        nameWrap.appendChild(nameLine);
 
-            var nameEl = document.createElement('div');
-            nameEl.className = 'ec-mini-name';
-            nameEl.textContent = partyLabel(item.party, opts.ddpName, opts.dsbpName);
+        var partyLine = document.createElement('div');
+        partyLine.className = 'ec-party';
+        var partyNames = partiesIn.map(function (p) { return partyLabel(p.party, opts.ddpName, opts.dsbpName); });
+        // Cap the inline party list so a candidate backed by a dozen tiny
+        // splinter parties doesn't blow out the card; overflow collapses
+        // into "+N more".
+        var shown = partyNames.slice(0, 3);
+        var extra = partyNames.length - shown.length;
+        partyLine.textContent = shown.join(', ') + (extra > 0 ? ' +' + extra + ' more' : '');
+        nameWrap.appendChild(partyLine);
 
-            var barWrap = document.createElement('div');
-            barWrap.className = 'ec-mini-barwrap';
+        body.appendChild(nameWrap);
 
-            var bar = document.createElement('div');
-            bar.className = 'ec-mini-bar';
-            bar.style.background = partyColor(item.party);
-            var barW = Math.round(item.votes / maxVotes * 100);
+        var pctWrap = document.createElement('div');
+        pctWrap.className = 'ec-pct-wrap';
+        var pctEl = document.createElement('div');
+        pctEl.className = 'ec-pct';
+        pctEl.textContent = pct.toFixed(1) + '%';
+        pctWrap.appendChild(pctEl);
+        body.appendChild(pctWrap);
 
-            var pctEl = document.createElement('div');
-            pctEl.className = 'ec-mini-pct';
-            pctEl.textContent = item.votes.toFixed(1) + '%';
-
-            barWrap.appendChild(bar);
-            row.appendChild(chip);
-            row.appendChild(nameEl);
-            row.appendChild(barWrap);
-            row.appendChild(pctEl);
-            container.appendChild(row);
-
-            animateTo(bar, 'width', barW + '%');
-          });
-
-          var spacer = document.createElement('div');
-          spacer.style.height = '10px';
-          container.appendChild(spacer);
-        });
+        card.appendChild(body);
+        container.appendChild(card);
+        animateShow(card);
       }
 
       // -------------------------------------------------------------------
-      // Round 1 — ranked bar chart of every candidate + party breakdown.
+      // Round 1 — ranked ballot stack, every candidate who drew votes.
       // -------------------------------------------------------------------
       function renderRound1(containerId, Q) {
         ensureStyles();
@@ -2136,77 +2060,40 @@ if (typeof window.ElectionChart === 'undefined') {
         header.textContent = 'First Round Results';
         container.appendChild(header);
 
-        var maxCandVotes = candidateTotals[candOrder[0]] || 1;
+        var stack = document.createElement('div');
+        stack.className = 'ec-stack';
+        container.appendChild(stack);
+
         var leaderPct = total > 0 ? (candidateTotals[candOrder[0]] / total * 100) : 0;
-        var thresholdPos = leaderPct > 0 ? Math.min(100, Math.round(50 / leaderPct * 100)) : 100;
+        var hasMajority = leaderPct >= 50;
 
-        candOrder.forEach(function (cand) {
-          var votes = candidateTotals[cand];
-          var pct = total > 0 ? votes / total * 100 : 0;
-          var barW = Math.round(votes / maxCandVotes * 100);
-          var repParty = grouped[cand][0].party;
-          var repColor = partyColor(repParty);
-
-          var row = document.createElement('div');
-          row.className = 'ec-row';
-
-          var nameEl = document.createElement('div');
-          nameEl.className = 'ec-row-name';
-          nameEl.style.width = '112px';
-          nameEl.textContent = dname(cand);
-
-          var barWrap = document.createElement('div');
-          barWrap.className = 'ec-barwrap';
-
-          var bar = document.createElement('div');
-          bar.className = 'ec-bar';
-          bar.style.background = repColor;
-
-          var threshold = document.createElement('div');
-          threshold.className = 'ec-threshold';
-          threshold.style.left = thresholdPos + '%';
-
-          var pctEl = document.createElement('div');
-          pctEl.className = 'ec-pct';
-          pctEl.textContent = pct.toFixed(1) + '%';
-
-          barWrap.appendChild(bar);
-          barWrap.appendChild(threshold);
-          row.appendChild(nameEl);
-          row.appendChild(barWrap);
-          row.appendChild(pctEl);
-          container.appendChild(row);
-
-          animateTo(bar, 'width', barW + '%');
+        candOrder.forEach(function (cand, idx) {
+          var pct = total > 0 ? candidateTotals[cand] / total * 100 : 0;
+          renderCard(stack, cand, pct, grouped, {
+            isLeader: idx === 0,
+            badge: idx === 0 ? (hasMajority ? 'Elected' : 'Leads') : (idx === 1 && !hasMajority ? 'Runoff' : null),
+            badgeClass: idx === 0 && hasMajority ? 'ec-badge-win' : null,
+            ddpName: Q.ddp_name, dsbpName: Q.dsbp_name
+          });
         });
 
-        var legend = document.createElement('div');
-        legend.className = 'ec-legend';
-        legend.style.paddingLeft = '120px';
-        legend.textContent = '\u25b2 50% majority threshold';
-        container.appendChild(legend);
-
-        renderPartyBreakdown(container, candOrder, grouped, candidateTotals, total, {
-          winnerKey: candOrder[0], ddpName: Q.ddp_name, dsbpName: Q.dsbp_name
-        });
-
-        var winner = candOrder[0];
-        var winnerPct = total > 0 ? candidateTotals[winner] / total * 100 : 0;
-        var hasMajority = winnerPct >= 50;
+        var note = document.createElement('div');
+        note.className = 'ec-threshold-note';
+        note.textContent = '\u25b2 50% of the vote is required to win outright in the first round.';
+        container.appendChild(note);
 
         var banner = document.createElement('div');
         banner.className = 'ec-banner ' + (hasMajority ? 'ec-win' : 'ec-runoff');
         banner.textContent = hasMajority
-          ? '\u2713 ' + dname(winner) + ' wins with ' + winnerPct.toFixed(1) + '% \u2014 majority achieved'
-          : '\u26a0 No majority \u2014 ' + dname(winner) + ' leads with ' + winnerPct.toFixed(1) + '% \u2014 runoff required';
+          ? '\u2713 ' + dname(candOrder[0]) + ' wins with ' + leaderPct.toFixed(1) + '% \u2014 majority achieved'
+          : '\u26a0 No majority \u2014 ' + dname(candOrder[0]) + ' leads with ' + leaderPct.toFixed(1) + '% \u2014 runoff required';
         container.appendChild(banner);
-        requestAnimationFrame(function () {
-          requestAnimationFrame(function () { banner.classList.add('ec-show'); });
-        });
+        animateShow(banner);
       }
 
       // -------------------------------------------------------------------
-      // Round 2 — finalist column comparison + party breakdown.
+      // Round 2 — finalist ballot stack (top two/three from round 1),
+      // winner marked Elected.
       // -------------------------------------------------------------------
       function renderRound2(containerId, Q) {
         ensureStyles();
@@ -2216,107 +2103,45 @@ if (typeof window.ElectionChart === 'undefined') {
         container.className = 'ec-root';
 
         var parties = Q.parties;
-        var finalist1 = canon(Q.round1_winner);
-        var finalist2 = canon(Q.round1_runner_up);
+        var data = groupByCandidate(parties, Q);
+        var candidateTotals = data.candidateTotals, grouped = data.grouped;
 
-        var buckets = {};
-        buckets[finalist1] = [];
-        buckets[finalist2] = [];
-        var extraKeys = [];
+        var total = 0;
+        for (var k in candidateTotals) total += candidateTotals[k];
 
-        for (var i = 0; i < parties.length; i++) {
-          var p = parties[i];
-          var cand = Q[p + '_candidate'];
-          if (!cand) continue;
-          var candNorm = canon(cand);
-          var votes = (Q[p + '_votes'] !== undefined && Q[p + '_votes'] !== null) ? Q[p + '_votes'] : (Q[p + '_r'] || 0);
-          if (votes <= 0) continue;
-          var bucket = (candNorm === finalist1) ? finalist1 : (candNorm === finalist2) ? finalist2 : candNorm;
-          if (!buckets[bucket]) {
-            buckets[bucket] = [];
-            if (bucket !== finalist1 && bucket !== finalist2) extraKeys.push(bucket);
-          }
-          buckets[bucket].push({ party: p, votes: votes });
-        }
-
-        function sumBucket(b) { return b.reduce(function (s, x) { return s + x.votes; }, 0); }
-
-        var cols = [finalist1, finalist2].concat(extraKeys);
-        var colTotals = cols.map(function (k) { return sumBucket(buckets[k]); });
-        var total = colTotals.reduce(function (s, v) { return s + v; }, 0);
-        var colPcts = colTotals.map(function (v) { return total > 0 ? v / total * 100 : 0; });
-
-        var headerRow = document.createElement('div');
-        headerRow.className = 'ec-col-header';
-        cols.forEach(function (k, idx) {
-          var isWinner = (k === Q.winner);
-          var h = document.createElement('div');
-          h.className = 'ec-col-header-item' + (isWinner ? ' ec-winner' : '');
-          h.style.flexGrow = '0.0001'; // start near zero, animate to real share
-          h.textContent = dname(k) + ' \u2014 ' + colPcts[idx].toFixed(1) + '%' + (isWinner ? ' \u2605' : '');
-          headerRow.appendChild(h);
-          animateTo(h, 'flexGrow', String(Math.max(colPcts[idx], 0.5)));
+        var candOrder = Object.keys(candidateTotals).sort(function (a, b) {
+          return candidateTotals[b] - candidateTotals[a];
         });
-        container.appendChild(headerRow);
 
-        var barRow = document.createElement('div');
-        barRow.className = 'ec-cols';
-        cols.forEach(function (k, colIdx) {
-          var colWrap = document.createElement('div');
-          colWrap.className = 'ec-col' + ((Q.round2_has_third && k === canon(Q.round1_third)) ? ' ec-third' : '');
-          colWrap.style.flexGrow = '0.0001';
+        var header = document.createElement('div');
+        header.className = 'ec-section-label';
+        header.textContent = 'Runoff Results';
+        container.appendChild(header);
 
-          var partiesIn = buckets[k].slice().sort(function (a, b) { return b.votes - a.votes; });
-          var colTotal = colTotals[colIdx];
-          partiesIn.forEach(function (p) {
-            var segPct = colTotal > 0 ? p.votes / colTotal * 100 : 0;
-            var seg = document.createElement('div');
-            seg.className = 'ec-seg';
-            seg.style.background = partyColor(p.party);
-            seg.style.flexGrow = '0';
-            seg.title = partyLabel(p.party, Q.ddp_name, Q.dsbp_name) + ': ' + p.votes.toFixed(1) + '%';
-            if (segPct > 5) {
-              var lbl = document.createElement('span');
-              lbl.className = 'ec-seg-label';
-              lbl.textContent = partyLabel(p.party, Q.ddp_name, Q.dsbp_name) + ' ' + p.votes.toFixed(1) + '%';
-              seg.appendChild(lbl);
-            }
-            colWrap.appendChild(seg);
-            animateTo(seg, 'flexGrow', String(Math.max(segPct, 0.001)));
+        var stack = document.createElement('div');
+        stack.className = 'ec-stack';
+        container.appendChild(stack);
+
+        var thirdKey = Q.round2_has_third ? canon(Q.round1_third) : null;
+
+        candOrder.forEach(function (cand, idx) {
+          var pct = total > 0 ? candidateTotals[cand] / total * 100 : 0;
+          var isWinner = cand === Q.winner;
+          var isEliminatedThird = thirdKey && cand === thirdKey && !isWinner;
+          renderCard(stack, cand, pct, grouped, {
+            isLeader: isWinner,
+            eliminated: isEliminatedThird,
+            badge: isWinner ? 'Elected' : (isEliminatedThird ? 'Eliminated in R1' : null),
+            badgeClass: isWinner ? 'ec-badge-win' : (isEliminatedThird ? 'ec-badge-out' : null),
+            ddpName: Q.ddp_name, dsbpName: Q.dsbp_name
           });
-          barRow.appendChild(colWrap);
-          animateTo(colWrap, 'flexGrow', String(Math.max(colPcts[colIdx], 0.5)));
-        });
-        container.appendChild(barRow);
-
-        var grouped = {};
-        for (var j = 0; j < parties.length; j++) {
-          var pj = parties[j];
-          var candj = Q[pj + '_candidate'];
-          if (!candj) continue;
-          var candNormj = canon(candj);
-          var votesj = (Q[pj + '_votes'] !== undefined && Q[pj + '_votes'] !== null) ? Q[pj + '_votes'] : (Q[pj + '_r'] || 0);
-          if (votesj <= 0) continue;
-          if (!grouped[candNormj]) grouped[candNormj] = [];
-          grouped[candNormj].push({ party: pj, votes: votesj });
-        }
-        var candidateTotals = {};
-        for (var gk in grouped) {
-          candidateTotals[gk] = grouped[gk].reduce(function (s, x) { return s + x.votes; }, 0);
-        }
-        var candOrder = Object.keys(grouped).sort(function (a, b) { return candidateTotals[b] - candidateTotals[a]; });
-
-        renderPartyBreakdown(container, candOrder, grouped, candidateTotals, total, {
-          winnerKey: Q.winner, ddpName: Q.ddp_name, dsbpName: Q.dsbp_name
         });
 
         var banner = document.createElement('div');
         banner.className = 'ec-banner ec-win';
         banner.textContent = '\u2713 ' + dname(Q.winner) + ' elected with ' + (Q.winner_votes_disp || '\u2014') + '% of the vote';
         container.appendChild(banner);
-        requestAnimationFrame(function () {
-          requestAnimationFrame(function () { banner.classList.add('ec-show'); });
-        });
+        animateShow(banner);
       }
 
       window.ElectionChart = {
@@ -2601,9 +2426,6 @@ No candidate achieved a majority in the first round. The candidates advance to a
 - @r2_menu: What should we do?
 
 @r2_menu
-
-[? if round2_has_third : Three candidates remain in the runoff: **[+ round1_winner +]** ([+ round1_winner_votes +]%), **[+ round1_runner_up +]** ([+ round1_runner_up_votes +]%), and **[+ round1_third +]** ([+ round1_third_votes_disp +]%). ?]
-[? if not round2_has_third : Two candidates remain: **[+ round1_winner +]** ([+ round1_winner_votes +]%) and **[+ round1_runner_up +]** ([+ round1_runner_up_votes +]%). ?]
 
 - @r2_push_out_third: Try to push out the third candidate.
 - @r2_switch_spd: Change our own support.
@@ -3013,7 +2835,7 @@ if (Q.tactical_switches.length) {
 !}
 go-to: post_r2
 
-[? if tactical_summary : *Behind the scenes: [+ tactical_summary +]* ?]
+[? if developer_mode and tactical_summary : *Behind the scenes: [+ tactical_summary +]* ?]
 
 
 
@@ -3096,6 +2918,18 @@ if (typeof window.ElectionChart === 'undefined') {
     // replacing the four near-duplicate copies of partyColors/partyLabels/
     // canon2/displayNames that existed across the two on-display blocks.
     // ===========================================================================
+    // ===========================================================================
+    // ElectionChart — shared, animated, dependency-free chart module for the
+    // presidential election results screens (round 1 ballot stack, round 2
+    // finalist ballot stack). Defined once (idempotent — safe if this script
+    // block runs more than once) and reused by both @r1_results and @post_r2.
+    //
+    // Style: "ballot stack" — each candidate is a self-contained card with a
+    // colored spine (party color of their largest backer) and a Leads/Runoff/
+    // Elected badge on the front-runner(s). Chosen over a shared-axis bar
+    // chart because it reflows cleanly on narrow/mobile widths and reads as
+    // a results ticker rather than a graph.
+    // ===========================================================================
     (function () {
       if (window.ElectionChart) return; // idempotent — don't redefine on re-arrival
 
@@ -3148,58 +2982,46 @@ if (typeof window.ElectionChart === 'undefined') {
         var style = document.createElement('style');
         style.id = 'election-chart-styles';
         style.textContent = [
-          '.ec-root { width:100%; max-width:640px; font-family:sans-serif; }',
-          '.ec-section-label { font-size:11px; font-weight:bold; color:#888; letter-spacing:0.08em;',
-          '  text-transform:uppercase; margin-bottom:8px; }',
-          '.ec-section-label.ec-divider { border-top:1px solid #ddd; padding-top:10px; margin-top:4px; }',
-          '.ec-row { display:flex; align-items:center; gap:8px; margin-bottom:6px; }',
-          '.ec-row-name { font-size:12px; font-weight:bold; text-align:right; flex-shrink:0;',
-          '  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:#1a1a1a; }',
-          '.ec-barwrap { flex:1; background:#ececec; height:20px; border-radius:4px; position:relative; overflow:hidden; }',
-          '.ec-bar { height:100%; border-radius:4px; width:0%;',
-          '  transition:width 0.9s cubic-bezier(.22,.9,.34,1); }',
-          '.ec-threshold { position:absolute; top:-2px; width:2px; height:calc(100% + 4px);',
-          '  background:rgba(0,0,0,0.35); z-index:2; }',
-          '.ec-pct { width:46px; font-size:12px; color:#333; flex-shrink:0; font-variant-numeric:tabular-nums; }',
-          '.ec-legend { font-size:11px; color:#888; margin-bottom:16px; }',
-          '.ec-mini-row { display:flex; align-items:center; gap:6px; margin-bottom:4px; }',
-          '.ec-chip { width:10px; height:10px; border-radius:2px; flex-shrink:0; }',
-          '.ec-mini-name { width:46px; font-size:11px; color:#333; flex-shrink:0; text-align:right; }',
-          '.ec-mini-barwrap { flex:1; background:#f2f2f2; height:13px; border-radius:3px; overflow:hidden; }',
-          '.ec-mini-bar { height:100%; border-radius:3px; width:0%; opacity:0.88;',
-          '  transition:width 0.7s cubic-bezier(.22,.9,.34,1); }',
-          '.ec-mini-pct { width:38px; font-size:11px; color:#444; flex-shrink:0; }',
-          '.ec-cand-label { font-size:12.5px; font-weight:bold; margin:10px 0 5px; display:flex; align-items:center; gap:6px; }',
-          '.ec-banner { margin-top:10px; padding:8px 12px; border-radius:4px; font-size:12.5px; font-weight:bold;',
-          '  opacity:0; transform:translateY(4px); transition:opacity 0.5s ease, transform 0.5s ease; }',
+          '.ec-root { width:100%; max-width:520px; font-family:Georgia,"Times New Roman",serif; color:#1c1b19; }',
+          '.ec-section-label { font-size:10.5px; font-weight:bold; color:#8a8072; letter-spacing:0.1em;',
+          '  text-transform:uppercase; margin-bottom:10px; font-family:Arial,sans-serif; }',
+          '.ec-stack { display:flex; flex-direction:column; gap:8px; }',
+          '.ec-card { display:flex; align-items:stretch; border:1px solid #1c1b19; background:#fffdf8;',
+          '  position:relative; overflow:hidden; opacity:0; transform:translateY(4px);',
+          '  transition:opacity 0.45s ease, transform 0.45s ease; }',
+          '.ec-card.ec-show { opacity:1; transform:translateY(0); }',
+          '.ec-card.ec-leader { border-width:2px; }',
+          '.ec-card.ec-eliminated { opacity:0.55 !important; }',
+          '.ec-bar { width:7px; flex-shrink:0; transition:background 0.3s; }',
+          '.ec-body { flex:1; padding:9px 12px; display:flex; align-items:center; justify-content:space-between; gap:10px; min-width:0; }',
+          '.ec-name-wrap { min-width:0; }',
+          '.ec-name { font-size:13.5px; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }',
+          '.ec-party { font-family:Arial,sans-serif; font-size:9.5px; color:#8a8072; letter-spacing:0.03em;',
+          '  text-transform:uppercase; margin-top:1px; }',
+          '.ec-pct-wrap { text-align:right; font-family:Arial,sans-serif; flex-shrink:0; }',
+          '.ec-pct { font-size:18px; font-weight:bold; font-variant-numeric:tabular-nums; line-height:1; }',
+          '.ec-badge { font-family:Arial,sans-serif; font-size:8.5px; font-weight:bold; letter-spacing:0.05em;',
+          '  text-transform:uppercase; background:#1c1b19; color:#f2ede2; padding:2px 6px; border-radius:9px;',
+          '  margin-left:7px; white-space:nowrap; }',
+          '.ec-badge.ec-badge-win { background:#2a5a2a; }',
+          '.ec-badge.ec-badge-out { background:#8a8072; }',
+          '.ec-threshold-note { font-family:Arial,sans-serif; font-size:10.5px; color:#8a8072; margin-top:8px; }',
+          '.ec-detail { font-family:Arial,sans-serif; font-size:10.5px; color:#6b6355; margin-top:3px;',
+          '  padding-top:3px; border-top:1px dashed #d8d0bd; }',
+          '.ec-detail-item { white-space:nowrap; }',
+          '.ec-banner { margin-top:12px; padding:9px 12px; border-radius:3px; font-size:12.5px; font-weight:bold;',
+          '  font-family:Arial,sans-serif; opacity:0; transform:translateY(4px);',
+          '  transition:opacity 0.5s ease, transform 0.5s ease; }',
           '.ec-banner.ec-show { opacity:1; transform:translateY(0); }',
           '.ec-banner.ec-win { background:#f0fff0; border-left:4px solid #2a7a2a; color:#1a1a1a; }',
-          '.ec-banner.ec-runoff { background:#fff8f0; border-left:4px solid #c07000; color:#1a1a1a; }',
-          '.ec-cols { display:flex; gap:6px; height:150px; align-items:flex-end; margin-bottom:8px; }',
-          '.ec-col { display:flex; flex-direction:column; height:100%; border-radius:5px; overflow:hidden;',
-          '  transition:flex-grow 0.9s cubic-bezier(.22,.9,.34,1); }',
-          '.ec-col.ec-third { opacity:0.75; outline:2px dashed #aaa; }',
-          '.ec-col-header { display:flex; gap:6px; margin-bottom:6px; }',
-          '.ec-col-header-item { text-align:center; font-size:12px; font-weight:bold;',
-          '  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:2px 0; color:#666;',
-          '  transition:flex-grow 0.9s cubic-bezier(.22,.9,.34,1); }',
-          '.ec-col-header-item.ec-winner { color:#1a1a1a; }',
-          '.ec-seg { display:flex; align-items:center; justify-content:center; overflow:hidden; min-height:0;',
-          '  flex-grow:0; transition:flex-grow 0.7s cubic-bezier(.22,.9,.34,1) 0.15s; }',
-          '.ec-seg-label { font-size:10px; font-weight:bold; color:#fff; white-space:nowrap; pointer-events:none;',
-          '  text-shadow:0 0 2px #000,0 0 3px #000; }'
+          '.ec-banner.ec-runoff { background:#fff8f0; border-left:4px solid #c07000; color:#1a1a1a; }'
         ].join('\n');
         document.head.appendChild(style);
       }
 
-      // Sets flex-grow on the next animation frame (double-rAF for reliability
-      // across browsers) so the CSS transition actually plays instead of
-      // snapping straight to its final value.
-      function animateTo(el, prop, value) {
+      function animateShow(el) {
         requestAnimationFrame(function () {
-          requestAnimationFrame(function () {
-            el.style[prop] = value;
-          });
+          requestAnimationFrame(function () { el.classList.add('ec-show'); });
         });
       }
 
@@ -3220,69 +3042,67 @@ if (typeof window.ElectionChart === 'undefined') {
         return { candidateTotals: candidateTotals, grouped: grouped };
       }
 
-      function renderPartyBreakdown(container, candOrder, grouped, candidateTotals, total, opts) {
-        var divider = document.createElement('div');
-        divider.className = 'ec-section-label ec-divider';
-        divider.textContent = 'Party Support Breakdown';
-        container.appendChild(divider);
+      // Builds one ballot card for a candidate. `badge` is optional text
+      // ("Leads" / "Runoff" / "Elected" / "Eliminated"); `badgeClass` picks
+      // the badge color variant.
+      function renderCard(container, cand, pct, grouped, opts) {
+        var partiesIn = (grouped[cand] || []).slice().sort(function (a, b) { return b.votes - a.votes; });
+        var repParty = partiesIn.length ? partiesIn[0].party : null;
+        var repColor = repParty ? partyColor(repParty) : '#aaa';
 
-        candOrder.forEach(function (cand) {
-          if (!grouped[cand] || grouped[cand].length === 0) return;
-          var isWinner = opts.winnerKey && cand === opts.winnerKey;
-          var candTotal = candidateTotals[cand];
-          var candPct = total > 0 ? candTotal / total * 100 : 0;
+        var card = document.createElement('div');
+        card.className = 'ec-card' + (opts.isLeader ? ' ec-leader' : '') + (opts.eliminated ? ' ec-eliminated' : '');
 
-          var candLabel = document.createElement('div');
-          candLabel.className = 'ec-cand-label';
-          candLabel.style.color = isWinner ? '#1a1a1a' : '#555';
-          candLabel.textContent = dname(cand) + (isWinner ? ' \u2605' : '') + '  (' + candPct.toFixed(1) + '%)';
-          container.appendChild(candLabel);
+        var bar = document.createElement('div');
+        bar.className = 'ec-bar';
+        bar.style.background = repColor;
+        card.appendChild(bar);
 
-          var partiesIn = grouped[cand].slice().sort(function (a, b) { return b.votes - a.votes; });
-          var maxVotes = partiesIn[0].votes;
+        var body = document.createElement('div');
+        body.className = 'ec-body';
 
-          partiesIn.forEach(function (item) {
-            var row = document.createElement('div');
-            row.className = 'ec-mini-row';
+        var nameWrap = document.createElement('div');
+        nameWrap.className = 'ec-name-wrap';
 
-            var chip = document.createElement('div');
-            chip.className = 'ec-chip';
-            chip.style.background = partyColor(item.party);
+        var nameLine = document.createElement('div');
+        nameLine.className = 'ec-name';
+        nameLine.textContent = dname(cand);
+        if (opts.badge) {
+          var badge = document.createElement('span');
+          badge.className = 'ec-badge' + (opts.badgeClass ? ' ' + opts.badgeClass : '');
+          badge.textContent = opts.badge;
+          nameLine.appendChild(badge);
+        }
+        nameWrap.appendChild(nameLine);
 
-            var nameEl = document.createElement('div');
-            nameEl.className = 'ec-mini-name';
-            nameEl.textContent = partyLabel(item.party, opts.ddpName, opts.dsbpName);
+        var partyLine = document.createElement('div');
+        partyLine.className = 'ec-party';
+        var partyNames = partiesIn.map(function (p) { return partyLabel(p.party, opts.ddpName, opts.dsbpName); });
+        // Cap the inline party list so a candidate backed by a dozen tiny
+        // splinter parties doesn't blow out the card; overflow collapses
+        // into "+N more".
+        var shown = partyNames.slice(0, 3);
+        var extra = partyNames.length - shown.length;
+        partyLine.textContent = shown.join(', ') + (extra > 0 ? ' +' + extra + ' more' : '');
+        nameWrap.appendChild(partyLine);
 
-            var barWrap = document.createElement('div');
-            barWrap.className = 'ec-mini-barwrap';
+        body.appendChild(nameWrap);
 
-            var bar = document.createElement('div');
-            bar.className = 'ec-mini-bar';
-            bar.style.background = partyColor(item.party);
-            var barW = Math.round(item.votes / maxVotes * 100);
+        var pctWrap = document.createElement('div');
+        pctWrap.className = 'ec-pct-wrap';
+        var pctEl = document.createElement('div');
+        pctEl.className = 'ec-pct';
+        pctEl.textContent = pct.toFixed(1) + '%';
+        pctWrap.appendChild(pctEl);
+        body.appendChild(pctWrap);
 
-            var pctEl = document.createElement('div');
-            pctEl.className = 'ec-mini-pct';
-            pctEl.textContent = item.votes.toFixed(1) + '%';
-
-            barWrap.appendChild(bar);
-            row.appendChild(chip);
-            row.appendChild(nameEl);
-            row.appendChild(barWrap);
-            row.appendChild(pctEl);
-            container.appendChild(row);
-
-            animateTo(bar, 'width', barW + '%');
-          });
-
-          var spacer = document.createElement('div');
-          spacer.style.height = '10px';
-          container.appendChild(spacer);
-        });
+        card.appendChild(body);
+        container.appendChild(card);
+        animateShow(card);
       }
 
       // -------------------------------------------------------------------
-      // Round 1 — ranked bar chart of every candidate + party breakdown.
+      // Round 1 — ranked ballot stack, every candidate who drew votes.
       // -------------------------------------------------------------------
       function renderRound1(containerId, Q) {
         ensureStyles();
@@ -3307,77 +3127,40 @@ if (typeof window.ElectionChart === 'undefined') {
         header.textContent = 'First Round Results';
         container.appendChild(header);
 
-        var maxCandVotes = candidateTotals[candOrder[0]] || 1;
+        var stack = document.createElement('div');
+        stack.className = 'ec-stack';
+        container.appendChild(stack);
+
         var leaderPct = total > 0 ? (candidateTotals[candOrder[0]] / total * 100) : 0;
-        var thresholdPos = leaderPct > 0 ? Math.min(100, Math.round(50 / leaderPct * 100)) : 100;
+        var hasMajority = leaderPct >= 50;
 
-        candOrder.forEach(function (cand) {
-          var votes = candidateTotals[cand];
-          var pct = total > 0 ? votes / total * 100 : 0;
-          var barW = Math.round(votes / maxCandVotes * 100);
-          var repParty = grouped[cand][0].party;
-          var repColor = partyColor(repParty);
-
-          var row = document.createElement('div');
-          row.className = 'ec-row';
-
-          var nameEl = document.createElement('div');
-          nameEl.className = 'ec-row-name';
-          nameEl.style.width = '112px';
-          nameEl.textContent = dname(cand);
-
-          var barWrap = document.createElement('div');
-          barWrap.className = 'ec-barwrap';
-
-          var bar = document.createElement('div');
-          bar.className = 'ec-bar';
-          bar.style.background = repColor;
-
-          var threshold = document.createElement('div');
-          threshold.className = 'ec-threshold';
-          threshold.style.left = thresholdPos + '%';
-
-          var pctEl = document.createElement('div');
-          pctEl.className = 'ec-pct';
-          pctEl.textContent = pct.toFixed(1) + '%';
-
-          barWrap.appendChild(bar);
-          barWrap.appendChild(threshold);
-          row.appendChild(nameEl);
-          row.appendChild(barWrap);
-          row.appendChild(pctEl);
-          container.appendChild(row);
-
-          animateTo(bar, 'width', barW + '%');
+        candOrder.forEach(function (cand, idx) {
+          var pct = total > 0 ? candidateTotals[cand] / total * 100 : 0;
+          renderCard(stack, cand, pct, grouped, {
+            isLeader: idx === 0,
+            badge: idx === 0 ? (hasMajority ? 'Elected' : 'Leads') : (idx === 1 && !hasMajority ? 'Runoff' : null),
+            badgeClass: idx === 0 && hasMajority ? 'ec-badge-win' : null,
+            ddpName: Q.ddp_name, dsbpName: Q.dsbp_name
+          });
         });
 
-        var legend = document.createElement('div');
-        legend.className = 'ec-legend';
-        legend.style.paddingLeft = '120px';
-        legend.textContent = '\u25b2 50% majority threshold';
-        container.appendChild(legend);
-
-        renderPartyBreakdown(container, candOrder, grouped, candidateTotals, total, {
-          winnerKey: candOrder[0], ddpName: Q.ddp_name, dsbpName: Q.dsbp_name
-        });
-
-        var winner = candOrder[0];
-        var winnerPct = total > 0 ? candidateTotals[winner] / total * 100 : 0;
-        var hasMajority = winnerPct >= 50;
+        var note = document.createElement('div');
+        note.className = 'ec-threshold-note';
+        note.textContent = '\u25b2 50% of the vote is required to win outright in the first round.';
+        container.appendChild(note);
 
         var banner = document.createElement('div');
         banner.className = 'ec-banner ' + (hasMajority ? 'ec-win' : 'ec-runoff');
         banner.textContent = hasMajority
-          ? '\u2713 ' + dname(winner) + ' wins with ' + winnerPct.toFixed(1) + '% \u2014 majority achieved'
-          : '\u26a0 No majority \u2014 ' + dname(winner) + ' leads with ' + winnerPct.toFixed(1) + '% \u2014 runoff required';
+          ? '\u2713 ' + dname(candOrder[0]) + ' wins with ' + leaderPct.toFixed(1) + '% \u2014 majority achieved'
+          : '\u26a0 No majority \u2014 ' + dname(candOrder[0]) + ' leads with ' + leaderPct.toFixed(1) + '% \u2014 runoff required';
         container.appendChild(banner);
-        requestAnimationFrame(function () {
-          requestAnimationFrame(function () { banner.classList.add('ec-show'); });
-        });
+        animateShow(banner);
       }
 
       // -------------------------------------------------------------------
-      // Round 2 — finalist column comparison + party breakdown.
+      // Round 2 — finalist ballot stack (top two/three from round 1),
+      // winner marked Elected.
       // -------------------------------------------------------------------
       function renderRound2(containerId, Q) {
         ensureStyles();
@@ -3387,107 +3170,45 @@ if (typeof window.ElectionChart === 'undefined') {
         container.className = 'ec-root';
 
         var parties = Q.parties;
-        var finalist1 = canon(Q.round1_winner);
-        var finalist2 = canon(Q.round1_runner_up);
+        var data = groupByCandidate(parties, Q);
+        var candidateTotals = data.candidateTotals, grouped = data.grouped;
 
-        var buckets = {};
-        buckets[finalist1] = [];
-        buckets[finalist2] = [];
-        var extraKeys = [];
+        var total = 0;
+        for (var k in candidateTotals) total += candidateTotals[k];
 
-        for (var i = 0; i < parties.length; i++) {
-          var p = parties[i];
-          var cand = Q[p + '_candidate'];
-          if (!cand) continue;
-          var candNorm = canon(cand);
-          var votes = (Q[p + '_votes'] !== undefined && Q[p + '_votes'] !== null) ? Q[p + '_votes'] : (Q[p + '_r'] || 0);
-          if (votes <= 0) continue;
-          var bucket = (candNorm === finalist1) ? finalist1 : (candNorm === finalist2) ? finalist2 : candNorm;
-          if (!buckets[bucket]) {
-            buckets[bucket] = [];
-            if (bucket !== finalist1 && bucket !== finalist2) extraKeys.push(bucket);
-          }
-          buckets[bucket].push({ party: p, votes: votes });
-        }
-
-        function sumBucket(b) { return b.reduce(function (s, x) { return s + x.votes; }, 0); }
-
-        var cols = [finalist1, finalist2].concat(extraKeys);
-        var colTotals = cols.map(function (k) { return sumBucket(buckets[k]); });
-        var total = colTotals.reduce(function (s, v) { return s + v; }, 0);
-        var colPcts = colTotals.map(function (v) { return total > 0 ? v / total * 100 : 0; });
-
-        var headerRow = document.createElement('div');
-        headerRow.className = 'ec-col-header';
-        cols.forEach(function (k, idx) {
-          var isWinner = (k === Q.winner);
-          var h = document.createElement('div');
-          h.className = 'ec-col-header-item' + (isWinner ? ' ec-winner' : '');
-          h.style.flexGrow = '0.0001'; // start near zero, animate to real share
-          h.textContent = dname(k) + ' \u2014 ' + colPcts[idx].toFixed(1) + '%' + (isWinner ? ' \u2605' : '');
-          headerRow.appendChild(h);
-          animateTo(h, 'flexGrow', String(Math.max(colPcts[idx], 0.5)));
+        var candOrder = Object.keys(candidateTotals).sort(function (a, b) {
+          return candidateTotals[b] - candidateTotals[a];
         });
-        container.appendChild(headerRow);
 
-        var barRow = document.createElement('div');
-        barRow.className = 'ec-cols';
-        cols.forEach(function (k, colIdx) {
-          var colWrap = document.createElement('div');
-          colWrap.className = 'ec-col' + ((Q.round2_has_third && k === canon(Q.round1_third)) ? ' ec-third' : '');
-          colWrap.style.flexGrow = '0.0001';
+        var header = document.createElement('div');
+        header.className = 'ec-section-label';
+        header.textContent = 'Runoff Results';
+        container.appendChild(header);
 
-          var partiesIn = buckets[k].slice().sort(function (a, b) { return b.votes - a.votes; });
-          var colTotal = colTotals[colIdx];
-          partiesIn.forEach(function (p) {
-            var segPct = colTotal > 0 ? p.votes / colTotal * 100 : 0;
-            var seg = document.createElement('div');
-            seg.className = 'ec-seg';
-            seg.style.background = partyColor(p.party);
-            seg.style.flexGrow = '0';
-            seg.title = partyLabel(p.party, Q.ddp_name, Q.dsbp_name) + ': ' + p.votes.toFixed(1) + '%';
-            if (segPct > 5) {
-              var lbl = document.createElement('span');
-              lbl.className = 'ec-seg-label';
-              lbl.textContent = partyLabel(p.party, Q.ddp_name, Q.dsbp_name) + ' ' + p.votes.toFixed(1) + '%';
-              seg.appendChild(lbl);
-            }
-            colWrap.appendChild(seg);
-            animateTo(seg, 'flexGrow', String(Math.max(segPct, 0.001)));
+        var stack = document.createElement('div');
+        stack.className = 'ec-stack';
+        container.appendChild(stack);
+
+        var thirdKey = Q.round2_has_third ? canon(Q.round1_third) : null;
+
+        candOrder.forEach(function (cand, idx) {
+          var pct = total > 0 ? candidateTotals[cand] / total * 100 : 0;
+          var isWinner = cand === Q.winner;
+          var isEliminatedThird = thirdKey && cand === thirdKey && !isWinner;
+          renderCard(stack, cand, pct, grouped, {
+            isLeader: isWinner,
+            eliminated: isEliminatedThird,
+            badge: isWinner ? 'Elected' : (isEliminatedThird ? 'Eliminated in R1' : null),
+            badgeClass: isWinner ? 'ec-badge-win' : (isEliminatedThird ? 'ec-badge-out' : null),
+            ddpName: Q.ddp_name, dsbpName: Q.dsbp_name
           });
-          barRow.appendChild(colWrap);
-          animateTo(colWrap, 'flexGrow', String(Math.max(colPcts[colIdx], 0.5)));
-        });
-        container.appendChild(barRow);
-
-        var grouped = {};
-        for (var j = 0; j < parties.length; j++) {
-          var pj = parties[j];
-          var candj = Q[pj + '_candidate'];
-          if (!candj) continue;
-          var candNormj = canon(candj);
-          var votesj = (Q[pj + '_votes'] !== undefined && Q[pj + '_votes'] !== null) ? Q[pj + '_votes'] : (Q[pj + '_r'] || 0);
-          if (votesj <= 0) continue;
-          if (!grouped[candNormj]) grouped[candNormj] = [];
-          grouped[candNormj].push({ party: pj, votes: votesj });
-        }
-        var candidateTotals = {};
-        for (var gk in grouped) {
-          candidateTotals[gk] = grouped[gk].reduce(function (s, x) { return s + x.votes; }, 0);
-        }
-        var candOrder = Object.keys(grouped).sort(function (a, b) { return candidateTotals[b] - candidateTotals[a]; });
-
-        renderPartyBreakdown(container, candOrder, grouped, candidateTotals, total, {
-          winnerKey: Q.winner, ddpName: Q.ddp_name, dsbpName: Q.dsbp_name
         });
 
         var banner = document.createElement('div');
         banner.className = 'ec-banner ec-win';
         banner.textContent = '\u2713 ' + dname(Q.winner) + ' elected with ' + (Q.winner_votes_disp || '\u2014') + '% of the vote';
         container.appendChild(banner);
-        requestAnimationFrame(function () {
-          requestAnimationFrame(function () { banner.classList.add('ec-show'); });
-        });
+        animateShow(banner);
       }
 
       window.ElectionChart = {
@@ -3505,8 +3226,6 @@ go-to: election_end
 **Final Results:**
 
 {!<div id="pres_r2_chart"></div>!}
-
-[+ winner_desc +] has won the presidency with [+ winner_votes_disp +]% of the vote!
 
 @election_end
 on-departure: {!
