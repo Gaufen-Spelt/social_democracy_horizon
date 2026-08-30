@@ -1916,202 +1916,418 @@ go-to: r1_results
 
 @r1_results
 on-display: {!
-var partyColors = {
-    spd:"#E3000F", kpd:"#8B0000", sapd:"#C40000", srpd:"#FF6B6B",
-    z:"#000000",   bvp:"#69A2BE", csrp:"#FFCCFF", ddp:"#DCCA4A",
-    dvp:"#D5AC27", wp:"#424242",  cnbl:"#5D4E37", csvd:"#3f7bc1",
-    dnvp:"#3f7bc1",nsdap:"#954B00",kvp:"#3f7bc1", dhp:"#5D4E37",
-    bb:"#69A2BE",  vrp:"#8B7355", dvfp:"#7A5C12", other:"#a0a0a0",
-    aspd:"#B22222", hl:"#2E8B57", sl:"#005B96", kpo:"#990000", vnr:"#4B5320",
-    lb:"#6B0000", rdp:"#B8B000", cvp:"#1A1A1A", sls:"#4A7C59", dtsp:"#3B1A00",
-    dbp:"#03A331", dsbp:"#7A9DB5", dnf:"#000F70",
-    kapd:"#5C0000", faud:"#1C1C1C", rlb:"#4A5D23"
-};
+if (typeof window.ElectionChart === 'undefined') {
+    // ===========================================================================
+    // ElectionChart — shared, animated, dependency-free chart module for the
+    // presidential election results screens (round 1 bar chart, round 2
+    // finalist comparison). Defined once (idempotent — safe if this script
+    // block runs more than once) and reused by both @r1_results and @post_r2,
+    // replacing the four near-duplicate copies of partyColors/partyLabels/
+    // canon2/displayNames that existed across the two on-display blocks.
+    // ===========================================================================
+    (function () {
+      if (window.ElectionChart) return; // idempotent — don't redefine on re-arrival
 
-var partyLabels = {
-    spd:"SPD", kpd:"KPD", sapd:"SAPD", srpd:"SRPD", z:"Z", bvp:"BVP",
-    csrp:"CSRP", ddp:Q.ddp_name||"DDP", dvp:"DVP", wp:"WP",
-    cnbl:"CNBL", csvd:"CSVD", dnvp:"DNVP", nsdap:"NSDAP", kvp:"KVP",
-    dhp:"DHP", bb:"BB", vrp:"VRP", dvfp:"DVFP", other:"Other",
-    aspd:"ASPD", hl:"HL", sl:"SL", kpo:"KPO", vnr:"VNR",
-    lb:"LB", rdp:"RDP", cvp:"CVP", sls:"SLS", dtsp:"DtsP",
-    dbp:"DBP", dsbp:"DSBP", dnf:"DNF",
-    kapd:"KAPD", faud:"FAUD", rlb:"RLB"
-};
+      var PARTY_COLORS = {
+        spd: "#E3000F", kpd: "#8B0000", sapd: "#C40000", srpd: "#FF6B6B",
+        z: "#000000", bvp: "#69A2BE", csrp: "#FFCCFF", ddp: "#DCCA4A",
+        dvp: "#D5AC27", wp: "#424242", cnbl: "#5D4E37", csvd: "#3f7bc1",
+        dnvp: "#3f7bc1", nsdap: "#954B00", kvp: "#3f7bc1", dhp: "#5D4E37",
+        bb: "#69A2BE", vrp: "#8B7355", dvfp: "#7A5C12", other: "#a0a0a0",
+        aspd: "#B22222", hl: "#2E8B57", sl: "#005B96", kpo: "#990000", vnr: "#4B5320",
+        lb: "#6B0000", rdp: "#B8B000", cvp: "#1A1A1A", sls: "#4A7C59", dtsp: "#3B1A00",
+        dbp: "#03A331", dsbp: "#7A9DB5", dnf: "#000F70",
+        kapd: "#5C0000", faud: "#1C1C1C", rlb: "#4A5D23"
+      };
 
-var allParties = Q.parties;
+      var CAND_ALIAS_DISPLAY = {
+        "G\u00f6ring": "Goring", "Br\u00fcning": "Bruning", "Sch\u00e4ffer": "Schaffer",
+        "L\u00fcders": "Luders", "Koch-Weser": "KochWeser", "Th\u00e4lmann": "Thalmann",
+        "M\u00fcnzenberg": "Munzenberg", "B\u00f6hm": "Bohm"
+      };
 
-// Alias-aware canonicalization (self-contained per this block's own
-// JS scope). Previously a bare accent-stripping canon2() with no
-// alias table -- any candidate stored under an alias spelling could
-// split into a duplicate row here instead of merging into one.
-var CAND_ALIAS_DISPLAY = { "G\u00f6ring": "Goring", "Br\u00fcning": "Bruning", "Sch\u00e4ffer": "Schaffer",
-    "L\u00fcders": "Luders", "Koch-Weser": "KochWeser", "Th\u00e4lmann": "Thalmann",
-    "M\u00fcnzenberg": "Munzenberg", "B\u00f6hm": "Bohm" };
-function canon2(name) {
-    if (!name) return name;
-    if (CAND_ALIAS_DISPLAY[name]) return CAND_ALIAS_DISPLAY[name];
-    var stripped = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/_/g, "");
-    return CAND_ALIAS_DISPLAY[stripped] || stripped;
+      var DISPLAY_NAMES = {
+        Thalmann: "Th\u00e4lmann", Munzenberg: "M\u00fcnzenberg", Bruning: "Br\u00fcning",
+        Schaffer: "Sch\u00e4ffer", Goring: "G\u00f6ring", KochWeser: "Koch-Weser",
+        Lambach2: "Lambach (CSVD)"
+      };
+
+      function canon(name) {
+        if (!name) return name;
+        if (CAND_ALIAS_DISPLAY[name]) return CAND_ALIAS_DISPLAY[name];
+        var stripped = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/_/g, "");
+        return CAND_ALIAS_DISPLAY[stripped] || stripped;
+      }
+
+      function dname(k) { return DISPLAY_NAMES[k] || k; }
+
+      function partyLabel(partyKey, ddpName, dsbpName) {
+        if (partyKey === "ddp") return ddpName || "DDP";
+        if (partyKey === "dsbp") return dsbpName || "DSBP";
+        if (partyKey === "dtsp") return "DtsP";
+        return partyKey.toUpperCase();
+      }
+
+      function partyColor(partyKey) { return PARTY_COLORS[partyKey] || "#aaa"; }
+
+      // Injected once; scopes all chart CSS under .ec- prefixes so it can't
+      // collide with the rest of the page's styles.
+      function ensureStyles() {
+        if (document.getElementById('election-chart-styles')) return;
+        var style = document.createElement('style');
+        style.id = 'election-chart-styles';
+        style.textContent = [
+          '.ec-root { width:100%; max-width:640px; font-family:sans-serif; }',
+          '.ec-section-label { font-size:11px; font-weight:bold; color:#888; letter-spacing:0.08em;',
+          '  text-transform:uppercase; margin-bottom:8px; }',
+          '.ec-section-label.ec-divider { border-top:1px solid #ddd; padding-top:10px; margin-top:4px; }',
+          '.ec-row { display:flex; align-items:center; gap:8px; margin-bottom:6px; }',
+          '.ec-row-name { font-size:12px; font-weight:bold; text-align:right; flex-shrink:0;',
+          '  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:#1a1a1a; }',
+          '.ec-barwrap { flex:1; background:#ececec; height:20px; border-radius:4px; position:relative; overflow:hidden; }',
+          '.ec-bar { height:100%; border-radius:4px; width:0%;',
+          '  transition:width 0.9s cubic-bezier(.22,.9,.34,1); }',
+          '.ec-threshold { position:absolute; top:-2px; width:2px; height:calc(100% + 4px);',
+          '  background:rgba(0,0,0,0.35); z-index:2; }',
+          '.ec-pct { width:46px; font-size:12px; color:#333; flex-shrink:0; font-variant-numeric:tabular-nums; }',
+          '.ec-legend { font-size:11px; color:#888; margin-bottom:16px; }',
+          '.ec-mini-row { display:flex; align-items:center; gap:6px; margin-bottom:4px; }',
+          '.ec-chip { width:10px; height:10px; border-radius:2px; flex-shrink:0; }',
+          '.ec-mini-name { width:46px; font-size:11px; color:#333; flex-shrink:0; text-align:right; }',
+          '.ec-mini-barwrap { flex:1; background:#f2f2f2; height:13px; border-radius:3px; overflow:hidden; }',
+          '.ec-mini-bar { height:100%; border-radius:3px; width:0%; opacity:0.88;',
+          '  transition:width 0.7s cubic-bezier(.22,.9,.34,1); }',
+          '.ec-mini-pct { width:38px; font-size:11px; color:#444; flex-shrink:0; }',
+          '.ec-cand-label { font-size:12.5px; font-weight:bold; margin:10px 0 5px; display:flex; align-items:center; gap:6px; }',
+          '.ec-banner { margin-top:10px; padding:8px 12px; border-radius:4px; font-size:12.5px; font-weight:bold;',
+          '  opacity:0; transform:translateY(4px); transition:opacity 0.5s ease, transform 0.5s ease; }',
+          '.ec-banner.ec-show { opacity:1; transform:translateY(0); }',
+          '.ec-banner.ec-win { background:#f0fff0; border-left:4px solid #2a7a2a; color:#1a1a1a; }',
+          '.ec-banner.ec-runoff { background:#fff8f0; border-left:4px solid #c07000; color:#1a1a1a; }',
+          '.ec-cols { display:flex; gap:6px; height:150px; align-items:flex-end; margin-bottom:8px; }',
+          '.ec-col { display:flex; flex-direction:column; height:100%; border-radius:5px; overflow:hidden;',
+          '  transition:flex-grow 0.9s cubic-bezier(.22,.9,.34,1); }',
+          '.ec-col.ec-third { opacity:0.75; outline:2px dashed #aaa; }',
+          '.ec-col-header { display:flex; gap:6px; margin-bottom:6px; }',
+          '.ec-col-header-item { text-align:center; font-size:12px; font-weight:bold;',
+          '  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:2px 0; color:#666;',
+          '  transition:flex-grow 0.9s cubic-bezier(.22,.9,.34,1); }',
+          '.ec-col-header-item.ec-winner { color:#1a1a1a; }',
+          '.ec-seg { display:flex; align-items:center; justify-content:center; overflow:hidden; min-height:0;',
+          '  flex-grow:0; transition:flex-grow 0.7s cubic-bezier(.22,.9,.34,1) 0.15s; }',
+          '.ec-seg-label { font-size:10px; font-weight:bold; color:#fff; white-space:nowrap; pointer-events:none;',
+          '  text-shadow:0 0 2px #000,0 0 3px #000; }'
+        ].join('\n');
+        document.head.appendChild(style);
+      }
+
+      // Sets flex-grow on the next animation frame (double-rAF for reliability
+      // across browsers) so the CSS transition actually plays instead of
+      // snapping straight to its final value.
+      function animateTo(el, prop, value) {
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            el.style[prop] = value;
+          });
+        });
+      }
+
+      function groupByCandidate(parties, Q) {
+        var candidateTotals = {};
+        var grouped = {};
+        for (var i = 0; i < parties.length; i++) {
+          var p = parties[i];
+          var cand = Q[p + '_candidate'];
+          if (!cand) continue;
+          var candNorm = canon(cand);
+          var votes = (Q[p + '_votes'] !== undefined && Q[p + '_votes'] !== null) ? Q[p + '_votes'] : (Q[p + '_r'] || 0);
+          if (votes <= 0) continue;
+          candidateTotals[candNorm] = (candidateTotals[candNorm] || 0) + votes;
+          if (!grouped[candNorm]) grouped[candNorm] = [];
+          grouped[candNorm].push({ party: p, votes: votes });
+        }
+        return { candidateTotals: candidateTotals, grouped: grouped };
+      }
+
+      function renderPartyBreakdown(container, candOrder, grouped, candidateTotals, total, opts) {
+        var divider = document.createElement('div');
+        divider.className = 'ec-section-label ec-divider';
+        divider.textContent = 'Party Support Breakdown';
+        container.appendChild(divider);
+
+        candOrder.forEach(function (cand) {
+          if (!grouped[cand] || grouped[cand].length === 0) return;
+          var isWinner = opts.winnerKey && cand === opts.winnerKey;
+          var candTotal = candidateTotals[cand];
+          var candPct = total > 0 ? candTotal / total * 100 : 0;
+
+          var candLabel = document.createElement('div');
+          candLabel.className = 'ec-cand-label';
+          candLabel.style.color = isWinner ? '#1a1a1a' : '#555';
+          candLabel.textContent = dname(cand) + (isWinner ? ' \u2605' : '') + '  (' + candPct.toFixed(1) + '%)';
+          container.appendChild(candLabel);
+
+          var partiesIn = grouped[cand].slice().sort(function (a, b) { return b.votes - a.votes; });
+          var maxVotes = partiesIn[0].votes;
+
+          partiesIn.forEach(function (item) {
+            var row = document.createElement('div');
+            row.className = 'ec-mini-row';
+
+            var chip = document.createElement('div');
+            chip.className = 'ec-chip';
+            chip.style.background = partyColor(item.party);
+
+            var nameEl = document.createElement('div');
+            nameEl.className = 'ec-mini-name';
+            nameEl.textContent = partyLabel(item.party, opts.ddpName, opts.dsbpName);
+
+            var barWrap = document.createElement('div');
+            barWrap.className = 'ec-mini-barwrap';
+
+            var bar = document.createElement('div');
+            bar.className = 'ec-mini-bar';
+            bar.style.background = partyColor(item.party);
+            var barW = Math.round(item.votes / maxVotes * 100);
+
+            var pctEl = document.createElement('div');
+            pctEl.className = 'ec-mini-pct';
+            pctEl.textContent = item.votes.toFixed(1) + '%';
+
+            barWrap.appendChild(bar);
+            row.appendChild(chip);
+            row.appendChild(nameEl);
+            row.appendChild(barWrap);
+            row.appendChild(pctEl);
+            container.appendChild(row);
+
+            animateTo(bar, 'width', barW + '%');
+          });
+
+          var spacer = document.createElement('div');
+          spacer.style.height = '10px';
+          container.appendChild(spacer);
+        });
+      }
+
+      // -------------------------------------------------------------------
+      // Round 1 — ranked bar chart of every candidate + party breakdown.
+      // -------------------------------------------------------------------
+      function renderRound1(containerId, Q) {
+        ensureStyles();
+        var container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = '';
+        container.className = 'ec-root';
+
+        var parties = Q.parties;
+        var data = groupByCandidate(parties, Q);
+        var candidateTotals = data.candidateTotals, grouped = data.grouped;
+
+        var total = 0;
+        for (var k in candidateTotals) total += candidateTotals[k];
+
+        var candOrder = Object.keys(candidateTotals).sort(function (a, b) {
+          return candidateTotals[b] - candidateTotals[a];
+        });
+
+        var header = document.createElement('div');
+        header.className = 'ec-section-label';
+        header.textContent = 'First Round Results';
+        container.appendChild(header);
+
+        var maxCandVotes = candidateTotals[candOrder[0]] || 1;
+        var leaderPct = total > 0 ? (candidateTotals[candOrder[0]] / total * 100) : 0;
+        var thresholdPos = leaderPct > 0 ? Math.min(100, Math.round(50 / leaderPct * 100)) : 100;
+
+        candOrder.forEach(function (cand) {
+          var votes = candidateTotals[cand];
+          var pct = total > 0 ? votes / total * 100 : 0;
+          var barW = Math.round(votes / maxCandVotes * 100);
+          var repParty = grouped[cand][0].party;
+          var repColor = partyColor(repParty);
+
+          var row = document.createElement('div');
+          row.className = 'ec-row';
+
+          var nameEl = document.createElement('div');
+          nameEl.className = 'ec-row-name';
+          nameEl.style.width = '112px';
+          nameEl.textContent = dname(cand);
+
+          var barWrap = document.createElement('div');
+          barWrap.className = 'ec-barwrap';
+
+          var bar = document.createElement('div');
+          bar.className = 'ec-bar';
+          bar.style.background = repColor;
+
+          var threshold = document.createElement('div');
+          threshold.className = 'ec-threshold';
+          threshold.style.left = thresholdPos + '%';
+
+          var pctEl = document.createElement('div');
+          pctEl.className = 'ec-pct';
+          pctEl.textContent = pct.toFixed(1) + '%';
+
+          barWrap.appendChild(bar);
+          barWrap.appendChild(threshold);
+          row.appendChild(nameEl);
+          row.appendChild(barWrap);
+          row.appendChild(pctEl);
+          container.appendChild(row);
+
+          animateTo(bar, 'width', barW + '%');
+        });
+
+        var legend = document.createElement('div');
+        legend.className = 'ec-legend';
+        legend.style.paddingLeft = '120px';
+        legend.textContent = '\u25b2 50% majority threshold';
+        container.appendChild(legend);
+
+        renderPartyBreakdown(container, candOrder, grouped, candidateTotals, total, {
+          winnerKey: candOrder[0], ddpName: Q.ddp_name, dsbpName: Q.dsbp_name
+        });
+
+        var winner = candOrder[0];
+        var winnerPct = total > 0 ? candidateTotals[winner] / total * 100 : 0;
+        var hasMajority = winnerPct >= 50;
+
+        var banner = document.createElement('div');
+        banner.className = 'ec-banner ' + (hasMajority ? 'ec-win' : 'ec-runoff');
+        banner.textContent = hasMajority
+          ? '\u2713 ' + dname(winner) + ' wins with ' + winnerPct.toFixed(1) + '% \u2014 majority achieved'
+          : '\u26a0 No majority \u2014 ' + dname(winner) + ' leads with ' + winnerPct.toFixed(1) + '% \u2014 runoff required';
+        container.appendChild(banner);
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () { banner.classList.add('ec-show'); });
+        });
+      }
+
+      // -------------------------------------------------------------------
+      // Round 2 — finalist column comparison + party breakdown.
+      // -------------------------------------------------------------------
+      function renderRound2(containerId, Q) {
+        ensureStyles();
+        var container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = '';
+        container.className = 'ec-root';
+
+        var parties = Q.parties;
+        var finalist1 = canon(Q.round1_winner);
+        var finalist2 = canon(Q.round1_runner_up);
+
+        var buckets = {};
+        buckets[finalist1] = [];
+        buckets[finalist2] = [];
+        var extraKeys = [];
+
+        for (var i = 0; i < parties.length; i++) {
+          var p = parties[i];
+          var cand = Q[p + '_candidate'];
+          if (!cand) continue;
+          var candNorm = canon(cand);
+          var votes = (Q[p + '_votes'] !== undefined && Q[p + '_votes'] !== null) ? Q[p + '_votes'] : (Q[p + '_r'] || 0);
+          if (votes <= 0) continue;
+          var bucket = (candNorm === finalist1) ? finalist1 : (candNorm === finalist2) ? finalist2 : candNorm;
+          if (!buckets[bucket]) {
+            buckets[bucket] = [];
+            if (bucket !== finalist1 && bucket !== finalist2) extraKeys.push(bucket);
+          }
+          buckets[bucket].push({ party: p, votes: votes });
+        }
+
+        function sumBucket(b) { return b.reduce(function (s, x) { return s + x.votes; }, 0); }
+
+        var cols = [finalist1, finalist2].concat(extraKeys);
+        var colTotals = cols.map(function (k) { return sumBucket(buckets[k]); });
+        var total = colTotals.reduce(function (s, v) { return s + v; }, 0);
+        var colPcts = colTotals.map(function (v) { return total > 0 ? v / total * 100 : 0; });
+
+        var headerRow = document.createElement('div');
+        headerRow.className = 'ec-col-header';
+        cols.forEach(function (k, idx) {
+          var isWinner = (k === Q.winner);
+          var h = document.createElement('div');
+          h.className = 'ec-col-header-item' + (isWinner ? ' ec-winner' : '');
+          h.style.flexGrow = '0.0001'; // start near zero, animate to real share
+          h.textContent = dname(k) + ' \u2014 ' + colPcts[idx].toFixed(1) + '%' + (isWinner ? ' \u2605' : '');
+          headerRow.appendChild(h);
+          animateTo(h, 'flexGrow', String(Math.max(colPcts[idx], 0.5)));
+        });
+        container.appendChild(headerRow);
+
+        var barRow = document.createElement('div');
+        barRow.className = 'ec-cols';
+        cols.forEach(function (k, colIdx) {
+          var colWrap = document.createElement('div');
+          colWrap.className = 'ec-col' + ((Q.round2_has_third && k === canon(Q.round1_third)) ? ' ec-third' : '');
+          colWrap.style.flexGrow = '0.0001';
+
+          var partiesIn = buckets[k].slice().sort(function (a, b) { return b.votes - a.votes; });
+          var colTotal = colTotals[colIdx];
+          partiesIn.forEach(function (p) {
+            var segPct = colTotal > 0 ? p.votes / colTotal * 100 : 0;
+            var seg = document.createElement('div');
+            seg.className = 'ec-seg';
+            seg.style.background = partyColor(p.party);
+            seg.style.flexGrow = '0';
+            seg.title = partyLabel(p.party, Q.ddp_name, Q.dsbp_name) + ': ' + p.votes.toFixed(1) + '%';
+            if (segPct > 5) {
+              var lbl = document.createElement('span');
+              lbl.className = 'ec-seg-label';
+              lbl.textContent = partyLabel(p.party, Q.ddp_name, Q.dsbp_name) + ' ' + p.votes.toFixed(1) + '%';
+              seg.appendChild(lbl);
+            }
+            colWrap.appendChild(seg);
+            animateTo(seg, 'flexGrow', String(Math.max(segPct, 0.001)));
+          });
+          barRow.appendChild(colWrap);
+          animateTo(colWrap, 'flexGrow', String(Math.max(colPcts[colIdx], 0.5)));
+        });
+        container.appendChild(barRow);
+
+        var grouped = {};
+        for (var j = 0; j < parties.length; j++) {
+          var pj = parties[j];
+          var candj = Q[pj + '_candidate'];
+          if (!candj) continue;
+          var candNormj = canon(candj);
+          var votesj = (Q[pj + '_votes'] !== undefined && Q[pj + '_votes'] !== null) ? Q[pj + '_votes'] : (Q[pj + '_r'] || 0);
+          if (votesj <= 0) continue;
+          if (!grouped[candNormj]) grouped[candNormj] = [];
+          grouped[candNormj].push({ party: pj, votes: votesj });
+        }
+        var candidateTotals = {};
+        for (var gk in grouped) {
+          candidateTotals[gk] = grouped[gk].reduce(function (s, x) { return s + x.votes; }, 0);
+        }
+        var candOrder = Object.keys(grouped).sort(function (a, b) { return candidateTotals[b] - candidateTotals[a]; });
+
+        renderPartyBreakdown(container, candOrder, grouped, candidateTotals, total, {
+          winnerKey: Q.winner, ddpName: Q.ddp_name, dsbpName: Q.dsbp_name
+        });
+
+        var banner = document.createElement('div');
+        banner.className = 'ec-banner ec-win';
+        banner.textContent = '\u2713 ' + dname(Q.winner) + ' elected with ' + (Q.winner_votes_disp || '\u2014') + '% of the vote';
+        container.appendChild(banner);
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () { banner.classList.add('ec-show'); });
+        });
+      }
+
+      window.ElectionChart = {
+        renderRound1: renderRound1,
+        renderRound2: renderRound2,
+        dname: dname,
+        canon: canon
+      };
+    })();
 }
-
-var displayNames = {
-    Thalmann:"Thälmann", Munzenberg:"Münzenberg", Bruning:"Brüning",
-    Schaffer:"Schäffer", Goring:"Göring", KochWeser:"Koch-Weser", Lambach2:"Lambach (CSVD)"
-};
-function dname(k) { return displayNames[k] || k; }
-
-var candidateTotals = {};
-var grouped = {};
-
-for (var i = 0; i < allParties.length; i++) {
-    var p = allParties[i];
-    var cand = Q[p + '_candidate'];
-    if (!cand) continue;
-    var candNorm = canon2(cand);
-    var votes = (Q[p + '_votes'] !== undefined && Q[p + '_votes'] !== null) ? Q[p + '_votes'] : (Q[p + '_r'] || 0);
-    if (votes <= 0) continue;
-    if (!candidateTotals[candNorm]) candidateTotals[candNorm] = 0;
-    candidateTotals[candNorm] += votes;
-    if (!grouped[candNorm]) grouped[candNorm] = [];
-    grouped[candNorm].push({ party: p, votes: votes });
-}
-
-var total = 0;
-for (var k in candidateTotals) total += candidateTotals[k];
-
-var candOrder = Object.keys(candidateTotals).sort(function(a,b){
-    return candidateTotals[b] - candidateTotals[a];
-});
-
-var container = document.getElementById('pres_r1_chart');
-if (!container) return;
-container.innerHTML = "";
-container.style.cssText = "width:100%; max-width:620px; font-family:sans-serif;";
-
-var summaryHeader = document.createElement('div');
-summaryHeader.style.cssText = "font-size:11px; font-weight:bold; color:#888; letter-spacing:0.08em;"
-    + "text-transform:uppercase; margin-bottom:6px;";
-summaryHeader.textContent = "First Round Results";
-container.appendChild(summaryHeader);
-
-var maxCandVotes = candidateTotals[candOrder[0]] || 1;
-
-candOrder.forEach(function(cand) {
-    var votes = candidateTotals[cand];
-    var pct = total > 0 ? votes / total * 100 : 0;
-    var barW = Math.round(votes / maxCandVotes * 100);
-
-    var repParty = grouped[cand][0].party;
-    var repColor = partyColors[repParty] || "#aaa";
-
-    var row = document.createElement('div');
-    row.style.cssText = "display:flex; align-items:center; gap:6px; margin-bottom:5px;";
-
-    var nameEl = document.createElement('div');
-    nameEl.style.cssText = "width:110px; font-size:12px; font-weight:bold; text-align:right;"
-        + "flex-shrink:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:#1a1a1a;";
-    nameEl.textContent = dname(cand);
-
-    var barWrap = document.createElement('div');
-    barWrap.style.cssText = "flex:1; background:#e8e8e8; height:18px; border-radius:2px; position:relative;";
-
-    var bar = document.createElement('div');
-    bar.style.cssText = "height:100%; border-radius:2px; background:" + repColor
-        + "; width:" + barW + "%; transition:width 0.3s;";
-
-    var threshold = document.createElement('div');
-    var thresholdPos = Math.min(100, Math.round(50 / (total > 0 ? candidateTotals[candOrder[0]] / total * 100 : 1) * 100));
-    threshold.style.cssText = "position:absolute; top:0; left:" + thresholdPos + "%; width:2px; height:100%;"
-        + "background:rgba(0,0,0,0.3); z-index:2;";
-
-    var pctEl = document.createElement('div');
-    pctEl.style.cssText = "width:42px; font-size:12px; color:#333; flex-shrink:0;";
-    pctEl.textContent = pct.toFixed(1) + "%";
-
-    barWrap.appendChild(bar);
-    barWrap.appendChild(threshold);
-    row.appendChild(nameEl);
-    row.appendChild(barWrap);
-    row.appendChild(pctEl);
-    container.appendChild(row);
-});
-
-var legend = document.createElement('div');
-legend.style.cssText = "font-size:11px; color:#888; margin-top:2px; margin-bottom:14px; padding-left:116px;";
-legend.textContent = "▲ 50% majority threshold";
-container.appendChild(legend);
-
-var divider = document.createElement('div');
-divider.style.cssText = "font-size:11px; font-weight:bold; color:#888; letter-spacing:0.08em;"
-    + "text-transform:uppercase; border-top:1px solid #ddd; padding-top:8px; margin-bottom:6px;";
-divider.textContent = "Party Support Breakdown";
-container.appendChild(divider);
-
-candOrder.forEach(function(cand) {
-    if (!grouped[cand] || grouped[cand].length === 0) return;
-
-    var candTotal = candidateTotals[cand];
-    var candPct = total > 0 ? candTotal / total * 100 : 0;
-
-    var candLabel = document.createElement('div');
-    candLabel.style.cssText = "font-size:12px; font-weight:bold; color:#1a1a1a; margin-bottom:4px; margin-top:2px;";
-    candLabel.textContent = dname(cand) + "  (" + candPct.toFixed(1) + "%)";
-    container.appendChild(candLabel);
-
-    var partiesIn = grouped[cand].slice().sort(function(a,b){return b.votes-a.votes;});
-    var maxVotes = partiesIn[0].votes;
-
-    partiesIn.forEach(function(item) {
-        var row = document.createElement('div');
-        row.style.cssText = "display:flex; align-items:center; gap:5px; margin-bottom:3px;";
-
-        var chip = document.createElement('div');
-        chip.style.cssText = "width:10px; height:10px; border-radius:2px; flex-shrink:0; background:"
-            + (partyColors[item.party]||"#aaa") + ";";
-
-        var nameEl = document.createElement('div');
-        nameEl.style.cssText = "width:44px; font-size:11px; color:#333; flex-shrink:0; text-align:right;";
-        nameEl.textContent = partyLabels[item.party] || item.party;
-
-        var barWrap = document.createElement('div');
-        barWrap.style.cssText = "flex:1; background:#f0f0f0; height:12px; border-radius:2px;";
-
-        var bar = document.createElement('div');
-        var barW = Math.round(item.votes / maxVotes * 100);
-        bar.style.cssText = "height:100%; border-radius:2px; background:" + (partyColors[item.party]||"#aaa")
-            + "; width:" + barW + "%; opacity:0.85;";
-
-        var pctEl = document.createElement('div');
-        pctEl.style.cssText = "width:36px; font-size:11px; color:#444; text-align:left; flex-shrink:0;";
-        pctEl.textContent = item.votes.toFixed(1) + "%";
-
-        barWrap.appendChild(bar);
-        row.appendChild(chip);
-        row.appendChild(nameEl);
-        row.appendChild(barWrap);
-        row.appendChild(pctEl);
-        container.appendChild(row);
-    });
-
-    var spacer = document.createElement('div');
-    spacer.style.cssText = "height:8px;";
-    container.appendChild(spacer);
-});
-
-var winner = candOrder[0];
-var winnerPct = total > 0 ? candidateTotals[winner] / total * 100 : 0;
-var hasMajority = winnerPct >= 50;
-
-var banner = document.createElement('div');
-banner.style.cssText = "margin-top:4px; padding:6px 10px; border-radius:2px; font-size:12px; font-weight:bold;"
-    + (hasMajority
-        ? "background:#f0fff0; border-left:4px solid #2a7a2a; color:#1a1a1a;"
-        : "background:#fff8f0; border-left:4px solid #c07000; color:#1a1a1a;");
-banner.textContent = hasMajority
-    ? "✓ " + dname(winner) + " wins with " + winnerPct.toFixed(1) + "% — majority achieved"
-    : "⚠ No majority — " + dname(winner) + " leads with " + winnerPct.toFixed(1) + "% — runoff required";
-container.appendChild(banner);
+window.ElectionChart.renderRound1('pres_r1_chart', Q);
 !}
 go-to: election_end if has_majority; r2_start if not has_majority
 
@@ -2195,6 +2411,19 @@ function canon2(name) {
     if (CANDIDATES_ALIAS[name]) return CANDIDATES_ALIAS[name];
     var stripped = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/_/g, "");
     return CANDIDATES_ALIAS[stripped] || stripped;
+}
+
+// getRelationSafe was missing from this block's scope (ChoiceScript/
+// Dendry scopes JS per-block, not globally). finalistScore() below
+// called it without it ever being defined here, which threw a silent
+// ReferenceError inside on-arrival (runActions swallows exceptions),
+// aborting round-2 consolidation the moment the runoff begins — before
+// the player ever opens the r2 menu. This is likely the primary cause
+// of round-2 vote reassignment appearing to have "no effect": the very
+// first consolidation pass silently failed every time.
+function getRelationSafe(a, b) {
+    if (!Q.party_relations || !Q.party_relations[a] || !Q.party_relations[a][b]) return 0;
+    return Q.party_relations[a][b];
 }
 
 // finalists is always derived fresh from current Q state, never assumed
@@ -2461,6 +2690,21 @@ function canon2(name) {
     return CANDIDATES_ALIAS[stripped] || stripped;
 }
 function currentFinalists() { var f=[Q.round1_winner, Q.round1_runner_up]; if (Q.round2_has_third && Q.round1_third) f.push(Q.round1_third); return f; }
+// getRelationSafe was missing from this block's scope (ChoiceScript/
+// Dendry scopes JS per-block, not globally — see the comments on the
+// duplicated copies of this same helper in @resolve_ai_candidates,
+// @r2_start, @tactical_consolidation, and @tactical_consolidation_r2).
+// finalistScore() below called it without it ever being defined here,
+// which threw a silent ReferenceError inside on-arrival (runActions
+// swallows exceptions), aborting the reassignment loop before any
+// party still pointing at the pushed-out third candidate got moved
+// onto a real finalist. That's the root cause of "pushing third out
+// yields no effect": the narrative text still played, round2_has_third
+// still flipped to 0, but the actual vote reassignment never ran.
+function getRelationSafe(a, b) {
+    if (!Q.party_relations || !Q.party_relations[a] || !Q.party_relations[a][b]) return 0;
+    return Q.party_relations[a][b];
+}
 var BLOC_IDEO_FALLBACK = { far_left: 2, left: 5, cultural: 10, center_left: 8,
                             center: 10, center_right: 13, far_right: 19 };
 function candIdeoScore(name) {
@@ -2843,216 +3087,418 @@ Q.winner_desc = candDesc(Q.winner);
 
 !}
 on-display: {!
+if (typeof window.ElectionChart === 'undefined') {
+    // ===========================================================================
+    // ElectionChart — shared, animated, dependency-free chart module for the
+    // presidential election results screens (round 1 bar chart, round 2
+    // finalist comparison). Defined once (idempotent — safe if this script
+    // block runs more than once) and reused by both @r1_results and @post_r2,
+    // replacing the four near-duplicate copies of partyColors/partyLabels/
+    // canon2/displayNames that existed across the two on-display blocks.
+    // ===========================================================================
+    (function () {
+      if (window.ElectionChart) return; // idempotent — don't redefine on re-arrival
 
-var partyColors = {
-    spd:"#E3000F", kpd:"#8B0000", sapd:"#C40000", srpd:"#FF6B6B",
-    z:"#000000",   bvp:"#69A2BE", csrp:"#FFCCFF", ddp:"#DCCA4A",
-    dvp:"#D5AC27", wp:"#424242",  cnbl:"#5D4E37", csvd:"#3f7bc1",
-    dnvp:"#3f7bc1",nsdap:"#954B00",kvp:"#3f7bc1", dhp:"#5D4E37",
-    bb:"#69A2BE",  vrp:"#8B7355", dvfp:"#7A5C12", other:"#a0a0a0",
-    aspd:"#B22222", hl:"#2E8B57", sl:"#005B96", kpo:"#990000", vnr:"#4B5320",
-    lb:"#6B0000", rdp:"#B8B000", cvp:"#1A1A1A", sls:"#4A7C59", dtsp:"#3B1A00",
-    dbp:"#03A331", dsbp:"#7A9DB5", dnf:"#000F70",
-    kapd:"#5C0000", faud:"#1C1C1C", rlb:"#4A5D23"
-};
+      var PARTY_COLORS = {
+        spd: "#E3000F", kpd: "#8B0000", sapd: "#C40000", srpd: "#FF6B6B",
+        z: "#000000", bvp: "#69A2BE", csrp: "#FFCCFF", ddp: "#DCCA4A",
+        dvp: "#D5AC27", wp: "#424242", cnbl: "#5D4E37", csvd: "#3f7bc1",
+        dnvp: "#3f7bc1", nsdap: "#954B00", kvp: "#3f7bc1", dhp: "#5D4E37",
+        bb: "#69A2BE", vrp: "#8B7355", dvfp: "#7A5C12", other: "#a0a0a0",
+        aspd: "#B22222", hl: "#2E8B57", sl: "#005B96", kpo: "#990000", vnr: "#4B5320",
+        lb: "#6B0000", rdp: "#B8B000", cvp: "#1A1A1A", sls: "#4A7C59", dtsp: "#3B1A00",
+        dbp: "#03A331", dsbp: "#7A9DB5", dnf: "#000F70",
+        kapd: "#5C0000", faud: "#1C1C1C", rlb: "#4A5D23"
+      };
 
-var partyLabels = {};
-for (var i = 0; i < Q.parties.length; i++) {
-    var p = Q.parties[i];
-    partyLabels[p] = p.toUpperCase();
-}
-partyLabels.ddp = Q.ddp_name || "DDP";
-partyLabels.dtsp = "DtsP";
-partyLabels.dsbp = Q.dsbp_name || "DSBP";
+      var CAND_ALIAS_DISPLAY = {
+        "G\u00f6ring": "Goring", "Br\u00fcning": "Bruning", "Sch\u00e4ffer": "Schaffer",
+        "L\u00fcders": "Luders", "Koch-Weser": "KochWeser", "Th\u00e4lmann": "Thalmann",
+        "M\u00fcnzenberg": "Munzenberg", "B\u00f6hm": "Bohm"
+      };
 
-var allParties = Q.parties;
+      var DISPLAY_NAMES = {
+        Thalmann: "Th\u00e4lmann", Munzenberg: "M\u00fcnzenberg", Bruning: "Br\u00fcning",
+        Schaffer: "Sch\u00e4ffer", Goring: "G\u00f6ring", KochWeser: "Koch-Weser",
+        Lambach2: "Lambach (CSVD)"
+      };
 
-// Alias-aware canonicalization (self-contained per this block's own
-// JS scope). Previously a bare accent-stripping canon2() with no
-// alias table -- any candidate stored under an alias spelling could
-// split into a duplicate row here instead of merging into one.
-var CAND_ALIAS_DISPLAY = { "G\u00f6ring": "Goring", "Br\u00fcning": "Bruning", "Sch\u00e4ffer": "Schaffer",
-    "L\u00fcders": "Luders", "Koch-Weser": "KochWeser", "Th\u00e4lmann": "Thalmann",
-    "M\u00fcnzenberg": "Munzenberg", "B\u00f6hm": "Bohm" };
-function canon2(name) {
-    if (!name) return name;
-    if (CAND_ALIAS_DISPLAY[name]) return CAND_ALIAS_DISPLAY[name];
-    var stripped = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/_/g, "");
-    return CAND_ALIAS_DISPLAY[stripped] || stripped;
-}
+      function canon(name) {
+        if (!name) return name;
+        if (CAND_ALIAS_DISPLAY[name]) return CAND_ALIAS_DISPLAY[name];
+        var stripped = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/_/g, "");
+        return CAND_ALIAS_DISPLAY[stripped] || stripped;
+      }
 
-var displayNames = {
-    Thalmann:"Thälmann", Munzenberg:"Münzenberg", Bruning:"Brüning",
-    Schaffer:"Schäffer", Goring:"Göring", KochWeser:"Koch-Weser", Lambach2:"Lambach (CSVD)"
-};
-function dname(k) { return displayNames[k] || k; }
+      function dname(k) { return DISPLAY_NAMES[k] || k; }
 
-var finalist1 = canon2(Q.round1_winner);
-var finalist2 = canon2(Q.round1_runner_up);
+      function partyLabel(partyKey, ddpName, dsbpName) {
+        if (partyKey === "ddp") return ddpName || "DDP";
+        if (partyKey === "dsbp") return dsbpName || "DSBP";
+        if (partyKey === "dtsp") return "DtsP";
+        return partyKey.toUpperCase();
+      }
 
-var buckets = {};
-buckets[finalist1] = [];
-buckets[finalist2] = [];
-var extraKeys = []; // every non-finalist bucket, first-seen order — replaces the overwritten thirdKey
+      function partyColor(partyKey) { return PARTY_COLORS[partyKey] || "#aaa"; }
 
-for (var i = 0; i < allParties.length; i++) {
-    var p = allParties[i];
-    var cand = Q[p + '_candidate'];
-    if (!cand) continue;
-    var candNorm = canon2(cand);
-    var votes = (Q[p + '_votes'] !== undefined && Q[p + '_votes'] !== null) ? Q[p + '_votes'] : (Q[p + '_r'] || 0);
-    if (votes <= 0) continue;
-    var bucket = candNorm === finalist1 ? finalist1
-               : candNorm === finalist2 ? finalist2
-               : candNorm;
-    if (!buckets[bucket]) {
-        buckets[bucket] = [];
-        if (bucket !== finalist1 && bucket !== finalist2) extraKeys.push(bucket);
-    }
-    buckets[bucket].push({ party: p, votes: votes });
-}
+      // Injected once; scopes all chart CSS under .ec- prefixes so it can't
+      // collide with the rest of the page's styles.
+      function ensureStyles() {
+        if (document.getElementById('election-chart-styles')) return;
+        var style = document.createElement('style');
+        style.id = 'election-chart-styles';
+        style.textContent = [
+          '.ec-root { width:100%; max-width:640px; font-family:sans-serif; }',
+          '.ec-section-label { font-size:11px; font-weight:bold; color:#888; letter-spacing:0.08em;',
+          '  text-transform:uppercase; margin-bottom:8px; }',
+          '.ec-section-label.ec-divider { border-top:1px solid #ddd; padding-top:10px; margin-top:4px; }',
+          '.ec-row { display:flex; align-items:center; gap:8px; margin-bottom:6px; }',
+          '.ec-row-name { font-size:12px; font-weight:bold; text-align:right; flex-shrink:0;',
+          '  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:#1a1a1a; }',
+          '.ec-barwrap { flex:1; background:#ececec; height:20px; border-radius:4px; position:relative; overflow:hidden; }',
+          '.ec-bar { height:100%; border-radius:4px; width:0%;',
+          '  transition:width 0.9s cubic-bezier(.22,.9,.34,1); }',
+          '.ec-threshold { position:absolute; top:-2px; width:2px; height:calc(100% + 4px);',
+          '  background:rgba(0,0,0,0.35); z-index:2; }',
+          '.ec-pct { width:46px; font-size:12px; color:#333; flex-shrink:0; font-variant-numeric:tabular-nums; }',
+          '.ec-legend { font-size:11px; color:#888; margin-bottom:16px; }',
+          '.ec-mini-row { display:flex; align-items:center; gap:6px; margin-bottom:4px; }',
+          '.ec-chip { width:10px; height:10px; border-radius:2px; flex-shrink:0; }',
+          '.ec-mini-name { width:46px; font-size:11px; color:#333; flex-shrink:0; text-align:right; }',
+          '.ec-mini-barwrap { flex:1; background:#f2f2f2; height:13px; border-radius:3px; overflow:hidden; }',
+          '.ec-mini-bar { height:100%; border-radius:3px; width:0%; opacity:0.88;',
+          '  transition:width 0.7s cubic-bezier(.22,.9,.34,1); }',
+          '.ec-mini-pct { width:38px; font-size:11px; color:#444; flex-shrink:0; }',
+          '.ec-cand-label { font-size:12.5px; font-weight:bold; margin:10px 0 5px; display:flex; align-items:center; gap:6px; }',
+          '.ec-banner { margin-top:10px; padding:8px 12px; border-radius:4px; font-size:12.5px; font-weight:bold;',
+          '  opacity:0; transform:translateY(4px); transition:opacity 0.5s ease, transform 0.5s ease; }',
+          '.ec-banner.ec-show { opacity:1; transform:translateY(0); }',
+          '.ec-banner.ec-win { background:#f0fff0; border-left:4px solid #2a7a2a; color:#1a1a1a; }',
+          '.ec-banner.ec-runoff { background:#fff8f0; border-left:4px solid #c07000; color:#1a1a1a; }',
+          '.ec-cols { display:flex; gap:6px; height:150px; align-items:flex-end; margin-bottom:8px; }',
+          '.ec-col { display:flex; flex-direction:column; height:100%; border-radius:5px; overflow:hidden;',
+          '  transition:flex-grow 0.9s cubic-bezier(.22,.9,.34,1); }',
+          '.ec-col.ec-third { opacity:0.75; outline:2px dashed #aaa; }',
+          '.ec-col-header { display:flex; gap:6px; margin-bottom:6px; }',
+          '.ec-col-header-item { text-align:center; font-size:12px; font-weight:bold;',
+          '  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:2px 0; color:#666;',
+          '  transition:flex-grow 0.9s cubic-bezier(.22,.9,.34,1); }',
+          '.ec-col-header-item.ec-winner { color:#1a1a1a; }',
+          '.ec-seg { display:flex; align-items:center; justify-content:center; overflow:hidden; min-height:0;',
+          '  flex-grow:0; transition:flex-grow 0.7s cubic-bezier(.22,.9,.34,1) 0.15s; }',
+          '.ec-seg-label { font-size:10px; font-weight:bold; color:#fff; white-space:nowrap; pointer-events:none;',
+          '  text-shadow:0 0 2px #000,0 0 3px #000; }'
+        ].join('\n');
+        document.head.appendChild(style);
+      }
 
-function sumBucket(b) { return b.reduce(function(s,x){return s+x.votes;},0); }
+      // Sets flex-grow on the next animation frame (double-rAF for reliability
+      // across browsers) so the CSS transition actually plays instead of
+      // snapping straight to its final value.
+      function animateTo(el, prop, value) {
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            el.style[prop] = value;
+          });
+        });
+      }
 
-var cols = [finalist1, finalist2].concat(extraKeys);
-var colTotals = cols.map(function(k){ return sumBucket(buckets[k]); });
-var total = colTotals.reduce(function(s,v){ return s+v; }, 0);
-var colPcts = colTotals.map(function(v){ return total>0 ? v/total*100 : 0; });
-
-var container = document.getElementById('pres_r2_chart');
-if (!container) return;
-container.innerHTML = "";
-container.style.cssText = "width:100%; max-width:620px; font-family:sans-serif;";
-
-var headerRow = document.createElement('div');
-headerRow.style.cssText = "display:flex; gap:4px; margin-bottom:4px;";
-cols.forEach(function(k, idx) {
-    var isWinner = (k === Q.winner);
-    var h = document.createElement('div');
-    h.style.cssText = "flex:" + colPcts[idx] + "; text-align:center; font-size:12px; font-weight:bold;"
-        + "white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:2px 0;"
-        + (isWinner ? "color:#1a1a1a;" : "color:#666;");
-    h.textContent = dname(k) + " — " + colPcts[idx].toFixed(1) + "%"
-        + (isWinner ? " ★" : "");
-    headerRow.appendChild(h);
-});
-container.appendChild(headerRow);
-
-var barRow = document.createElement('div');
-barRow.style.cssText = "display:flex; gap:4px; height:130px; align-items:flex-end; margin-bottom:16px;";
-cols.forEach(function(k, colIdx) {
-    var colWrap = document.createElement('div');
-    colWrap.style.cssText = "flex:" + colPcts[colIdx] + "; display:flex; flex-direction:column;"
-        + "height:100%; border-radius:3px; overflow:hidden;"
-        + (Q.round2_has_third && k === canon2(Q.round1_third) ? "opacity:0.8; outline:2px dashed #aaa;" : "");
-
-    var partiesIn = buckets[k].slice().sort(function(a,b){return b.votes-a.votes;});
-    var colTotal = colTotals[colIdx];
-    partiesIn.forEach(function(p) {
-        var segPct = colTotal > 0 ? p.votes / colTotal * 100 : 0;
-        var seg = document.createElement('div');
-        seg.style.cssText = "flex:" + segPct + "; background:" + (partyColors[p.party]||"#aaa")
-            + "; display:flex; align-items:center; justify-content:center; overflow:hidden; min-height:0;";
-        seg.title = (partyLabels[p.party]||p.party) + ": " + p.votes.toFixed(1) + "%";
-        if (segPct > 5) {
-            var lbl = document.createElement('span');
-            lbl.style.cssText = "font-size:10px; font-weight:bold; color:#fff;"
-                + "text-shadow:0 0 2px #000,0 0 2px #000; white-space:nowrap; pointer-events:none;";
-            lbl.textContent = (partyLabels[p.party]||p.party) + " " + p.votes.toFixed(1) + "%";
-            seg.appendChild(lbl);
+      function groupByCandidate(parties, Q) {
+        var candidateTotals = {};
+        var grouped = {};
+        for (var i = 0; i < parties.length; i++) {
+          var p = parties[i];
+          var cand = Q[p + '_candidate'];
+          if (!cand) continue;
+          var candNorm = canon(cand);
+          var votes = (Q[p + '_votes'] !== undefined && Q[p + '_votes'] !== null) ? Q[p + '_votes'] : (Q[p + '_r'] || 0);
+          if (votes <= 0) continue;
+          candidateTotals[candNorm] = (candidateTotals[candNorm] || 0) + votes;
+          if (!grouped[candNorm]) grouped[candNorm] = [];
+          grouped[candNorm].push({ party: p, votes: votes });
         }
-        colWrap.appendChild(seg);
-    });
-    barRow.appendChild(colWrap);
-});
-container.appendChild(barRow);
+        return { candidateTotals: candidateTotals, grouped: grouped };
+      }
 
-var divider = document.createElement('div');
-divider.style.cssText = "font-size:11px; font-weight:bold; color:#888; letter-spacing:0.08em;"
-    + "text-transform:uppercase; border-top:1px solid #ddd; padding-top:8px; margin-bottom:6px;";
-divider.textContent = "Party Support Breakdown";
-container.appendChild(divider);
+      function renderPartyBreakdown(container, candOrder, grouped, candidateTotals, total, opts) {
+        var divider = document.createElement('div');
+        divider.className = 'ec-section-label ec-divider';
+        divider.textContent = 'Party Support Breakdown';
+        container.appendChild(divider);
 
-var grouped = {};
-for (var i = 0; i < allParties.length; i++) {
-    var p = allParties[i];
-    var cand = Q[p + '_candidate'];
-    if (!cand) continue;
-    var candNorm = canon2(cand);
-    var votes = (Q[p + '_votes'] !== undefined && Q[p + '_votes'] !== null) ? Q[p + '_votes'] : (Q[p + '_r'] || 0);
-    if (votes <= 0) continue;
-    if (!grouped[candNorm]) grouped[candNorm] = [];
-    grouped[candNorm].push({ party: p, votes: votes, cand: candNorm });
+        candOrder.forEach(function (cand) {
+          if (!grouped[cand] || grouped[cand].length === 0) return;
+          var isWinner = opts.winnerKey && cand === opts.winnerKey;
+          var candTotal = candidateTotals[cand];
+          var candPct = total > 0 ? candTotal / total * 100 : 0;
+
+          var candLabel = document.createElement('div');
+          candLabel.className = 'ec-cand-label';
+          candLabel.style.color = isWinner ? '#1a1a1a' : '#555';
+          candLabel.textContent = dname(cand) + (isWinner ? ' \u2605' : '') + '  (' + candPct.toFixed(1) + '%)';
+          container.appendChild(candLabel);
+
+          var partiesIn = grouped[cand].slice().sort(function (a, b) { return b.votes - a.votes; });
+          var maxVotes = partiesIn[0].votes;
+
+          partiesIn.forEach(function (item) {
+            var row = document.createElement('div');
+            row.className = 'ec-mini-row';
+
+            var chip = document.createElement('div');
+            chip.className = 'ec-chip';
+            chip.style.background = partyColor(item.party);
+
+            var nameEl = document.createElement('div');
+            nameEl.className = 'ec-mini-name';
+            nameEl.textContent = partyLabel(item.party, opts.ddpName, opts.dsbpName);
+
+            var barWrap = document.createElement('div');
+            barWrap.className = 'ec-mini-barwrap';
+
+            var bar = document.createElement('div');
+            bar.className = 'ec-mini-bar';
+            bar.style.background = partyColor(item.party);
+            var barW = Math.round(item.votes / maxVotes * 100);
+
+            var pctEl = document.createElement('div');
+            pctEl.className = 'ec-mini-pct';
+            pctEl.textContent = item.votes.toFixed(1) + '%';
+
+            barWrap.appendChild(bar);
+            row.appendChild(chip);
+            row.appendChild(nameEl);
+            row.appendChild(barWrap);
+            row.appendChild(pctEl);
+            container.appendChild(row);
+
+            animateTo(bar, 'width', barW + '%');
+          });
+
+          var spacer = document.createElement('div');
+          spacer.style.height = '10px';
+          container.appendChild(spacer);
+        });
+      }
+
+      // -------------------------------------------------------------------
+      // Round 1 — ranked bar chart of every candidate + party breakdown.
+      // -------------------------------------------------------------------
+      function renderRound1(containerId, Q) {
+        ensureStyles();
+        var container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = '';
+        container.className = 'ec-root';
+
+        var parties = Q.parties;
+        var data = groupByCandidate(parties, Q);
+        var candidateTotals = data.candidateTotals, grouped = data.grouped;
+
+        var total = 0;
+        for (var k in candidateTotals) total += candidateTotals[k];
+
+        var candOrder = Object.keys(candidateTotals).sort(function (a, b) {
+          return candidateTotals[b] - candidateTotals[a];
+        });
+
+        var header = document.createElement('div');
+        header.className = 'ec-section-label';
+        header.textContent = 'First Round Results';
+        container.appendChild(header);
+
+        var maxCandVotes = candidateTotals[candOrder[0]] || 1;
+        var leaderPct = total > 0 ? (candidateTotals[candOrder[0]] / total * 100) : 0;
+        var thresholdPos = leaderPct > 0 ? Math.min(100, Math.round(50 / leaderPct * 100)) : 100;
+
+        candOrder.forEach(function (cand) {
+          var votes = candidateTotals[cand];
+          var pct = total > 0 ? votes / total * 100 : 0;
+          var barW = Math.round(votes / maxCandVotes * 100);
+          var repParty = grouped[cand][0].party;
+          var repColor = partyColor(repParty);
+
+          var row = document.createElement('div');
+          row.className = 'ec-row';
+
+          var nameEl = document.createElement('div');
+          nameEl.className = 'ec-row-name';
+          nameEl.style.width = '112px';
+          nameEl.textContent = dname(cand);
+
+          var barWrap = document.createElement('div');
+          barWrap.className = 'ec-barwrap';
+
+          var bar = document.createElement('div');
+          bar.className = 'ec-bar';
+          bar.style.background = repColor;
+
+          var threshold = document.createElement('div');
+          threshold.className = 'ec-threshold';
+          threshold.style.left = thresholdPos + '%';
+
+          var pctEl = document.createElement('div');
+          pctEl.className = 'ec-pct';
+          pctEl.textContent = pct.toFixed(1) + '%';
+
+          barWrap.appendChild(bar);
+          barWrap.appendChild(threshold);
+          row.appendChild(nameEl);
+          row.appendChild(barWrap);
+          row.appendChild(pctEl);
+          container.appendChild(row);
+
+          animateTo(bar, 'width', barW + '%');
+        });
+
+        var legend = document.createElement('div');
+        legend.className = 'ec-legend';
+        legend.style.paddingLeft = '120px';
+        legend.textContent = '\u25b2 50% majority threshold';
+        container.appendChild(legend);
+
+        renderPartyBreakdown(container, candOrder, grouped, candidateTotals, total, {
+          winnerKey: candOrder[0], ddpName: Q.ddp_name, dsbpName: Q.dsbp_name
+        });
+
+        var winner = candOrder[0];
+        var winnerPct = total > 0 ? candidateTotals[winner] / total * 100 : 0;
+        var hasMajority = winnerPct >= 50;
+
+        var banner = document.createElement('div');
+        banner.className = 'ec-banner ' + (hasMajority ? 'ec-win' : 'ec-runoff');
+        banner.textContent = hasMajority
+          ? '\u2713 ' + dname(winner) + ' wins with ' + winnerPct.toFixed(1) + '% \u2014 majority achieved'
+          : '\u26a0 No majority \u2014 ' + dname(winner) + ' leads with ' + winnerPct.toFixed(1) + '% \u2014 runoff required';
+        container.appendChild(banner);
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () { banner.classList.add('ec-show'); });
+        });
+      }
+
+      // -------------------------------------------------------------------
+      // Round 2 — finalist column comparison + party breakdown.
+      // -------------------------------------------------------------------
+      function renderRound2(containerId, Q) {
+        ensureStyles();
+        var container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = '';
+        container.className = 'ec-root';
+
+        var parties = Q.parties;
+        var finalist1 = canon(Q.round1_winner);
+        var finalist2 = canon(Q.round1_runner_up);
+
+        var buckets = {};
+        buckets[finalist1] = [];
+        buckets[finalist2] = [];
+        var extraKeys = [];
+
+        for (var i = 0; i < parties.length; i++) {
+          var p = parties[i];
+          var cand = Q[p + '_candidate'];
+          if (!cand) continue;
+          var candNorm = canon(cand);
+          var votes = (Q[p + '_votes'] !== undefined && Q[p + '_votes'] !== null) ? Q[p + '_votes'] : (Q[p + '_r'] || 0);
+          if (votes <= 0) continue;
+          var bucket = (candNorm === finalist1) ? finalist1 : (candNorm === finalist2) ? finalist2 : candNorm;
+          if (!buckets[bucket]) {
+            buckets[bucket] = [];
+            if (bucket !== finalist1 && bucket !== finalist2) extraKeys.push(bucket);
+          }
+          buckets[bucket].push({ party: p, votes: votes });
+        }
+
+        function sumBucket(b) { return b.reduce(function (s, x) { return s + x.votes; }, 0); }
+
+        var cols = [finalist1, finalist2].concat(extraKeys);
+        var colTotals = cols.map(function (k) { return sumBucket(buckets[k]); });
+        var total = colTotals.reduce(function (s, v) { return s + v; }, 0);
+        var colPcts = colTotals.map(function (v) { return total > 0 ? v / total * 100 : 0; });
+
+        var headerRow = document.createElement('div');
+        headerRow.className = 'ec-col-header';
+        cols.forEach(function (k, idx) {
+          var isWinner = (k === Q.winner);
+          var h = document.createElement('div');
+          h.className = 'ec-col-header-item' + (isWinner ? ' ec-winner' : '');
+          h.style.flexGrow = '0.0001'; // start near zero, animate to real share
+          h.textContent = dname(k) + ' \u2014 ' + colPcts[idx].toFixed(1) + '%' + (isWinner ? ' \u2605' : '');
+          headerRow.appendChild(h);
+          animateTo(h, 'flexGrow', String(Math.max(colPcts[idx], 0.5)));
+        });
+        container.appendChild(headerRow);
+
+        var barRow = document.createElement('div');
+        barRow.className = 'ec-cols';
+        cols.forEach(function (k, colIdx) {
+          var colWrap = document.createElement('div');
+          colWrap.className = 'ec-col' + ((Q.round2_has_third && k === canon(Q.round1_third)) ? ' ec-third' : '');
+          colWrap.style.flexGrow = '0.0001';
+
+          var partiesIn = buckets[k].slice().sort(function (a, b) { return b.votes - a.votes; });
+          var colTotal = colTotals[colIdx];
+          partiesIn.forEach(function (p) {
+            var segPct = colTotal > 0 ? p.votes / colTotal * 100 : 0;
+            var seg = document.createElement('div');
+            seg.className = 'ec-seg';
+            seg.style.background = partyColor(p.party);
+            seg.style.flexGrow = '0';
+            seg.title = partyLabel(p.party, Q.ddp_name, Q.dsbp_name) + ': ' + p.votes.toFixed(1) + '%';
+            if (segPct > 5) {
+              var lbl = document.createElement('span');
+              lbl.className = 'ec-seg-label';
+              lbl.textContent = partyLabel(p.party, Q.ddp_name, Q.dsbp_name) + ' ' + p.votes.toFixed(1) + '%';
+              seg.appendChild(lbl);
+            }
+            colWrap.appendChild(seg);
+            animateTo(seg, 'flexGrow', String(Math.max(segPct, 0.001)));
+          });
+          barRow.appendChild(colWrap);
+          animateTo(colWrap, 'flexGrow', String(Math.max(colPcts[colIdx], 0.5)));
+        });
+        container.appendChild(barRow);
+
+        var grouped = {};
+        for (var j = 0; j < parties.length; j++) {
+          var pj = parties[j];
+          var candj = Q[pj + '_candidate'];
+          if (!candj) continue;
+          var candNormj = canon(candj);
+          var votesj = (Q[pj + '_votes'] !== undefined && Q[pj + '_votes'] !== null) ? Q[pj + '_votes'] : (Q[pj + '_r'] || 0);
+          if (votesj <= 0) continue;
+          if (!grouped[candNormj]) grouped[candNormj] = [];
+          grouped[candNormj].push({ party: pj, votes: votesj });
+        }
+        var candidateTotals = {};
+        for (var gk in grouped) {
+          candidateTotals[gk] = grouped[gk].reduce(function (s, x) { return s + x.votes; }, 0);
+        }
+        var candOrder = Object.keys(grouped).sort(function (a, b) { return candidateTotals[b] - candidateTotals[a]; });
+
+        renderPartyBreakdown(container, candOrder, grouped, candidateTotals, total, {
+          winnerKey: Q.winner, ddpName: Q.ddp_name, dsbpName: Q.dsbp_name
+        });
+
+        var banner = document.createElement('div');
+        banner.className = 'ec-banner ec-win';
+        banner.textContent = '\u2713 ' + dname(Q.winner) + ' elected with ' + (Q.winner_votes_disp || '\u2014') + '% of the vote';
+        container.appendChild(banner);
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () { banner.classList.add('ec-show'); });
+        });
+      }
+
+      window.ElectionChart = {
+        renderRound1: renderRound1,
+        renderRound2: renderRound2,
+        dname: dname,
+        canon: canon
+      };
+    })();
 }
-
-var candOrder = Object.keys(grouped).sort(function(a, b) {
-    var totalA = grouped[a].reduce(function(s, x) { return s + x.votes; }, 0);
-    var totalB = grouped[b].reduce(function(s, x) { return s + x.votes; }, 0);
-    return totalB - totalA;
-});
-
-candOrder.forEach(function(cand) {
-    if (!grouped[cand] || grouped[cand].length === 0) return;
-
-    var isWinner = (cand === Q.winner);
-    var candTotal = grouped[cand].reduce(function(s,x){return s+x.votes;},0);
-    var candPct = total > 0 ? candTotal / total * 100 : 0;
-
-    var candHeader = document.createElement('div');
-    candHeader.style.cssText = "display:flex; align-items:center; gap:6px; margin-bottom:4px; margin-top:2px;";
-
-    var candLabel = document.createElement('div');
-    candLabel.style.cssText = "font-size:12px; font-weight:bold; color:" + (isWinner?"#1a1a1a":"#555") + ";";
-    candLabel.textContent = dname(cand) + (isWinner ? " ★" : "") + "  (" + candPct.toFixed(1) + "%)";
-
-    candHeader.appendChild(candLabel);
-    container.appendChild(candHeader);
-
-    var partiesIn2 = grouped[cand].slice().sort(function(a,b){return b.votes-a.votes;});
-    var maxVotes = partiesIn2[0].votes;
-
-    partiesIn2.forEach(function(item) {
-        var row = document.createElement('div');
-        row.style.cssText = "display:flex; align-items:center; gap:5px; margin-bottom:3px;";
-
-        var chip = document.createElement('div');
-        chip.style.cssText = "width:10px; height:10px; border-radius:2px; flex-shrink:0; background:"
-            + (partyColors[item.party]||"#aaa") + ";";
-
-        var nameEl = document.createElement('div');
-        nameEl.style.cssText = "width:44px; font-size:11px; color:#333; flex-shrink:0; text-align:right;";
-        nameEl.textContent = partyLabels[item.party] || item.party;
-
-        var barWrap = document.createElement('div');
-        barWrap.style.cssText = "flex:1; background:#f0f0f0; height:12px; border-radius:2px; position:relative;";
-
-        var bar = document.createElement('div');
-        var barW = Math.round(item.votes / maxVotes * 100);
-        bar.style.cssText = "height:100%; border-radius:2px; background:" + (partyColors[item.party]||"#aaa")
-            + "; width:" + barW + "%; opacity:0.85;";
-
-        var pctEl = document.createElement('div');
-        pctEl.style.cssText = "width:36px; font-size:11px; color:#444; text-align:left; flex-shrink:0;";
-        pctEl.textContent = item.votes.toFixed(1) + "%";
-
-        barWrap.appendChild(bar);
-        row.appendChild(chip);
-        row.appendChild(nameEl);
-        row.appendChild(barWrap);
-        row.appendChild(pctEl);
-        container.appendChild(row);
-    });
-
-    var spacer = document.createElement('div');
-    spacer.style.cssText = "height:8px;";
-    container.appendChild(spacer);
-});
-
-var banner = document.createElement('div');
-banner.style.cssText = "margin-top:8px; padding:6px 10px; background:#f5f5f5; border-left:4px solid #333;"
-    + "border-radius:2px; font-size:12px; color:#1a1a1a; font-weight:bold;";
-banner.textContent = "✓ " + dname(Q.winner) + " elected with " + (Q.winner_votes_disp||"—") + "% of the vote";
-container.appendChild(banner);
+window.ElectionChart.renderRound2('pres_r2_chart', Q);
 !}
 go-to: election_end
 
