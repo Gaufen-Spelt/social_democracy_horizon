@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="manifest" href="./manifest.json">
+    <!--<link rel="manifest" href="./manifest.json"> -->
     <meta name="theme-color" content="#0969da">
     <meta prefix="ifiction: http://babel.ifarchive.org/protocol/iFiction/"
         property="ifiction:ifid" content="7FCDF039-2B77-4179-B795-CBAFA65253AA">
@@ -16,6 +16,16 @@
     <script src="d3-linegraph.js"></script>
     <script src="core.js"></script>
     <script src="game.js"></script>
+    <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => {
+      regs.forEach(reg => reg.unregister());
+    });
+    if (window.caches) {
+      caches.keys().then(names => names.forEach(name => caches.delete(name)));
+    }
+  }
+    </script>
     <!-- <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
