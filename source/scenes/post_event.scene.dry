@@ -834,10 +834,7 @@ Q.budget_audit_text =
 
 
 
-if (Q.year >= 1932 && Q.communist_revolution_timer > 10 && Q.april_challenge == 1) {
-    Q.communist_revolution_timer -= 1;
-    Q.rfb_strength += 20;
-}
+
 
 // QOL
 
@@ -957,6 +954,12 @@ Q.workers -= 0.1;
 Q.unemployed += 0.1;
 Q.budget -= 0.05;
 Q.capital_strike_progress += 0.2;
+}
+
+
+if (Q.year >= 1932 && Q.communist_revolution_timer > 10 && Q.april_challenge == 1) {
+    Q.communist_revolution_timer -= 1;
+    Q.rfb_strength += 20;
 }
 
 
@@ -5645,82 +5648,91 @@ if (Q.dvp_in_government && Q.spd_in_government && Q.dvp_ideology == "Authoritari
 
 
 
-// DNVP GAMEPLAY
+//// DNVP GAMEPLAY - TIERED CRISIS REBALANCING
 
+// 1. Lambach Controversy (Baseline Hugenberg gains nerfed)
 if (Q.lambach_exile == 1) {
-    Q.hugenberg_momentum += 3.8;
+    Q.hugenberg_momentum += 1.8;         // Reduced from 3.8
     Q.delegate_power_christsoc -= 1.4;   // DHV wing bleeds most
     Q.delegate_power_yocon -= 0.6;
     Q.delegate_power_moderates -= 0.7;
     Q.delegate_power_nat_cons -= 0.3;
 } else if (Q.lambach_reinstated == 1) {
-    Q.hugenberg_momentum += 1.8;
+    Q.hugenberg_momentum += 0.6;         // Reduced from 1.8
     Q.delegate_power_moderates += 0.7;
     Q.delegate_power_nat_cons += 0.3;
     Q.delegate_power_christsoc += 0.4;
     Q.delegate_power_yocon += 0.2;
 } else if (Q.lambach_exile == 0 && Q.month >= 8) {
-    Q.delegate_power_christsoc += 5.9; // DHV vindicated
+    Q.delegate_power_christsoc += 5.9;   // DHV vindicated
     Q.delegate_power_yocon += 2.3;
 } else {
-    Q.hugenberg_momentum += 1.9;
+    Q.hugenberg_momentum += 0.4;         // Reduced from 1.9
 }
 
+// 2. Track Destabilization Crises (1928+)
+let dnvp_crises = 0;
+
+// Crisis A: CNBL Crisis
 if (Q.year >= 1928 && Q.month >= 3) {
-if (Q.cnbl_crisis == 1) {
-    Q.hugenberg_momentum += 3.2;
-} else {
-    Q.delegate_power_nat_cons += 1.2;
-    Q.delegate_power_agrarians += 0.5;
-    Q.delegate_power_yocon += 0.8;
-    Q.delegate_power_christsoc += 0.5;
-  }
+    if (Q.cnbl_crisis == 1) {
+        dnvp_crises++;
+    } else {
+        Q.delegate_power_nat_cons += 1.2;
+        Q.delegate_power_agrarians += 0.5;
+        Q.delegate_power_yocon += 0.8;
+        Q.delegate_power_christsoc += 0.5;
+    }
 }
 
+// Crisis B: Jungdo Split
 if (Q.year >= 1928 && Q.month >= 3) {
-if (Q.jungdo_formed == 0) {
-    Q.delegate_power_yocon += 0.5;    
-    Q.delegate_power_christsoc += 1.4;
-    Q.delegate_power_moderates += 0.5;
-} else {
-    Q.delegate_power_nat_cons += 2.0;
-    Q.hugenberg_momentum += 2.0;
-  }
+    if (Q.jungdo_formed != 0) {
+        dnvp_crises++;
+        Q.delegate_power_nat_cons += 2.0;
+    } else {
+        Q.delegate_power_yocon += 0.5;    
+        Q.delegate_power_christsoc += 1.4;
+        Q.delegate_power_moderates += 0.5;
+    }
 }
 
+// Crisis C: Geest Wildfire
 if (Q.year >= 1928 && Q.month >= 1) {
-if (Q.geest_wildfire == 0) {
-    Q.delegate_power_yocon += 1.3;
-    Q.delegate_power_christsoc += 1.2;
-    Q.delegate_power_moderates += 1.8;
-    Q.delegate_power_nat_cons += 0.6;
-    Q.delegate_power_agrarians += 0.5;
-    Q.hugenberg_momentum -= 1.2;
-} else {
-    Q.hugenberg_momentum += 5.0;
-    Q.delegate_power_yocon += 1.5;    
-    Q.delegate_power_christsoc += 1.1;
-    Q.delegate_power_moderates += 0.3;
-    Q.delegate_power_nat_cons -= 0.6;
-    Q.delegate_power_agrarians -= 0.4;
-  }
+    if (Q.geest_wildfire == 1) {
+        dnvp_crises++;
+        Q.delegate_power_yocon += 1.5;    
+        Q.delegate_power_christsoc += 1.1;
+        Q.delegate_power_moderates += 0.3;
+        Q.delegate_power_nat_cons -= 0.6;
+        Q.delegate_power_agrarians -= 0.4;
+    } else {
+        Q.delegate_power_yocon += 1.3;
+        Q.delegate_power_christsoc += 1.2;
+        Q.delegate_power_moderates += 1.8;
+        Q.delegate_power_nat_cons += 0.6;
+        Q.delegate_power_agrarians += 0.5;
+        Q.hugenberg_momentum -= 1.2; // Moderates contain him if no wildfire
+    }
 }
+
+// Apply Tiered Stacking: [0 Crises: 0.0, 1 Crisis: 1.2, 2 Crises: 5.5, 3 Crises: 12.0]
+const crisis_momentum_tiers = [0.0, 1.2, 5.5, 12.0];
+Q.hugenberg_momentum += crisis_momentum_tiers[dnvp_crises];
 
 // 3b. Media Dominance Check
 if (Q.commercialized_media >= 1 || Q.radio >= 1) {
     Q.hugenberg_momentum -= 2.0;
 }
 
-// Media beating
-
-if (Q.hugenberg_media_attack >= 1 ) {
+if (Q.hugenberg_media_attack >= 1) {
     Q.hugenberg_momentum -= 10.0;
 }
 
-// 3c. Land Reform Threat
+// 3c. Land Reform Threat (Nerfed multiplier from 4.0 to 2.0)
 if (Q.land_reform > 0) {
-    Q.hugenberg_momentum += 4.0 * Q.land_reform;
-    Q.delegate_power_agrarians += 3.0 * Q.land_reform; // hits agrarians hardest
+    Q.hugenberg_momentum += 2.0 * Q.land_reform;
+    Q.delegate_power_agrarians += 3.0 * Q.land_reform; 
 }
 
 // 3d. Government Participation Bonus
@@ -5731,22 +5743,23 @@ if (Q.dnvp_in_government) {
     Q.delegate_power_christsoc += 1.8;
 }
 
+// Ideology Adjustments (Tuned Hugenberg gains down)
 if (Q.ideology == "reformist") {
     Q.delegate_power_moderates -= 0.3;
     Q.delegate_power_nat_cons -= 0.3;
     Q.delegate_power_yocon -= 0.1;
     Q.delegate_power_christsoc += 0.8;
-    Q.hugenberg_momentum -= 0.1;
+    Q.hugenberg_momentum -= 0.3;
 }
 if (Q.ideology == "labor") {
     Q.delegate_power_christsoc -= 0.5;
     Q.delegate_power_moderates += 0.3;
     Q.delegate_power_nat_cons += 0.3;
     Q.delegate_power_yocon += 0.3;
-    Q.hugenberg_momentum += 0.1;
+    Q.hugenberg_momentum += 0.0;
 }
 if (Q.ideology == "left") {
-    Q.hugenberg_momentum += 1;
+    Q.hugenberg_momentum += 0.4;       // Reduced from 1.0
     Q.delegate_power_moderates += 0.5;
     Q.delegate_power_nat_cons -= 1.2;
     Q.delegate_power_yocon += 0.5;
@@ -5761,15 +5774,15 @@ if (Q.lambach_stage >= 2) {
     Q.delegate_power_christsoc += 80;
     Q.hugenberg_momentum *= 0.1;
 }
-// Tariffs 
 
+// Tariffs 
 if (Q.tariffs < 0) {
-Q.delegate_power_agrarians -= 2.5 * Q.tariffs;
+    Q.delegate_power_agrarians -= 2.5 * Q.tariffs;
 }
 
-// 4. Class Influence
-Q.hugenberg_momentum += ((Q.old_middle_dnvp_pct || 0) * 0.27);
-Q.hugenberg_momentum += ((Q.rural_dnvp_pct || 0) * 0.17);
+// 4. Class Influence (Nerfed Hugenberg's passive demographic scaling)
+Q.hugenberg_momentum += ((Q.old_middle_dnvp_pct || 0) * 0.14); // Reduced from 0.27
+Q.hugenberg_momentum += ((Q.rural_dnvp_pct || 0) * 0.08);      // Reduced from 0.17
 
 Q.delegate_power_moderates += ((Q.new_middle_dnvp_pct || 0) * 0.32);
 Q.delegate_power_moderates += ((Q.old_middle_dnvp_pct || 0) * 0.11);
@@ -5779,34 +5792,26 @@ Q.delegate_power_nat_cons += ((Q.old_middle_dnvp_pct || 0) * 0.08);
 
 Q.delegate_power_agrarians += ((Q.rural_dnvp_pct || 0) * 0.25);
 
-// Young Conservatives: new middle class + small worker slice + some old middle
 Q.delegate_power_yocon += ((Q.workers_dnvp_pct || 0) * 0.16) + ((Q.new_middle_dnvp_pct || 0) * 0.25) + ((Q.old_middle_dnvp_pct || 0) * 0.06);
-// Christian Socials: worker-heavy + half of new middle
 Q.delegate_power_christsoc += ((Q.workers_dnvp_pct || 0) * 0.6) + ((Q.new_middle_dnvp_pct || 0) * 0.33);
 
-// 5. Ideological Reinforcements
-Q.hugenberg_momentum += Q.nationalism * 4.0;
+// 5. Ideological Reinforcements (Major nerf to passive nationalism scaling)
+Q.hugenberg_momentum += Q.nationalism * 1.2; // Reduced from 4.0
 Q.delegate_power_nat_cons += Q.nationalism * 0.13 * Q.pro_republic * 0.1;
 Q.delegate_power_moderates += Q.pro_republic * 0.034 + Q.nationalism * 0.056;
 Q.delegate_power_yocon += Q.pro_republic * 0.25;
 Q.delegate_power_christsoc += Q.socialism * 0.28 + Q.pro_republic * 0.12;
 
-// 6. Failure Penalty (Gradual)
+// 6. Failure Penalty (Tuned down Hugenberg's default low-vote cushion)
 let votes = Math.max(10, Math.min(20, Q.dnvp_pct || 12));
 
-// Moderates: scales from -2.0 (at 12%) to +1.5 (at 18%+)
 Q.delegate_power_moderates += Math.max(-2.0, Math.min(1.5, -2.0 + (votes - 12) * 0.58));
-
-// National Conservatives: scales from -2.0 (at 12%) to -0.6 (at 18%+)
 Q.delegate_power_nat_cons += Math.max(-2.0, Math.min(-0.4, -2.0 + (votes - 12) * 0.23));
 
-// Hugenberg Momentum: decreases from +3.0 (at 12%) to -1.2 (at 18%+)
-Q.hugenberg_momentum += Math.max(-1.2, Math.min(3.0, 3.0 - (votes - 12) * 0.70));
+// Hugenberg baseline low-vote gain nerfed from +3.0 max down to +0.8 max
+Q.hugenberg_momentum += Math.max(-1.5, Math.min(0.8, 0.8 - (votes - 12) * 0.60));
 
-// Young Conservatives: scales from 0.0 (at 12%) to +2.3 (at 18%+)
 Q.delegate_power_yocon += Math.max(0.0, Math.min(2.3, (votes - 12) * 0.38));
-
-// Christian Socials: scales from 0.0 (at 12%) to +2.0 (at 18%+)
 Q.delegate_power_christsoc += Math.max(0.0, Math.min(2.0, (votes - 12) * 0.33));
 
 // 6b. Traditionalist umbrella aggregation
@@ -5836,7 +5841,6 @@ Q.delegate_power_traditionalists =
             Q.delegate_power_moderates + Q.delegate_power_nat_cons + Q.delegate_power_agrarians;
     }
 }
-
 
 
 
