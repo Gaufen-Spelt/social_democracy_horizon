@@ -2016,7 +2016,7 @@ if (typeof window.ElectionChart === 'undefined') {
         // into "+N more".
         var shown = partyNames.slice(0, 3);
         var extra = partyNames.length - shown.length;
-        partyLine.textContent = shown.join(', ') + (extra > 0 ? ' +' + extra + ' more' : '');
+        partyLine.textContent = partyNames.join(', ');
         nameWrap.appendChild(partyLine);
 
         body.appendChild(nameWrap);
@@ -2124,18 +2124,16 @@ if (typeof window.ElectionChart === 'undefined') {
 
         var thirdKey = Q.round2_has_third ? canon(Q.round1_third) : null;
 
-        candOrder.forEach(function (cand, idx) {
-          var pct = total > 0 ? candidateTotals[cand] / total * 100 : 0;
-          var isWinner = cand === Q.winner;
-          var isEliminatedThird = thirdKey && cand === thirdKey && !isWinner;
-          renderCard(stack, cand, pct, grouped, {
-            isLeader: isWinner,
-            eliminated: isEliminatedThird,
-            badge: isWinner ? 'Elected' : (isEliminatedThird ? 'Eliminated in R1' : null),
-            badgeClass: isWinner ? 'ec-badge-win' : (isEliminatedThird ? 'ec-badge-out' : null),
-            ddpName: Q.ddp_name, dsbpName: Q.dsbp_name
-          });
-        });
+        candOrder.forEach(function (cand) {
+  var pct = total > 0 ? candidateTotals[cand] / total * 100 : 0;
+  var isWinner = cand === Q.winner;
+  renderCard(stack, cand, pct, grouped, {
+    isLeader: isWinner,
+    badge: isWinner ? 'Elected' : null,
+    badgeClass: isWinner ? 'ec-badge-win' : null,
+    ddpName: Q.ddp_name, dsbpName: Q.dsbp_name
+  });
+});
 
         var banner = document.createElement('div');
         banner.className = 'ec-banner ec-win';
