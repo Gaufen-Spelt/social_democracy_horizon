@@ -6471,7 +6471,7 @@ if (((Q.year == 1928 && Q.month >= 6) || (Q.year == 1929 && Q.month <= 1)) && (Q
 
 // 5. Lambach Fallback / Christian Social Trigger
 if (Q.lambach_flavor_2_trigger != 1 && (
-    (((Q.year == 1929 && Q.month > 1) || Q.year > 1929) && Q.lambach_flavor_0_trigger != 1) ||
+    (((Q.year == 1929 && Q.month > 1) || Q.year > 1929) && Q.lambach_flavor_trigger_1 != 1) ||
     (Q.delegate_power_christsoc > 400)
 )) {
     Q.lambach_flavor_2_trigger = 1;
