@@ -3209,16 +3209,56 @@ Q.PARTY_BEHAVIORS = {
 // via an event) to reassign any party's behavior. Parties not listed
 // fall back to 'center' (see _behaviorFor below), so new/splinter
 // parties added later degrade gracefully instead of erroring.
-Q.party_behavior = Q.party_behavior || {
+Q.party_behavior = Object.assign(Q.party_behavior || {}, {
+    // Revolutionary Left
     kpd: 'revleft',
-    nsdap: 'revright',
+    kpo: 'revleft',
+    kapd: 'revleft',
+    faud: 'revleft',
+    uspd: 'revleft',
+    sapd: 'revleft',
+    sl: 'revleft',
+    gsrn: 'revleft',
+    lb: 'revleft',
+
+    // Reformist Left
     spd: 'refleft',
+    srpd: 'refleft',
+    csrp: 'refleft',
+    rdp: 'refleft',
+
+    // Center
+    z: 'center',
+    ddp: 'center',
+    dsbp: 'center',
+    bb: 'center',
+    dbp: 'center',
+    cvp: 'center',
+    sls: 'center',
+    pp: 'center',
+
+    // Reformist Right
     dvp: 'refright',
     wp: 'refright',
     cnbl: 'refright',
-    z: 'center',
-    ddp: 'center',
-};
+    bvp: 'refright',
+    csvd: 'refright',
+    kvp: 'refright',
+    dhp: 'refright',
+    aspd: 'refright',
+    vnr: 'refright',
+    hl: 'refright',
+    vrp: 'refright',
+
+    // Revolutionary Right
+    nsdap: 'revright',
+    dnvp: 'revright',
+    dnf: 'revright',
+    dvfp: 'revright',
+    dtsp: 'revright',
+    rlb: 'revright'
+});
+
 
 // Human-readable label per party, stored on Q so it's inspectable/
 // displayable without reaching into Q.PARTY_BEHAVIORS at call sites.
