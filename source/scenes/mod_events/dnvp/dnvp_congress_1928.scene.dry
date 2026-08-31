@@ -154,7 +154,7 @@ if (Q.delegate_power_traditionalists >= Q.delegate_power_c && Q.delegate_power_t
     Q.leading_challenger = Q.leader_traditionalists;
     Q.dnvp_party_leader = Q.leader_traditionalists;
     Q.congress_path = "traditionalists";
-} } else if (Q.delegate_power_c >= Q.delegate_power_traditionalists && Q.delegate_power_c >= Q.hugenberg_momentum) {
+} else if (Q.delegate_power_c >= Q.delegate_power_traditionalists && Q.delegate_power_c >= Q.hugenberg_momentum) {
     Q.leading_challenger = Q.leader_c;
     Q.dnvp_party_leader = Q.leader_c;
     Q.congress_path = (Q.popcon_wing == "christsoc") ? "christian_social" : "young_conservative";
