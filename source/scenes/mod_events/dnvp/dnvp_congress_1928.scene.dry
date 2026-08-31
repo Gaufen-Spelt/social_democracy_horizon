@@ -154,10 +154,10 @@ if (Q.delegate_power_traditionalists >= Q.delegate_power_c && Q.delegate_power_t
     Q.leading_challenger = Q.leader_traditionalists;
     Q.dnvp_party_leader = Q.leader_traditionalists;
     Q.congress_path = "traditionalists";
-} else if (Q.delegate_power_c >= Q.delegate_power_traditionalists && Q.delegate_power_c >= Q.hugenberg_momentum) {
+} } else if (Q.delegate_power_c >= Q.delegate_power_traditionalists && Q.delegate_power_c >= Q.hugenberg_momentum) {
     Q.leading_challenger = Q.leader_c;
     Q.dnvp_party_leader = Q.leader_c;
-    Q.congress_path = "social_nationalists";
+    Q.congress_path = (Q.popcon_wing == "christsoc") ? "christian_social" : "young_conservative";
 } else {
     Q.leading_challenger = "Alfred Hugenberg";
     Q.dnvp_party_leader = "Alfred Hugenberg";
@@ -330,5 +330,8 @@ In his acceptance speech, Hugenberg does not offer an olive branch; he demands t
 [? if congress_path = "traditionalists": The broad traditionalist umbrella — moderates, National Conservatives, and the agrarian bloc alike — has carried the day under [+ leader_traditionalists +], drawn from its [+ trad_wing_name +] wing. [? if trad_wing = "agrarians": The Reichslandbund's smallholders and estate-owners rallied hardest of all, incensed by the government's trade policy and unwilling to see their interests subordinated to Hugenberg's industrialist axis. ?][? if trad_wing = "moderates": The party's pragmatic, coalition-minded wing has prevailed, eager to keep the DNVP inside the tent of government whatever the cost. ?][? if trad_wing = "nat_cons": The old guard of Junkers and landed notables has reasserted itself, preserving the party's establishment character against both the radicals and the reformers. ?]
 The victory papers over a fractious coalition, however: the moderates, the National Conservatives, and the agrarians agree on little beyond opposing Hugenberg's "Block of Stone," and the urban radicals and nationalist youth already dismiss this as a triumph of a "dying caste." ?]
 
-[? if congress_path = "social_nationalists": In an unexpected electoral run, the Popular Conservatives have secured the win against all the odds — the furthermost-left current within the DNVP, though this extends no further than a paternalist, corporatist creed. Ardently anti-Marxist, the bloc nonetheless champions an active social policy and looks uneasily on any cooperation with parties to the left of the DDP.
-The floor belongs to the [+ popcon_wing_name +] wing: [+ popcon_wing_desc +]. [+ leader_c +] - leader of the Popular Conservatives, will lead the DNVP from now on. ?]
+[? if congress_path = "christian_social": In an unexpected electoral run, the Popular Conservatives have secured the win against all the odds — the furthermost-left current within the DNVP, though this extends no further than a paternalist, corporatist creed. Ardently anti-Marxist, the bloc nonetheless champions an active social policy and looks uneasily on any cooperation with parties to the left of the DDP.
+The floor belongs to the Christian Social wing: the DHV's labor current of workers and white-collar employees, paternalist and corporatist, fiercely anti-Marxist yet wary of subordinating labor's voice to landed interests. [+ leader_c +] - leader of the Popular Conservatives, will lead the DNVP from now on. ?]
+
+[? if congress_path = "young_conservative": In an unexpected electoral run, the Popular Conservatives have secured the win against all the odds — the furthermost-left current within the DNVP, though this extends no further than a paternalist, corporatist creed. Ardently anti-Marxist, the bloc nonetheless champions an active social policy and looks uneasily on any cooperation with parties to the left of the DDP.
+The floor belongs to the Young Conservative wing: a youthful, urban current rooted in the new middle class and a sliver of the white-collar workforce, restless with both Hugenberg's empire and stagnation of the party. [+ leader_c +] - leader of the Popular Conservatives, will lead the DNVP from now on. ?]
