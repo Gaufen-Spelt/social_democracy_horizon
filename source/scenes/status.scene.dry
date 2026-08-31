@@ -41,6 +41,38 @@ var flagSlugMap = {
 };
 Q.flag_slug = flagSlugMap[Q.country_name_display] || "weimar";
 
+var getMinisterStr = function(party, minister) {
+    if (!minister || minister === "None") return "—";
+    if (!party || party === "None") return minister;
+    return minister + " (" + party + ")";
+};
+
+var cabinetRows = [
+    ["Foreign", getMinisterStr(Q.foreign_minister_party, Q.foreign_minister)],
+    ["Interior", getMinisterStr(Q.interior_minister_party, Q.interior_minister)],
+    ["Justice", getMinisterStr(Q.justice_minister_party, Q.justice_minister)],
+    ["Labor", getMinisterStr(Q.labor_minister_party, Q.labor_minister)],
+    ["Economic", getMinisterStr(Q.economic_minister_party, Q.economic_minister)],
+    ["Finance", getMinisterStr(Q.finance_minister_party, Q.finance_minister)],
+    ["Agriculture", getMinisterStr(Q.agriculture_minister_party, Q.agriculture_minister)],
+    ["Transport", getMinisterStr(Q.transport_minister_party, Q.transport_minister)],
+    ["Reichswehr", Q.reichswehr_minister || "—"]
+];
+
+var html = '<table style="width: 100%; font-size: 0.82em; border-collapse: collapse; margin-top: 6px;">';
+html += '<tr style="border-bottom: 1px solid #888; text-align: left;"><th style="padding: 2px 0;">Ministry</th><th style="padding: 2px 0;">Appointee</th></tr>';
+
+for (var i = 0; i < cabinetRows.length; i++) {
+    html += '<tr style="border-bottom: 1px solid #ddd;">';
+    html += '<td style="padding: 3px 2px 3px 0; font-weight: bold; width: 40%; vertical-align: top;">' + cabinetRows[i][0] + '</td>';
+    html += '<td style="padding: 3px 0; width: 60%; vertical-align: top;">' + cabinetRows[i][1] + '</td>';
+    html += '</tr>';
+}
+html += '</table>';
+
+Q.cabinet_table_display = html;
+
+
 !}
 
 <hr>
@@ -75,28 +107,7 @@ Government coalition votes: [+ government_total_votes +][? if tolerating_parties
 
 <hr>
 
-{!
-<table style="width:100%; border-collapse: collapse;">
-  <thead>
-    <tr style="border-bottom: 1px solid #ccc;">
-      <th style="text-align: left; padding: 4px;">Ministry</th>
-      <th style="text-align: left; padding: 4px;">Party</th>
-      <th style="text-align: left; padding: 4px;">Minister</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td style="padding: 4px;">Foreign</td><td style="padding: 4px;">[+ foreign_minister_party +]</td><td style="padding: 4px;">[+ foreign_minister +]</td></tr>
-    <tr><td style="padding: 4px;">Interior</td><td style="padding: 4px;">[+ interior_minister_party +]</td><td style="padding: 4px;">[+ interior_minister +]</td></tr>
-    <tr><td style="padding: 4px;">Justice</td><td style="padding: 4px;">[+ justice_minister_party +]</td><td style="padding: 4px;">[+ justice_minister +]</td></tr>
-    <tr><td style="padding: 4px;">Labor</td><td style="padding: 4px;">[+ labor_minister_party +]</td><td style="padding: 4px;">[+ labor_minister +]</td></tr>
-    <tr><td style="padding: 4px;">Economic</td><td style="padding: 4px;">[+ economic_minister_party +]</td><td style="padding: 4px;">[+ economic_minister +]</td></tr>
-    <tr><td style="padding: 4px;">Finance</td><td style="padding: 4px;">[+ finance_minister_party +]</td><td style="padding: 4px;">[+ finance_minister +]</td></tr>
-    <tr><td style="padding: 4px;">Agriculture</td><td style="padding: 4px;">[+ agriculture_minister_party +]</td><td style="padding: 4px;">[+ agriculture_minister +]</td></tr>
-    <tr><td style="padding: 4px;">Transport</td><td style="padding: 4px;">[+ transport_minister_party +]</td><td style="padding: 4px;">[+ transport_minister +]</td></tr>
-    <tr><td style="padding: 4px;">Reichswehr</td><td style="padding: 4px;">—</td><td style="padding: 4px;">[+ reichswehr_minister +]</td></tr>
-  </tbody>
-</table>
-!}
+[+ cabinet_table_display +]
 
 Budget: [+ budget +]
 
