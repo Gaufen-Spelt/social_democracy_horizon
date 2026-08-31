@@ -1,0 +1,6 @@
+title: Zentrumpartei's [+ z_party_leader +] and DNVP's [+ dnvp_party_leader +] have opened negotiations.
+subtitle: **German Right** is unifying?
+tags: event
+max-visits: 1
+new-page: true
+view-if: cvp_negotiations_trigger_flavor = 1
