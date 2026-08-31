@@ -301,38 +301,8 @@ Q.moderate_plan_adopted = 0;
 
 // organizations
 
-Q.kpd_ideology = "Marxism-Leninism";
-Q.kpo_ideology = "Council Communism";
-Q.sl_ideology = "Revolutionary Socialism";
-Q.sapd_ideology = "Left-Wing Socialism";
-Q.spd_ideology = "Social Democracy";
-Q.srpd_ideology = "Social Republicanism";
-Q.ddp_ideology = "Social Liberalism";
-Q.z_ideology = "Catholic Tent";
-Q.bvp_ideology = "Bavarian Conservatism";
-Q.hl_ideology = "Hanseatic Agrarian Conservatism";
-Q.aspd_ideology = "Right-Wing Social Democracy";
-Q.csrp_ideology = "Christian Socialism";
-Q.dvp_ideology = "National Liberalism";
-Q.vrp_ideology = "Middle-Class Interest";
-Q.wp_ideology = "Middle-Class Interest";
-Q.cnbl_ideology = "Agrarian Conservatism";
-Q.csvd_ideology = "Protestant Social Conservatism";
-Q.kvp_ideology = "Moderate Conservatism";
-Q.dhp_ideology = "Hanoverian Agrarianism";
-Q.bb_ideology = "Liberal Agrarianism";
-Q.vnr_ideology = "Völkisch Liberalism";
-Q.dnvp_ideology = "National Conservatism";
-Q.nsdap_ideology = "National Socialism";
-Q.dvfp_ideology = "Völkisch Nationalism";
-Q.dbp_ideology = "Liberal Agrarianism";
-Q.dnf_ideology = "National Conservatism";
-Q.rlb_ideology = "Agrarian Conservatism";
-Q.kapd_ideology = "Council Communism";
-Q.faud_ideology = "Anarcho - Syndicalism";
-
 Q.dsbp_name = "DSBP";
-
+Q.dvfp_formed = 1;
 Q.dnvp_line = 2;
 
 Q.z_relation = 50;
@@ -1844,31 +1814,6 @@ Q.coalition_blocks = {
 // alternative is the Conciliators as party leader
 // party leader - can be Ludwig Kaas, Joseph Joos, or Adam Stegerwald after the 1928 December conference. Joos will be most friendly to the SPD.
 
-Q.spd_party_leader = "Collective"; // SPD has no single leader by design
-Q.z_party_leader = "Marx"; // Wilhelm Marx (1928 start)
-Q.bvp_party_leader = "Held"; // Heinrich Held
-Q.ddp_party_leader = "Koch-Weser"; // Erich Koch-Weser
-Q.dvp_party_leader = "Stresemann"; // Gustav Stresemann (until 1929)
-Q.dnvp_party_leader = "Kuno von Westarp"; // Kuno von Westarp (moderate, until 1928)
-Q.nsdap_party_leader = "Hitler"; // Adolf Hitler
-Q.kpd_party_leader = "Thälmann"; // Ernst Thälmann (or "Conciliators" if they take over)
-Q.wp_party_leader = "Drewitz"; // Hermann Drewitz
-Q.csrp_party_leader = "Vitus Heller"; // Vitus Heller. Chrisliche Soziale Reichspartei
-Q.vrp_party_leader = "Bauser"; // Adolf Bauser, chairman of Reichspartei für Volksrecht und Aufwertung, also known as the People's Justice Party Volksrechtpartei, VRP
-Q.cnbl_party_leader = "Hepp";        // Georg Hepp, Reichs-Landbund chairman
-Q.srpd_party_leader = "Horsing";     // Otto Hörsing, Reichsbanner founder
-Q.sapd_party_leader = "Rosenfeld";          // Not formed yet in 1928
-Q.csvd_party_leader = "Lambach";          // Not formed yet in 1928 (splits ~1929-30)
-Q.kvp_party_leader = "Westarp";           // Not formed yet in 1928
-Q.dhp_party_leader = "Boden";        // Wilhelm Boden, Deutsch-Hannoversche Partei
-Q.bb_party_leader = "Eisenberger";   // Karl Eisenberger, Bayerischer Bauernbund chairman
-Q.dbp_party_leader = "Fehr";
-Q.dnf_party_leader = "Alfred Hugenberg";
-Q.rlb_party_leader = "Martin Schiele";
-Q.aspd_party_leader = "Wilhelm Buck";
-Q.uspd_party_leader = "Georg Ledebour"; // or Theodor Liebknecht
-Q.gsrn_party_leader = "Karl Paetel";
-Q.pp_party_leader = "Stanisław Sierakowski";
 
 
 // === DEPRECATED - Keep for compatibility, sync with party_leader ===
@@ -2558,7 +2503,78 @@ Q.stampfer_advisor = 0; // Friedrich Stampfer
 
 
 
-Q.dvfp_formed = 1;
+
+
+
+
+
+
+
+Q.spd_party_leader = "Collective"; // SPD has no single leader by design
+Q.z_party_leader = "Marx"; // Wilhelm Marx (1928 start)
+Q.bvp_party_leader = "Held"; // Heinrich Held
+Q.ddp_party_leader = "Koch-Weser"; // Erich Koch-Weser
+Q.dvp_party_leader = "Stresemann"; // Gustav Stresemann (until 1929)
+Q.dnvp_party_leader = "Kuno von Westarp"; // Kuno von Westarp (moderate, until 1928)
+Q.nsdap_party_leader = "Hitler"; // Adolf Hitler
+Q.kpd_party_leader = "Thälmann"; // Ernst Thälmann (or "Conciliators" if they take over)
+Q.wp_party_leader = "Drewitz"; // Hermann Drewitz
+Q.csrp_party_leader = "Vitus Heller"; // Vitus Heller. Chrisliche Soziale Reichspartei
+Q.vrp_party_leader = "Bauser"; // Adolf Bauser, chairman of Reichspartei für Volksrecht und Aufwertung, also known as the People's Justice Party Volksrechtpartei, VRP
+Q.cnbl_party_leader = "Hepp";        // Georg Hepp, Reichs-Landbund chairman
+Q.srpd_party_leader = "Horsing";     // Otto Hörsing, Reichsbanner founder
+Q.sapd_party_leader = "Rosenfeld";          // Not formed yet in 1928
+Q.csvd_party_leader = "Lambach";          // Not formed yet in 1928 (splits ~1929-30)
+Q.kvp_party_leader = "Westarp";           // Not formed yet in 1928
+Q.dhp_party_leader = "Boden";        // Wilhelm Boden, Deutsch-Hannoversche Partei
+Q.bb_party_leader = "Eisenberger";   // Karl Eisenberger, Bayerischer Bauernbund chairman
+Q.dbp_party_leader = "Fehr";
+Q.dnf_party_leader = "Alfred Hugenberg";
+Q.rlb_party_leader = "Martin Schiele";
+Q.aspd_party_leader = "Wilhelm Buck";
+Q.uspd_party_leader = "Georg Ledebour"; // or Theodor Liebknecht
+Q.gsrn_party_leader = "Karl Paetel";
+Q.pp_party_leader = "Stanisław Sierakowski";
+Q.dsbp_party_leader = "Vacant";
+
+
+
+
+Q.kpd_ideology = "Marxism-Leninism";
+Q.kpo_ideology = "Council Communism";
+Q.sl_ideology = "Revolutionary Socialism";
+Q.sapd_ideology = "Left-Wing Socialism";
+Q.spd_ideology = "Social Democracy";
+Q.srpd_ideology = "Social Republicanism";
+Q.ddp_ideology = "Social Liberalism";
+Q.z_ideology = "Catholic Tent";
+Q.bvp_ideology = "Bavarian Conservatism";
+Q.hl_ideology = "Hanseatic Agrarian Conservatism";
+Q.aspd_ideology = "Right-Wing Social Democracy";
+Q.csrp_ideology = "Christian Socialism";
+Q.dvp_ideology = "National Liberalism";
+Q.vrp_ideology = "Middle-Class Interest";
+Q.wp_ideology = "Middle-Class Interest";
+Q.cnbl_ideology = "Agrarian Conservatism";
+Q.csvd_ideology = "Protestant Social Conservatism";
+Q.kvp_ideology = "Moderate Conservatism";
+Q.dhp_ideology = "Hanoverian Agrarianism";
+Q.bb_ideology = "Liberal Agrarianism";
+Q.vnr_ideology = "Völkisch Liberalism";
+Q.dnvp_ideology = "National Conservatism";
+Q.nsdap_ideology = "National Socialism";
+Q.dvfp_ideology = "Völkisch Nationalism";
+Q.dbp_ideology = "Liberal Agrarianism";
+Q.dnf_ideology = "National Conservatism";
+Q.rlb_ideology = "Agrarian Conservatism";
+Q.kapd_ideology = "Council Communism";
+Q.faud_ideology = "Anarcho - Syndicalism";
+Q.uspd_ideology = "Left-wing Socialism";
+Q.gsrn_ideology = "Revolutionary Nationalism";
+Q.pp_ideology = "Polish Interests";
+Q.dsbp_ideology = "National Liberalism";
+
+
 
 Q.custom_party_spd   = Q.custom_party_spd   || 1;
 Q.custom_party_kpd   = Q.custom_party_kpd   || 1;
