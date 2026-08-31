@@ -5455,6 +5455,19 @@ if (!Q.math_broken) {
     console.log("DISSENT CHAOS: " + Q.dissent_percent + "%");
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 if (Q.subevents >= 1) {
     Q.subevents = 0;
 
@@ -5604,7 +5617,7 @@ if (Q.year == 1928 && Q.month == 9 && Q.stahlhelm_furstenwalde != 1) {
                      (Q.lb_r || 0) + (Q.ddp_r || 0) + (Q.srpd_r || 0);
 
     if (Q.sh_bans_p >= 1 || 
-        Q.nationalism >= 10 || 
+        Q.nationalism >= 15 || 
         Q.hugenberg_momentum >= 450 || 
         Q.ideology == "Left" || 
         Q.cnbl_crisis == 1 || 
@@ -5639,12 +5652,13 @@ if (Q.year == 1930 && Q.month == 5 && Q.weeks >= 1 && Q.young_plan_seen == 1) {
     Q.z_relation      -= 5;
     Q.dvp_relation     -= 5;
     Q.bvp_relation     -= 5;
+    if (Q.president == "Hindenburg") { Q.presidential_patience *= 0.5 };
 }
 
 if (Q.year >= 1930 && Q.year < 1932) {
-    Q.demand_impulse   -= 0.1;
+    Q.demand_impulse   -= 0.15;
     Q.price_pressure   -= 0.05;
-    Q.unemployed       += 0.12;
+    Q.unemployed       += 0.15;
     Q.inflation         -= 0.11;
     Q.economic_growth   -= 0.10;
 }
@@ -5703,8 +5717,8 @@ if (Q.lambach_exile == 1) {
     Q.delegate_power_nat_cons += 0.3;
     Q.delegate_power_christsoc += 0.4;
     Q.delegate_power_yocon += 0.2;
-} else if (Q.lambach_exile == 0 && Q.month >= 8) {
-    Q.delegate_power_christsoc += 5.9;   // DHV vindicated
+} else if (Q.lambach_exile == 0 && Q.lambach_momentum == 1) {
+    Q.delegate_power_christsoc += 5.9;   // DHV vindicated / momentum building
     Q.delegate_power_yocon += 2.3;
 } else {
     Q.hugenberg_momentum += 0.4;         // Reduced from 1.9
@@ -6021,9 +6035,10 @@ if (Q.congress_path != "capitulation") {
 if (Q.congress_path == "capitulation") {
     Q.dvp_right += 2.8;
 }
-if (Q.congress_path == "social_nationalists" || Q.congress_path == "coalitionists") {
+
+if (Q.congress_path == "christian_social" || Q.congress_path == "young_conservative" || Q.congress_path == "coalitionists") {
     Q.dvp_left += 1.8;
-    if (Q.congress_path == "social_nationalists") {
+    if (Q.congress_path == "christian_social") {
         Q.dvp_left += 0.7;
     }
 }
@@ -6140,8 +6155,11 @@ if (Q.stolper_adopted == 1) {
     Q.social_republican_ddp += 2.5;
 }
 
-if (Q.congress_path == "social_nationalists") {
+if (Q.congress_path == "christian_social" || Q.congress_path == "young_conservative") {
     Q.social_republican_ddp += 0.3;
+}
+if (Q.congress_path == "young_conservative") {
+    Q.social_republican_ddp += 0.2;
 }
 
 if (Q.ddp_in_government) {
@@ -6250,10 +6268,10 @@ if (Q.prussian_concordat >= 1) {
     Q.z_moderate_power += 2.0;
 } else if (Q.prussian_concordat_progress == 0) {
     // Ongoing negotiations and Vatican pressure boost clerical authority.
-    Q.z_clerical_power += 3.5;
+    Q.z_clerical_power += 6.5;
     Q.z_right_labor_power -= 1.8; 
 } else if (Q.prussian_concordat_progress >= 1) {
-    Q.z_clerical_power += 2.5;
+    Q.z_clerical_power += 4.5;
     Q.z_left_labor_power += 1.0;
     Q.z_right_labor_power -= 0.8; // Vatican opposes Stegerwald's interconfessional plans
 
@@ -6366,7 +6384,7 @@ if (Q.lambach_exile == 0 && (Q.year >= 1928 && Q.month >= 7) && Q.year < 1930) {
     Q.z_clerical_power -= 2.7;
 }
 
-if (Q.congress_path == "social_nationalists" && Q.year < 1930) {
+if (Q.congress_path == "christian_social" && Q.year < 1930) {
     Q.z_left_labor_power += 2.5;
     Q.z_right_labor_power += 12;
     Q.z_moderate_power -= 1.5;
@@ -6511,8 +6529,8 @@ if (((Q.year == 1928 && Q.month >= 6) || (Q.year == 1929 && Q.month <= 1)) && (Q
 
 // 5. Lambach Fallback / Christian Social Trigger
 if (Q.lambach_flavor_2_trigger != 1 && (
-    (((Q.year == 1929 && Q.month > 1) || Q.year > 1929) && Q.lambach_flavor_trigger_1 != 1) ||
-    (Q.delegate_power_christsoc > 400)
+    ((Q.lambach_flavor_trigger_1 != 1) ||
+    (Q.year == 1928 && Q.month >= 8 && (Q.delegate_power_christsoc + Q.delegate_power_yocon) > 400)
 )) {
     Q.lambach_flavor_2_trigger = 1;
     Q.lambach_momentum_timer = 2;
