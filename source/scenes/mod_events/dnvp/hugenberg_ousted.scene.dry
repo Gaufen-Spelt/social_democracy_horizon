@@ -104,7 +104,7 @@ if (Q.popcon_bloc_pct >= 40 || Q.radical_bloc_pct >= 40) {
         Q.dnvp_party_leader = "Alfred Hugenberg";
         Q.leading_challenger = Q.leader_ober;
     } else {
-        Q.congress_path = "social_nationalists";
+        Q.congress_path = (Q.popcon_wing == "christsoc") ? "christian_social" : "young_conservative";
         Q.leading_challenger = Q.leader_c;
         Q.dnvp_party_leader = Q.leader_c;
     }
@@ -134,7 +134,7 @@ if (Q.popcon_bloc_pct >= 40 || Q.radical_bloc_pct >= 40) {
             Q.trad_wing_name = "Agrarian";
         }
     } else {
-        Q.congress_path = "social_nationalists";
+        Q.congress_path = (Q.popcon_wing == "christsoc") ? "christian_social" : "young_conservative";
         Q.leading_challenger = Q.leader_c;
         Q.dnvp_party_leader = Q.leader_c;
     }
