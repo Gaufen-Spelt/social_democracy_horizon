@@ -1,0 +1,6 @@
+title: Zentrumpartei's [+ z_party_leader +] and DNVP's [+ dnvp_party_leader +] have concluded the negotiations...
+subtitle: What's ought to come from this merger?
+tags: event
+max-visits: 1
+new-page: true
+view-if: cvp_negotiations_trigger_flavor_2 = 1
