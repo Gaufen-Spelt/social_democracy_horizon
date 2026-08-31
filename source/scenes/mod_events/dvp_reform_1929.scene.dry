@@ -25,6 +25,7 @@ if (Q.dvp_left > Q.dvp_right + 10) {
     Q.dvp_party_leader = "Ernst Scholz";
     Q.dvp_ideology = "National Liberalism (Scholzite)";
     Q.nationalism += 5;
+    Q.old_middle += 1.5;
 } else {
     Q.dvp_reform_outcome = "stalemate";
 }
@@ -90,7 +91,7 @@ on-departure: {!
 window.disableFocusMode()
 !}
 
-= Scholz is triumphant, as the reform dies out.
+= With reform getting struck down, Scholz takes the mantle.
 
 {! 
 <style>
@@ -103,4 +104,4 @@ on-departure: {!
 window.disableFocusMode()
 !}
 
-= Both sides have reached the stalemate.
+= Reform has thrown congress into stalemate.
