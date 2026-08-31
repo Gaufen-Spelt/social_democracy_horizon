@@ -2,7 +2,7 @@ title: Conciliators have been deposed from KPD leadership!
 subtitle: Our co-operation lasted as much as it could.
 tags: event
 new-page: true
-view-if: kpd_party_leader = "Conciliators" and year >= 1930 and (communist_coalition <= 4 or kpd_relation < 35 or (ideology = "labor" and labor_strength > left_strength * 4) or (ideology = "reformist" and reformist_strength > left_strength * 3)) and left_strength < 10
+view-if: kpd_party_leader = "Conciliators" and year >= 1930 and (communist_coalition <= 4 or kpd_relation < 35 or (ideology = "labor" and labor_strength > left_strength * 4) or (ideology = "reformist" and reformist_strength > left_strength * 3)) and left_strength < 30
 
 = Concialators have been deposed!
 
