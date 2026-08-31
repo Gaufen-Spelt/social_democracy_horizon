@@ -1,0 +1,22 @@
+title: Founding [+ DSBP +] congress.
+subtitle: [+ month: month +], [+ year +].
+tags: event
+max-visits: 1
+new-page: true
+view-if: dsbp_trigger_flavor = 1 and dsbp_trigger_flavor_timer <= 0
+
+= DSBP Congress
+
+Following the unification of liberal and corporatist forces, DSBP now must elect new leader.
+
+The following candidates stand:
+
+• Arthur Mahraun, leader of the Jungdeutsher Order / Jungdo / Young German Order, main beneficiary of this unification.
+
+• Erich Koch Weser, member of the business wing of DDP and one of the unification supporters.
+
+• Otto Thiel, member of the DHV wing of DVP and one of the unification supporters. His candidacy is contested by 
+
+• Baron Rochus von Rheinbaben, leader of the corporatist liberal Front 1929 and main organizer of this unification.
+
+• Friedrich Baltrusch and Georg Streiter, duumvirate representatives of Christian Union Trades within DVP.
