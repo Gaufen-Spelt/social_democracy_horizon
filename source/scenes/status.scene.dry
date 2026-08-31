@@ -73,6 +73,31 @@ Coalition in government: [+ coalition_name +] ([+ parties_in_government_display 
 
 Government coalition votes: [+ government_total_votes +][? if tolerating_parties_display != "None" :  ([+ government_effective_pct +] effective with toleration) ?]
 
+<hr>
+
+{!
+<table style="width:100%; border-collapse: collapse;">
+  <thead>
+    <tr style="border-bottom: 1px solid #ccc;">
+      <th style="text-align: left; padding: 4px;">Ministry</th>
+      <th style="text-align: left; padding: 4px;">Party</th>
+      <th style="text-align: left; padding: 4px;">Minister</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td style="padding: 4px;">Foreign</td><td style="padding: 4px;">[+ foreign_minister_party +]</td><td style="padding: 4px;">[+ foreign_minister +]</td></tr>
+    <tr><td style="padding: 4px;">Interior</td><td style="padding: 4px;">[+ interior_minister_party +]</td><td style="padding: 4px;">[+ interior_minister +]</td></tr>
+    <tr><td style="padding: 4px;">Justice</td><td style="padding: 4px;">[+ justice_minister_party +]</td><td style="padding: 4px;">[+ justice_minister +]</td></tr>
+    <tr><td style="padding: 4px;">Labor</td><td style="padding: 4px;">[+ labor_minister_party +]</td><td style="padding: 4px;">[+ labor_minister +]</td></tr>
+    <tr><td style="padding: 4px;">Economic</td><td style="padding: 4px;">[+ economic_minister_party +]</td><td style="padding: 4px;">[+ economic_minister +]</td></tr>
+    <tr><td style="padding: 4px;">Finance</td><td style="padding: 4px;">[+ finance_minister_party +]</td><td style="padding: 4px;">[+ finance_minister +]</td></tr>
+    <tr><td style="padding: 4px;">Agriculture</td><td style="padding: 4px;">[+ agriculture_minister_party +]</td><td style="padding: 4px;">[+ agriculture_minister +]</td></tr>
+    <tr><td style="padding: 4px;">Transport</td><td style="padding: 4px;">[+ transport_minister_party +]</td><td style="padding: 4px;">[+ transport_minister +]</td></tr>
+    <tr><td style="padding: 4px;">Reichswehr</td><td style="padding: 4px;">—</td><td style="padding: 4px;">[+ reichswehr_minister +]</td></tr>
+  </tbody>
+</table>
+!}
+
 Budget: [+ budget +]
 
 = Other Positions
@@ -677,28 +702,6 @@ if (Q.economic_growth) {
     Q.economic_growth_2 = Q.economic_growth.toFixed(2);
 }
 !}
-
-= **GOVERNMENT**
-
-**Cabinet Composition:**
-
-Foreign Ministry: [+ foreign_minister_party +] ([+ foreign_minister +])
-
-Interior Ministry: [+ interior_minister_party +] ([+ interior_minister +])
-
-Justice Ministry: [+ justice_minister_party +] ([+ justice_minister +])
-
-Labor Ministry: [+ labor_minister_party +] ([+ labor_minister +])
-
-Economic Ministry: [+ economic_minister_party +] ([+ economic_minister +])
-
-Finance Ministry: [+ finance_minister_party +] ([+ finance_minister +])
-
-Agriculture Ministry: [+ agriculture_minister_party +] ([+ agriculture_minister +])
-
-Transport Ministry: [+ transport_minister_party +] ([+ transport_minister +])
-
-Reichswehr Ministry: [+ reichswehr_minister +]
 
 = Relationships
 
