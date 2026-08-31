@@ -6058,8 +6058,8 @@ if (Q.dvp_relation < 40) {
     Q.dvp_right += 0.7;
 }
 
-Q.dvp_left += ((Q.pro_republic || 0) / 12) * 0.35;
-Q.dvp_right += (Q.nationalism || 0) * 0.6;
+Q.dvp_left += ((Q.pro_republic || 0) / 12) * 0.36;
+Q.dvp_right += (Q.nationalism || 0) * 0.30;
 
 // 4. DEMOGRAPHIC CLASS INFLUENCE
 Q.dvp_left += (((Q.new_middle_dvp_pct || 0) + (Q.workers_dvp_pct || 0) + (Q.unemployedc_dvp_pct || 0)) / 5) * 0.35;
