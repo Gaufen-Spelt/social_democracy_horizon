@@ -5906,6 +5906,52 @@ Q.delegate_power_traditionalists =
 }
 
 
+// Moderates Leader (Coalitionists)
+if ((Q.rural_dnvp_pct + Q.old_middle_dnvp_pct / 3) > 36 || Q.cnbl_crisis == 0) {
+    Q.leader_moderates = "Friedrich Winckler";
+    Q.leader_moderates_title = "Leader of the Prussian Landtag Delegation";
+} else {
+    Q.leader_moderates = "Oskar Hergt";
+    Q.leader_moderates_title = "Former Party Chairman";
+}
+
+// National Conservatives Leader (Aristocrats)
+if (Q.lambach_reinstated == 1 || Q.dnvp_pct > 18.4) {
+    Q.leader_nat_cons = "Kuno von Westarp";
+    Q.leader_nat_cons_title = "Incumbent Party Chairman";
+} else {
+    Q.leader_nat_cons = "Walter von Keudell";
+    Q.leader_nat_cons_title = "Former Reich Interior Minister";
+}
+
+// Agrarians Leader (new sub-group of the traditionalist umbrella)
+if ((Q.tariffs || 0) < 0) {
+    Q.leader_agrarians = "Martin Schiele";
+    Q.leader_agrarians_title = "Reichslandbund President";
+} else {
+    Q.leader_agrarians = "Gustav von Kalckreuth";
+    Q.leader_agrarians_title = "Reichslandbund President";
+}
+
+// Popular Conservative Candidates (banner-bearers of each internal wing) —
+// which one actually leads the bloc is decided further below, once the
+// relative strength of each wing on the floor is known.
+Q.leader_c_yocon = "Gottfried Treviranus";
+Q.leader_c_yocon_title = "Young Conservative Faction Leader";
+
+if (Q.lambach_exile == 0 || Q.lambach_momentum == 1) {
+    Q.leader_c_christsoc = "Walther Lambach";
+    Q.leader_c_christsoc_title = "Leader of the Christian Social - DHV wing";
+} else {
+    Q.leader_c_christsoc = "Emil Hartwig";
+    Q.leader_c_christsoc_title = "Christian-Social Delegate";
+}
+
+
+
+
+
+
 
 // ==========================================
 // NSDAP GAMEPLAY
