@@ -29,7 +29,7 @@ Q.old_middle_dsbp  = (Q.old_middle_ddp  || 0) + (Q.old_middle_dvp  || 0);
 Q.rural_dsbp       = (Q.rural_ddp       || 0) + (Q.rural_dvp       || 0);
 Q.unemployedc_dsbp = (Q.unemployedc_ddp || 0) + (Q.unemployedc_dvp || 0);
 
-Q.dsbp_relation += Q.dvp_relation * 2 + Q.ddp_relation / 2;
+Q.dsbp_relation = Q.dvp_relation * 0.5 + Q.ddp_relation / 4;
 
 // Zero out the parents
 Q.workers_ddp      = 0;
@@ -72,6 +72,7 @@ if (Q.jungdo_formed == 1) {
 
     Q.dsbp_r += (Q.vnr_r || 0);
     Q.vnr_r   = 0;
+    Q.dsbp_factions = 1;
 }
 
 Q.dsbp_in_government = 1;
