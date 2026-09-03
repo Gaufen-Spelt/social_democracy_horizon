@@ -104,15 +104,15 @@ on-arrival: {!
     Q.radicalization += (Q.peoples_party === 1) ? 0.5 : 1;
     Q.socialism += (Q.peoples_party === 1) ? 0 : 1;
     Q.labor_dissent += (Q.peoples_party === 1) ? 2 : 0;
-    Q.workers_z *= 0.99;
-    Q.workers_ddp *= 0.98;
-    Q.workers_dvp *= 0.97;
-    Q.workers_dnvp *= 0.95;
-    Q.workers_nsdap *= 0.96;
-    Q.workers_bvp *= 0.97;
-    Q.workers_wp *= 0.90;
-    Q.workers_kpd *= 1.02;
-    Q.workers_spd *= 1.03;
+    Q.addEventNudge('workers', 'z', -Q.workers_z * 0.01);
+    Q.addEventNudge('workers', 'ddp', -Q.workers_ddp * 0.02);
+    Q.addEventNudge('workers', 'dvp', -Q.workers_dvp * 0.03);
+    Q.addEventNudge('workers', 'dnvp', -Q.workers_dnvp * 0.05);
+    Q.addEventNudge('workers', 'nsdap', -Q.workers_nsdap * 0.04);
+    Q.addEventNudge('workers', 'bvp', -Q.workers_bvp * 0.03);
+    Q.addEventNudge('workers', 'wp', -Q.workers_wp * 0.10);
+    Q.addEventNudge('workers', 'kpd', Q.workers_kpd * 0.02);
+    Q.addEventNudge('workers', 'spd', Q.workers_spd * 0.03);
 !}
 
 Our new youth members flock to the left or neorevisionist wings of the party, and also bring new radicalism to the Reichsbanner. Additionally, workerist class (of course, youth) radicalizes to the left side, siding with bourgeuoise or reactionaries far less frequently. [? if peoples_party >= 1: With our expansion of the base, it seems, that radical rhetoric is not effective anymore. ?]
