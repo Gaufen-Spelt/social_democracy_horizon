@@ -336,7 +336,6 @@ new-page: true
   background: rgba(15, 15, 18, 0.6) !important;
   border-color: rgba(255, 255, 255, 0.08) !important; 
   box-shadow: none !important;
-  opacity: 0.55;
   clip-path: none !important;
 }
 .ach-locked .ach-icon-box { background: rgba(30, 30, 30, 0.4) !important; }
