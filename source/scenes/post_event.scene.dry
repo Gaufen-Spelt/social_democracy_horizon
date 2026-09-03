@@ -2755,44 +2755,55 @@ var youth_share = Q.youth      / 100;
 // without duplicating any of the formulas by hand.
 function buildIdentityModifier(cs, ps, ss, ys) {
     return {
-        spd:   1 + (ss * 0.20) + (ys * 0.08) - (cs * 0.10 * (Q.prussian_concordat >= 1 ? 1.04 : 1)),
-        srpd:  1 + (ss * 0.15) + (ys * 0.06) - (cs * 0.08),
-        kpd:   1 + (ss * 0.30) + (ys * 0.15) - (cs * 0.15),
-        sapd:  1 + (ss * 0.20) + (ys * 0.10) - (cs * 0.10),
-        nsdap: 1 + (ps * 0.34) + (ys * 0.45) - (cs * 0.40) - (ss * 0.10),
-        dnvp:  1 + (ps * 0.45) - (ys * 0.15) - (cs * 0.10),
-        dvfp:  1 + (ps * 0.25) - (ys * 0.25) - (cs * 0.10),
-        dvp:   1 + (ss * 0.15) + (ps * 0.10) - (ys * 0.12),
-        ddp:   1 + (ss * 0.25) + (ps * 0.05) - (ys * 0.20),
+        spd:   1 + (ss * 0.30) - (cs * 0.20 * (Q.prussian_concordat >= 1 ? 1.04 : 1)),
+        srpd:  1 + (ss * 0.25) - (cs * 0.15),
+        kpd:   1 + (ys * 0.55) - (cs * 0.30),
+        sapd:  1 + (ys * 0.45) - (cs * 0.25),
+        wp:    1 + (ps * 0.20),
+        csrp:  1 + (ss * 0.20) - (cs * 0.10),
+        rdp:   1 + (ss * 0.30),
+        lb:    1 + (ys * 0.35) - (cs * 0.15),
+        faud:  1 + (ys * 0.65) - (cs * 0.35),
+        kapd:  1 + (ys * 0.65) - (cs * 0.35),
+        uspd:  1 + (ss * 0.35) - (cs * 0.20),
+        hl:    1 + (ys * 0.30),
+        sl:    1 + (ys * 0.35),
+        kpo:   1 + (ys * 0.40) - (cs * 0.20),
+
+        nsdap: 1 + (ys * 0.65) - (cs * 0.40),
+        dvfp:  1 + (ys * 0.50) - (cs * 0.10),
+        dnf:   1 + (ps * 0.55),
+        gsrn:  1 + (ys * 0.75),
+        aspd:  1 + (ys * 0.60),
+
+        dnvp:  1 + (ps * 0.65) - (cs * 0.15),
+        dbp:   1 + (ps * 0.65) - (cs * 0.15),
+        rlb:   1 + (ps * 0.65) - (cs * 0.15),
+        vnr:   1 + (ps * 0.60) - (cs * 0.15),
+        cnbl:  1 + (ps * 0.25),
+        csvd:  1 + (ps * 0.30) - (cs * 0.10),
+        bb:    1 + (ps * 0.20),
+        dhp:   1 + (ps * 0.20),
+        kvp:   1 + (ps * 0.20),
+        dtsp:  1 + (ps * 0.50) - (cs * 0.45),
+
         z:     (Q.z_ideology === "Christian Conservatism")
-                   ? 1
-                       + (cs * 1.45 * (Q.prussian_concordat >= 1 ? 1.15 : 1) * (Q.z_transition_cvp === 1 ? (1/3) : 0.5))
-                       + (ps * 0.35 * (Q.z_transition_cvp === 1 ? 1.55 : 1))
-                       + (ss * (0.15 + (Q.z_transition_cvp === 2 ? 0.20 : 0)))
-                       + (ys * (0.10 + (Q.z_transition_cvp === 2 ? 0.15 : 0)))
-                       - (ys * 0.10)
+                   ? 1 + (cs * 1.60 * (Q.prussian_concordat >= 1 ? 1.15 : 1) * (Q.z_transition_cvp === 1 ? (1/3) : 0.5))
+                       + (ys * (Q.z_transition_cvp === 2 ? 0.25 : 0))
                : (Q.z_ideology === "Catholic Laborism")
-                   ? 1
-                       + (cs * 1.45 * (Q.prussian_concordat >= 1 ? 1.15 : 1) * 1.10)
-                       - (ss * 0.20)
-                       - (ys * 0.05)
-               : 1 + (cs * 1.45 * (Q.prussian_concordat >= 1 ? 1.15 : 1)) - (ss * 0.20) - (ys * 0.10),
-        bvp:   1 + (cs * 1.25) - (ss * 0.25) - (ys * 0.08),
-        cnbl:  1 + (ps * 0.15) - (ys * 0.10),
-        wp:    1 + (ss * 0.10) - (ys * 0.18),
-        csvd:  1 + (ps * 0.20) - (ys * 0.12) - (cs * 0.08),
-        csrp:  1 + (ss * 0.15) - (cs * 0.10),
-        vrp:   1 + (ss * 0.10) - (ys * 0.25),
-        bb:    1 + (ps * 0.12) - (ys * 0.08),
-        dhp:   1 + (ps * 0.15) - (ys * 0.10),
-        kvp:   1 + (ps * 0.12) - (ys * 0.15),
-        dtsp:  1 + (ps * 0.28) + (ys * 0.20) - (cs * 0.35) - (ss * 0.08),
-        sls:   1 + (ss * 0.08) - (cs * 0.05),
-        rdp:   1 + (ss * 0.30) + (ps * 0.05) - (cs * 0.20) - (ys * 0.18),
-        cvp:   1 + (cs * 0.55) - (ss * 0.28) - (ys * 0.12),
-        lb:    1 + (ss * 0.25) + (ys * 0.18) - (cs * 0.18),
-        dnf:   1 + (ps * 0.60) + (ys * 0.15),
-        other: 1 + (ys * 0.10),
+                   ? 1 + (cs * 1.60 * (Q.prussian_concordat >= 1 ? 1.15 : 1) * 1.10) - (ss * 0.30)
+               : 1 + (cs * 1.60 * (Q.prussian_concordat >= 1 ? 1.15 : 1)) - (ss * 0.30),
+        bvp:   1 + (cs * 1.45) - (ss * 0.30),
+        cvp:   1 + (cs * 0.70) - (ss * 0.35),
+        pp:    1 + (cs * 0.75) - (ps * 0.50),
+
+        dvp:   1 + (ss * 0.20),
+        ddp:   1 + (ss * 0.35),
+        dsbp:  1 + (ss * 0.55) - (cs * 0.25),
+        vrp:   1 + (ss * 0.15),
+        sls:   1 + (ss * 0.15),
+
+        other: 1,
     };
 }
 
@@ -2921,7 +2932,7 @@ const _CAMPAIGN_BASE_SPEEDS = {
     z: 0.06, bvp: 0.06, cnbl: 0.07, wp: 0.07, kvp: 0.08, rlb: 0.075,
     dbp: 0.08, bb: 0.05, dhp: 0.05, sls: 0.04, csrp: 0.05, vrp: 0.06, dtsp: 0.10,
     rdp: 0.06, cvp: 0.06, lb: 0.07, aspd: 0.06, hl: 0.06, sl: 0.08, kpo: 0.08,
-    vnr: 0.07, other: 0.08, faud: 0.02,
+    vnr: 0.07, other: 0.08, faud: 0.02, gsrn: 0.02, uspd: 0.07, pp: 0.04
 };
 const _CAMPAIGN_DEFAULT_SPEED = 0.07;
 // SPD is the reference/baseline party for campaign scaling — its own
