@@ -4509,6 +4509,41 @@ return Math.min(speed, 0.40);
 
 }
 
+
+// ─────────────────────────────────────────
+// EVENT NUDGE SYSTEM
+// ─────────────────────────────────────────
+
+Q.event_nudge = Q.event_nudge || {};
+
+// Decay every existing nudge once per tick, before any new events add to it.
+for (const _nk of Object.keys(Q.event_nudge)) {
+    Q.event_nudge[_nk] *= 0.97;
+    if (Math.abs(Q.event_nudge[_nk]) < 0.01) delete Q.event_nudge[_nk];
+}
+
+// Q.addEventNudge(c, party, amount) — call this from events instead of
+// writing Q[c + '_' + party] directly. Stacks additively; persists and
+// decays independently of computeTarget's output.
+Q.addEventNudge = function(c, party, amount) {
+    const k = c + '_' + party;
+    Q.event_nudge[k] = (Q.event_nudge[k] || 0) + amount;
+};
+
+// Same idea for the class×identity cross-tab cells (workers_catholics_spd
+// style keys), used later by the cell drift loop.
+Q.event_nudge_cell = Q.event_nudge_cell || {};
+for (const _nk of Object.keys(Q.event_nudge_cell)) {
+    Q.event_nudge_cell[_nk] *= 0.97;
+    if (Math.abs(Q.event_nudge_cell[_nk]) < 0.01) delete Q.event_nudge_cell[_nk];
+}
+Q.addEventNudgeCell = function(c, idn, party, amount) {
+    const k = c + '_' + idn + '_' + party;
+    Q.event_nudge_cell[k] = (Q.event_nudge_cell[k] || 0) + amount;
+};
+
+
+
 //// ─────────────────────────────────────────
 // MAIN DRIFT LOOP
 // ─────────────────────────────────────────
@@ -4534,7 +4569,8 @@ for (Q.c of Q.classes) {
         }
 
         // === THERMOSTAT MOVE ===
-        const target = computeTarget(Q.party, Q.c);
+        const event_bonus = Q.event_nudge[Q.c + '_' + Q.party] || 0;
+        const target = computeTarget(Q.party, Q.c) + event_bonus;
         const speed  = computeSpeed(Q.party, Q.c);
 
         // Noise on the move itself, not the target
@@ -4656,16 +4692,14 @@ if (!Q.math_broken) {
                 }
 
                 var class_target    = computeTarget(party, c);
-                // Identities no longer influence party vote targets: the cell
-                // target is derived purely from the class calculation above
-                // (computeTarget(party, c)), same as every other cell in
-                // class c. Q.identity_mods is intentionally not consulted
-                // here anymore — identity still shapes population composition
-                // via Q.class_identity_share (built above), it just no longer
-                // biases which party a class member votes for.
+            
                 var identity_affinity = (Q.identity_mods[party] && Q.identity_mods[party][idn] !== undefined)
                 ? Q.identity_mods[party][idn] : 1.0;
-                var cell_target = Math.max(0, class_target * identity_affinity);
+    
+                var cell_event_bonus =
+                      (Q.event_nudge[c + '_' + party] || 0)
+                    + (Q.event_nudge_cell[c + '_' + idn + '_' + party] || 0);
+                var cell_target = Math.max(0, class_target * identity_affinity + cell_event_bonus);
                 var cell_speed       = computeSpeed(party, c);
 
                 var moving_up = cell_target > cbase;
