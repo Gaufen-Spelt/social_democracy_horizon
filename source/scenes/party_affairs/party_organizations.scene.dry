@@ -27,10 +27,10 @@ unavailable-subtitle: Not enough resources.
 subtitle: -1 resources
 on-arrival: {!
     Q.resources -= 1;
-    Q.rural_spd += (Q.peoples_party === 1) ? 7 : 5;
-    Q.rural_dnvp -= 5;
-    Q.rural_dvp -= 2;
-    Q.rural_other -= 8;
+    Q.addEventNudge('rural', 'spd', (Q.peoples_party === 1) ? 7 : 5);
+    Q.addEventNudge('rural', 'dnvp', -5);
+    Q.addEventNudge('rural', 'dvp', -2);
+    Q.addEventNudge('rural', 'other', -8);
     Q.agricultural_assist += 1;
     if (Q.landvolk_fury > 0) { Q.landvolk_suppress += 1; }
     Q.reformist_dissent += (Q.peoples_party === 1) ? 2 : 5;
@@ -56,11 +56,14 @@ unavailable-subtitle: Not enough resources.
 subtitle: [? if not spd_in_government and labor_minister_party != "SPD": -1 resources ?] [? if spd_in_government and labor_minister_party = "SPD": -3 resources ?]
 on-arrival: {!
     Q.resources -= 1;
-    if (Q.spd_in_government && Q.labor_minister_party === "SPD") { Q.resources -= 3; }
+    if (Q.spd_in_government && Q.labor_minister_party === "SPD") { Q.resources -= 2; }
     Q.workers_aid += 1;
-    Q.unemployedc_spd += 5 * (1 - Q.dissent);
+    Q.addEventNudge('unemployedc', 'spd', 5 * (1 - Q.dissent));
     if (Q.spd_in_government && Q.labor_minister_party === "SPD") { Q.welfare += 1; }
-    if (Q.welfare > 0) { Q.workers_spd += 3; Q.unemployedc_spd += 3; }
+    if (Q.welfare > 0) {
+        Q.addEventNudge('workers', 'spd', 3);
+        Q.addEventNudge('unemployedc', 'spd', 3);
+    }
 !}
 
 We have increased funding to Workers' Welfare. [? if black_thursday_seen > 0 : In an age of economic crisis, this will be helpful for improving our standing among the unemployed. ?]
