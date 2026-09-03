@@ -1,0 +1,12 @@
+title: The End
+subtitle: You won. Right?
+tags: event
+new-page: true
+view-if: spd_votes >= 99 or year >= 2000
+max-visits: 1
+on-arrival: end = 1
+achievement: end
+
+= The End
+
+Perhaps, the most revealing element of this world is that you can open it again and feel as if something changed slightly.
