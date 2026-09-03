@@ -3508,26 +3508,26 @@ function computeTarget(party, c) {
            base *= _partyAdj('dnvp');
            base *= _campaignMult('dnvp', c);
 
-           let workers_m     = 0.38
+           let workers_m     = 0.35
                * (Q.peoples_party                      === 1 ? 1.10 : 1)
                * (Q.lambach_reinstated && lambachEarly        ? 1.20 : 1)
                * (Q.lambach_momentum   && lambachEarly        ? 1.70 : 1)
                * (isLambach                                   ? 1.35 : 1.00)
                * (isSocCorp                                   ? 1.40 : 1.00)
                * (isNatCon                                    ? 0.90 : 1.00);
-           let old_middle_m  = 1.55 * (1 + Math.min(Q.nationalism/100,1)*0.28)
+           let old_middle_m  = 1.25 * (1 + Math.min(Q.nationalism/100,1)*0.28)
                * (Q.peoples_party                      === 1 ? 0.95 : 1)
                * (isLambach                                   ? 0.87 : 1.00)
                * (isNatCon                                    ? 1.25 : 1.00)
                * (isSocCorp                                   ? 0.80 : 1.00);
-           let new_middle_m  = 0.99 * (1 + Math.min(Q.nationalism/100,1)*0.18)
+           let new_middle_m  = 0.80 * (1 + Math.min(Q.nationalism/100,1)*0.18)
                * (Q.peoples_party                      === 1 ? 0.95 : 1)
                * (Q.lambach_reinstated && lambachEarly        ? 1.35 : 1)
                * (Q.lambach_momentum   && lambachEarly        ? 2.65 : 1)
                * (isLambach                                   ? 1.50 : 1.00)
                * (isSocCorp                                   ? 1.35 : 1.00)
                * (isNatCon                                    ? 0.90 : 1.00);
-           let rural_m       = 1.72 * (1 + Math.min(Q.nationalism/100,1)*0.30)
+           let rural_m       = 1.70 * (1 + Math.min(Q.nationalism/100,1)*0.30)
                * (Q.peoples_party                      === 1 ? 0.95 : 1)
                * (Q.parties.includes('dbp')                  ? 0.9111 : 1)
                * (Q.parties.includes('cnbl')                  ? 0.7953 : 1)
@@ -4309,13 +4309,13 @@ function computeTarget(party, c) {
     base *= _campaignMult('rlb', c);
 
     const class_mods = {
-        workers:     0.08,
-        old_middle:  0.20,
-        new_middle:  0.15,
-        rural:       3.15 * (1 + Math.min(Q.nationalism/100,1)*0.35)
+        workers:     0.01,
+        old_middle:  0.10,
+        new_middle:  0.10,
+        rural:       2.15 * (1 + Math.min(Q.nationalism/100,1)*0.35)
                      * (Q.parties.includes('dbp') ? 0.95 : 1)
                      * (Q.parties.includes('cnbl') ? 0.85 : 1),
-        unemployedc: 0.15,
+        unemployedc: 0.10,
         };
     return _applyQOL(base * (class_mods[c] || 1.0) * _classAdj('rlb', c), party, c);
     }
