@@ -3405,17 +3405,13 @@ function computeTarget(party, c) {
         case 'nsdap': {
             if (Q.nsdap_banned) return 0;
 
-            let stable_baseline = nat_elevated * 6.0;
+            let stable_baseline = nat_elevated * 1.2;
 
-            // Behavior: revright ('climb') — crisis contribution now comes
-            // from the slow-building revolutionary unrest stock instead of
-            // the reactive unrest_nat_hybrid term. Scaled to land in a
-            // similar range to the old term (points cap at 20).
             const nsdap_unrest_points = _tickRevolutionaryUnrest('nsdap');
-            let crisis_contribution = nsdap_unrest_points * 4.5;
+            let crisis_contribution = nsdap_unrest_points * 0.9;
 
-            let soft = 40, hard = 120;
-            let raw = (nat * 8.559) + stable_baseline + crisis_contribution;
+            let soft = 8, hard = 24;
+            let raw = (nat * 1.7118) + stable_baseline + crisis_contribution;
 
             let final_raw = raw <= soft ? raw
                 : soft + (hard - soft) * (1 - Math.exp(-(raw - soft) / 45));
@@ -3461,9 +3457,9 @@ function computeTarget(party, c) {
 
         case 'dvfp': {
             if (Q.dvfp_banned || !Q.dvfp_formed) return 0;
-            let nat_floor   = nat * 25;
+            let nat_floor   = nat * 5;
             let u           = Math.max(0, unrest_nat_hybrid - 0.6);
-            let crisis_ramp = 90 / (1 + Math.exp(-1.4 * (u - 1.8)));
+            let crisis_ramp = 18 / (1 + Math.exp(-1.4 * (u - 1.8)));
             let buff = Q.april_challenge === 1 ? 1.28 : 0.85;
             base = (nat_floor + crisis_ramp) * buff * im.dvfp;
             base *= _partyAdj('dvfp');
@@ -3493,7 +3489,7 @@ function computeTarget(party, c) {
                competitive_m = Math.max(0.35, 1 - nsdap_edge * 1.0);
            }
 
-           base = ((nat * 85) + (isSocCorp ? rep * 30 : 20)) * im.dnvp * competitive_m;
+           base = ((nat * 14) + (isSocCorp ? rep * 7 : 4)) * im.dnvp * competitive_m;
 
            const isLambach    = Q.dnvp_party_leader === "Walther Lambach";
            const lambachEarly = Q.year < 1929;
@@ -3557,7 +3553,7 @@ function computeTarget(party, c) {
                 const nsdap_edge = Math.max(0, unrest_nat_hybrid - 0.65);
                 dnf_competitive_m = Math.max(0.30, 1 - nsdap_edge * 1.1);
             }
-            base = (nat * 90) * dnf_competitive_m * (im.dnf || im.dnvp);
+            base = (nat * 18) * dnf_competitive_m * (im.dnf || im.dnvp);
             base *= _partyAdj('dnf');
             base *= _campaignMult('dnf', c);
 
@@ -3608,7 +3604,7 @@ function computeTarget(party, c) {
 
             let ddp_factor   = Q.dvp_right_shift ? nat * 0.95 : rep * 1.0;
             let dvp_scale    = Q.dvp_right_shift ? 2.2 : 1.8;
-            let dvp_base_raw = ddp_factor * 49 * dvp_scale;
+            let dvp_base_raw = ddp_factor * 9.8 * dvp_scale;
 
             let sec_bonus  = (100 - Q.catholics) / 100 * 0.10;
             let nat_pen_d  = (Q.nationalism / 100) * 0.15;
@@ -3616,7 +3612,7 @@ function computeTarget(party, c) {
                            + (Q.secularized       || 0) * 0.05
                            + (Q.science           || 0) * 0.10
                            + (Q.womens_rights     || 0) * 0.05;
-            let ddp_base_raw = rep * 53 * (1.1 + sec_bonus - nat_pen_d + edu_bonus);
+            let ddp_base_raw = rep * 10.6 * (1.1 + sec_bonus - nat_pen_d + edu_bonus);
 
             // Rep factor boosted 30% vs raw DDP — merger skews liberal-republican
             let rep_boost = 1.30;
@@ -3650,7 +3646,7 @@ function computeTarget(party, c) {
             const old_mid_qol_low = Math.max(0, 100 - (Q.old_middle_qol || 100)) / 50; // 0 at baseline, 1 at QoL=50
             const new_mid_qol_low = Math.max(0, 100 - (Q.new_middle_qol || 100)) / 50;
             let qol_grievance_boost = 1 + Math.min(1.2, (old_mid_qol_low * 0.7 + new_mid_qol_low * 0.5));
-            base = rep * 19 * nat * 17 * middle_norm * qol_grievance_boost * im.wp;
+            base = rep * 3.8 * nat * 3.4 * middle_norm * qol_grievance_boost * im.wp;
             base *= _partyAdj('wp');
             base *= _govEconMult('wp'); // Behavior: refright
             base *= _campaignMult('wp', c);
@@ -3664,7 +3660,7 @@ function computeTarget(party, c) {
 
         case 'cnbl': {
             if (Q.cnbl_banned) return 0;
-            base = (rep * 11 + nat * 19) * (1 + Q.rural * 0.009) * im.cnbl;
+            base = (rep * 2.2 + nat * 3.8) * (1 + Q.rural * 0.009) * im.cnbl;
             base *= _partyAdj('cnbl');
             base *= _govEconMult('cnbl'); // Behavior: refright
             base *= _campaignMult('cnbl', c);
@@ -3683,7 +3679,7 @@ function computeTarget(party, c) {
             // unrest stock. Scaled down (/20 vs the old term's ~0-1.5
             // range) since the stock itself climbs to a cap of 20.
             const kpd_unrest_points = _tickRevolutionaryUnrest('kpd');
-            base = soc * 34 * 1.9 * (1 + (kpd_unrest_points / 20) * 1.6) * buff * im.kpd;
+            base = soc * 6.8 * 1.9 * (1 + (kpd_unrest_points / 20) * 1.6) * buff * im.kpd;
             base *= _partyAdj('kpd');
 
             // Behavior: gov/opposition economy reward-punish — separate
@@ -3703,7 +3699,7 @@ function computeTarget(party, c) {
         case 'sapd': {
             if (Q.sapd_banned || !Q.sapd_formed) return 0;
             let buff = Q.april_challenge === 1 ? 1.15 : 0.90;
-            base = soc * 19 * 2.0 * (1 + unrest_soc_hybrid * 0.12) * buff * im.sapd;
+            base = soc * 3.8 * 2.0 * (1 + unrest_soc_hybrid * 0.12) * buff * im.sapd;
             base *= _partyAdj('sapd');
             base *= _campaignMult('sapd', c);
 
@@ -3720,7 +3716,7 @@ function computeTarget(party, c) {
         case 'srpd': {
             if (Q.srpd_banned || !Q.srpd_formed) return 0;
             let rb = Q.rb_strength * 0.0004;
-            base = (soc * 10 * 1.95 + rep * 25 * 1.76 + rb) * im.srpd;
+            base = (soc * 2 * 1.95 + rep * 5 * 1.76 + rb) * im.srpd;
             base *= _partyAdj('srpd');
             base *= _campaignMult('srpd', c);
 
@@ -3808,7 +3804,7 @@ function computeTarget(party, c) {
         ? 1 + (unrest_soc_hybrid * 0.045)
         : 1.0;
 
-    base = (r * 99 + s * 58) * im.spd * (eim.spd || 1.0) * campaign_policy_boost * left_extremism_bump;
+    base = (r * 19.8 + s * 11.6) * im.spd * (eim.spd || 1.0) * campaign_policy_boost * left_extremism_bump;
     base *= _partyAdj('spd');
 
     // Behavior: refleft ('linear') — reactive unrest term above is
@@ -3912,7 +3908,7 @@ function computeTarget(party, c) {
            if (!Q.ddp_name || Q.ddp_name === 'DDP') {
                let sec_bonus = (100 - Q.catholics) / 100 * 0.10;
                let nat_pen   = (Q.nationalism / 100) * 0.15;
-               base = (rep * 47 * (1.1 + sec_bonus - nat_pen + edu_bonus)) * im.ddp;
+               base = (rep * 9.4 * (1.1 + sec_bonus - nat_pen + edu_bonus)) * im.ddp;
                base *= _partyAdj('ddp');
                base *= _govEconMult('ddp'); // Behavior: center
                base *= _campaignMult('ddp', c);
@@ -3931,7 +3927,7 @@ function computeTarget(party, c) {
                let edu_pen = (Q.education_science || 0) * 0.02
                            + (Q.secularized       || 0) * 0.03
                            + (Q.womens_rights     || 0) * 0.03;
-               base = (rep * 0.30 + wp_strength + mittelstand_bonus - edu_pen) * 52 * im.ddp;
+               base = (rep * 0.30 + wp_strength + mittelstand_bonus - edu_pen) * 10.4 * im.ddp;
                base *= _partyAdj('ddp');
                base *= _govEconMult('ddp'); // Behavior: center
                base *= _campaignMult('ddp', c);
@@ -3951,7 +3947,7 @@ function computeTarget(party, c) {
                            + (Q.secularized       || 0) * 0.05
                            + (Q.science           || 0) * 0.10
                            + (Q.womens_rights     || 0) * 0.05;
-               base = (rep * 0.30 + nat * 0.29 + jungdo - edu_pen) * 59 * im.ddp;
+               base = (rep * 0.30 + nat * 0.29 + jungdo - edu_pen) * 11.8 * im.ddp;
                base *= _partyAdj('ddp');
                base *= _govEconMult('ddp'); // Behavior: center
                base *= _campaignMult('ddp', c);
@@ -3972,7 +3968,7 @@ function computeTarget(party, c) {
 
             let factor      = Q.dvp_right_shift ? nat * 0.95 : rep * 1.0;
             let scale       = Q.dvp_right_shift ? 2.2 : 1.8;
-            base = factor * 40 * scale * (im.dvp || 1);
+            base = factor * 8 * scale * (im.dvp || 1);
             base *= _partyAdj('dvp');
             base *= _govEconMult('dvp'); // Behavior: refright
             base *= _campaignMult('dvp', c);
@@ -3992,9 +3988,9 @@ function computeTarget(party, c) {
             let cath_bonus  = Q.catholics / 8;
             let leader_mod  = Q.z_party_leader === 'Kaas' ? 0.94 : Q.z_party_leader === 'Joos' ? 1.06 : 1.0;
             let gov_mod     = Q.z_in_government ? 1.12 : 0.93;
-            base = (rep * 70 + cath_bonus * 4) * leader_mod * gov_mod * im.z * (eim.z || 1.0);
+            base = (rep * 14 + cath_bonus * 0.8) * leader_mod * gov_mod * im.z * (eim.z || 1.0);
 
-            let floor = cath_bonus * 7.5 * gov_mod;
+            let floor = cath_bonus * 1.5 * gov_mod;
             base = Math.max(base, floor);
             base *= _partyAdj('z');
 
@@ -4039,7 +4035,7 @@ function computeTarget(party, c) {
             if (Q.bvp_banned) return 0;
             let cath = Q.catholics * 0.10;
             let rur  = Q.rural    * 0.03;
-            base = Math.min(45, rep * 15 * (nat * 22) * im.bvp + cath + rur);
+            base = Math.min(9, rep * 3 * (nat * 4.4) * im.bvp + cath + rur);
             base *= _partyAdj('bvp');
             base *= _campaignMult('bvp', c);
 
@@ -4068,7 +4064,7 @@ function computeTarget(party, c) {
 
             let crisis_factor = Math.max(0.55, 1 - (unr / 12));
 
-            base = (rep * 15 + (nat * 15) + dnvp_split_bonus + anti_nazi_appeal + coalition_stability) * crisis_factor * im.csvd;
+            base = (rep * 3 + (nat * 3) + dnvp_split_bonus + anti_nazi_appeal + coalition_stability) * crisis_factor * im.csvd;
             base *= _partyAdj('csvd');
             base *= _campaignMult('csvd', c);
 
@@ -4085,7 +4081,7 @@ function computeTarget(party, c) {
         case 'csrp': {
             if (Q.csrp_banned) return 0;
             let april = Q.april_challenge && Q.year >= 1933 ? 27 : 1;
-            base = rep * 16 * im.csrp * april;
+            base = rep * 3.2 * im.csrp * april;
             base *= _partyAdj('csrp');
             base *= _campaignMult('csrp', c);
             const class_mods = { workers: 0.20, old_middle: 0.05, new_middle: 0.15, rural: 0.10, unemployedc: 0.30 };
@@ -4097,7 +4093,7 @@ function computeTarget(party, c) {
 
             const vrp_old_mid_low = Math.max(0, 100 - (Q.old_middle_qol || 100)) / 50;
             const vrp_new_mid_low = Math.max(0, 100 - (Q.new_middle_qol || 100)) / 50;
-            base = (rep * 12.5) * (1 + Math.min(0.9, vrp_old_mid_low * 0.5 + vrp_new_mid_low * 0.4)) * im.vrp;
+            base = (rep * 2.5) * (1 + Math.min(0.9, vrp_old_mid_low * 0.5 + vrp_new_mid_low * 0.4)) * im.vrp;
             base *= _partyAdj('vrp');
             base *= _campaignMult('vrp', c);
             const class_mods = { workers: 0.04, old_middle: 0.12 * (1 + vrp_old_mid_low * 0.3), new_middle: 0.08 * (1 + vrp_new_mid_low * 0.3), rural: 0.01, unemployedc: 0.67 };
@@ -4106,7 +4102,7 @@ function computeTarget(party, c) {
 
         case 'other': {
             if (Q.other_banned) return 0;
-            base = (nat + rep) * 7 * im.other;
+            base = (nat + rep) * 1.4 * im.other;
             base *= _partyAdj('other');
             base *= _campaignMult('other', c);
             const class_mods = { 
@@ -4121,7 +4117,7 @@ function computeTarget(party, c) {
         case 'kvp': {
             if (Q.kvp_banned) return 0;
             let split_bonus = Q.dnvp_party_leader == "Alfred Hugenberg" || Q.lambach_stage >= 2 ? 2.5 : 0.8;
-            base = (rep * 18 + nat * 14) * split_bonus * im.kvp;
+            base = (rep * 3.6 + nat * 2.8) * split_bonus * im.kvp;
             base *= _partyAdj('kvp');
             base *= _campaignMult('kvp', c);
             const class_mods = { workers: 0.10, old_middle: 1.65, new_middle: 1.25, rural: 1.25, unemployedc: 0.10 };
@@ -4130,7 +4126,7 @@ function computeTarget(party, c) {
 
         case 'dhp': {
             if (Q.dhp_banned) return 0;
-            base = Math.min(3.5, (rep * 30 + nat * 10) * 0.8 * im.dhp);
+            base = Math.min(0.7, (rep * 6 + nat * 2) * 0.8 * im.dhp);
             base *= _partyAdj('dhp');
             base *= _campaignMult('dhp', c);
             const class_mods = { workers: 0.20, old_middle: 1.35, new_middle: 0.35, rural: 1.70, unemployedc: 0.10 };
@@ -4141,7 +4137,7 @@ function computeTarget(party, c) {
             if (Q.bb_banned) return 0;
             let rural_weight    = Q.rural / 60;
             let deflation_bonus = Q.inflation < 0 ? (1 + Math.abs(Q.inflation) * 0.08) : 1.0;
-            base = (rep * 10 + nat * 12) * rural_weight * deflation_bonus * im.bb;
+            base = (rep * 2 + nat * 2.4) * rural_weight * deflation_bonus * im.bb;
             base *= _partyAdj('bb');
             base *= _campaignMult('bb', c);
             const class_mods = { workers: 0.10, old_middle: 0.40, new_middle: 0.20, rural: 2.10, unemployedc: 0.12 };
@@ -4150,7 +4146,7 @@ function computeTarget(party, c) {
 
         case 'aspd': {
             if (Q.aspd_banned) return 0;
-            base = (rep * 3 + nat * 10 + soc * 1) * im.bb;
+            base = (rep * 0.6 + nat * 2 + soc * 0.2) * im.bb;
             base *= _partyAdj('aspd');
             base *= _campaignMult('aspd', c);
             const class_mods = { workers: 0.65, old_middle: 0.05, new_middle: 0.22, rural: 0.01, unemployedc: 0.35 };
@@ -4164,7 +4160,7 @@ function computeTarget(party, c) {
 
         case 'hl': {
             if (Q.hl_banned) return 0;
-            base = (rep * 3 + nat * 5 + soc * 10) * im.bb;
+            base = (rep * 0.6 + nat * 1 + soc * 2) * im.bb;
             base *= _partyAdj('hl');
             base *= _campaignMult('hl', c);
             const class_mods = { workers: 0.20, old_middle: 0.50, new_middle: 0.20, rural: 0.55, unemployedc: 0.10 };
@@ -4174,7 +4170,7 @@ function computeTarget(party, c) {
         case 'sl': {
             if (Q.sl_banned) return 0;
             let sl_buff = Q.april_challenge === 1 ? 4.50 : 1;
-            base = (rep * 3 + nat * 5 + soc * 10) * sl_buff * im.bb;
+            base = (rep * 0.6 + nat * 1 + soc * 2) * sl_buff * im.bb;
             base *= _partyAdj('sl');
             base *= _campaignMult('sl', c);
             const class_mods = { workers: 0.50, old_middle: 0.01, new_middle: 0.01, rural: 0.01, unemployedc: 0.25 };
@@ -4183,7 +4179,7 @@ function computeTarget(party, c) {
 
         case 'kpo': {
             if (Q.kpo_banned) return 0;
-            base = (rep * 3 + nat * 5 + soc * 20) * im.bb;
+            base = (rep * 0.6 + nat * 1 + soc * 4) * im.bb;
             base *= _partyAdj('kpo');
             base *= _campaignMult('kpo', c);
             const class_mods = { workers: 0.50, old_middle: 0.50, new_middle: 0.20, rural: 0.55, unemployedc: 0.25 };
@@ -4192,7 +4188,7 @@ function computeTarget(party, c) {
 
         case 'vnr': {
             if (Q.vnr_banned) return 0;
-            base = (rep * 12 + nat * 8) * im.bb;
+            base = (rep * 2.4 + nat * 1.6) * im.bb;
             base *= _partyAdj('vnr');
             base *= _campaignMult('vnr', c);
             const class_mods = { 
@@ -4206,7 +4202,7 @@ function computeTarget(party, c) {
 
         case 'dtsp': {
             if (Q.dtsp_banned) return 0;
-            base = nat * 8 * (1 + unrest_nat_hybrid * 0.10) * im.dtsp;
+            base = nat * 1.6 * (1 + unrest_nat_hybrid * 0.10) * im.dtsp;
             base *= _partyAdj('dtsp');
             base *= _campaignMult('dtsp', c);
             const class_mods = { workers: 0.15, old_middle: 0.90, new_middle: 0.70, rural: 0.80, unemployedc: 0.20 };
@@ -4215,7 +4211,7 @@ function computeTarget(party, c) {
 
         case 'sls': {
             if (Q.sls_banned) return 0;
-            base = rep * 4 * im.sls;
+            base = rep * 0.8 * im.sls;
             base *= _partyAdj('sls');
             base *= _campaignMult('sls', c);
             const class_mods = { workers: 0.30, old_middle: 0.40, new_middle: 0.25, rural: 0.60, unemployedc: 0.20 };
@@ -4225,7 +4221,7 @@ function computeTarget(party, c) {
         case 'rdp': {
             if (Q.rdp_banned) return 0;
             let nat_pen = (Q.nationalism / 100) * 0.20;
-            base = rep * 6 * (1.0 - nat_pen) * im.rdp;
+            base = rep * 1.2 * (1.0 - nat_pen) * im.rdp;
             base *= _partyAdj('rdp');
             base *= _campaignMult('rdp', c);
             const class_mods = { workers: 0.25, old_middle: 0.30, new_middle: 0.85, rural: 0.15, unemployedc: 0.20 };
@@ -4235,7 +4231,7 @@ function computeTarget(party, c) {
         case 'cvp': {
             if (Q.cvp_banned) return 0;
             let cath_bonus = Q.catholics / 18;
-            base = (rep * 5 + cath_bonus) * im.cvp;
+            base = (rep * 1 + cath_bonus * 0.2) * im.cvp;
             base *= _partyAdj('cvp');
             base *= _campaignMult('cvp', c);
             const class_mods = { workers: 0.20, old_middle: 0.80, new_middle: 0.50, rural: 0.70, unemployedc: 0.30 };
@@ -4244,7 +4240,7 @@ function computeTarget(party, c) {
 
         case 'lb': {
             if (Q.lb_banned) return 0;
-            base = soc * 7 * (1 + unrest_soc_hybrid * 0.08) * im.lb;
+            base = soc * 1.4 * (1 + unrest_soc_hybrid * 0.08) * im.lb;
             base *= _partyAdj('lb');
             base *= _campaignMult('lb', c);
             const class_mods = { workers: 0.55, old_middle: 0.10, new_middle: 0.20, rural: 0.10, unemployedc: 0.45 };
@@ -4258,7 +4254,7 @@ function computeTarget(party, c) {
     let deflation_bonus = Q.inflation < 0 ? (1 + Math.abs(Q.inflation) * 0.06) : 1.0;
     let lib_bonus       = (rep * 0.45) + ((100 - Q.nationalism) / 100) * 0.15;
 
-    base = (rep * 29 + nat * 8) * rural_weight * deflation_bonus * lib_bonus * (im.dbp || 1);
+    base = (rep * 5.8 + nat * 1.6) * rural_weight * deflation_bonus * lib_bonus * (im.dbp || 1);
     base *= _partyAdj('dbp');
     base *= _campaignMult('dbp', c);
 
@@ -4274,7 +4270,7 @@ function computeTarget(party, c) {
 
     case 'faud': {
         if (Q.faud_banned) return 0;
-        base = soc * 3 * (1 + unrest_soc_hybrid * 0.25) * im.kpd;
+        base = soc * 0.6 * (1 + unrest_soc_hybrid * 0.25) * im.kpd;
         base *= _partyAdj('faud');
         base *= _campaignMult('faud', c);
 
@@ -4291,7 +4287,7 @@ function computeTarget(party, c) {
     case 'kapd': {
         if (Q.kapd_banned) return 0;
         let buff = Q.april_challenge === 1 ? 1.10 : 0.85;
-        base = soc * 8 * 1.4 * (1 + unrest_soc_hybrid * 0.18) * buff * im.kpd;
+        base = soc * 1.6 * 1.4 * (1 + unrest_soc_hybrid * 0.18) * buff * im.kpd;
         base *= _partyAdj('kapd');
         base *= _campaignMult('kapd', c);
 
@@ -4308,7 +4304,7 @@ function computeTarget(party, c) {
     case 'rlb': {
     if (Q.rlb_banned) return 0;
     let agrarian_crisis = Q.agri_price_collapse ? 1.5 : 1.0;
-    base = (nat * 35 + rep * 20) * (Q.rural / 60) * agrarian_crisis * im.dnvp;
+    base = (nat * 7 + rep * 4) * (Q.rural / 60) * agrarian_crisis * im.dnvp;
     base *= _partyAdj('rlb');
     base *= _campaignMult('rlb', c);
 
@@ -4329,7 +4325,7 @@ function computeTarget(party, c) {
             // merged into KPD in late 1920/1922. What remains is a marginal
             // left-socialist remnant — kept deliberately tiny.
             if (Q.uspd_banned) return 0;
-            base = soc * 2.5 * (1 + unrest_soc_hybrid * 0.10) * im.bb;
+            base = soc * 0.5 * (1 + unrest_soc_hybrid * 0.10) * im.bb;
             base *= _partyAdj('uspd');
             base *= _govEconMult('uspd'); // Behavior: refleft
             base *= _campaignMult('uspd', c);
@@ -4350,7 +4346,7 @@ function computeTarget(party, c) {
             // Posen border districts). Not meaningfully driven by the
             // national soc/rep/nat sliders; scaled by a flat regional base.
             if (Q.pp_banned) return 0;
-            base = 6.0 * im.bb;
+            base = 1.2 * im.bb;
             base *= _partyAdj('pp');
             base *= _govEconMult('pp'); // Behavior: refleft
             base *= _campaignMult('pp', c);
@@ -4376,7 +4372,7 @@ function computeTarget(party, c) {
             const gsrn_unrest_points = _tickRevolutionaryUnrest('gsrn');
             const strasserist_bleed = (Q.nsdap_ideology === "National Socialism (Strasserism)") ? 0 : 1;
 
-            base = (nat * 6 + soc * 5) * (1 + (gsrn_unrest_points / 20) * 1.2) * strasserist_bleed * im.bb;
+            base = (nat * 1.2 + soc * 1) * (1 + (gsrn_unrest_points / 20) * 1.2) * strasserist_bleed * im.bb;
             base *= _partyAdj('gsrn');
             base *= _govEconMult('gsrn'); // Behavior: revright
             base *= _campaignMult('gsrn', c);
@@ -4393,7 +4389,7 @@ function computeTarget(party, c) {
 
         default: {
             if (Q.other_banned) return 0;
-            base = (nat + rep) * 6 * im.other;
+            base = (nat + rep) * 1.2 * im.other;
             base *= _partyAdj('other');
             base *= _campaignMult('other', c);
             const class_mods = { workers: 0.30, old_middle: 1.00, new_middle: 1.00, rural: 1.00, unemployedc: 0.30 };
@@ -4407,14 +4403,6 @@ function computeTarget(party, c) {
 
 // ─────────────────────────────────────────
 // SPEED COMPUTATION
-// Returns: fraction of (target - current) closed per tick
-// No crisis-tier / stable-tier speed adjustment — every party's base
-// speed archetype (fast/reactive vs slow/structural) now lives only
-// in _CAMPAIGN_BASE_SPEEDS above and here; the old blanket "crisis
-// parties get faster in a crisis, stable parties get slower in a
-// crisis" bonus (outside computeTarget) has been removed. Any
-// crisis-linked amplification a party has is expressed inside its own
-// computeTarget branch (e.g. NSDAP/KPD's revolutionary unrest stock).
 // ─────────────────────────────────────────
 
 function computeSpeed(party, c) {
