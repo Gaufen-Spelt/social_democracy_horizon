@@ -3511,7 +3511,7 @@ function computeTarget(party, c) {
            let workers_m     = 0.20
                * (Q.peoples_party                      === 1 ? 1.10 : 1)
                * (Q.lambach_reinstated && lambachEarly        ? 1.20 : 1)
-               * (Q.lambach_momentum   && lambachEarly        ? 1.70 : 1)
+               * (Q.lambach_momentum   && lambachEarly        ? 1.40 : 1)
                * (isLambach                                   ? 1.35 : 1.00)
                * (isSocCorp                                   ? 1.40 : 1.00)
                * (isNatCon                                    ? 0.80 : 1.00);
@@ -3523,7 +3523,7 @@ function computeTarget(party, c) {
            let new_middle_m  = 0.60 * (1 + Math.min(Q.nationalism/100,1)*0.18)
                * (Q.peoples_party                      === 1 ? 0.95 : 1)
                * (Q.lambach_reinstated && lambachEarly        ? 1.35 : 1)
-               * (Q.lambach_momentum   && lambachEarly        ? 2.65 : 1)
+               * (Q.lambach_momentum   && lambachEarly        ? 1.65 : 1)
                * (isLambach                                   ? 1.50 : 1.00)
                * (isSocCorp                                   ? 1.35 : 1.00)
                * (isNatCon                                    ? 0.80 : 1.00);
@@ -6615,7 +6615,7 @@ if (((Q.year == 1928 && Q.month >= 6) || (Q.year == 1929 && Q.month <= 1)) && (Q
 // Lambach momentum
 
 // 5. Lambach Fallback / Christian Social Trigger
-if (Q.lambach_flavor_2_trigger != 1 && (Q.lambach_flavor_trigger_1 != 1 || (Q.year == 1928 && Q.month >= 8 && (Q.delegate_power_christsoc + Q.delegate_power_yocon) > 400))) {
+if (Q.lambach_flavor_2_trigger != 1 && (Q.lambach_flavor_trigger_1 != 1 || (Q.year == 1928 && Q.month >= 8 && (Q.delegate_power_christsoc + Q.delegate_power_yocon) > 600))) {
     Q.lambach_flavor_2_trigger = 1;
     Q.lambach_momentum_timer = 2;
     if (!Q.timers.includes('lambach_momentum')) {
