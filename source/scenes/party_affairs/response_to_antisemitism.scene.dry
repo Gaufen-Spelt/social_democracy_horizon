@@ -2,7 +2,7 @@ title: Confronting Antisemitism
 new-page: true
 is-card: true
 view-if: iron_front_formed == 1 and nazi_urgency >= 3 and iron_front_timer = 0
-on-arrival: confronting_antisemitism += 1; month_actions += 1; iron_front_timer += 6
+on-arrival: {! Q.confronting_antisemitism += 1; Q.month_actions += 1; Q.iron_front_timer += 6; !}
 card-image: img/iron_front.png
 tags: party_affairs, antifascism
 priority: 0
@@ -17,15 +17,35 @@ Antisemitism has long been a latent feature of German society, but since the beg
 - @all: All Germans will suffer from fascism, not just the Jews. We do not need a separate policy for them.
 
 @socialism_of_fools
-on-arrival: confronting_antisemitism += 1; socialism += 3; workers_spd += 3; workers_kpd += 2; workers_nsdap -= 3 if workers_nsdap > 15; workers_dnvp -= 3 if workers_dnvp > 10; left_dissent -= 5; left_strength += 5; nationalism -= 2*(1-dissent)
+on-arrival: {!
+    Q.confronting_antisemitism += 1;
+    Q.socialism += 3;
+    Q.addEventNudge('workers', 'spd', 3);
+    Q.addEventNudge('workers', 'kpd', 2);
+    Q.addEventNudge('workers', 'nsdap', Q.workers_nsdap > 15 ? -3 : 0);
+    Q.addEventNudge('workers', 'dnvp', Q.workers_dnvp > 10 ? -3 : 0);
+    Q.left_dissent -= 5;
+    Q.left_strength += 5;
+    Q.nationalism -= 2 * (1 - Q.dissent);
+!}
 
 The best policy to deal with this sort of irrational, senseless hatred is to ignore it. Few are swayed by racist rhetoric; the best way to combat it is to provide economic security so that people do not turn to antisemitism.
 
 @if
-on-arrival: confronting_antisemitism += 2; sa_strength -= 20; democratization += 1; pacifism += 1; nationalism -= 5*(1-dissent); workers_nsdap -= 6*(1-dissent);
+on-arrival: {!
+    Q.confronting_antisemitism += 2;
+    Q.sa_strength -= 20;
+    Q.democratization += 1;
+    Q.pacifism += 1;
+    Q.nationalism -= 5 * (1 - Q.dissent);
+    Q.addEventNudge('workers', 'nsdap', -6 * (1 - Q.dissent));
+!}
 
 We develop an entire campaign against antisemitism under the auspices of the Iron Front. Hopefully our campaign can sway the workers away from Nazism.
 
 @all
+on-arrival: {!
+    Q.confronting_antisemitism += 1;
+!}
 
 We do not need any special treatment for minorities.
