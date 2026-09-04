@@ -8,7 +8,7 @@ priority: -1
 
 = ASPD Congress
 
-On the 12th of [+ month +], the party leader of the ASPD, [+ aspd_party_leader +], has pushed for a change in the party program to shift away from the **National Bolshevik** direction of the party in order to please disillusioned right wing social democrats and bourgeouisie parties in Saxony. This would only be possible with direct confrontation with their "National Bolshevik" wing, which is led by Ernst Niekisch and August Winnig (their presence and their rhetoric contributed to the party gaining the 'social fascist' label, due to their attempts to reconcile nationalist patriotism and socialism). If [+ aspd_party_leader +] is successful in his changes, the ASPD will drift away from the nationalist camp and in theory turn make more appealing to **social republicans** and **right wing socialists**.
+On the 12th of [+ month: month +], the party leader of the ASPD, [+ aspd_party_leader +], has pushed for a change in the party program to shift away from the **National Bolshevik** direction of the party in order to please disillusioned right wing social democrats and bourgeouisie parties in Saxony. This would only be possible with direct confrontation with their "National Bolshevik" wing, which is led by Ernst Niekisch and August Winnig (their presence and their rhetoric contributed to the party gaining the 'social fascist' label, due to their attempts to reconcile nationalist patriotism and socialism). If [+ aspd_party_leader +] is successful in his changes, the ASPD will drift away from the nationalist camp and in theory turn make more appealing to **social republicans** and **right wing socialists**.
 
 In retaliation, Ernst Niekisch has pushed for the removal of [+ aspd_party_leader +], which if succesful, would have the **National Bolsheviks** take over the party. 
 
@@ -19,7 +19,7 @@ on-arrival: {!
 
 Q.aspd_nb_survival_points = Q.aspd_nb_survival_points || 0;
 
-if ((Q.nationalism * 1.1) + Q.aspd_votes_pct > 15) Q.aspd_nb_survival_points += 1;
+if ((Q.nationalism * 0.9) + Q.aspd_votes_pct > 15) Q.aspd_nb_survival_points += 1;
 if (Q.ideology == "Left") Q.aspd_nb_survival_points += 1;
 if (Q.ideology == "reformist") Q.aspd_nb_survival_points -= 1;
 if (Q.spd_r < 29 || Q.spd_votes < 26.4) Q.aspd_nb_survival_points += 1
