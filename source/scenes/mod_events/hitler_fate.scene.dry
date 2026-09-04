@@ -17,7 +17,7 @@ Adolf Hitler in his order has rallied what was left of loyalists, including Hein
 - @fate: Where will Hitler end up?
 
 @fate
-on-arrival: nsdap_party_leader = "Gregor Strasser"; nsdap_ideology = "National Socialism (Strasserism)"
+on-arrival: nsdap_party_leader = "Gregor Strasser"; nsdap_ideology = "National Socialism (Strasserism)"; nsdap_crisis = 1
 achievement: im_staub_der_zeit
   
 = Hitler has been ousted!
