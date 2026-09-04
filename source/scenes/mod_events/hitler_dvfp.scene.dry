@@ -1,0 +1,20 @@
+title: Adolf Hitler leads National Socialists to DVFP.
+subtitle: Nazism is permanently shattered...
+tags: event
+view-if: nsdap_crisis = 1 and nsdap_crisis_timer <= 0
+max-visits: 1
+new-page: true
+on-arrival: {!
+Q.parties.push('dvfp');
+Q.nsdap_r -= 3;
+Q.hitlerist_power *= 0.01;
+Q.dvfp_hitlerist = 1;
+!}
+
+= Adolf Hitler defects from NSDAP...
+
+Adolf Hitler, former leader of the NSDAP, has announced his plans to form merger of his faction with DVFP, aristocratic fascist party. This happened in the light of NSDAP being taken over by revolutionaries under the leadership of Gregor Strasser. He was met warmly by Erich von Ludendorff, his former ally, however the rest of party remained cautious.
+
+National socialist movement is permanently shattered and has lost it's momentum.
+
+- @root: Old madman and rambling maniac? One party won't fit two egos.
