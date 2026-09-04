@@ -1,7 +1,7 @@
 title: Adolf Hitler leads National Socialists to DVFP.
 subtitle: Nazism is permanently shattered...
 tags: event
-view-if: nsdap_crisis = 1 and nsdap_crisis_timer <= 0
+view-if: hitler_crisis_trigger = 1 and nsdap_crisis_timer <= 0
 max-visits: 1
 new-page: true
 on-arrival: {!
