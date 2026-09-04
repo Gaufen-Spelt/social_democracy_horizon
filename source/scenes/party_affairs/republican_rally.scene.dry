@@ -20,7 +20,21 @@ How should we rally the republican forces?
 - @easy_discard
 
 @coord_rally
-on-arrival: old_middle_z += 2; workers_z += 2; workers_spd += 3; new_middle_ddp += 3; z_relation += 3; ddp_relation += 3; pro_republic += 4; dvp_relation += 3 if dvp_in_government and dvp_right_shift = 0; old_middle_dvp += 2 if dvp_in_government and dvp_right_shift = 0; coup_progress += 0.5; old_middle_dhp += 1; republican_rally += 1; dvp_left += 20 if dvp_in_government and dvp_right_shift = 0
+on-arrival: {!
+    Q.z_relation += 3;
+    Q.ddp_relation += 3;
+    Q.pro_republic += 4;
+    Q.dvp_relation += (Q.dvp_in_government && Q.dvp_right_shift === 0) ? 3 : 0;
+    Q.coup_progress += 0.5;
+    Q.republican_rally += 1;
+    Q.dvp_left += (Q.dvp_in_government && Q.dvp_right_shift === 0) ? 20 : 0;
+    Q.addEventNudge('old_middle', 'z', 2);
+    Q.addEventNudge('workers', 'z', 2);
+    Q.addEventNudge('workers', 'spd', 3);
+    Q.addEventNudge('new_middle', 'ddp', 3);
+    Q.addEventNudge('old_middle', 'dvp', (Q.dvp_in_government && Q.dvp_right_shift === 0) ? 2 : 0);
+    Q.addEventNudge('old_middle', 'dhp', 1);
+!}
 
 We have organized the collective republican rally with Democrats of [+ ddp_name +] and Catholics of [+ z_name +], our fellow "Weimar Coalition" allies! Hopefully this will tone down extremism and radicalism , widespread ever since the November revolution. [? if dvp_in_government and dvp_right_shift = 0: Our rally was also joined by the uncommitted National Liberals of [+ dvp_party_leader +] , who seeked to join us and cultivate republican tendencies amongst his fellow members. ?] 
 
@@ -28,7 +42,11 @@ We have organized the collective republican rally with Democrats of [+ ddp_name 
 
 @iron_front_rally_0
 view-if: not iron_front_formed 
-on-arrival: iron_front_progress += 2; workers_spd += 1.02; nationalism -= 1.25
+on-arrival: {!
+    Q.iron_front_progress += 2;
+    Q.nationalism -= 1.25;
+    Q.addEventNudge('workers', 'spd', 1.02);
+!}
 go-to: iron_front if iron_front_progress >= 10
 
 ​"The escalating street violence and the fragmentation of the Weimar have created a vacuum that only organized, republican militancy can fill. The progress of the Iron Front signifies the transition from parliamentary debate to active constitutional defense. 
@@ -39,7 +57,15 @@ We call upon the Reichsbanner, the trade unions, and the democratic citizenry to
 title: Form the Iron Front
 subtitle: The Iron Front consists of the SPD, the trade unions, and the Reichsbanner.
 view-if: iron_front_progress >= 10 and iron_front_formed == 0
-on-arrival: iron_front_formed = 1; radicalization += 1; workers_spd += 5*(1-dissent); pro_republic += 5*(1-dissent); left_dissent -= 8; neorevisionist_dissent -= 10; neorevisionist_strength += 5
+on-arrival: {!
+    Q.iron_front_formed = 1;
+    Q.radicalization += 1;
+    Q.pro_republic += 5 * (1 - Q.dissent);
+    Q.left_dissent -= 8;
+    Q.neorevisionist_dissent -= 10;
+    Q.neorevisionist_strength += 5;
+    Q.addEventNudge('workers', 'spd', 5 * (1 - Q.dissent));
+!}
 achievement: eiserne_front
 
 The National Socialists/NSDAP threat can no longer be ignored. We must build a new organization to confront them - the <span style="color:#003366;"><b>Iron Front</b></span> - consisting of the SPD, the ADGB trade union federation, and the *Reichsbanner Schwarz-Rot-Gold*. We have a new symbol - the Three Arrows, pointing down towards the left.
@@ -73,7 +99,17 @@ go-to: if_end
 The Iron Front has given a new energy to our party.
 
 @cultural_festival
-on-arrival: pro_republic += 2; unrest_factor *= 0.95; pacifism += 1; center_strength += 2; labor_strength += 2; strife -= 0.5; workers_spd += 1; economic_growth += 0.3; new_middle_spd += 2
+on-arrival: {!
+    Q.pro_republic += 2;
+    Q.unrest_factor *= 0.95;
+    Q.pacifism += 1;
+    Q.center_strength += 2;
+    Q.labor_strength += 2;
+    Q.strife -= 1;
+    Q.economic_growth += 0.3;
+    Q.addEventNudge('workers', 'spd', 1);
+    Q.addEventNudge('new_middle', 'spd', 2);
+!}
 
 We organize a "Festival of the Republic" celebrating the vibrant culture that has flourished under democracy. The Bauhaus designers create modernist pavilions. Kurt Weill and Bertolt Brecht premiere new works mocking fascist pomposity. Käthe Kollwitz exhibits her haunting portraits of working-class suffering and resilience.
 
@@ -83,26 +119,35 @@ Even skeptics admit the Republic has fostered remarkable creativity. For a few w
 
 @veterans_rally
 view-if: iron_front_formed
-on-arrival: pro_republic += 1; nationalism -= 1; reichswehr_loyalty += 0.02; interior_police_loyalty += 0.01; center_strength += 3; left_dissent += 5; reichswehr_loyalty += 0.1 if in_weimar_coalition
+on-arrival: {!
+    Q.pro_republic += 1;
+    Q.nationalism -= 1;
+    Q.reichswehr_loyalty += 0.01;
+    Q.interior_police_loyalty += 0.01;
+    Q.center_strength += 1;
+    Q.left_dissent += 5;
+    if (Q.pacifism > 0) { Q.pacifism -= 2 };
+    Q.reformist_strength += 2;
+    Q.neovevisionist_strength += 3;
+    if (Q.neorevisionism >= 1) { Q.neorevisionist_strength += 3 };
+    Q.reichswehr_loyalty += Q.in_weimar_coalition ? 0.01 : 0;
+!}
 
-We organize a "March of the Iron Front"—Social Democratic, Catholic, and liberal veterans marching in their old uniforms, medals gleaming, but now under the black-red-gold flag of the Republic rather than the Imperial tricolor.
+We have organized the rally of Iron Front for veterans of the war, calling them to fight for democracy and against extremism.
 
-The message is clear: *We* fought for Germany. *We* bled in the trenches. And *we* say the Republic is worth defending. The Nazis do not have a monopoly on patriotism or military honor. Many of us wore the feldgrau long before Hitler was a corporal.
+[? if neorevisionism >= 1: Especially active were neorevisionists, most furthest right wing members of our party, who called veterans for militant democracy and active confrontation with fascists. ?]
 
-Some officers in the Reichswehr watch approvingly—proof that the military is not monolithically reactionary. Others sneer at "November criminals in uniform."
-
-[? if left_dissent > 20: Our left wing is furious. "Why are we glorifying militarism?" they demand. "These men fought for the Kaiser's imperialism!" The tension between pacifist principle and anti-fascist pragmatism grows. ?]
+However, our left wing members accuse us of glorifying former Freikorps and brother killers. This also has negatively impacted our pacifist tendencies.
 
 @defend_prussia
 view-if: (prussian_government == "SPD" or spd_prussia = 1) and prussian_police_loyalty >= 0.65 and interior_police_loyalty >= 0.65
-on-arrival: advisor_action_timer = 6; interior_police_loyalty += 0.05; prussian_police_loyalty += 0.05; pro_republic += 1; hindenburg_relation -= 2; dnvp_relation -= 3; dvp_relation -= 3 if in_weimar_coalition = 1
+on-arrival: {!
+    Q.advisor_action_timer = 6;
+    Q.interior_police_loyalty += 0.05;
+    Q.prussian_police_loyalty += 0.05;
+    Q.pro_republic += 1;
+    Q.presidential_patience -= 2;
+    Q.dnvp_relation -= 3;
+    Q.dvp_relation -= (Q.in_weimar_coalition === 1) ? 3 : 0;
+!}
 
-"Prussia is the fortress of German democracy!" we declare. "While the Reich government may waver, Prussia stands firm under Social Democratic leadership!"
-
-We organize rallies across Prussia emphasizing that our control of the police, civil service, and local government is the Republic's last line of defense. Interior Minister Carl Severing becomes a symbol of democratic resolve, the "Iron Man" holding back the reactionary tide.
-
-The Junkers and Nationalists are apoplectic. "The Marxists have turned Frederick the Great's Prussia into a socialist stronghold!" they rage. President Hindenburg, himself a Prussian through and through, coldly disapproves of our "partisan abuse" of Prussian institutions.
-
-But for now, Prussia remains our bulwark. The Prussian police are loyal. The bureaucracy is professional. And the largest German state stands with the Republic.
-
-[? if president_relation < 30: [+ president +]'s hostility is dangerous. As Reich President, they have the constitutional authority to dissolve the Prussian government under Article 48. We must tread carefully. ?]
