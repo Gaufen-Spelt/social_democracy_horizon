@@ -639,8 +639,6 @@ Select a party to view its internal factional balance of power over time.
 - @dnvp_factions
 - @library: Back
 
----
-
 @dvp_factions
 title: DVP — Internal Factions
 go-to: faction_strengths
@@ -668,8 +666,6 @@ if (d3 && window) {
 
 {!<svg id="dvp_faction_history" style="width: 500px; height: 400px;"> </svg>!}
 
----
-
 @ddp_factions
 title: DDP — Internal Factions
 go-to: faction_strengths
@@ -696,8 +692,6 @@ if (d3 && window) {
 = DDP: Internal Faction Balance
 
 {!<svg id="ddp_faction_history" style="width: 500px; height: 400px;"> </svg>!}
-
----
 
 @dnvp_factions
 title: DNVP — Internal Factions
@@ -743,8 +737,6 @@ if (d3 && window) {
 
 {!<svg id="dnvp_faction_history" style="width: 500px; height: 400px;"> </svg>!}
 
----
-
 @z_factions
 title: Center Party — Internal Factions
 go-to: faction_strengths
@@ -781,8 +773,6 @@ if (d3 && window) {
 = Center Party (Z): Internal Faction Balance
 
 {!<svg id="z_faction_history" style="width: 500px; height: 400px;"> </svg>!}
-
----
 
 @nsdap_factions
 title: NSDAP — Internal Factions
