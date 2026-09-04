@@ -6658,6 +6658,18 @@ if (Q.dnvp_party_leader == "Alfred Hugenberg" && Q.lambach_stage == -1 && Q.lamb
 
 
 
+// HITLER OUSTED
+
+if (Q.nsdap_crisis == 1 && Q.hitler_crisis_trigger != 1) {
+    Q.nsdap_crisis_timer = 6;
+    if (!Q.timers.includes('nsdap_crisis')) {
+        Q.timers.push('nsdap_crisis');
+    }
+    Q.hitler_crisis_trigger = 1;
+}
+
+
+
 
 
 
