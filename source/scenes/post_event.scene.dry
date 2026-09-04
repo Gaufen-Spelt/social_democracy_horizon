@@ -6049,6 +6049,10 @@ Q.rohmite_power += (Q.nationalism || 0) * 0.5;
     Q.strasserist_power += (Q.socialism || 0) * _strasser_share;
 }
 
+if (Q.hitler_crisis_trigger >= 1) {
+    Q.hitlerist_power *= 0.10
+}
+
 // 5. DEMOGRAPHIC CLASS INFLUENCE
 // Old middle class & rural: fully Hitlerist
 Q.hitlerist_power += (Q.old_middle_nsdap_pct || 0);
