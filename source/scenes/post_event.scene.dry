@@ -7250,9 +7250,6 @@ if (Q.ma >= 1) {
                              'unemployment': Q.unemployed});
 
     // append to historical demographic-class party support records
-    // one array per demographic class, mirroring party_support_records,
-    // but reading class-specific normalized support (Q.<class>_<party>_normalized)
-    // instead of the population-wide Q.<party>_normalized
     Q.demographic_support_records = Q.demographic_support_records || {
         workers: [], old_middle: [], new_middle: [], rural: [], unemployedc: []
     };
@@ -7267,16 +7264,39 @@ if (Q.ma >= 1) {
         Q.demographic_support_records[_dc].push(_demo_result);
     }
 
-        Q.leadership_records = Q.leadership_records || [];
-Q.leadership_records.push({
-    date: new Date(Q.year, Q.month - 1, Q.weeks === 0 ? 1 : 15),
-    chancellor: Q.chancellor,
-    chancellor_party: Q.chancellor_party,
-    president: Q.president,
-    president_party: Q.president_party
-});
-}
+    // append to historical internal party faction records
+    Q.faction_records = Q.faction_records || {
+        DVP: [], DDP: [], DNVP: [], NSDAP: [], Z: []
+    };
 
+    var _faction_date = new Date(Q.year, Q.month - 1);
+    var _faction_fields = {
+        DVP: ['dvp_right', 'dvp_left'],
+        DDP: ['business_wing_ddp', 'social_republican_ddp'],
+        DNVP: ['delegate_power_agrarians', 'delegate_power_nat_cons', 'delegate_power_moderates',
+               'delegate_power_yocon', 'delegate_power_christsoc', 'hugenberg_momentum'],
+        NSDAP: ['hitlerist_power', 'strasserist_power', 'rohmite_power'],
+        Z: ['z_moderate_power', 'z_left_labor_power', 'z_right_labor_power', 'z_clerical_power']
+    };
+
+    for (var _party_name in _faction_fields) {
+        var _faction_result = {'date': _faction_date};
+        for (var _field of _faction_fields[_party_name]) {
+            _faction_result[_field] = Q[_field] || 0;
+        }
+        if (!Q.faction_records[_party_name]) Q.faction_records[_party_name] = [];
+        Q.faction_records[_party_name].push(_faction_result);
+    }
+
+    Q.leadership_records = Q.leadership_records || [];
+    Q.leadership_records.push({
+        date: new Date(Q.year, Q.month - 1, Q.weeks === 0 ? 1 : 15),
+        chancellor: Q.chancellor,
+        chancellor_party: Q.chancellor_party,
+        president: Q.president,
+        president_party: Q.president_party
+    });
+}
 
 
 
