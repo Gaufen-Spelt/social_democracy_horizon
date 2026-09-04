@@ -6662,6 +6662,18 @@ if (Q.dnvp_party_leader == "Alfred Hugenberg" && Q.lambach_stage == -1 && Q.lamb
 
 
 
+// LAMBAH INVITES Mahraun
+
+if (Q.lambach_stage == 3 && Q.jungdo_formed <= 0 && Q.lambach_invite_mahraun_trigger != 1) {
+    Q.lambach_invite_timer = 4;
+    if (!Q.timers.includes('lambach_invite')) {
+        Q.timers.push('lambach_invite');
+    }
+    Q.lambach_invite_mahraun_trigger = 1;
+}
+
+
+
 // HITLER OUSTED
 
 if (Q.nsdap_crisis == 1 && Q.hitler_crisis_trigger != 1) {
