@@ -332,17 +332,26 @@ new-page: true
 .ach-sanctuary .ach-icon-box { background: linear-gradient(135deg, rgba(255, 0, 80, 0.25), rgba(0, 200, 255, 0.25)); }
 
 /* Universal Locked State */
-.ach-locked { 
-  background: rgba(15, 15, 18, 0.6) !important;
-  border-color: rgba(255, 255, 255, 0.08) !important; 
+div.ach.ach-locked,
+div.ach.ach-locked.ach-red,
+div.ach.ach-locked.ach-end,
+div.ach.ach-locked.ach-glitch,
+div.ach.ach-locked.ach-fatamorgana,
+div.ach.ach-locked.ach-wessel,
+div.ach.ach-locked.ach-sanctuary {
+  background-color: #2a2a2e !important;
+  background-image: none !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
   box-shadow: none !important;
   clip-path: none !important;
+  color: #d4d4de !important;
 }
-.ach-locked .ach-icon-box { background: rgba(30, 30, 30, 0.4) !important; }
-.ach-locked .ach-icon-box img.ach-icon { filter: grayscale(100%) opacity(0.4) !important; }
-.ach-locked .ach-body { color: #9a9aa8 !important; }
-.ach-locked .ach-title strong { color: #b0b0bd !important; text-shadow: none !important; }
-.ach-locked .ach-subtitle { color: #86869a !important; opacity: 1; }
+div.ach.ach-locked .ach-icon-box { background: #3a3a3f !important; }
+div.ach.ach-locked .ach-icon-box img.ach-icon { filter: grayscale(100%) opacity(0.5) !important; }
+div.ach.ach-locked .ach-body,
+div.ach.ach-locked .ach-body * { color: #d4d4de !important; }
+div.ach.ach-locked .ach-title strong { color: #eaeaf2 !important; text-shadow: none !important; }
+div.ach.ach-locked .ach-subtitle { color: #b0b0be !important; opacity: 1 !important; }
 
 h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
 .ach-section { display: flex; flex-direction: column; gap: 0; margin-bottom: 16px; }
