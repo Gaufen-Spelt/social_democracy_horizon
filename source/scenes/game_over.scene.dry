@@ -331,6 +331,44 @@ new-page: true
 }
 .ach-sanctuary .ach-icon-box { background: linear-gradient(135deg, rgba(255, 0, 80, 0.25), rgba(0, 200, 255, 0.25)); }
 
+
+
+/* Hitlerubicon */
+.ach-uhrbremst {
+  background: rgba(16, 20, 28, 0.92);
+  border-color: rgba(245, 158, 11, 0.5);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
+  color: #e2e8f0;
+}
+.ach-uhrbremst .ach-icon-box { 
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(245, 158, 11, 0.25)); 
+}
+.ach-uhrbremst .ach-title strong { 
+  color: #fbbf24; 
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.5); 
+}
+
+div.ach.ach-locked.ach-locked-hitler {
+  background-color: #1a1212 !important;
+  border-color: rgba(180, 30, 30, 0.3) !important;
+  color: #c4b5b5 !important;
+}
+div.ach.ach-locked.ach-locked-hitler .ach-icon-box { 
+  background: #281a1a !important; 
+}
+div.ach.ach-locked.ach-locked-hitler .ach-icon-box img.ach-icon { 
+  filter: grayscale(100%) contrast(120%) opacity(0.35) !important; 
+}
+div.ach.ach-locked.ach-locked-hitler .ach-title strong { 
+  color: #d8aaaa !important; 
+}
+div.ach.ach-locked.ach-locked-hitler .ach-subtitle { 
+  color: #9e8888 !important; 
+}
+
+
+
+
 /* Universal Locked State */
 div.ach.ach-locked,
 div.ach.ach-locked.ach-red,
@@ -444,6 +482,26 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
 [? if not achievement_im_staub_der_zeit :	
 {!<div class="ach ach-locked"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/im_staub_der_zeit.png"></div><div class="ach-body"><strong>Im Staub der Zeit</strong> - Ultimate failure of the fortunes.</div></div>!}
 ?]
+
+[? if achievement_die_uhr_bremst :	
+{!<div class="ach ach-uhrbremst">
+  <div class="ach-icon-box"><img class="ach-icon" src="img/achievements/hitler.png"></div>
+  <div class="ach-body">
+    <div class="ach-title"><strong>Die Uhr Bremst</strong>[? if game_achievement_die_uhr_bremst : <span class="ach-new">New!</span>?]</div>
+    <div class="ach-subtitle">Time slows down...</div>
+  </div>
+</div>!}	
+?]
+[? if not achievement_die_uhr_bremst :	
+{!<div class="ach ach-locked ach-locked-hitler">
+  <div class="ach-icon-box"><img class="ach-icon" src="img/achievements/hitler.png"></div>
+  <div class="ach-body">
+    <div class="ach-title"><strong>Die Uhr Bremst</strong></div>
+    <div class="ach-subtitle">Time slows down...</div>
+  </div>
+</div>!}
+?]
+
 
 [? if achievement_liberalismus :
 {!<div class="ach" style="background:linear-gradient(90deg,rgba(0,0,0,0.06),rgba(0,60,120,0.06))"><div class="ach-icon-box"><img class="ach-icon" src="img/achievements/liberalismus.png"></div><div class="ach-body"><strong>United Liberalism</strong> - Liberal movement has been unified.!}[? if game_achievement_liberalismus : {!<span class="ach-new">New!</span>!}?]{!</div></div>!}
