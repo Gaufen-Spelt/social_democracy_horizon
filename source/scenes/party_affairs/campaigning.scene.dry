@@ -40,8 +40,9 @@ choose-if: resources >= 1
 unavailable-subtitle: Not enough resources.
 on-arrival: {!
     Q.resources -= 1;
-    Q.campaign_focus = "workers";
-    Q.workers_spd += 2 * (1 - Q.dissent);
+    Q.campaign_focus_spd = "workers";
+    Q.campaign_intensity_spd = Math.min(1, (Q.campaign_intensity_spd || 0) + 0.5);
+    Q.addEventNudge('workers', 'spd', 2 * (1 - Q.dissent));
 !}
 go-to: transit
 
@@ -62,8 +63,9 @@ choose-if: resources >= 1
 unavailable-subtitle: [? if resources < 1 : Not enough resources. ?][? if ideology = "left" : Our left-wing ideology prevents us from campaigning among the bourgeois middle class. ?]
 on-arrival: {!
     Q.resources -= 1;
-    Q.campaign_focus = "new_middle";
-    Q.new_middle_spd += 2 * (1 - Q.dissent);
+    Q.campaign_focus_spd = "new_middle";
+    Q.campaign_intensity_spd = Math.min(1, (Q.campaign_intensity_spd || 0) + 0.5);
+    Q.addEventNudge('new_middle', 'spd', 2 * (1 - Q.dissent));
     Q.peoples_party_support += 1;
 !}
 go-to: transit
@@ -81,8 +83,9 @@ choose-if: resources >= 1
 unavailable-subtitle: [? if resources < 1 : Not enough resources. ?][? if ideology = "left" : Our left-wing ideology prevents us from campaigning among the petit bourgeois. ?][? if ideology = "center" : Our centrist stance doesn't appeal strongly enough to the old middle class. ?]
 on-arrival: {!
     Q.resources -= 1;
-    Q.campaign_focus = "old_middle";
-    Q.old_middle_spd += 2 * (1 - Q.dissent);
+    Q.campaign_focus_spd = "old_middle";
+    Q.campaign_intensity_spd = Math.min(1, (Q.campaign_intensity_spd || 0) + 0.5);
+    Q.addEventNudge('old_middle', 'spd', 2 * (1 - Q.dissent));
     Q.peoples_party_support += 1;
 !}
 go-to: transit
@@ -100,9 +103,10 @@ choose-if: resources >= 2
 unavailable-subtitle: [? if resources < 2 : Not enough resources. ?]
 on-arrival: {!
     Q.resources -= 2;
-    Q.campaign_focus = "middle";
-    Q.old_middle_spd += 1 * (1 - Q.dissent);
-    Q.new_middle_spd += 1 * (1 - Q.dissent);
+    Q.campaign_focus_spd = "middle";
+    Q.campaign_intensity_spd = Math.min(1, (Q.campaign_intensity_spd || 0) + 0.5);
+    Q.addEventNudge('old_middle', 'spd', 1 * (1 - Q.dissent));
+    Q.addEventNudge('new_middle', 'spd', 1 * (1 - Q.dissent));
 !}
 go-to: transit
 
@@ -115,8 +119,9 @@ choose-if: resources >= 1
 unavailable-subtitle: [? if resources < 1 : Not enough resources. ?][? if ideology = "left" : Our left-wing ideology prevents us from appealing to rural farmers. ?][? if ideology = "labor" : Our labor-focused ideology makes it difficult to appeal to rural landowners. ?]
 on-arrival: {!
     Q.resources -= 1;
-    Q.campaign_focus = "rural";
-    Q.rural_spd += 2 * (1 - Q.dissent);
+    Q.campaign_focus_spd = "rural";
+    Q.campaign_intensity_spd = Math.min(1, (Q.campaign_intensity_spd || 0) + 0.5);
+    Q.addEventNudge('rural', 'spd', 2 * (1 - Q.dissent));
     Q.peoples_party_support += 1;
 !}
 go-to: transit
@@ -135,8 +140,9 @@ choose-if: resources >= 1
 unavailable-subtitle: [? if resources < 1 : Not enough resources. ?][? if ideology = "reformist" : Our reformist ideology focuses on those with jobs rather than the unemployed. ?]
 on-arrival: {!
     Q.resources -= 1;
-    Q.campaign_focus = "unemployed";
-    Q.unemployedc_spd += 2 * (1 - Q.dissent);
+    Q.campaign_focus_spd = "unemployed";
+    Q.campaign_intensity_spd = Math.min(1, (Q.campaign_intensity_spd || 0) + 0.5);
+    Q.addEventNudge('unemployedc', 'spd', 2 * (1 - Q.dissent));
 !}
 go-to: transit
 
@@ -152,9 +158,10 @@ choose-if: resources >= 1
 unavailable-subtitle: [? if resources < 1 : Not enough resources. ?]
 on-arrival: {!
     Q.resources -= 1;
-    Q.campaign_focus = "women";
-    Q.new_middle_spd += 1 * (1 - Q.dissent);
-    Q.workers_spd    += 1 * (1 - Q.dissent);
+    Q.campaign_focus_spd = "women";
+    Q.campaign_intensity_spd = Math.min(1, (Q.campaign_intensity_spd || 0) + 0.5);
+    Q.addEventNudge('new_middle', 'spd', 1 * (1 - Q.dissent));
+    Q.addEventNudge('workers', 'spd', 1 * (1 - Q.dissent));
 !}
 go-to: transit
 
@@ -167,8 +174,9 @@ choose-if: resources >= 1 and peoples_party == 1
 unavailable-subtitle: [? if resources < 1 : Not enough resources. ?][? if peoples_party == 0 : We need to be a people's party to effectively campaign among Catholics. ?]
 on-arrival: {!
     Q.resources -= 1;
-    Q.campaign_focus = "catholics";
-    Q.new_middle_spd += 1 * (1 - Q.dissent);
+    Q.campaign_focus_spd = "catholics";
+    Q.campaign_intensity_spd = Math.min(1, (Q.campaign_intensity_spd || 0) + 0.5);
+    Q.addEventNudgeCell('new_middle', 'catholics', 'spd', 1 * (1 - Q.dissent));
 !}
 go-to: transit
 
@@ -179,8 +187,7 @@ We have increased our campaigning among Catholics.
 @transit
 title: [? if campaigning_turn = 0: Secondary campaigning. ?] [? if campaigning_turn = 1: Campaigning is over. ?]
 on-arrival: campaigning_turn += 1
-go-to: campaigning_scene if campaigning_turn = 1; leave if campaigning_turn = 2
-
+go-to: root
 
 @finish_game
 view-if: sandbox = 1
