@@ -3739,52 +3739,46 @@ function computeTarget(party, c) {
     else if (Q.ideology === 'reformist') { r *= 1.10; s *= 0.90; }
     else if (Q.ideology === 'neorev')    { s *= 1.05; r *= 1.05; }
 
-    if (Q.social_fascism_adopted == 1) {r *= 1.47; s *= 0.60}
+    if (Q.social_fascism_adopted == 1) {r *= 1.57; s *= 0.30}
 
-    // Centralized campaigning: SPD keeps its extra policy-conditional
-    // fine-tuning per focus (below), layered on top of the same
-    // generic _campaignMult() every other party uses.
     let campaign_policy_boost = 1.1;
     if (Q.campaign_focus_spd === 'workers'    && (Q.campaign_intensity_spd || 0) > 0) {
         campaign_policy_boost +=
-              (Q.wtb_adopted === 1 ? 0.05 : 0)
-            + (Q.nationalization_progress >= 1 ? 0.04 : 0)
-            + (Q.welfare <= 0 ? -0.04 : 0)
-            + (Q.workers_aid > 0 ? Q.workers_aid * 0.01 : 0)
-            + (Q.pro_consumer > 0 ? 0.02 : 0)
-            + (Q.trans_rights > 0 ? 0.01 : 0)
-            + (Q.iron_front_progress > 2 ? 0.015 : 0)
-            - (Q.peoples_party === 1 ? (Q.socialism / 200) : 0)
-            - (Q.lower_tax_rates > 0 ? Q.lower_tax_rates * 0.03 : 0);
+              (Q.wtb_timer > 0 ? (Q.workers / 80) * 0.75 * 0.5 : 0)
+            + (Q.pro_consumer > 0 ? Q.pro_consumer * 0.23 * 0.5 : 0)
+            + (Q.state_buyer > 0 ? Q.state_buyer * 0.25 * 0.5 : 0)
+            + (Q.welfare > 0 ? Q.welfare * 0.11 * 0.5 : 0)
+            + (Q.working_hours > 0 ? Q.working_hours * 0.08 * 0.5 : 0)
+            + (Q.workers_safety > 0 ? Q.workers_safety * 0.05 * 0.5 : 0)
+            + (Q.commonwealth_cooperation > 0 ? Q.commonwealth_cooperation * 0.55 * 0.5 : 0)
+            + (Q.works_councils > 0 ? Q.works_councils * 0.05 * 0.5 : 0)
+            + (Q.economic_democracy > 0 ? Q.economic_democracy * 0.02 * 0.5 : 0)
+            + (Q.cooperatives > 0 ? Q.cooperatives * 0.10 * 0.5 : 0)
+            - (Q.lower_tax_rates > 0 ? Q.lower_tax_rates * 0.25 * 0.5 : 0);
     }
     if (Q.campaign_focus_spd === 'new_middle' && (Q.campaign_intensity_spd || 0) > 0) {
         campaign_policy_boost +=
-              (Q.peoples_party === 1 ? 0.04 : 0)
-            + (Q.radio >= 1 ? 0.04 * Q.radio : 0)
-            + (Q.commercialized_media >= 1 ? 0.02 * Q.commercialized_media : 0)
-            - (Q.socialism <= 49 && Q.peoples_party === 0 ? 0.06 : 0)
-            - (Q.upper_tax_rates > 0 ? Q.upper_tax_rates * 0.03 : 0);
+              (Q.wtb_timer > 0 ? (Q.new_middle / 100) * 0.27 * 0.5 : 0)
+              + (Q.radio >= 1 ? 0.08 * Q.radio : 0);
     }
     if (Q.campaign_focus_spd === 'old_middle' && (Q.campaign_intensity_spd || 0) > 0) {
         campaign_policy_boost +=
-              (Q.peoples_party === 1 ? 0.04 : 0)
-            + (Q.radio >= 1 ? 0.02 * Q.radio : 0)
-            - (Q.nationalism >= 51 && Q.peoples_party === 0 ? 0.06 : 0)
-            - (Q.upper_tax_rates > 0 ? Q.upper_tax_rates * 0.03 : 0)
-            - (Q.nationalism / 480);
+            - (Q.land_reform > 0 ? Q.land_reform * 0.15 * 0.5 : 0)
+            + (Q.radio >= 1 ? 0.04 * Q.radio : 0);
     }
     if (Q.campaign_focus_spd === 'rural'      && (Q.campaign_intensity_spd || 0) > 0) {
         campaign_policy_boost +=
-              (Q.agricultural_finance >= 2 ? 0.04 : 0)
-            + (Q.state_buyer === 1 ? 0.03 : 0)
-            - (Q.peoples_party === 0 ? 0.05 : 0);
+              (Q.land_reform > 0 ? Q.land_reform * 0.48 * 0.5 : 0)
+            + (Q.agricultural_finance > 0 ? Q.agricultural_finance * 0.25 * 0.5 : 0)
+            + (Q.pro_consumer > 0 ? Q.pro_consumer * 0.03 * 0.5 : 0)
+            + (Q.state_buyer > 0 ? Q.state_buyer * 1.22 * 0.5 : 0);
     }
     if (Q.campaign_focus_spd === 'unemployed' && (Q.campaign_intensity_spd || 0) > 0) {
         campaign_policy_boost +=
-              (Q.wtb_adopted === 1 ? 0.06 : 0)
-            + (Q.welfare >= 2 ? 0.04 : 0)
-            + (Q.iron_front_progress > 4 ? 0.02 : 0)
-            - (Q.welfare < 0 ? 0.05 : 0);
+              (Q.wtb_timer > 0 ? (Q.unemployedc / 100) * 1.03 * 0.5 : 0)
+            + (Q.pro_consumer > 0 ? Q.pro_consumer * 0.13 * 0.5 : 0)
+            + (Q.state_buyer > 0 ? Q.state_buyer * 0.15 * 0.5 : 0)
+            + (Q.welfare > 0 ? Q.welfare * 0.06 * 0.5 : 0);
     }
     if (Q.campaign_focus_spd === 'women'      && (Q.campaign_intensity_spd || 0) > 0) {
         campaign_policy_boost +=
@@ -3797,14 +3791,15 @@ function computeTarget(party, c) {
         campaign_policy_boost +=
             - (Q.nationalism >= (Q.pro_republic / 2) && Q.peoples_party === 0 ? 0.05 : 0)
             - ((Q.socialism * 1.5) <= Q.nationalism && Q.peoples_party === 0 ? 0.04 : 0)
-            - (Q.upper_tax_rates > 0 ? Q.upper_tax_rates * 0.027 : 0);
+            - (Q.upper_tax_rates > 0 ? Q.upper_tax_rates * 0.027 : 0)
+            + (Q.radio >= 1 ? 0.06 * Q.radio : 0);
     }
 
     let left_extremism_bump = (Q.ideology === 'left')
         ? 1 + (unrest_soc_hybrid * 0.045)
         : 1.0;
 
-    base = (r * 19.8 + s * 11.6) * im.spd * (eim.spd || 1.0) * campaign_policy_boost * left_extremism_bump;
+    base = (r * 19.7 + s * 11.5) * im.spd * (eim.spd || 1.0) * campaign_policy_boost * left_extremism_bump;
     base *= _partyAdj('spd');
 
     // Behavior: refleft ('linear') — reactive unrest term above is
