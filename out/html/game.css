@@ -16,7 +16,12 @@
     50% { opacity: 0; }
 }
 
-.keyword-party { font-weight: bold; } /* FOR COLORED ONES. /*
+.keyword-party { font-weight: bold; }
+
+@keyframes uhrbremst-pulse {
+  0%, 100% { box-shadow: 0 0 18px rgba(180, 20, 10, 0.45), inset 0 0 20px rgba(0, 0, 0, 0.6); }
+  50% { box-shadow: 0 0 26px rgba(220, 40, 10, 0.65), inset 0 0 20px rgba(0, 0, 0, 0.6); }
+}
 
 
 
