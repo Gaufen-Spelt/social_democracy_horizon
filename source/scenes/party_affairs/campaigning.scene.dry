@@ -11,8 +11,6 @@ go-to: campaigning_scene
 
 = Campaigning
 
-[the world]
-
 Whether or not we are in an electoral campaign, the party is always trying to broaden its voter base. Who should we focus our campaign efforts on?
 [? if nazi_urgency > 1: Awareness of National Socialism and it's threat amongst and to the society allows us to begin mobilization earlier, granting additional votes among workers and the unemployed. ?]
 
@@ -186,7 +184,7 @@ We have increased our campaigning among Catholics.
 
 @transit
 title: [? if campaigning_turn = 0: Secondary campaigning. ?] [? if campaigning_turn = 1: Campaigning is over. ?]
-on-arrival: campaigning_turn += 1
+on-arrival: month_actions += 1
 go-to: root
 
 @finish_game
