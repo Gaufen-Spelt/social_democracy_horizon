@@ -5515,8 +5515,8 @@ if (Q.subevents >= 1) {
 
 // ACHIEVEMENTS
 
-if (Q.rural_dbp_pct + Q.rural_cnbl_pct + Q.rural_other_pct >= 50 && Q.achievement_landlicher_zorn != 1) {
-    this.achieve('landlicher_zorn')
+if (Q.rural_dbp_pct + Q.rural_cnbl_pct + Q.rural_other_pct >= 50 && Q.rural_rlb_collapse != 1) {
+    Q.rural_rlb_collapse = 1;
 }
 
 
