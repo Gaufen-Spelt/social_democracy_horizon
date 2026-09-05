@@ -15,8 +15,8 @@ What are we to do now?
 - @give_up: We will vote against the nazis in the Reichstag and give up.
 - @justiciary: Perhaps, Hitler and NSDAP does not actually have unlimited power?
 
-
 @fight
+view-if: full_reform_initiated <= 0
 
 Do we realize that this means civil war, against the full force of the state?
 
@@ -24,63 +24,7 @@ Do we realize that this means civil war, against the full force of the state?
 - @give_up: We are not ready for war. Instead, we will vote against the nazis in the Reichstag.
 
 @give_up
-title: Parliamentary Resistance
-subtitle: We fight in the Reichstag, not the streets.
-
-We will not resort to violence. Instead, we rally every democratic party against Hitler's decrees and use every parliamentary tool at our disposal.
-
-- @rally_reichstag: Organize a united front vote to censure Hitler.
-- @appeal_president: Petition the President to dismiss Hitler as Chancellor.
-- @military_intervention: Appeal to the Reichswehr
-- @accept_defeat: There is nothing we can do. Germany is lost.
-- @fight: Then it means war.
-
-@military_intervention
-title: Appeal to the Reichswehr
-subtitle: Let the army restore order.
-choose-if: presidential_powers = 1 and president != "Hitler" and reichswehr_loyalty > 0.5 and (reichswehr_minister = "Gröner" or reichswehr_minister = "Schleicher") and nsdap_r < 35
-unavailable-subtitle: [? if presidential_powers = 0 : We stripped the President of emergency powers. ?][? if president = "Hitler" : The President is Hitler himself. ?][? if reichswehr_loyalty <= 0.5 : The military won't act for us. ?][? if reichswehr_minister != "Gröner" and reichswehr_minister != "Schleicher" : We have no allies in the military leadership. ?][? if nsdap_r >= 35 : The Nazis are too strong — the army fears civil war. ?]
-on-arrival: chancellor = "Schleicher"; chancellor_party = "Military"; spd_in_government = 0; pro_republic -= 10; nationalism += 8; socialism += 5; coup_progress = 0; reichswehr_loyalty += 0.2; sa_strength += 20; nsdap_r += 3; dnvp_relation -= 25; kpd_relation -= 30
-
-We make the call. President [+ president +] authorizes General [+ reichswehr_minister +] to "restore constitutional order."
-
-Within hours, the Reichswehr occupies Berlin. Hitler is escorted from the Chancellery. The NSDAP is not banned — but it is "managed." A military government is installed under General Schleicher.
-
-We are not in it.
-
-The Republic has been saved by killing it. The army now rules Germany. The Nazis scream betrayal and the SA arms itself in secret. The KPD calls us traitors to the working class. The DNVP refuses to work with a military junta.
-
-Democracy is suspended. We handed the country to generals. What have we done?
-
-- @root: Continue.
-
-@rally_reichstag
-choose-if: (z_r + ddp_r + spd_r + dvp_r + bvp_r) >= 50 and nsdap_r < 35 and nationalism < 55
-unavailable-subtitle: [? if (z_r + ddp_r + spd_r + dvp_r + bvp_r) < 50 : We lack the votes. ?][? if nsdap_r >= 35 : The Nazis are too strong to remove peacefully. ?][? if nationalism >= 55 : The country won't support this. ?]
-on-arrival: chancellor = "Müller"; chancellor_party = "SPD"; nationalism -= 2; pro_republic += 4; nsdap_r -= 4; workers_nsdap += 3; rural_nsdap += 3; sa_strength += 10
-
-The Reichstag votes. Z, DDP, DVP, BVP, and SPD unite — barely. The motion of no confidence passes by a razor-thin margin.
-
-Hitler is dismissed. But the vote fractures the coalition permanently. The Nazis riot in the streets. Their supporters call it a coup. The SA swells with recruits hungry for revenge.
-
-We won the battle. The war is far from over.
-
-- @root: Continue.
-
-@appeal_president
-choose-if: president != "Hitler" and president != "Hindenburg" and pro_republic > 50 and nsdap_r < 40
-unavailable-subtitle: [? if president = "Hitler" : The President *is* Hitler. ?][? if president = "Hindenburg" : Hindenburg put Hitler there. He won't remove him. ?][? if pro_republic <= 50 : Republican legitimacy is too weak. ?][? if nsdap_r >= 40 : The Nazis are too popular for the President to act. ?][? if president != "Braun" and president != "Severing" : The President won't risk it. ?]
-on-arrival: chancellor = "Brüning"; chancellor_party = "Z"; pro_republic += 2; nationalism += 5; nsdap_r += 5; sa_strength += 15; coup_progress += 10; workers_nsdap += 5
-
-President [+ president +] listens. Behind closed doors, the calculation is made: Hitler is too dangerous. A backroom deal is struck.
-
-Hitler is removed from the Chancellorship. The crisis is defused — but the backlash is immediate. The Nazis scream betrayal. The right calls it a putsch. Coup rumors swirl. The SA arms itself openly.
-
-We bought time. We may have made things worse.
-
-- @root: Continue.
-
-@accept_defeat
+view-if: full_reform_initiated <= 0
 
 Speeches are made. Votes are held. Bullets fly in the streets. Some socialists are killed or jailed. Others flee the country. What can votes even do at this juncture?
 
@@ -92,14 +36,10 @@ Germany is lost.
 
 @justiciary
 subtitle: Hitler is unable to impose full authority, clock slows down...
-choose-if: full_reform_initiated = 1 and presidential_powers = 1
-unavailable-subtitle: We are unable to stop Hitler by any means.
-on-arrival: nationalism += 5; emergency_state = 1; pro_republic += 10; resources += 3; budget += 1; workers_nsdap -= 5; catholics_nsdap -= 5
+view-if: full_reform_initiated = 1
+on-arrival: nationalism += 5; emergency_state = 1; pro_republic += 10; resources += 3; budget += 1; workers_nsdap -= 5; catholics_nsdap -= 5; rb_militancy += 0.01; rb_strength += 200; rfb_strength += 200; sh_strength += 200
 achievement: die_uhr_bremst
 
 Hitler is unable to impose his full authority through parliamentarian means, so if he reaches out his side card - it will go catastrophic for either side. Understanding that, Hitler decides to play little game. Clock slows down, as we face the critical moment. We need everyone. We need everything. To stop him.
 
 Your next goal - survive and outlast Hitler and the NSDAP.
-
-You will be provided some small boost in order to survive this.
-
