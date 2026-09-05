@@ -3741,7 +3741,7 @@ function computeTarget(party, c) {
 
     if (Q.social_fascism_adopted == 1) {r *= 1.57; s *= 0.30}
 
-    let campaign_policy_boost = 1.1;
+    let campaign_policy_boost = 0.55;
     if (Q.campaign_focus_spd === 'workers'    && (Q.campaign_intensity_spd || 0) > 0) {
         campaign_policy_boost +=
               (Q.wtb_timer > 0 ? (Q.workers / 80) * 0.75 * 0.5 : 0)
