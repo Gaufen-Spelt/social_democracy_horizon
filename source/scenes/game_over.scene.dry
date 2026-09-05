@@ -334,18 +334,26 @@ new-page: true
 
 
 /* Hitlerubicon */
+/* Hitlerubicon */
 .ach-uhrbremst {
-  background: rgba(16, 20, 28, 0.92);
-  border-color: rgba(245, 158, 11, 0.5);
-  box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
-  color: #e2e8f0;
+  background: linear-gradient(135deg, rgba(40, 8, 8, 0.95), rgba(20, 4, 4, 0.95));
+  border: 1px solid rgba(180, 30, 20, 0.6);
+  box-shadow: 0 0 18px rgba(180, 20, 10, 0.45), inset 0 0 20px rgba(0, 0, 0, 0.6);
+  color: #e8d8d0;
+  animation: uhrbremst-pulse 3.5s ease-in-out infinite;
 }
 .ach-uhrbremst .ach-icon-box { 
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(245, 158, 11, 0.25)); 
+  background: linear-gradient(135deg, rgba(60, 10, 10, 0.9), rgba(120, 30, 10, 0.4)); 
+}
+.ach-uhrbremst .ach-icon-box img.ach-icon {
+  filter: sepia(30%) saturate(180%) hue-rotate(-10deg) brightness(0.85);
 }
 .ach-uhrbremst .ach-title strong { 
-  color: #fbbf24; 
-  text-shadow: 0 0 8px rgba(245, 158, 11, 0.5); 
+  color: #e8580c; 
+  text-shadow: 0 0 10px rgba(220, 50, 10, 0.7);
+}
+.ach-uhrbremst .ach-subtitle {
+  color: #b89890;
 }
 
 div.ach.ach-locked.ach-locked-hitler {
