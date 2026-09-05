@@ -487,7 +487,7 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
 {!<div class="ach ach-uhrbremst">
   <div class="ach-icon-box"><img class="ach-icon" src="img/achievements/hitler.png"></div>
   <div class="ach-body">
-    <div class="ach-title"><strong>Die Uhr Bremst</strong>[? if game_achievement_die_uhr_bremst : <span class="ach-new">New!</span>?]</div>
+    <div class="ach-title"><strong>Die Uhr Bremst</strong>!} [? if game_achievement_die_uhr_bremst : {!<span class="ach-new">New!</span>!}?] {!</div>
     <div class="ach-subtitle">Time slows down...</div>
   </div>
 </div>!}	
@@ -501,6 +501,7 @@ h1, h2, h3 { margin-bottom: 12px; margin-top: 20px; }
   </div>
 </div>!}
 ?]
+
 
 
 [? if achievement_liberalismus :
