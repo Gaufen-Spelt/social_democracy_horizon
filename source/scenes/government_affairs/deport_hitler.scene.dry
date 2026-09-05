@@ -10,7 +10,7 @@ Is it really that simple? Won't his supporters react violently to this suggestio
 - @no_deport: No, we must not.
 
 @deport
-go-to: deport_violence if sa_strength * 2 >= (rb_strength * rb_militancy) + (prussian_police_strength * prussian_police_militancy * prussian_police_loyalty); deport_success iif sa_strength * 2 < (rb_strength * rb_militancy) + (prussian_police_strength * prussian_police_militancy * prussian_police_loyalty)
+go-to: deport_violence if sa_strength * 2 >= (rb_strength * rb_militancy) + (prussian_police_strength * prussian_police_militancy * prussian_police_loyalty); deport_success if sa_strength * 2 < (rb_strength * rb_militancy) + (prussian_police_strength * prussian_police_militancy * prussian_police_loyalty)
 
 @deport_violence
 
