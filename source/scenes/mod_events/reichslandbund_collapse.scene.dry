@@ -1,0 +1,25 @@
+title: Reichslandbund (RLB) faces existential threat...
+subtitle: Rural wrath engulfes the Germany...
+tags: event
+new-page: true
+max-visits: 1
+view-if: rural_rlb_collapse >= 1 and not rlb_banned
+face-image: rlb if rlb_banned <= 0; rlb_1 if rlb_banned >= 1
+
+= National Rural League's doom
+
+With rural populace protesting, blocking provisions, terrorising lands, attacking Junkers, sabotaging machinery, breaking tools and even enacting actions of terror despite starving, old conservative parties were unable to respond to that due to their best interest being Junkers, big land owners and other upper classes.
+
+With local rural leagues defecting one by another, [? if rlb_party_leader = "Martin Schiele": [+ rlb_party_leader +] pushed for integration with DNVP in the face of imminent collapse, however other rural representatives went against this idea , forcing Martin Schiele to defect to DNVP alone. With it's president's defection, RLB **no longer yielded legitimacy** upon other leagues and rural organizations. [? if rlb_party_leader = "Karl Hepp": Karl Hepp declared coalition between his defected rural leagues (in March 1928) and the rest of leagues, reforming RLB into something else. ?] Gustav von Kalckreutch, sole president of this organization by-now, has declared it's disbandment and [? if cnbl_votes > 0: joined CNBLP ?] [? if cnbl_votes <= 0 and nsdap_votes >= 4: joined NSDAP ?] [? if cnbl_votes <= 0 and nsdap_votes < 4: formed own splinter league. ?] ?] 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+- @continue
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+@continue
+title: They deserved that.
+on-arrival: {!
+Q.rlb_banned = 1;
+this.achieve('landlicher_zorn')
+!}
+
+
+Gg
