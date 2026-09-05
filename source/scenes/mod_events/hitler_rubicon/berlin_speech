@@ -1,0 +1,10 @@
+title: Hitler's speech...
+subtitle: First and foremost.
+tags: event
+view-if: hitler_rubicon == 1 and hitler_rubicon_timers >= 1
+new-page: true
+max-visits: 1
+
+= Hitler's speech
+
+On the morning of [+ month: month +] of [+ year +], Hitler has stood up upon his nation, his people, his allies...
