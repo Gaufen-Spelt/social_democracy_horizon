@@ -4,7 +4,7 @@ tags: event
 new-page: true
 max-visits: 1
 view-if: rural_rlb_collapse >= 1 and not rlb_banned
-face-image: rlb if rlb_banned <= 0; rlb_1 if rlb_banned >= 1
+face-image: img/rlb if rlb_banned <= 0; img/rlb_1 if rlb_banned >= 1
 
 = National Rural League's doom
 
