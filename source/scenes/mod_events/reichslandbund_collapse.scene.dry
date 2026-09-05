@@ -4,7 +4,16 @@ tags: event
 new-page: true
 max-visits: 1
 view-if: rural_rlb_collapse >= 1 and not rlb_banned
-face-image: img/rlb.png if rlb_banned <= 0; img/rlb_1.png if rlb_banned >= 1
+on-display: {!  
+    var cardEl = document.createElement('div');  
+    cardEl.className = "face-figure2";  
+    var image = new Image();  
+    image.className = "face-img";  
+    image.src = Q.rlb_banned >= 1 ? "img/rlb_1.png" : "img/rlb.png";  
+    cardEl.appendChild(image);  
+    var contentDiv = document.querySelector("#page #mid_panel #content");
+    contentDiv.appendChild(cardEl);
+!}
 
 = National Rural League's doom
 
@@ -15,11 +24,10 @@ With local rural leagues defecting one after another, [? if rlb_party_leader = "
 - @continue
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
 @continue
-title: They deserved that.
+title: Thus, this page is closed.
 on-arrival: {!
 Q.rlb_banned = 1;
 this.achieve('landlicher_zorn')
 !}
 
-
-Gg
+Cold winter approaches even those of most exploitative kind...
