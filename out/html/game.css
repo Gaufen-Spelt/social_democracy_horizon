@@ -412,6 +412,17 @@ footer a {
   color: var(--link-color);
 }
 
+
+
+.sub_tab_container {
+  margin-top: 2px;
+  border-top: 1px solid var(--border-color);
+}
+
+.sub_tab_container .tab_button {
+  font-size: 0.65em;
+}
+
 /* =====================================================================
    TYPOGRAPHY
    ===================================================================== */
