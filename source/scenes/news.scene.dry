@@ -44,7 +44,13 @@ new-page: true
 
 [? if year = 1928 and month >= 9 and month <= 11 and lambach_reinstated == -1: DNVP's Party's high court failed to manage to get Lambach to be reinstated back to his position, dooming Christian Socials in their battle against Hugenberg's empire. ?]
 
-[? if year = 1928 and month = 8 and weeks >= 1 and lambach_flavor_trigger_1 = 1: Lambach's newest article after "Monarchismus" - "Neuer Arbeiterstatt" has caused sensation amongst his fellow members, calling for Lambach's isolation, though Lambach's growing populariy amongst alienated right wing workers and whitecollars just shows this is a *race against the time*. ?]
+[? if lambach_momentum_timer == 1and lambach_flavor_trigger_1 = 1: Lambach's newest article after "Monarchismus" - "Neuer Arbeiterstatt" has caused sensation amongst his fellow members, calling for Lambach's isolation, though Lambach's growing populariy amongst alienated right wing workers and whitecollars just shows this is a *race against the time*. ?]
+
+# YOUNG OR WEIMAR?
+
+[? if year == 1929 and month == 6 and weeks <= 1 and dnvp_referendum == 1: Young Plan. ?]
+
+[? if year == 1929 and month == 6 and weeks <= 1 and dnvp_referendum == 2: Weimar Referendum. ?]
 
 # DDP MANNHEIM CONGRESS
 
