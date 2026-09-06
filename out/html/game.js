@@ -1056,50 +1056,73 @@ window.updateBottomPanel = function() {
     }
 };
 
-  // Tab switching — still 2-arg so existing HTML onclick calls keep working.
-  // The optional 3rd arg (target panel selector) is accepted but unused for
-  // now since #qualities_2 is left empty.
-  window.changeTab = function(newTab, tabId /*, targetPanel */) {
-      if (tabId == 'poll_tab' && dendryUI.dendryEngine.state.qualities.historical_mode) {
-          window.alert('Polls are not available in historical mode.');
-          return;
-      }
-      var tabButton = document.getElementById(tabId);
-      var tabButtons = document.getElementsByClassName('tab_button');
-      for (var i = 0; i < tabButtons.length; i++) {
-          tabButtons[i].className = tabButtons[i].className.replace(' active', '');
-      }
-      tabButton.className += ' active';
-      window.statusTab = newTab;
-      window.updateSidebar();
-  };
-
-  // Groups of sub-tab container IDs keyed by their parent top-level tab button id
+    // Groups of sub-tab container IDs keyed by their parent top-level tab button id
 var SUBTAB_GROUPS = {
   goi_tab: 'goi_subtabs'
   // add more here: another_tab: 'another_subtabs'
 };
 
-window.changeTopTab = function(tabId) {
-  // Deactivate all top-level tab buttons in this row
-  var tabButtons = document.getElementsByClassName('tab_button');
-  for (var i = 0; i < tabButtons.length; i++) {
-    if (tabButtons[i].closest('.tab_container') &&
-        !tabButtons[i].closest('.tab_container').classList.contains('sub_tab_container')) {
-      tabButtons[i].className = tabButtons[i].className.replace(' active', '');
+  // Tab switching — still 2-arg so existing HTML onclick calls keep working.
+  // The optional 3rd arg (target panel selector) is accepted but unused for
+  // now since #qualities_2 is left empty.
+  window.changeTab = function(newTab, tabId /*, targetPanel */) {
+    if (tabId == 'poll_tab' && dendryUI.dendryEngine.state.qualities.historical_mode) {
+        window.alert('Polls are not available in historical mode.');
+        return;
     }
+    var tabButton = document.getElementById(tabId);
+    var container = tabButton.closest('.tab_container');
+    var isSubTab = container.classList.contains('sub_tab_container');
+
+    // Clear .active only within the same row (top row vs sub row)
+    var tabButtons = container.getElementsByClassName('tab_button');
+    for (var i = 0; i < tabButtons.length; i++) {
+        tabButtons[i].className = tabButtons[i].className.replace(' active', '');
+    }
+    tabButton.className += ' active';
+
+    // If a top-level tab was clicked (not a sub-tab), collapse any open subtab groups
+    // whose parent isn't this tab
+    if (!isSubTab) {
+        Object.keys(SUBTAB_GROUPS).forEach(function(key) {
+            var el = document.getElementById(SUBTAB_GROUPS[key]);
+            if (el && key !== tabId) {
+                el.style.display = 'none';
+            }
+        });
+        // Also deactivate the parent top-tab button if this click came from
+        // a plain (non-group) tab like Main/Politics/Defense
+        if (!SUBTAB_GROUPS[tabId]) {
+            var topContainer = document.querySelector('.stats-box .tab_container:not(.sub_tab_container)');
+            var topButtons = topContainer.getElementsByClassName('tab_button');
+            for (var j = 0; j < topButtons.length; j++) {
+                if (Object.prototype.hasOwnProperty.call(SUBTAB_GROUPS, topButtons[j].id)) {
+                    topButtons[j].className = topButtons[j].className.replace(' active', '');
+                }
+            }
+        }
+    }
+
+    window.statusTab = newTab;
+    window.updateSidebar();
+};
+
+window.changeTopTab = function(tabId) {
+  var topContainer = document.querySelector('.stats-box .tab_container:not(.sub_tab_container)');
+  var tabButtons = topContainer.getElementsByClassName('tab_button');
+  for (var i = 0; i < tabButtons.length; i++) {
+    tabButtons[i].className = tabButtons[i].className.replace(' active', '');
   }
   document.getElementById(tabId).className += ' active';
 
-  // Hide every sub-tab group, then show the one for this tab (if any)
   Object.keys(SUBTAB_GROUPS).forEach(function(key) {
     var el = document.getElementById(SUBTAB_GROUPS[key]);
     if (el) el.style.display = (key === tabId) ? 'flex' : 'none';
   });
 
-  // If this top tab has sub-tabs, activate its first sub-tab by default
-  if (SUBTAB_GROUPS[tabId]) {
-    var subContainer = document.getElementById(SUBTAB_GROUPS[tabId]);
+  var subId = SUBTAB_GROUPS[tabId];
+  if (subId) {
+    var subContainer = document.getElementById(subId);
     var firstSubBtn = subContainer.querySelector('.tab_button');
     if (firstSubBtn) firstSubBtn.click();
   }
