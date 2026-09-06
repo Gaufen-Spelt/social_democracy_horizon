@@ -244,6 +244,18 @@
               onclick="window.changeTab('status.politics', 'politics_tab', '#qualities');">Politics</button>
             <button class="tab_button" id="paramilitary_tab"
               onclick="window.changeTab('status.paramilitaries', 'paramilitary_tab', '#qualities');">Defense</button>
+            <button class="tab_button" id="goi_tab"
+              onclick="window.changeTopTab('goi_tab');">Interest Groups</button>
+          </div>
+
+                    <!-- Sub-tabs, hidden unless economy_tab is active -->
+          <div class="tab_container sub_tab_container" id="goi_subtabs" style="display:none;">
+            <button class="tab_button active" id="goi_unions_tab"
+              onclick="window.changeTab('status.unions', 'goi_unions_tab', '#qualities');">Unions</button>
+            <button class="tab_button" id="goi_industrials_tab"
+              onclick="window.changeTab('status.industries', 'goi_industrials_tab', '#qualities');">Industries</button>
+            <button class="tab_button" id="goi_misc_tab"
+              onclick="window.changeTab('status.misc', 'goi_misc_tab', '#qualities');">Miscellanious</button>
           </div>
 
           <div id="qualities"></div>
