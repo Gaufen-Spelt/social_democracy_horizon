@@ -1074,6 +1074,37 @@ window.updateBottomPanel = function() {
       window.updateSidebar();
   };
 
+  // Groups of sub-tab container IDs keyed by their parent top-level tab button id
+var SUBTAB_GROUPS = {
+  goi_tab: 'goi_subtabs'
+  // add more here: another_tab: 'another_subtabs'
+};
+
+window.changeTopTab = function(tabId) {
+  // Deactivate all top-level tab buttons in this row
+  var tabButtons = document.getElementsByClassName('tab_button');
+  for (var i = 0; i < tabButtons.length; i++) {
+    if (tabButtons[i].closest('.tab_container') &&
+        !tabButtons[i].closest('.tab_container').classList.contains('sub_tab_container')) {
+      tabButtons[i].className = tabButtons[i].className.replace(' active', '');
+    }
+  }
+  document.getElementById(tabId).className += ' active';
+
+  // Hide every sub-tab group, then show the one for this tab (if any)
+  Object.keys(SUBTAB_GROUPS).forEach(function(key) {
+    var el = document.getElementById(SUBTAB_GROUPS[key]);
+    if (el) el.style.display = (key === tabId) ? 'flex' : 'none';
+  });
+
+  // If this top tab has sub-tabs, activate its first sub-tab by default
+  if (SUBTAB_GROUPS[tabId]) {
+    var subContainer = document.getElementById(SUBTAB_GROUPS[tabId]);
+    var firstSubBtn = subContainer.querySelector('.tab_button');
+    if (firstSubBtn) firstSubBtn.click();
+  }
+};
+
   // Runs on every new page of content.
   window.onNewPage = function() {
     var scene = window.dendryUI.dendryEngine.state.sceneId;
