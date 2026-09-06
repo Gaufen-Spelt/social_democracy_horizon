@@ -344,7 +344,8 @@ forces.push({
     key: "prussian_police",
     name: "Prussian Police",
     strength: Q.prussian_police_strength || 0,
-    militancy: (Q.prussian_police_loyalty || 0) / 100,
+    militancy: Q.prussian_police_militancy || 0,
+    loyalty: Q.prussian_police_loyalty || 0,
     isPolice: true,
     bloc: function() { return "republic"; }
 });
@@ -354,7 +355,8 @@ if (Q.spd_in_government) {
         key: "interior_police",
         name: "Interior Police",
         strength: Q.interior_police_strength || 0,
-        militancy: (Q.interior_police_loyalty || 0) / 100,
+        militancy: Q.interior_police_militancy || 0,
+        loyalty: Q.interior_police_loyalty || 0,
         isPolice: true,
         bloc: function() { return "republic"; }
     });
@@ -373,7 +375,7 @@ var reichswehr = {
 var total_effective = reichswehr.strength * (reichswehr.militancy / 5 || 0.2);
 for (var i = 0; i < forces.length; i++) {
     var f = forces[i];
-    var weight = f.isPolice ? f.militancy : (f.militancy / 5);
+    var weight = f.isPolice ? ((f.loyalty || 0) / 100) : (f.militancy / 5);
     f.effective = f.strength * weight;
     total_effective += f.effective;
 }
@@ -406,15 +408,22 @@ var blocMeta = {
 };
 
 function renderForceRow(f) {
-    var militancyText = f.isPolice
-        ? "Loyalty: " + militancyLabel(f.militancy) + (Q.deterministic_mode == 1 ? " (" + f.militancy.toFixed(2) + ")" : "")
-        : "Militarization: " + militancyLabel(f.militancy) + (Q.deterministic_mode == 1 ? " (" + f.militancy.toFixed(2) + ")" : "");
-
-    return '<div class="para-force">' +
+    var body = '<div class="para-force">' +
              '<b>' + f.name + '</b> &mdash; Strength: ' + fmtStrength(f.strength) + ' thousand ' +
-             '(' + fmtPct(f.share) + '% of total)<br>' +
-             militancyText +
-           '</div>';
+             '(' + fmtPct(f.share) + '% of total)<br>';
+
+    if (f.isPolice) {
+        body += 'Militancy: ' + militancyLabel(f.militancy) +
+                (Q.deterministic_mode == 1 ? " (" + f.militancy.toFixed(2) + ")" : "") + '<br>' +
+                'Loyalty: ' + militancyLabel((f.loyalty || 0) / 100) +
+                (Q.deterministic_mode == 1 ? " (" + f.loyalty + ")" : "");
+    } else {
+        body += 'Militarization: ' + militancyLabel(f.militancy) +
+                (Q.deterministic_mode == 1 ? " (" + f.militancy.toFixed(2) + ")" : "");
+    }
+
+    body += '</div>';
+    return body;
 }
 
 var html = "";
@@ -482,7 +491,11 @@ Reichswehr Loyalty: [+ reichswehr_loyalty : loyalty +] [? if deterministic_mode 
 
 Prussian police: [+ prussian_police_strength +] thousand members.
 
+Prussian police militancy: [+ prussian_police_militancy +]
+
 Prussian police loyalty: [+ prussian_police_loyalty : loyalty +] [? if deterministic_mode == 1: [+ prussian_police_loyalty +] ?]
+
+Interior police militancy: [+ interior_police_militancy +]
 
 Interior police loyalty: [+ interior_police_loyalty : loyalty +] [? if deterministic_mode == 1: [+ interior_police_loyalty +] ?]
 
