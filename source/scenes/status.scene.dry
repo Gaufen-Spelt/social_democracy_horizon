@@ -804,12 +804,24 @@ Seed: [+ rng_seed +]
 
 @unions
 
-Test
+= Unions
 
-@industrials
+ADGB
 
-Test
+DHV
+
+GSP
+
+...
+
+@industries
+
+= Industrial organizations
+
+Ruhrlade
 
 @misc
 
-Test
+= Miscellanious
+
+Green Tront
