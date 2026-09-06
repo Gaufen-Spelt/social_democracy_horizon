@@ -415,14 +415,26 @@ footer a {
 
 
 .sub_tab_container {
-  margin-top: 2px;
   border-top: 1px solid var(--border-color);
+  margin-top: 0;
 }
 
 .sub_tab_container .tab_button {
   font-size: 0.65em;
 }
 
+
+
+.stats-box {
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+body.dark-mode .stats-box {
+  border-style: double;
+  border-width: 4px;
+  border-color: #888;
+}
 /* =====================================================================
    TYPOGRAPHY
    ===================================================================== */
