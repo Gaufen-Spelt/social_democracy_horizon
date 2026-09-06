@@ -3,7 +3,7 @@ subtitle: Storm of the nationalist fury has engulfed the **Burgerblock**
 new-page: true
 max-visits: 1
 tags: event
-view-if: chancellor == "Curtius" and (pro_republic >= 65 or dvp_relation >= 55 or (dvp_left >= dvp_right + 100) or coalition_votes <= 52.999 or ideology == "reformist") and dnvp_in_government and year < 1929
+view-if: chancellor == "Curtius" and (pro_republic >= 75 or z_relation >= 65 or dvp_relation >= 50 or (dvp_left >= dvp_right + 100) or coalition_votes <= 52.999 or ideology == "reformist") and hugenberg_momentum > 250 and dnvp_in_government and year < 1929
 on-arrival: dnvp_loss_calculation = dnvp_r - hugenberg_momentum * 0.008; dnvp_r = dnvp_loss_calculation; dnvp_defection = hugenberg_momentum * 0.008; other_r += dnvp_defection;  {!
 Q.coalition_votes = Q.coalition_votes - Q.dnvp_defection;
 Q.coalition_collapsed = Q.coalition_votes < 50 ? 1 : 0;
