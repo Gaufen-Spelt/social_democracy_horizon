@@ -191,7 +191,7 @@ body.focus-mode-expanded #content {
   display: flex;
   flex-direction: column;
   max-height: calc(100vh - 40px);
-  overflow-y: auto;
+  overflow-y: hidden;   /* changed from auto — let #qualities own the scroll */
   overflow-x: hidden;
   /* Override the float from the original .tools.left */
   float: none !important;
@@ -427,6 +427,10 @@ footer a {
 
 
 .stats-box {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;        
   border: 1px solid var(--border-color);
   overflow: hidden;
 }
