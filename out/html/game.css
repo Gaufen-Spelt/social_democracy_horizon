@@ -440,6 +440,13 @@ body.dark-mode .stats-box {
   border-width: 4px;
   border-color: #888;
 }
+
+.stats-box .tab_container,
+.stats-box .sub_tab_container,
+.stats-box .tab_container_bottom {
+  flex: 0 0 auto;
+}
+
 /* =====================================================================
    TYPOGRAPHY
    ===================================================================== */
