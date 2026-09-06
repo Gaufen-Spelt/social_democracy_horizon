@@ -5668,6 +5668,14 @@ if (Q.year == 1928 && Q.month == 9 && Q.stahlhelm_furstenwalde != 1) {
     } 
 }
 
+if (Q.year == 1929 && Q.month == 6 && Q.weeks <= 1 && Q.dnvp_referendum == 0) {
+    if (Q.dnvp_party_leader == "Alfred Hugenberg" || Q.furstenwalde_message == 1 || Q.nationalism * 2 >= Q.pro_republic || Q.nationalism >= 30 || Q.trad_wing != "moderates" || Q.congress_path != "young_conservative" || Q.congress_path != "christian_social") {
+        Q.dnvp_referendum = 1;
+    } else {
+        Q.dnvp_referendum = 2;
+    };
+}
+
 if (Q.year == 1929 && Q.month == 10 && Q.ddp_mannheim_congress != 1) {
     Q.ddp_mannheim_congress = 1;
     if (Q.social_republican_ddp > Q.business_wing_ddp) {
