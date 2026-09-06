@@ -1071,7 +1071,7 @@ var SUBTAB_GROUPS = {
         return;
     }
     var tabButton = document.getElementById(tabId);
-    var container = tabButton.closest('.tab_container');
+    var container = tabButton.closest('.tab_container') || tabButton.closest('.tab_container_bottom');
     var isSubTab = container.classList.contains('sub_tab_container');
 
     // Clear .active only within the same row (top row vs sub row)
