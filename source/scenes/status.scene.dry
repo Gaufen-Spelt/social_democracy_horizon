@@ -802,13 +802,14 @@ Seed: [+ rng_seed +]
 
 [? if deterministic_mode = 1: Deterministic mode on. ?]
 
-@legis
-on-display: {!
-document.getElementById('bill-queue-display').innerHTML = Q.bill_list_html || Q.bill_list_text;
-!}
+@unions
 
-= Legislative Session
+Test
 
-{!<div id="bill-queue-display"></div>!}
+@industrials
 
-[+ bill_list_text +]
+Test
+
+@misc
+
+Test
